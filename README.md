@@ -1,6 +1,6 @@
-# cplerings-rest-service
+# cplerings-core
 
-CoupleRings' REST Service Application
+Module for core.
 
 # Getting Started
 
