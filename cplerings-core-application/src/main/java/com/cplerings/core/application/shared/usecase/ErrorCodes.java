@@ -3,10 +3,11 @@ package com.cplerings.core.application.shared.usecase;
 import java.util.Collection;
 import java.util.Objects;
 
+import org.apache.commons.collections4.CollectionUtils;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections4.CollectionUtils;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)

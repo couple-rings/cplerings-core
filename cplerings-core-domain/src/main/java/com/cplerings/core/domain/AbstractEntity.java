@@ -4,10 +4,8 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 import com.cplerings.core.common.temporal.TemporalHelper;
+
 import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -29,12 +27,6 @@ public abstract class AbstractEntity {
 
     private static final int NEW_ENTITY_ID = -1;
     private static final int DEFAULT_VERSION = 1;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    @Builder.Default
-    private Integer id = NEW_ENTITY_ID;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATED_AT", nullable = false, updatable = false)
@@ -66,11 +58,13 @@ public abstract class AbstractEntity {
             return false;
         }
         AbstractEntity that = (AbstractEntity) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(getId(), that.getId());
     }
+
+    public abstract Long getId();
 
     @Override
     public final int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hashCode(getId());
     }
 }

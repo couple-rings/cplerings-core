@@ -2,19 +2,22 @@ package com.cplerings.core.application.authentication.implementation;
 
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.cplerings.core.application.authentication.LoginUserStory;
 import com.cplerings.core.application.authentication.datasource.LoginDataSource;
 import com.cplerings.core.application.authentication.error.AuthenticationErrorCode;
 import com.cplerings.core.application.authentication.input.LoginCredentialInput;
 import com.cplerings.core.application.authentication.output.AuthenticationTokenOutput;
-import com.cplerings.core.application.shared.password.PasswordService;
+import com.cplerings.core.application.shared.service.jwt.JWTService;
+import com.cplerings.core.application.shared.service.password.PasswordService;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.ErrorCodes;
 import com.cplerings.core.application.shared.usecase.UserStoryImplementation;
 import com.cplerings.core.common.pair.Pair;
 import com.cplerings.core.domain.account.Account;
+
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 
 @UserStoryImplementation
 @RequiredArgsConstructor
@@ -24,18 +27,22 @@ public class DefaultLoginUserStory
 
     private final LoginDataSource loginDataSource;
     private final PasswordService passwordService;
+    private final JWTService jwtService;
 
     @Override
     public Pair<AuthenticationTokenOutput, ErrorCodes> login(LoginCredentialInput input) {
         addStep(AbstractUseCase.<LoginCredentialInput, Account>createStep(i -> {
             final Optional<Account> loginAccount = loginDataSource.getLoginAccount(input.getEmail());
-            validate(loginAccount.isPresent(), AuthenticationErrorCode.EMAIL_NOT_FOUND);
+            validate(loginAccount.isPresent(), AuthenticationErrorCode.ACCOUNT_WITH_EMAIL_NOT_FOUND);
             return loginAccount.orElse(null);
         }));
-        addStep(AbstractUseCase.<Account, Account>createStep(account -> {
+        addStep(AbstractUseCase.<Account, AuthenticationTokenOutput>createStep(account -> {
             validate(passwordService.passwordMatchesEncrypted(input.getPassword(), account.getPassword()),
                     AuthenticationErrorCode.INVALID_PASSWORD);
-            return account;
+            final String email = account.getEmail();
+            final String token = jwtService.generateToken(email);
+            final String refreshToken = jwtService.generateRefreshToken(email);
+            return new AuthenticationTokenOutput(token, refreshToken);
         }));
         return executeSteps(input);
     }

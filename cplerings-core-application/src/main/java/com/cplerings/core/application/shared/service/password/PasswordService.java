@@ -1,4 +1,4 @@
-package com.cplerings.core.application.shared.password;
+package com.cplerings.core.application.shared.service.password;
 
 public interface PasswordService {
 

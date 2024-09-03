@@ -5,8 +5,9 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
 
-import com.cplerings.core.common.pair.Pair;
 import org.apache.commons.collections4.CollectionUtils;
+
+import com.cplerings.core.common.pair.Pair;
 
 public abstract class AbstractUseCase<I, O, E extends ErrorCode> {
 
@@ -51,12 +52,13 @@ public abstract class AbstractUseCase<I, O, E extends ErrorCode> {
         return (Function<Object, Object>) function;
     }
 
+    @SuppressWarnings("java:S4276")
     protected final void addStep(Function<Object, Object> step) {
         Objects.requireNonNull(step, "Step must not be null");
         steps.add(step);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "java:S4276"})
     protected final Pair<O, ErrorCodes> executeSteps(I input) {
         if (CollectionUtils.isEmpty(steps)) {
             throw new IllegalStateException("Steps are empty");
@@ -69,7 +71,11 @@ public abstract class AbstractUseCase<I, O, E extends ErrorCode> {
         }
         Object result = input;
         for (Function<Object, Object> step : steps) {
-            result = step.apply(result);
+            try {
+                result = step.apply(result);
+            } catch (Exception e) {
+                validate(false, (E) ErrorCode.SYSTEM_ERROR);
+            }
             if (hasErrors()) {
                 return Pair.<O, ErrorCodes>builder()
                         .right(extractAndEmptyErrorCodes())
