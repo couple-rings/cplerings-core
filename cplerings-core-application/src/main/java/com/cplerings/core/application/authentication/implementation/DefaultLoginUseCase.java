@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.cplerings.core.application.authentication.LoginUserStory;
+import com.cplerings.core.application.authentication.LoginUseCase;
 import com.cplerings.core.application.authentication.datasource.LoginDataSource;
 import com.cplerings.core.application.authentication.error.AuthenticationErrorCode;
 import com.cplerings.core.application.authentication.input.LoginCredentialInput;
@@ -13,17 +13,17 @@ import com.cplerings.core.application.shared.service.jwt.JWTGenerationService;
 import com.cplerings.core.application.shared.service.password.PasswordService;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.ErrorCodes;
-import com.cplerings.core.application.shared.usecase.UserStoryImplementation;
+import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.common.pair.Pair;
 import com.cplerings.core.domain.account.Account;
 
 import lombok.RequiredArgsConstructor;
 
-@UserStoryImplementation
+@UseCaseImplementation
 @RequiredArgsConstructor
-public class DefaultLoginUserStory
+public class DefaultLoginUseCase
         extends AbstractUseCase<LoginCredentialInput, AuthenticationTokenOutput, AuthenticationErrorCode>
-        implements LoginUserStory {
+        implements LoginUseCase {
 
     private final LoginDataSource loginDataSource;
     private final PasswordService passwordService;

@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public enum UserStoryCode {
+public enum UseCaseCode {
 
     CPLERINGS_1("As Anyone, I can login to my corresponding role.");
 

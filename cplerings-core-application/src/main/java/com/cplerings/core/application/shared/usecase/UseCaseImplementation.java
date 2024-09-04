@@ -15,6 +15,6 @@ import jakarta.transaction.Transactional;
 @Documented
 @Service
 @Transactional(rollbackOn = Exception.class)
-public @interface UserStoryImplementation {
+public @interface UseCaseImplementation {
 
 }
