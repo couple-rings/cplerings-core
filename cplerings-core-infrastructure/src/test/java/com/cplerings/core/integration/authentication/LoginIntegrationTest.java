@@ -3,7 +3,6 @@ package com.cplerings.core.integration.authentication;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.cplerings.core.api.authentication.request.LoginCredentialRequest;
@@ -24,7 +23,6 @@ class LoginIntegrationTest extends AbstractIntegrationTest {
     private JWTVerificationService jwtVerificationService;
 
     @Test
-    @WithAnonymousUser
     void givenAnyone_whenLogin() {
         accountTestHelper.createOne();
 

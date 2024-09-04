@@ -32,7 +32,7 @@ public class LoginController extends AbstractRestController {
         if (authenticationTokenPair.isLeft()) {
             return ResponseEntity.ok(authenticationAPIMapper.toResponse(authenticationTokenPair.getLeft()));
         } else {
-            return ResponseEntity.badRequest().body(authenticationTokenPair.getRight());
+            return handleErrorCodes(authenticationTokenPair.getRight());
         }
     }
 }

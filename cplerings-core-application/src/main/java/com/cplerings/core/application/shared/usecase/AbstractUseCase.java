@@ -14,11 +14,12 @@ public abstract class AbstractUseCase<I, O, E extends ErrorCode> {
     private final Collection<E> validationErrorCodes = new ArrayList<>();
     private final Collection<Function<Object, Object>> steps = new ArrayList<>();
 
-    protected final void validate(boolean validCondition, E errorCode) {
+    protected final boolean validate(boolean validCondition, E errorCode) {
         Objects.requireNonNull(errorCode);
         if (!validCondition) {
             validationErrorCodes.add(errorCode);
         }
+        return validCondition;
     }
 
     protected final boolean hasErrors() {

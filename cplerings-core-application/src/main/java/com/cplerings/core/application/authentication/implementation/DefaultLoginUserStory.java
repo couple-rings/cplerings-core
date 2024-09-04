@@ -37,8 +37,10 @@ public class DefaultLoginUserStory
             return loginAccount.orElse(null);
         }));
         addStep(AbstractUseCase.<Account, AuthenticationTokenOutput>createStep(account -> {
-            validate(passwordService.passwordMatchesEncrypted(input.getPassword(), account.getPassword()),
-                    AuthenticationErrorCode.INVALID_PASSWORD);
+            if (!validate(passwordService.passwordMatchesEncrypted(input.getPassword(), account.getPassword()),
+                    AuthenticationErrorCode.INVALID_PASSWORD)) {
+                return null;
+            }
             final String email = account.getEmail();
             final String token = jwtGenerationService.generateToken(email);
             final String refreshToken = jwtGenerationService.generateRefreshToken(email);
