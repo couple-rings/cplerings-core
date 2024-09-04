@@ -8,8 +8,10 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.cplerings.core.api.authentication.request.LoginCredentialRequest;
 import com.cplerings.core.application.authentication.output.AuthenticationTokenOutput;
-import com.cplerings.core.helper.AccountTestHelper;
+import com.cplerings.core.infrastructure.service.jwt.JWTVerificationResult;
+import com.cplerings.core.infrastructure.service.jwt.JWTVerificationService;
 import com.cplerings.core.integration.AbstractIntegrationTest;
+import com.cplerings.core.integration.helper.AccountTestHelper;
 
 class LoginIntegrationTest extends AbstractIntegrationTest {
 
@@ -17,6 +19,9 @@ class LoginIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
     private AccountTestHelper accountTestHelper;
+
+    @Autowired
+    private JWTVerificationService jwtVerificationService;
 
     @Test
     @WithAnonymousUser
@@ -30,14 +35,15 @@ class LoginIntegrationTest extends AbstractIntegrationTest {
                 .send();
 
         thenResponseIsOk(response);
-        thenTokenAndRefreshTokenAreReturned(response);
+        final AuthenticationTokenOutput authenticationTokenOutput = thenTokenAndRefreshTokenAreReturned(response);
+        thenBothTokensAreValid(authenticationTokenOutput);
     }
 
     private void thenResponseIsOk(WebTestClient.ResponseSpec response) {
         response.expectStatus().isOk();
     }
 
-    private void thenTokenAndRefreshTokenAreReturned(WebTestClient.ResponseSpec response) {
+    private AuthenticationTokenOutput thenTokenAndRefreshTokenAreReturned(WebTestClient.ResponseSpec response) {
         final AuthenticationTokenOutput output = response.expectBody(AuthenticationTokenOutput.class)
                 .returnResult()
                 .getResponseBody();
@@ -47,5 +53,22 @@ class LoginIntegrationTest extends AbstractIntegrationTest {
                 .isNotBlank();
         Assertions.assertThat(output.getRefreshToken())
                 .isNotBlank();
+        return output;
+    }
+
+    private void thenBothTokensAreValid(AuthenticationTokenOutput authenticationTokenOutput) {
+        final String token = authenticationTokenOutput.getToken();
+        final JWTVerificationResult tokenResult = jwtVerificationService.validateToken(token);
+        Assertions.assertThat(tokenResult.getStatus())
+                .isEqualTo(JWTVerificationResult.Status.VALID);
+        Assertions.assertThat(tokenResult.getSubject())
+                .isEqualTo(AccountTestHelper.DEFAULT_EMAIL);
+
+        final String refreshToken = authenticationTokenOutput.getRefreshToken();
+        final JWTVerificationResult refreshResult = jwtVerificationService.validateRefreshToken(refreshToken);
+        Assertions.assertThat(refreshResult.getStatus())
+                .isEqualTo(JWTVerificationResult.Status.VALID);
+        Assertions.assertThat(refreshResult.getSubject())
+                .isEqualTo(AccountTestHelper.DEFAULT_EMAIL);
     }
 }

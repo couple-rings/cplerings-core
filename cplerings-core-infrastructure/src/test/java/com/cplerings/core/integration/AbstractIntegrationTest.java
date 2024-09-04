@@ -8,8 +8,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.cplerings.core.common.profile.ProfileConstant;
-import com.cplerings.core.helper.AccountTestHelper;
 import com.cplerings.core.infrastructure.CplringsCoreApplication;
+import com.cplerings.core.integration.helper.AccountTestHelper;
 
 @SpringBootTest(
         classes = {

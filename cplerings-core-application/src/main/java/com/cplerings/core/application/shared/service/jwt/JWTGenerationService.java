@@ -1,6 +1,6 @@
 package com.cplerings.core.application.shared.service.jwt;
 
-public interface JWTService {
+public interface JWTGenerationService {
 
     String generateToken(String email);
 

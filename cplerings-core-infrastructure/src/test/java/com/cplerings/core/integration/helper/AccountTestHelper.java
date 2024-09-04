@@ -1,4 +1,4 @@
-package com.cplerings.core.helper;
+package com.cplerings.core.integration.helper;
 
 import org.springframework.boot.test.context.TestComponent;
 

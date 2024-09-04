@@ -9,7 +9,7 @@ import com.cplerings.core.application.authentication.datasource.LoginDataSource;
 import com.cplerings.core.application.authentication.error.AuthenticationErrorCode;
 import com.cplerings.core.application.authentication.input.LoginCredentialInput;
 import com.cplerings.core.application.authentication.output.AuthenticationTokenOutput;
-import com.cplerings.core.application.shared.service.jwt.JWTService;
+import com.cplerings.core.application.shared.service.jwt.JWTGenerationService;
 import com.cplerings.core.application.shared.service.password.PasswordService;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.ErrorCodes;
@@ -27,7 +27,7 @@ public class DefaultLoginUserStory
 
     private final LoginDataSource loginDataSource;
     private final PasswordService passwordService;
-    private final JWTService jwtService;
+    private final JWTGenerationService jwtGenerationService;
 
     @Override
     public Pair<AuthenticationTokenOutput, ErrorCodes> login(LoginCredentialInput input) {
@@ -40,8 +40,8 @@ public class DefaultLoginUserStory
             validate(passwordService.passwordMatchesEncrypted(input.getPassword(), account.getPassword()),
                     AuthenticationErrorCode.INVALID_PASSWORD);
             final String email = account.getEmail();
-            final String token = jwtService.generateToken(email);
-            final String refreshToken = jwtService.generateRefreshToken(email);
+            final String token = jwtGenerationService.generateToken(email);
+            final String refreshToken = jwtGenerationService.generateRefreshToken(email);
             return new AuthenticationTokenOutput(token, refreshToken);
         }));
         return executeSteps(input);
