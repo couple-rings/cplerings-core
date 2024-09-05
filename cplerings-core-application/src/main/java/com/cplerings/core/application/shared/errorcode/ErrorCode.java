@@ -1,4 +1,4 @@
-package com.cplerings.core.application.shared.usecase;
+package com.cplerings.core.application.shared.errorcode;
 
 public interface ErrorCode {
 

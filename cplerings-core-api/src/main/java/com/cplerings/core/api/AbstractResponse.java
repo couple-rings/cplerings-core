@@ -1,8 +1,5 @@
 package com.cplerings.core.api;
 
-import java.util.Collection;
-
-import com.cplerings.core.application.shared.usecase.ErrorCode;
 import com.cplerings.core.common.temporal.TemporalHelper;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -20,7 +17,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public abstract class AbstractResponse<T> {
 
-    enum Type {
+    public enum Type {
 
         SINGLE, LIST, INFO, ERROR
     }
@@ -35,7 +32,4 @@ public abstract class AbstractResponse<T> {
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String message;
-
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private Collection<ErrorCode> errors;
 }

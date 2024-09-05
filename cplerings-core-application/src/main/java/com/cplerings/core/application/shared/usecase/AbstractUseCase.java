@@ -7,6 +7,8 @@ import java.util.function.Function;
 
 import org.apache.commons.collections4.CollectionUtils;
 
+import com.cplerings.core.application.shared.errorcode.ErrorCode;
+import com.cplerings.core.application.shared.errorcode.ErrorCodes;
 import com.cplerings.core.common.pair.Pair;
 
 public abstract class AbstractUseCase<I, O> {
@@ -78,11 +80,13 @@ public abstract class AbstractUseCase<I, O> {
                 validate(false, ErrorCode.SYSTEM_ERROR);
             }
             if (hasErrors()) {
+                steps.clear();
                 return Pair.<O, ErrorCodes>builder()
                         .right(extractAndEmptyErrorCodes())
                         .defaultBuild();
             }
         }
+        steps.clear();
         return Pair.<O, ErrorCodes>builder()
                 .left((O) result)
                 .defaultBuild();

@@ -10,10 +10,10 @@ import com.cplerings.core.application.authentication.error.AuthenticationErrorCo
 import com.cplerings.core.application.authentication.input.JWTInput;
 import com.cplerings.core.application.authentication.mapper.AccountApplicationMapper;
 import com.cplerings.core.application.authentication.output.AccountOutput;
+import com.cplerings.core.application.shared.errorcode.ErrorCodes;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationResult;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationService;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
-import com.cplerings.core.application.shared.usecase.ErrorCodes;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.common.pair.Pair;
 import com.cplerings.core.domain.account.Account;

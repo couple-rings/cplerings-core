@@ -1,0 +1,47 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: CoupleRings
+  profiles:
+    active: ${CPLERINGS_PROFILES_ACTIVE}
+  datasource:
+    url: jdbc:postgresql://${CPLERINGS_DATABASE_URL}:${CPLERINGS_DATABASE_PORT}/cplerings-core
+    username: ${CPLERINGS_DATABASE_USERNAME}
+    password: ${CPLERINGS_DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    url: jdbc:postgresql://${CPLERINGS_DATABASE_URL}:${CPLERINGS_DATABASE_PORT}/cplerings-core
+    user: ${CPLERINGS_DATABASE_USERNAME}
+    password: ${CPLERINGS_DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    locations: classpath:db/migration/shared
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev,local
+  flyway:
+    locations: classpath:db/migration/shared,classpath:db/migration/dev
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+  flyway:
+    locations: classpath:db/migration/shared
+
+---
+
+cplerings:
+  api:
+    path: /api/v1
+  jwt:
+    secret: ${CPLERINGS_JWT_SECRET}
+    duration: ${CPLERINGS_JWT_DURATION}
+    refreshDuration: ${CPLERINGS_JWT_REFRESH_DURATION}

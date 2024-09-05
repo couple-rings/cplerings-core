@@ -5,8 +5,8 @@ import java.util.Collection;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.cplerings.core.application.shared.usecase.ErrorCode;
-import com.cplerings.core.application.shared.usecase.ErrorCodes;
+import com.cplerings.core.application.shared.errorcode.ErrorCode;
+import com.cplerings.core.application.shared.errorcode.ErrorCodes;
 
 @RequestMapping("${cplerings.api.path}")
 public abstract class AbstractRestController {

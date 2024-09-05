@@ -12,7 +12,7 @@ import com.cplerings.core.api.security.IsAnyone;
 import com.cplerings.core.application.authentication.LoginUseCase;
 import com.cplerings.core.application.authentication.input.LoginCredentialInput;
 import com.cplerings.core.application.authentication.output.AuthenticationTokenOutput;
-import com.cplerings.core.application.shared.usecase.ErrorCodes;
+import com.cplerings.core.application.shared.errorcode.ErrorCodes;
 import com.cplerings.core.common.pair.Pair;
 
 import lombok.RequiredArgsConstructor;

@@ -5,7 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import com.cplerings.core.api.AbstractResponse;
+import com.cplerings.core.api.ErrorCodesResponse;
+import com.cplerings.core.api.mapper.ErrorCodeResponseMapper;
+import com.cplerings.core.application.authentication.error.AuthenticationErrorCode;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.test.integration.AbstractIntegrationTest;
 import com.cplerings.core.test.integration.api.TestController;
 import com.cplerings.core.test.integration.helper.AccountTestHelper;
@@ -20,8 +25,8 @@ class AuthenticateUserJWTIntegrationTest extends AbstractIntegrationTest {
     private JWTTestHelper jwtTestHelper;
 
     @Test
-    void givenCustomer_whenPassingInAuthenticationJWT() {
-        final Account account = accountTestHelper.createOne();
+    void givenCustomer_whenPassingInAuthenticationJWTToAccessAPIForCustomer() {
+        final Account account = accountTestHelper.createCustomer();
         final String token = jwtTestHelper.generateToken(account.getEmail());
 
         final WebTestClient.ResponseSpec response = requestBuilder()
@@ -44,5 +49,37 @@ class AuthenticateUserJWTIntegrationTest extends AbstractIntegrationTest {
                 .getResponseBody();
         Assertions.assertThat(helloMessage)
                 .isEqualTo(TestController.DEFAULT_HELLO_MESSAGE);
+    }
+
+    @Test
+    void givenAnyoneNotCustomer_whenPassingInAuthenticationJWTToAccessAPIForCustomer() {
+        final Account account = accountTestHelper.createOneWithRole(Role.ADMIN);
+        final String token = jwtTestHelper.generateToken(account.getEmail());
+
+        final WebTestClient.ResponseSpec response = requestBuilder()
+                .path(TestController.TEST_HELLO_PATH)
+                .method(RequestBuilder.Method.GET)
+                .authorizationHeader(token)
+                .send();
+
+        thenResponseIsForbidden(response);
+        thenResponseBodyIsError(response);
+    }
+
+    private void thenResponseIsForbidden(WebTestClient.ResponseSpec response) {
+        response.expectStatus().isForbidden();
+    }
+
+    private void thenResponseBodyIsError(WebTestClient.ResponseSpec response) {
+        final ErrorCodesResponse error = response.expectBody(ErrorCodesResponse.class)
+                .returnResult()
+                .getResponseBody();
+        Assertions.assertThat(error)
+                .isNotNull();
+        Assertions.assertThat(error.getType())
+                .isEqualTo(AbstractResponse.Type.ERROR);
+        Assertions.assertThat(error.getErrors())
+                .hasSize(1)
+                .containsExactly(ErrorCodeResponseMapper.INSTANCE.toResponse(AuthenticationErrorCode.UNAUTHORIZED));
     }
 }

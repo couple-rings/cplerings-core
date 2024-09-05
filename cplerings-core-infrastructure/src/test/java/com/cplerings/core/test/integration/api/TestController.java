@@ -13,8 +13,8 @@ public class TestController extends AbstractRestController {
     public static final String TEST_HELLO_PATH = "/test/hello";
     public static final String DEFAULT_HELLO_MESSAGE = "Hello, World!";
 
-    @GetMapping(TEST_HELLO_PATH)
     @IsCustomer
+    @GetMapping(TEST_HELLO_PATH)
     public ResponseEntity<String> sayHello() {
         return ResponseEntity.ok(DEFAULT_HELLO_MESSAGE);
     }

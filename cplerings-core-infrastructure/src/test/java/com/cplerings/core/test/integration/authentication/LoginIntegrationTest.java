@@ -24,7 +24,7 @@ class LoginIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void givenAnyone_whenLogin() {
-        accountTestHelper.createOne();
+        accountTestHelper.createCustomer();
 
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(LOGIN_PATH)

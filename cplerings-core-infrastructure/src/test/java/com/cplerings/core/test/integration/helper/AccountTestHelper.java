@@ -1,5 +1,7 @@
 package com.cplerings.core.test.integration.helper;
 
+import java.util.Objects;
+
 import org.springframework.boot.test.context.TestComponent;
 
 import com.cplerings.core.application.shared.service.password.PasswordService;
@@ -20,11 +22,16 @@ public class AccountTestHelper {
     private final PasswordService passwordService;
     private final AccountRepository accountRepository;
 
-    public Account createOne() {
+    public Account createCustomer() {
+        return createOneWithRole(Role.CUSTOMER);
+    }
+
+    public Account createOneWithRole(Role role) {
+        Objects.requireNonNull(role, "Role is null");
         final Account account = Account.builder()
                 .email(DEFAULT_EMAIL)
                 .password(passwordService.encryptPassword(DEFAULT_PASSWORD))
-                .role(Role.CUSTOMER)
+                .role(role)
                 .createdBy(DEFAULT_CREATED_BY)
                 .build();
         return accountRepository.save(account);
