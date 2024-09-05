@@ -1,9 +1,10 @@
-package com.cplerings.core.integration.helper;
+package com.cplerings.core.test.integration.helper;
 
 import org.springframework.boot.test.context.TestComponent;
 
 import com.cplerings.core.application.shared.service.password.PasswordService;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class AccountTestHelper {
         final Account account = Account.builder()
                 .email(DEFAULT_EMAIL)
                 .password(passwordService.encryptPassword(DEFAULT_PASSWORD))
+                .role(Role.CUSTOMER)
                 .createdBy(DEFAULT_CREATED_BY)
                 .build();
         return accountRepository.save(account);

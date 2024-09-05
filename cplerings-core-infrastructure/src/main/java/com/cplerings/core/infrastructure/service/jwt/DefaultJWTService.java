@@ -12,6 +12,8 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.cplerings.core.application.shared.service.jwt.JWTGenerationService;
+import com.cplerings.core.application.shared.service.jwt.JWTVerificationResult;
+import com.cplerings.core.application.shared.service.jwt.JWTVerificationService;
 import com.cplerings.core.common.temporal.TemporalHelper;
 
 import jakarta.transaction.Transactional;

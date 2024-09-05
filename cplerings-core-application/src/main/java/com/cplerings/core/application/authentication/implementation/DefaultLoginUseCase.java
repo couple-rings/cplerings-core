@@ -21,8 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 @UseCaseImplementation
 @RequiredArgsConstructor
-public class DefaultLoginUseCase
-        extends AbstractUseCase<LoginCredentialInput, AuthenticationTokenOutput, AuthenticationErrorCode>
+public class DefaultLoginUseCase extends AbstractUseCase<LoginCredentialInput, AuthenticationTokenOutput>
         implements LoginUseCase {
 
     private final LoginDataSource loginDataSource;
@@ -50,8 +49,8 @@ public class DefaultLoginUseCase
     }
 
     @Override
-    protected void validateInputInternal(LoginCredentialInput input) {
-        super.validateInputInternal(input);
+    protected void validateInput(LoginCredentialInput input) {
+        super.validateInput(input);
         validate(StringUtils.isNotBlank(input.getEmail()), AuthenticationErrorCode.NO_EMAIL);
         validate(StringUtils.isNotBlank(input.getPassword()), AuthenticationErrorCode.NO_PASSWORD);
     }

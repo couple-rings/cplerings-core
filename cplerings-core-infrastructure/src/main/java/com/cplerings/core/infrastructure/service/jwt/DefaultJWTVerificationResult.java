@@ -3,6 +3,7 @@ package com.cplerings.core.infrastructure.service.jwt;
 import org.apache.commons.lang3.StringUtils;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.cplerings.core.application.shared.service.jwt.JWTVerificationResult;
 
 import lombok.Builder;
 

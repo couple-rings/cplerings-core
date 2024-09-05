@@ -1,4 +1,4 @@
-package com.cplerings.core.integration.authentication;
+package com.cplerings.core.test.integration.authentication;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -7,10 +7,10 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.cplerings.core.api.authentication.request.LoginCredentialRequest;
 import com.cplerings.core.application.authentication.output.AuthenticationTokenOutput;
-import com.cplerings.core.infrastructure.service.jwt.JWTVerificationResult;
-import com.cplerings.core.infrastructure.service.jwt.JWTVerificationService;
-import com.cplerings.core.integration.AbstractIntegrationTest;
-import com.cplerings.core.integration.helper.AccountTestHelper;
+import com.cplerings.core.application.shared.service.jwt.JWTVerificationResult;
+import com.cplerings.core.application.shared.service.jwt.JWTVerificationService;
+import com.cplerings.core.test.integration.AbstractIntegrationTest;
+import com.cplerings.core.test.integration.helper.AccountTestHelper;
 
 class LoginIntegrationTest extends AbstractIntegrationTest {
 

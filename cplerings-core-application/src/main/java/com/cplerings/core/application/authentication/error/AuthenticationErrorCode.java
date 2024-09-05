@@ -13,8 +13,9 @@ public enum AuthenticationErrorCode implements ErrorCode {
     NO_PASSWORD("002", "authentication.error.noPassword", Type.VALIDATION),
     ACCOUNT_WITH_EMAIL_NOT_FOUND("003", "authentication.error.accountWithEmailNotFound", Type.BUSINESS),
     INVALID_PASSWORD("004", "authentication.error.invalidPassword", Type.BUSINESS),
-    INVALID_TOKEN("005", "authentication.error.invalidToken", Type.VALIDATION),
-    TOKEN_EXPIRED("006", "authentication.error.tokenExpired", Type.VALIDATION);
+    NO_TOKEN("005", "authentication.error.noToken", Type.VALIDATION),
+    INVALID_TOKEN("006", "authentication.error.invalidToken", Type.BUSINESS),
+    TOKEN_EXPIRED("007", "authentication.error.tokenExpired", Type.BUSINESS);
 
     private final String code;
     private final String descriptionLocale;

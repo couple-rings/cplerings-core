@@ -1,4 +1,4 @@
-package com.cplerings.core.infrastructure.service.jwt;
+package com.cplerings.core.application.shared.service.jwt;
 
 public interface JWTVerificationService {
 

@@ -9,12 +9,12 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import com.cplerings.core.common.pair.Pair;
 
-public abstract class AbstractUseCase<I, O, E extends ErrorCode> {
+public abstract class AbstractUseCase<I, O> {
 
-    private final Collection<E> validationErrorCodes = new ArrayList<>();
+    private final Collection<ErrorCode> validationErrorCodes = new ArrayList<>();
     private final Collection<Function<Object, Object>> steps = new ArrayList<>();
 
-    protected final boolean validate(boolean validCondition, E errorCode) {
+    protected final boolean validate(boolean validCondition, ErrorCode errorCode) {
         Objects.requireNonNull(errorCode);
         if (!validCondition) {
             validationErrorCodes.add(errorCode);
@@ -32,12 +32,12 @@ public abstract class AbstractUseCase<I, O, E extends ErrorCode> {
         return ErrorCodes.create(tmpErrorCodes);
     }
 
-    protected void validateInputInternal(I input) {
+    protected void validateInput(I input) {
         // To be implemented
     }
 
-    protected final Pair<I, ErrorCodes> validateInput(I input) {
-        validateInputInternal(input);
+    protected final Pair<I, ErrorCodes> validateInputInternal(I input) {
+        validateInput(input);
         if (hasErrors()) {
             return Pair.<I, ErrorCodes>builder()
                     .right(extractAndEmptyErrorCodes())
@@ -64,7 +64,7 @@ public abstract class AbstractUseCase<I, O, E extends ErrorCode> {
         if (CollectionUtils.isEmpty(steps)) {
             throw new IllegalStateException("Steps are empty");
         }
-        final Pair<I, ErrorCodes> validationPair = validateInput(input);
+        final Pair<I, ErrorCodes> validationPair = validateInputInternal(input);
         if (validationPair.isRight()) {
             return Pair.<O, ErrorCodes>builder()
                     .right(validationPair.getRight())
@@ -75,7 +75,7 @@ public abstract class AbstractUseCase<I, O, E extends ErrorCode> {
             try {
                 result = step.apply(result);
             } catch (Exception e) {
-                validate(false, (E) ErrorCode.SYSTEM_ERROR);
+                validate(false, ErrorCode.SYSTEM_ERROR);
             }
             if (hasErrors()) {
                 return Pair.<O, ErrorCodes>builder()
