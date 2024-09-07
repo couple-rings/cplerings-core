@@ -17,7 +17,7 @@ import com.cplerings.core.application.authentication.input.JWTInput;
 import com.cplerings.core.application.authentication.output.AccountOutput;
 import com.cplerings.core.application.authentication.output.RoleOutput;
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
-import com.cplerings.core.common.pair.Pair;
+import com.cplerings.core.common.pair.Either;
 import com.cplerings.core.common.security.RoleConstant;
 
 import jakarta.annotation.Nonnull;
@@ -44,13 +44,13 @@ public final class JWTAuthenticationFilter extends OncePerRequestFilter {
         final String authorizationHeader = request.getHeader(AUTHENTICATION_HEADER);
         if (StringUtils.isNotBlank(authorizationHeader) && authorizationHeader.startsWith(BEARER_PREFIX)) {
             final String token = authorizationHeader.substring(BEARER_PREFIX.length());
-            final Pair<AccountOutput, ErrorCodes> authenticationPair = authenticateUserJWTUseCase.authenticate(JWTInput.builder()
+            final Either<AccountOutput, ErrorCodes> authenticationEither = authenticateUserJWTUseCase.authenticate(JWTInput.builder()
                     .token(token)
                     .build());
-            if (authenticationPair.isLeft()) {
-                authenticateUserWithToken(authenticationPair.getLeft());
+            if (authenticationEither.isLeft()) {
+                authenticateUserWithToken(authenticationEither.getLeft());
             } else {
-                securityHelper.writeErrorResponse(authenticationPair.getRight(), response, HttpServletResponse.SC_BAD_REQUEST);
+                securityHelper.writeErrorResponse(authenticationEither.getRight(), response, HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
         }

@@ -8,7 +8,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class TemporalHelper {
+public final class TemporalUtils {
 
     public static LocalDateTime getCurrentDateTimeUTC() {
         return LocalDateTime.ofInstant(getCurrentInstantUTC(), ZoneOffset.UTC);

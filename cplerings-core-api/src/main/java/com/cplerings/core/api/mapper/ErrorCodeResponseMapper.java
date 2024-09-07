@@ -7,7 +7,7 @@ import org.mapstruct.factory.Mappers;
 
 import com.cplerings.core.api.ErrorCodeResponse;
 import com.cplerings.core.application.shared.errorcode.ErrorCode;
-import com.cplerings.core.common.locale.LocaleHelper;
+import com.cplerings.core.common.locale.LocaleUtils;
 
 @Mapper(nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface ErrorCodeResponseMapper {
@@ -20,6 +20,6 @@ public interface ErrorCodeResponseMapper {
     ErrorCodeResponse.Type toType(ErrorCode.Type type);
 
     default String toDescription(ErrorCode errorCode) {
-        return LocaleHelper.translateLocale(errorCode.getDescriptionLocale());
+        return LocaleUtils.translateLocale(errorCode.getDescriptionLocale());
     }
 }

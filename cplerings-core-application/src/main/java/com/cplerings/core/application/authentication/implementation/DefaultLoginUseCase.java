@@ -14,7 +14,7 @@ import com.cplerings.core.application.shared.service.jwt.JWTGenerationService;
 import com.cplerings.core.application.shared.service.password.PasswordService;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
-import com.cplerings.core.common.pair.Pair;
+import com.cplerings.core.common.pair.Either;
 import com.cplerings.core.domain.account.Account;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class DefaultLoginUseCase extends AbstractUseCase<LoginCredentialInput, A
     private final JWTGenerationService jwtGenerationService;
 
     @Override
-    public Pair<AuthenticationTokenOutput, ErrorCodes> login(LoginCredentialInput input) {
+    public Either<AuthenticationTokenOutput, ErrorCodes> login(LoginCredentialInput input) {
         addStep(AbstractUseCase.<LoginCredentialInput, Account>createStep(i -> {
             final Optional<Account> loginAccount = loginDataSource.getLoginAccount(input.getEmail());
             validate(loginAccount.isPresent(), AuthenticationErrorCode.ACCOUNT_WITH_EMAIL_NOT_FOUND);

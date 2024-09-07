@@ -3,7 +3,7 @@ package com.cplerings.core.domain;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import com.cplerings.core.common.temporal.TemporalHelper;
+import com.cplerings.core.common.temporal.TemporalUtils;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
@@ -31,7 +31,7 @@ public abstract class AbstractEntity {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATED_AT", nullable = false, updatable = false)
     @Builder.Default
-    private LocalDateTime createdAt = TemporalHelper.getCurrentDateTimeUTC();
+    private LocalDateTime createdAt = TemporalUtils.getCurrentDateTimeUTC();
 
     @Column(name = "CREATE_BY", length = 50, nullable = false, updatable = false)
     private String createdBy;
@@ -39,7 +39,7 @@ public abstract class AbstractEntity {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "MODIFIED_AT")
     @Builder.Default
-    private LocalDateTime modifiedAt = TemporalHelper.getCurrentDateTimeUTC();
+    private LocalDateTime modifiedAt = TemporalUtils.getCurrentDateTimeUTC();
 
     @Column(name = "MODIFIED_BY", length = 50)
     private String modifiedBy;

@@ -2,7 +2,7 @@ package com.cplerings.core.common.pair;
 
 import java.util.function.Consumer;
 
-public interface Pair<L, R> {
+public interface Either<L, R> {
 
     L getLeft();
 
@@ -12,9 +12,9 @@ public interface Pair<L, R> {
 
     boolean isRight();
 
-    <S extends Pair<L, R>> S ifLeft(Consumer<L> consumer);
+    <S extends Either<L, R>> S ifLeft(Consumer<L> consumer);
 
-    <S extends Pair<L, R>> S ifRight(Consumer<R> consumer);
+    <S extends Either<L, R>> S ifRight(Consumer<R> consumer);
 
     class Builder<L, R> {
 
@@ -34,8 +34,8 @@ public interface Pair<L, R> {
             return this;
         }
 
-        public Pair<L, R> defaultBuild() {
-            return new DefaultPair<>(left, right);
+        public Either<L, R> defaultBuild() {
+            return new DefaultEither<>(left, right);
         }
     }
 

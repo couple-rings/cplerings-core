@@ -13,7 +13,7 @@ import com.cplerings.core.application.authentication.LoginUseCase;
 import com.cplerings.core.application.authentication.input.LoginCredentialInput;
 import com.cplerings.core.application.authentication.output.AuthenticationTokenOutput;
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
-import com.cplerings.core.common.pair.Pair;
+import com.cplerings.core.common.pair.Either;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,11 +28,11 @@ public class LoginController extends AbstractRestController {
     @IsAnyone
     public ResponseEntity<Object> login(@RequestBody LoginCredentialRequest loginCredentialRequest) {
         final LoginCredentialInput loginCredentialInput = authenticationAPIMapper.toInput(loginCredentialRequest);
-        final Pair<AuthenticationTokenOutput, ErrorCodes> authenticationTokenPair = loginUseCase.login(loginCredentialInput);
-        if (authenticationTokenPair.isLeft()) {
-            return ResponseEntity.ok(authenticationAPIMapper.toResponse(authenticationTokenPair.getLeft()));
+        final Either<AuthenticationTokenOutput, ErrorCodes> authenticationTokenEither = loginUseCase.login(loginCredentialInput);
+        if (authenticationTokenEither.isLeft()) {
+            return ResponseEntity.ok(authenticationAPIMapper.toResponse(authenticationTokenEither.getLeft()));
         } else {
-            return handleErrorCodes(authenticationTokenPair.getRight());
+            return handleErrorCodes(authenticationTokenEither.getRight());
         }
     }
 }

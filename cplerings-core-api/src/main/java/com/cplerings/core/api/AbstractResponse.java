@@ -1,6 +1,6 @@
 package com.cplerings.core.api;
 
-import com.cplerings.core.common.temporal.TemporalHelper;
+import com.cplerings.core.common.temporal.TemporalUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -23,7 +23,7 @@ public abstract class AbstractResponse<T> {
     }
 
     @Builder.Default
-    private String timestamp = String.valueOf(TemporalHelper.getCurrentInstantUTC().toEpochMilli());
+    private String timestamp = String.valueOf(TemporalUtils.getCurrentInstantUTC().toEpochMilli());
 
     private Type type;
 

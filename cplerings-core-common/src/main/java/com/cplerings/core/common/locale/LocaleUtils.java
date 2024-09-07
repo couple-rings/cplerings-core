@@ -10,7 +10,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class LocaleHelper {
+public class LocaleUtils {
 
     private static final String LOCALE_PATH = "locale/main";
 

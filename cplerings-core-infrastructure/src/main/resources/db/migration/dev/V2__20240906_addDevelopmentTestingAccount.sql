@@ -12,4 +12,4 @@ VALUES (1, current_timestamp, 'system', current_timestamp, 'system', 0, 'custome
        (5, current_timestamp, 'system', current_timestamp, 'system', 0, 'jeweler@cplerings.com',
         '$2a$10$SICsn7qzibM2IS1i2plG5.FsdhfwKJReRO6NwbG7oMrb9tgM2d8ci', 'JEWELER'),
        (6, current_timestamp, 'system', current_timestamp, 'system', 0, 'transporter@cplerings.com',
-        '$2a$10$HANYLhvumXJ8R9oXcff3OuGNVBllHK2mmigol8GXiJVtlk22cnKCi', 'TRANSPORTER');
+        '$2a$10$qSM5oGiCLWWxGP1iWWKgEeTIIr3hKVlBDjEshL58M1WDS9HkuX46q', 'TRANSPORTER');

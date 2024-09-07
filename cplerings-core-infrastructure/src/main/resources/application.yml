@@ -45,3 +45,4 @@ cplerings:
     secret: ${CPLERINGS_JWT_SECRET}
     duration: ${CPLERINGS_JWT_DURATION}
     refreshDuration: ${CPLERINGS_JWT_REFRESH_DURATION}
+  locale: ${CPLERINGS_LOCALE}

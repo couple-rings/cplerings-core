@@ -15,7 +15,7 @@ import com.cplerings.core.application.shared.service.jwt.JWTVerificationResult;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationService;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
-import com.cplerings.core.common.pair.Pair;
+import com.cplerings.core.common.pair.Either;
 import com.cplerings.core.domain.account.Account;
 
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class DefaultAuthenticateUserJWTUseCase extends AbstractUseCase<JWTInput,
     private final AccountApplicationMapper mapper;
 
     @Override
-    public Pair<AccountOutput, ErrorCodes> authenticate(JWTInput input) {
+    public Either<AccountOutput, ErrorCodes> authenticate(JWTInput input) {
         addStep(AbstractUseCase.<JWTInput, JWTVerificationResult>createStep(i -> {
             final JWTVerificationResult result = jwtVerificationService.validateToken(i.token());
             if (JWTVerificationResult.Status.INVALID == result.getStatus()) {

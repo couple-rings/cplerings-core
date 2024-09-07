@@ -9,7 +9,7 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import com.cplerings.core.application.shared.errorcode.ErrorCode;
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
-import com.cplerings.core.common.pair.Pair;
+import com.cplerings.core.common.pair.Either;
 
 public abstract class AbstractUseCase<I, O> {
 
@@ -38,14 +38,14 @@ public abstract class AbstractUseCase<I, O> {
         // To be implemented
     }
 
-    protected final Pair<I, ErrorCodes> validateInputInternal(I input) {
+    protected final Either<I, ErrorCodes> validateInputInternal(I input) {
         validateInput(input);
         if (hasErrors()) {
-            return Pair.<I, ErrorCodes>builder()
+            return Either.<I, ErrorCodes>builder()
                     .right(extractAndEmptyErrorCodes())
                     .defaultBuild();
         }
-        return Pair.<I, ErrorCodes>builder()
+        return Either.<I, ErrorCodes>builder()
                 .left(input)
                 .defaultBuild();
     }
@@ -62,14 +62,14 @@ public abstract class AbstractUseCase<I, O> {
     }
 
     @SuppressWarnings({"unchecked", "java:S4276"})
-    protected final Pair<O, ErrorCodes> executeSteps(I input) {
+    protected final Either<O, ErrorCodes> executeSteps(I input) {
         if (CollectionUtils.isEmpty(steps)) {
             throw new IllegalStateException("Steps are empty");
         }
-        final Pair<I, ErrorCodes> validationPair = validateInputInternal(input);
-        if (validationPair.isRight()) {
-            return Pair.<O, ErrorCodes>builder()
-                    .right(validationPair.getRight())
+        final Either<I, ErrorCodes> validationEither = validateInputInternal(input);
+        if (validationEither.isRight()) {
+            return Either.<O, ErrorCodes>builder()
+                    .right(validationEither.getRight())
                     .defaultBuild();
         }
         Object result = input;
@@ -81,13 +81,13 @@ public abstract class AbstractUseCase<I, O> {
             }
             if (hasErrors()) {
                 steps.clear();
-                return Pair.<O, ErrorCodes>builder()
+                return Either.<O, ErrorCodes>builder()
                         .right(extractAndEmptyErrorCodes())
                         .defaultBuild();
             }
         }
         steps.clear();
-        return Pair.<O, ErrorCodes>builder()
+        return Either.<O, ErrorCodes>builder()
                 .left((O) result)
                 .defaultBuild();
     }

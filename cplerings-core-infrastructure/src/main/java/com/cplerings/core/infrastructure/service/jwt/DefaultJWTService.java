@@ -14,7 +14,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.cplerings.core.application.shared.service.jwt.JWTGenerationService;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationResult;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationService;
-import com.cplerings.core.common.temporal.TemporalHelper;
+import com.cplerings.core.common.temporal.TemporalUtils;
 
 import jakarta.transaction.Transactional;
 
@@ -47,7 +47,7 @@ public class DefaultJWTService implements JWTGenerationService, JWTVerificationS
     }
 
     private String internalGenerateToken(String email, long durationSecond) {
-        final Instant issuedAt = TemporalHelper.getCurrentInstantUTC();
+        final Instant issuedAt = TemporalUtils.getCurrentInstantUTC();
         return JWT.create()
                 .withSubject(email)
                 .withIssuer(issuer)

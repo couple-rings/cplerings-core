@@ -6,12 +6,12 @@ import java.util.function.Consumer;
 import lombok.Getter;
 
 @Getter
-abstract class AbstractPair<L, R> implements Pair<L, R> {
+abstract class AbstractEither<L, R> implements Either<L, R> {
 
     private final L left;
     private final R right;
 
-    public AbstractPair(L left, R right) {
+    public AbstractEither(L left, R right) {
         if ((left == null) && (right == null) || (left != null) && (right != null)) {
             throw new IllegalArgumentException("Either left or right must be non-null and other as null");
         }
@@ -41,7 +41,7 @@ abstract class AbstractPair<L, R> implements Pair<L, R> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <S extends Pair<L, R>> S ifLeft(Consumer<L> consumer) {
+    public final <S extends Either<L, R>> S ifLeft(Consumer<L> consumer) {
         Objects.requireNonNull(consumer, "Consumer must not be null");
         if (isLeft()) {
             consumer.accept(left);
@@ -51,7 +51,7 @@ abstract class AbstractPair<L, R> implements Pair<L, R> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <S extends Pair<L, R>> S ifRight(Consumer<R> consumer) {
+    public final <S extends Either<L, R>> S ifRight(Consumer<R> consumer) {
         Objects.requireNonNull(consumer, "Consumer must not be null");
         if (isRight()) {
             consumer.accept(right);
