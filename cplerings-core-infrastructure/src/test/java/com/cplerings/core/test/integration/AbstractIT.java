@@ -25,7 +25,7 @@ import com.cplerings.core.test.integration.helper.JWTTestHelper;
 )
 @ActiveProfiles(ProfileConstant.TEST)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public abstract class AbstractIntegrationTest {
+public abstract class AbstractIT {
 
     private static final String BASE_URL = "http://localhost:%d/%s";
     private static final String AUTHENTICATION_HEADER = "Authorization";

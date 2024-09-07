@@ -11,12 +11,12 @@ import com.cplerings.core.api.mapper.ErrorCodeResponseMapper;
 import com.cplerings.core.application.authentication.error.AuthenticationErrorCode;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.Role;
-import com.cplerings.core.test.integration.AbstractIntegrationTest;
+import com.cplerings.core.test.integration.AbstractIT;
 import com.cplerings.core.test.integration.api.TestController;
 import com.cplerings.core.test.integration.helper.AccountTestHelper;
 import com.cplerings.core.test.integration.helper.JWTTestHelper;
 
-class AuthenticateUserJWTIntegrationTest extends AbstractIntegrationTest {
+class AuthenticateUserJWTIT extends AbstractIT {
 
     @Autowired
     private AccountTestHelper accountTestHelper;

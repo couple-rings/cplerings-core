@@ -9,10 +9,10 @@ import com.cplerings.core.api.authentication.request.LoginCredentialRequest;
 import com.cplerings.core.application.authentication.output.AuthenticationTokenOutput;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationResult;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationService;
-import com.cplerings.core.test.integration.AbstractIntegrationTest;
+import com.cplerings.core.test.integration.AbstractIT;
 import com.cplerings.core.test.integration.helper.AccountTestHelper;
 
-class LoginIntegrationTest extends AbstractIntegrationTest {
+class LoginIT extends AbstractIT {
 
     private static final String LOGIN_PATH = "/auth/login";
 
