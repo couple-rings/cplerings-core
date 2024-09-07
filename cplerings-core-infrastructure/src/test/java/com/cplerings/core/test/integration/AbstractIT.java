@@ -3,28 +3,34 @@ package com.cplerings.core.test.integration;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
+import org.flywaydb.core.Flyway;
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import com.blazebit.persistence.CriteriaBuilderFactory;
+import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.common.profile.ProfileConstant;
 import com.cplerings.core.infrastructure.CplringsCoreApplication;
-import com.cplerings.core.test.integration.helper.AccountTestHelper;
+import com.cplerings.core.test.integration.helper.AccountTestConstant;
 import com.cplerings.core.test.integration.helper.JWTTestHelper;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @SpringBootTest(
         classes = {
                 CplringsCoreApplication.class,
                 IntegrationTestConfiguration.class,
-                AccountTestHelper.class,
+                AccountTestConstant.class,
                 JWTTestHelper.class
         },
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT
 )
 @ActiveProfiles(ProfileConstant.TEST)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public abstract class AbstractIT {
 
     private static final String BASE_URL = "http://localhost:%d/%s";
@@ -36,6 +42,15 @@ public abstract class AbstractIT {
 
     @Value("${cplerings.api.path}")
     private String apiPath;
+
+    @Autowired
+    private Flyway flyway;
+
+    @PersistenceContext
+    private EntityManager em;
+
+    @Autowired
+    private CriteriaBuilderFactory cbf;
 
     protected final class RequestBuilder<B> {
 
@@ -102,5 +117,15 @@ public abstract class AbstractIT {
 
     protected <B> RequestBuilder<B> requestBuilder() {
         return new RequestBuilder<>();
+    }
+
+    @BeforeEach
+    protected void beforeEachTestMethod() {
+        flyway.clean();
+        flyway.migrate();
+    }
+
+    protected <T> BlazeJPAQuery<T> createQuery() {
+        return new BlazeJPAQuery<>(em, cbf);
     }
 }

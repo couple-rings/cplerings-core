@@ -10,26 +10,24 @@ import com.cplerings.core.application.authentication.output.AuthenticationTokenO
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationResult;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationService;
 import com.cplerings.core.test.integration.AbstractIT;
-import com.cplerings.core.test.integration.helper.AccountTestHelper;
+import com.cplerings.core.test.integration.helper.AccountTestConstant;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 class LoginIT extends AbstractIT {
 
     private static final String LOGIN_PATH = "/auth/login";
-
-    @Autowired
-    private AccountTestHelper accountTestHelper;
 
     @Autowired
     private JWTVerificationService jwtVerificationService;
 
     @Test
     void givenAnyone_whenLogin() {
-        accountTestHelper.createCustomer();
-
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(LOGIN_PATH)
                 .method(RequestBuilder.Method.POST)
-                .body(new LoginCredentialRequest(AccountTestHelper.DEFAULT_EMAIL, AccountTestHelper.DEFAULT_PASSWORD))
+                .body(new LoginCredentialRequest(AccountTestConstant.CUSTOMER_EMAIL, AccountTestConstant.PASSWORD))
                 .send();
 
         thenResponseIsOk(response);
@@ -60,13 +58,13 @@ class LoginIT extends AbstractIT {
         Assertions.assertThat(tokenResult.getStatus())
                 .isEqualTo(JWTVerificationResult.Status.VALID);
         Assertions.assertThat(tokenResult.getSubject())
-                .isEqualTo(AccountTestHelper.DEFAULT_EMAIL);
+                .isEqualTo(AccountTestConstant.CUSTOMER_EMAIL);
 
         final String refreshToken = authenticationTokenOutput.getRefreshToken();
         final JWTVerificationResult refreshResult = jwtVerificationService.validateRefreshToken(refreshToken);
         Assertions.assertThat(refreshResult.getStatus())
                 .isEqualTo(JWTVerificationResult.Status.VALID);
         Assertions.assertThat(refreshResult.getSubject())
-                .isEqualTo(AccountTestHelper.DEFAULT_EMAIL);
+                .isEqualTo(AccountTestConstant.CUSTOMER_EMAIL);
     }
 }

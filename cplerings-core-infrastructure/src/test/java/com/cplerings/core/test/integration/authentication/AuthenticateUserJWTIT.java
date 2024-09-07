@@ -9,25 +9,33 @@ import com.cplerings.core.api.AbstractResponse;
 import com.cplerings.core.api.ErrorCodesResponse;
 import com.cplerings.core.api.mapper.ErrorCodeResponseMapper;
 import com.cplerings.core.application.authentication.error.AuthenticationErrorCode;
-import com.cplerings.core.domain.account.Account;
-import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.test.integration.AbstractIT;
 import com.cplerings.core.test.integration.api.TestController;
-import com.cplerings.core.test.integration.helper.AccountTestHelper;
+import com.cplerings.core.test.integration.helper.AccountTestConstant;
 import com.cplerings.core.test.integration.helper.JWTTestHelper;
 
 class AuthenticateUserJWTIT extends AbstractIT {
 
     @Autowired
-    private AccountTestHelper accountTestHelper;
-
-    @Autowired
     private JWTTestHelper jwtTestHelper;
 
     @Test
-    void givenCustomer_whenPassingInAuthenticationJWTToAccessAPIForCustomer() {
-        final Account account = accountTestHelper.createCustomer();
-        final String token = jwtTestHelper.generateToken(account.getEmail());
+    void givenCustomer_whenPassingInAuthenticationJWTToAccessAPIForCustomerAndManager() {
+        final String token = jwtTestHelper.generateToken(AccountTestConstant.CUSTOMER_EMAIL);
+
+        final WebTestClient.ResponseSpec response = requestBuilder()
+                .path(TestController.TEST_HELLO_PATH)
+                .method(RequestBuilder.Method.GET)
+                .authorizationHeader(token)
+                .send();
+
+        thenResponseIsOk(response);
+        thenResponseBodyIsHelloMessage(response);
+    }
+
+    @Test
+    void givenManager_whenPassingInAuthenticationJWTToAccessAPIForCustomerAndManager() {
+        final String token = jwtTestHelper.generateToken(AccountTestConstant.MANAGER_EMAIL);
 
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(TestController.TEST_HELLO_PATH)
@@ -52,9 +60,8 @@ class AuthenticateUserJWTIT extends AbstractIT {
     }
 
     @Test
-    void givenAnyoneNotCustomer_whenPassingInAuthenticationJWTToAccessAPIForCustomer() {
-        final Account account = accountTestHelper.createOneWithRole(Role.ADMIN);
-        final String token = jwtTestHelper.generateToken(account.getEmail());
+    void givenAnyoneNotCustomerOrManager_whenPassingInAuthenticationJWTToAccessAPIForCustomerAndManager() {
+        final String token = jwtTestHelper.generateToken(AccountTestConstant.ADMIN_EMAIL);
 
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(TestController.TEST_HELLO_PATH)
