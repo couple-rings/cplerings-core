@@ -15,8 +15,6 @@ import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.common.profile.ProfileConstant;
 import com.cplerings.core.infrastructure.CplringsCoreApplication;
-import com.cplerings.core.test.integration.helper.AccountTestConstant;
-import com.cplerings.core.test.integration.helper.JWTTestHelper;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -24,9 +22,7 @@ import jakarta.persistence.PersistenceContext;
 @SpringBootTest(
         classes = {
                 CplringsCoreApplication.class,
-                IntegrationTestConfiguration.class,
-                AccountTestConstant.class,
-                JWTTestHelper.class
+                IntegrationTestConfiguration.class
         },
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT
 )
@@ -120,7 +116,7 @@ public abstract class AbstractIT {
     }
 
     @BeforeEach
-    protected void beforeEachTestMethod() {
+    protected void resetFlyway() {
         flyway.clean();
         flyway.migrate();
     }

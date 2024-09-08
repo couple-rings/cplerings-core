@@ -1,4 +1,4 @@
-package com.cplerings.core.test.integration.api;
+package com.cplerings.core.test.integration.internal;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;

@@ -10,9 +10,9 @@ import com.cplerings.core.api.ErrorCodesResponse;
 import com.cplerings.core.api.mapper.ErrorCodeResponseMapper;
 import com.cplerings.core.application.authentication.error.AuthenticationErrorCode;
 import com.cplerings.core.test.integration.AbstractIT;
-import com.cplerings.core.test.integration.api.TestController;
-import com.cplerings.core.test.integration.helper.AccountTestConstant;
-import com.cplerings.core.test.integration.helper.JWTTestHelper;
+import com.cplerings.core.test.integration.internal.TestController;
+import com.cplerings.core.test.integration.internal.helper.AccountTestConstant;
+import com.cplerings.core.test.integration.internal.helper.JWTTestHelper;
 
 class AuthenticateUserJWTIT extends AbstractIT {
 

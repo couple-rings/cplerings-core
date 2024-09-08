@@ -10,7 +10,7 @@ import com.cplerings.core.application.authentication.output.AuthenticationTokenO
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationResult;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationService;
 import com.cplerings.core.test.integration.AbstractIT;
-import com.cplerings.core.test.integration.helper.AccountTestConstant;
+import com.cplerings.core.test.integration.internal.helper.AccountTestConstant;
 
 import lombok.extern.slf4j.Slf4j;
 

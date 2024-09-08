@@ -34,7 +34,7 @@ public interface Either<L, R> {
             return this;
         }
 
-        public Either<L, R> defaultBuild() {
+        public Either<L, R> build() {
             return new DefaultEither<>(left, right);
         }
     }
