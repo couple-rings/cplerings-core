@@ -15,11 +15,6 @@
     <name>cplerings-core-api</name>
     <description>Module for core API and controllers.</description>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>21</maven.compiler.release>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.cplerings</groupId>
