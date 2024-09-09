@@ -1,21 +1,22 @@
 package com.cplerings.core.domain;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
-
 import com.cplerings.core.common.temporal.TemporalUtils;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.persistence.Version;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter
 @Setter

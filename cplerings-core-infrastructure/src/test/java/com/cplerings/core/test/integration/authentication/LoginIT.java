@@ -1,10 +1,5 @@
 package com.cplerings.core.test.integration.authentication;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.reactive.server.WebTestClient;
-
 import com.cplerings.core.api.authentication.request.LoginCredentialRequest;
 import com.cplerings.core.application.authentication.output.AuthenticationTokenOutput;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationResult;
@@ -13,6 +8,11 @@ import com.cplerings.core.test.integration.AbstractIT;
 import com.cplerings.core.test.integration.internal.helper.AccountTestConstant;
 
 import lombok.extern.slf4j.Slf4j;
+
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 @Slf4j
 class LoginIT extends AbstractIT {

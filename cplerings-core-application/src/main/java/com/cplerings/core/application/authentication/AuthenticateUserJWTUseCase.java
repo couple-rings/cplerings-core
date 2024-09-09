@@ -4,7 +4,7 @@ import com.cplerings.core.application.authentication.input.JWTInput;
 import com.cplerings.core.application.authentication.output.AccountOutput;
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
 import com.cplerings.core.application.shared.usecase.UseCase;
-import com.cplerings.core.common.pair.Either;
+import com.cplerings.core.common.either.Either;
 
 @UseCase(code = "CPLERINGS-2")
 public interface AuthenticateUserJWTUseCase {

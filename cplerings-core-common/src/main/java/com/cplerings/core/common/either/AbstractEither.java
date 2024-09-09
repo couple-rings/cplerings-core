@@ -1,9 +1,9 @@
-package com.cplerings.core.common.pair;
+package com.cplerings.core.common.either;
+
+import lombok.Getter;
 
 import java.util.Objects;
 import java.util.function.Consumer;
-
-import lombok.Getter;
 
 @Getter
 abstract class AbstractEither<L, R> implements Either<L, R> {
@@ -17,6 +17,11 @@ abstract class AbstractEither<L, R> implements Either<L, R> {
         }
         this.left = left;
         this.right = right;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected final <S extends Either<L, R>> S self() {
+        return (S) this;
     }
 
     @Override
@@ -40,22 +45,37 @@ abstract class AbstractEither<L, R> implements Either<L, R> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public final <S extends Either<L, R>> S ifLeft(Consumer<L> consumer) {
         Objects.requireNonNull(consumer, "Consumer must not be null");
         if (isLeft()) {
             consumer.accept(left);
         }
-        return (S) this;
+        return self();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public final <S extends Either<L, R>> S ifRight(Consumer<R> consumer) {
         Objects.requireNonNull(consumer, "Consumer must not be null");
         if (isRight()) {
             consumer.accept(right);
         }
-        return (S) this;
+        return self();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof final Either<?, ?> that)) {
+            return false;
+        }
+        return Objects.equals(left, that.getLeft())
+                && Objects.equals(right, that.getRight());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(left, right);
     }
 }

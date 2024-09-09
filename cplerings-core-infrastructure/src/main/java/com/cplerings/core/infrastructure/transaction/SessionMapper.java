@@ -1,12 +1,12 @@
 package com.cplerings.core.infrastructure.transaction;
 
-import org.mapstruct.Mapper;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-
 import com.cplerings.core.application.shared.transaction.SessionInformation;
 import com.cplerings.core.application.shared.transaction.SessionPropagation;
 import com.cplerings.core.common.mapper.DefaultMapperConfiguration;
+
+import org.mapstruct.Mapper;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 @Mapper(config = DefaultMapperConfiguration.class)
 public interface SessionMapper {

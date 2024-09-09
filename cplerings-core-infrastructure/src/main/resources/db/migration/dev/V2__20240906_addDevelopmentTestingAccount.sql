@@ -1,6 +1,6 @@
 SELECT nextval('ACCOUNT_SEQ');
 
-INSERT INTO account (account_id, created_at, create_by, modified_at, modified_by, version, email, password, role)
+INSERT INTO ACCOUNT (ACCOUNT_ID, CREATED_AT, CREATE_BY, MODIFIED_AT, MODIFIED_BY, VERSION, EMAIL, PASSWORD, ROLE)
 VALUES (1, current_timestamp, 'system', current_timestamp, 'system', 0, 'customer@cplerings.com',
         '$2a$10$qJXQTQykGglKbqlBB5R4H.OjLojogvXbZzMtMiSDkaus9Ms6XTdyW', 'CUSTOMER'),
        (2, current_timestamp, 'system', current_timestamp, 'system', 0, 'manager@cplerings.com',

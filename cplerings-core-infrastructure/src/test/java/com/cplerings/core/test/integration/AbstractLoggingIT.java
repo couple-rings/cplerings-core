@@ -1,15 +1,16 @@
 package com.cplerings.core.test.integration;
 
+import com.cplerings.core.application.shared.usecase.AbstractUseCase;
+import com.cplerings.core.test.integration.internal.CustomLogAppender;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.LoggerFactory;
 
-import com.cplerings.core.application.shared.usecase.AbstractUseCase;
-import com.cplerings.core.test.integration.internal.CustomLogAppender;
-
 import ch.qos.logback.classic.Logger;
-import lombok.AccessLevel;
-import lombok.Getter;
 
 public class AbstractLoggingIT extends AbstractIT {
 

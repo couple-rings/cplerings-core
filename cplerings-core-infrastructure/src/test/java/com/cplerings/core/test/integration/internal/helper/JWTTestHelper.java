@@ -1,10 +1,10 @@
 package com.cplerings.core.test.integration.internal.helper;
 
-import org.springframework.boot.test.context.TestComponent;
-
 import com.cplerings.core.application.shared.service.jwt.JWTGenerationService;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.boot.test.context.TestComponent;
 
 @TestComponent
 @RequiredArgsConstructor

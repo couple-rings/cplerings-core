@@ -1,11 +1,12 @@
 package com.cplerings.core.test.integration.internal;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.Getter;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
-import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public final class CustomLogAppender extends AppenderBase<ILoggingEvent> {

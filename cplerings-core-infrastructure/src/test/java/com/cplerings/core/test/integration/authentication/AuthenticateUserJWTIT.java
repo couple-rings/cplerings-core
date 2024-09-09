@@ -1,10 +1,5 @@
 package com.cplerings.core.test.integration.authentication;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.reactive.server.WebTestClient;
-
 import com.cplerings.core.api.AbstractResponse;
 import com.cplerings.core.api.ErrorCodesResponse;
 import com.cplerings.core.api.mapper.ErrorCodeResponseMapper;
@@ -13,6 +8,11 @@ import com.cplerings.core.test.integration.AbstractIT;
 import com.cplerings.core.test.integration.internal.TestController;
 import com.cplerings.core.test.integration.internal.helper.AccountTestConstant;
 import com.cplerings.core.test.integration.internal.helper.JWTTestHelper;
+
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 class AuthenticateUserJWTIT extends AbstractIT {
 

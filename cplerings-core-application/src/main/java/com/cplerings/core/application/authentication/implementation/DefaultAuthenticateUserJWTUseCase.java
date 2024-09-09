@@ -1,9 +1,5 @@
 package com.cplerings.core.application.authentication.implementation;
 
-import java.util.Optional;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.cplerings.core.application.authentication.AuthenticateUserJWTUseCase;
 import com.cplerings.core.application.authentication.datasource.AuthenticateUserJWTDataSource;
 import com.cplerings.core.application.authentication.error.AuthenticationErrorCode;
@@ -15,10 +11,14 @@ import com.cplerings.core.application.shared.service.jwt.JWTVerificationResult;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationService;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
-import com.cplerings.core.common.pair.Either;
+import com.cplerings.core.common.either.Either;
 import com.cplerings.core.domain.account.Account;
 
 import lombok.RequiredArgsConstructor;
+
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Optional;
 
 @UseCaseImplementation
 @RequiredArgsConstructor

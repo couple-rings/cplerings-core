@@ -1,12 +1,12 @@
 package com.cplerings.core.infrastructure.locale;
 
-import java.util.Locale;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import jakarta.annotation.PostConstruct;
+
+import java.util.Locale;
 
 @Configuration
 public class LocaleConfiguration {

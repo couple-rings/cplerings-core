@@ -1,16 +1,16 @@
 package com.cplerings.core.test.integration.environment;
 
-import java.util.Arrays;
-import java.util.List;
+import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.QAccount;
+import com.cplerings.core.domain.account.Role;
+import com.cplerings.core.test.integration.AbstractIT;
 
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.cplerings.core.domain.account.Account;
-import com.cplerings.core.domain.account.QAccount;
-import com.cplerings.core.domain.account.Role;
-import com.cplerings.core.test.integration.AbstractIT;
+import java.util.Arrays;
+import java.util.List;
 
 class DefaultAccountVerificationIT extends AbstractIT {
 

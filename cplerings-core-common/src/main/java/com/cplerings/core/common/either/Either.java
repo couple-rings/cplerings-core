@@ -1,4 +1,4 @@
-package com.cplerings.core.common.pair;
+package com.cplerings.core.common.either;
 
 import java.util.function.Consumer;
 

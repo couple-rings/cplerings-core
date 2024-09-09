@@ -1,8 +1,14 @@
 package com.cplerings.core.infrastructure.security;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
+import com.cplerings.core.application.authentication.AuthenticateUserJWTUseCase;
+import com.cplerings.core.application.authentication.input.JWTInput;
+import com.cplerings.core.application.authentication.output.AccountOutput;
+import com.cplerings.core.application.authentication.output.RoleOutput;
+import com.cplerings.core.application.shared.errorcode.ErrorCodes;
+import com.cplerings.core.common.either.Either;
+import com.cplerings.core.common.security.RoleConstant;
+
+import lombok.RequiredArgsConstructor;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,20 +18,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.cplerings.core.application.authentication.AuthenticateUserJWTUseCase;
-import com.cplerings.core.application.authentication.input.JWTInput;
-import com.cplerings.core.application.authentication.output.AccountOutput;
-import com.cplerings.core.application.authentication.output.RoleOutput;
-import com.cplerings.core.application.shared.errorcode.ErrorCodes;
-import com.cplerings.core.common.pair.Either;
-import com.cplerings.core.common.security.RoleConstant;
-
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 
 @Component
 @RequiredArgsConstructor

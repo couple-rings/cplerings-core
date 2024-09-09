@@ -1,13 +1,13 @@
 package com.cplerings.core.test.integration.internal.hello;
 
-import org.springframework.boot.test.context.TestComponent;
-
 import com.cplerings.core.application.shared.errorcode.ErrorCode;
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
-import com.cplerings.core.common.pair.Either;
+import com.cplerings.core.common.either.Either;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.boot.test.context.TestComponent;
 
 @TestComponent
 @RequiredArgsConstructor

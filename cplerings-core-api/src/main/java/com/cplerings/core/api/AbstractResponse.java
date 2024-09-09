@@ -1,7 +1,6 @@
 package com.cplerings.core.api;
 
 import com.cplerings.core.common.temporal.TemporalUtils;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 @Getter
 @Setter

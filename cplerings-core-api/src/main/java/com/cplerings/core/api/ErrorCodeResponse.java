@@ -1,14 +1,15 @@
 package com.cplerings.core.api;
 
-import java.util.Comparator;
-import java.util.Objects;
-
-import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import jakarta.annotation.Nonnull;
+
+import java.util.Comparator;
+import java.util.Objects;
 
 @Getter
 @Setter

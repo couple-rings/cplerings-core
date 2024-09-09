@@ -1,11 +1,11 @@
 package com.cplerings.core.infrastructure.transaction;
 
-import java.util.Objects;
+import com.cplerings.core.application.shared.transaction.Session;
 
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 
-import com.cplerings.core.application.shared.transaction.Session;
+import java.util.Objects;
 
 public final class SessionImpl implements Session {
 

@@ -1,6 +1,7 @@
 package com.cplerings.core.test.integration;
 
-import java.util.Objects;
+import com.cplerings.core.common.profile.ProfileConstant;
+import com.cplerings.core.infrastructure.CplringsCoreApplication;
 
 import org.apache.commons.lang3.StringUtils;
 import org.flywaydb.core.Flyway;
@@ -13,11 +14,11 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
-import com.cplerings.core.common.profile.ProfileConstant;
-import com.cplerings.core.infrastructure.CplringsCoreApplication;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+
+import java.util.Objects;
 
 @SpringBootTest(
         classes = {

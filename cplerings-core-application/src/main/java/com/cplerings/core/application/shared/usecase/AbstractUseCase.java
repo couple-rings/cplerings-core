@@ -1,23 +1,23 @@
 package com.cplerings.core.application.shared.usecase;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.function.Function;
+import com.cplerings.core.application.shared.errorcode.ErrorCode;
+import com.cplerings.core.application.shared.errorcode.ErrorCodes;
+import com.cplerings.core.application.shared.transaction.Session;
+import com.cplerings.core.application.shared.transaction.SessionInformation;
+import com.cplerings.core.application.shared.transaction.TransactionManager;
+import com.cplerings.core.common.either.Either;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.cplerings.core.application.shared.errorcode.ErrorCode;
-import com.cplerings.core.application.shared.errorcode.ErrorCodes;
-import com.cplerings.core.application.shared.transaction.Session;
-import com.cplerings.core.application.shared.transaction.SessionInformation;
-import com.cplerings.core.application.shared.transaction.TransactionManager;
-import com.cplerings.core.common.pair.Either;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.function.Function;
 
 @Slf4j
 @Component
@@ -81,7 +81,7 @@ public abstract class AbstractUseCase<I, O> {
         steps.add(step);
     }
 
-    @SuppressWarnings({"unchecked", "java:S4276"})
+    @SuppressWarnings({ "unchecked", "java:S4276" })
     protected final Either<O, ErrorCodes> executeSteps(I input) {
         if (CollectionUtils.isEmpty(steps)) {
             throw new IllegalStateException("Steps are empty");

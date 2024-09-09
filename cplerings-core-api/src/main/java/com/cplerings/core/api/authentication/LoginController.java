@@ -1,10 +1,5 @@
 package com.cplerings.core.api.authentication;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.cplerings.core.api.AbstractRestController;
 import com.cplerings.core.api.authentication.mapper.AuthenticationAPIMapper;
 import com.cplerings.core.api.authentication.request.LoginCredentialRequest;
@@ -13,9 +8,14 @@ import com.cplerings.core.application.authentication.LoginUseCase;
 import com.cplerings.core.application.authentication.input.LoginCredentialInput;
 import com.cplerings.core.application.authentication.output.AuthenticationTokenOutput;
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
-import com.cplerings.core.common.pair.Either;
+import com.cplerings.core.common.either.Either;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor

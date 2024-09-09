@@ -1,20 +1,21 @@
 package com.cplerings.core.api;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 import com.cplerings.core.api.mapper.ErrorCodeResponseMapper;
 import com.cplerings.core.application.shared.errorcode.ErrorCode;
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
