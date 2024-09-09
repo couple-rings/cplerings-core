@@ -18,6 +18,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
+          cache: maven
 
       - name: Run Unit Tests
         run: mvn test
@@ -33,6 +34,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
+          cache: maven
 
       - name: Run Integration Tests
         run: mvn verify
