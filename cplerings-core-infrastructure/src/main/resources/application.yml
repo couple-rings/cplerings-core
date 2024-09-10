@@ -46,3 +46,8 @@ cplerings:
     duration: ${CPLERINGS_JWT_DURATION}
     refreshDuration: ${CPLERINGS_JWT_REFRESH_DURATION}
   locale: ${CPLERINGS_LOCALE}
+springdoc:
+  api-docs:
+    path: ${cplerings.api.path}/docs
+  swagger-ui:
+    path: ${springdoc.api-docs.path}/ui
