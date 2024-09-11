@@ -1,22 +1,22 @@
 package com.cplerings.core.domain;
 
+import java.time.Instant;
+import java.util.Objects;
+
 import com.cplerings.core.common.temporal.TemporalUtils;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.persistence.Version;
-
-import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -29,18 +29,16 @@ public abstract class AbstractEntity {
     private static final int NEW_ENTITY_ID = -1;
     private static final int DEFAULT_VERSION = 1;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATED_AT", nullable = false, updatable = false)
     @Builder.Default
-    private LocalDateTime createdAt = TemporalUtils.getCurrentDateTimeUTC();
+    private Instant createdAt = TemporalUtils.getCurrentInstantUTC();
 
     @Column(name = "CREATE_BY", length = 50, nullable = false, updatable = false)
     private String createdBy;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "MODIFIED_AT")
     @Builder.Default
-    private LocalDateTime modifiedAt = TemporalUtils.getCurrentDateTimeUTC();
+    private Instant modifiedAt = TemporalUtils.getCurrentInstantUTC();
 
     @Column(name = "MODIFIED_BY", length = 50)
     private String modifiedBy;
@@ -49,6 +47,16 @@ public abstract class AbstractEntity {
     @Column(name = "VERSION")
     @Builder.Default
     private Integer version = DEFAULT_VERSION;
+
+    @PrePersist
+    private void beforePersist() {
+        if (createdAt == null) {
+            this.createdAt = TemporalUtils.getCurrentInstantUTC();
+        }
+        if (version == null || version <= 0) {
+            this.version = DEFAULT_VERSION;
+        }
+    }
 
     @Override
     public final boolean equals(Object o) {
@@ -63,6 +71,8 @@ public abstract class AbstractEntity {
     }
 
     public abstract Long getId();
+
+    public abstract void setId(Long id);
 
     @Override
     public final int hashCode() {
