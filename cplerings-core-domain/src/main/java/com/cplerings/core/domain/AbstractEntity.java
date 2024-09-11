@@ -1,22 +1,23 @@
 package com.cplerings.core.domain;
 
-import java.time.Instant;
-import java.util.Objects;
-
 import com.cplerings.core.common.temporal.TemporalUtils;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import org.apache.commons.lang3.StringUtils;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Version;
+
+import java.time.Instant;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -56,6 +57,15 @@ public abstract class AbstractEntity {
         if (version == null || version <= 0) {
             this.version = DEFAULT_VERSION;
         }
+    }
+
+    public final void updateModification(Modifier modifier) {
+        Objects.requireNonNull(modifier, "Modifier must not be null");
+        if (StringUtils.isBlank(modifier.getModifierName())) {
+            throw new IllegalArgumentException("Modifier name must not be blank");
+        }
+        setModifiedAt(TemporalUtils.getCurrentInstantUTC());
+        setModifiedBy(modifier.getModifierName());
     }
 
     @Override

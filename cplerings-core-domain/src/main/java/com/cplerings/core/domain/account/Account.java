@@ -1,7 +1,14 @@
 package com.cplerings.core.domain.account;
 
 import com.cplerings.core.domain.AbstractEntity;
+import com.cplerings.core.domain.Modifier;
 import com.cplerings.core.domain.agreement.Spouse;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,11 +20,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -26,7 +28,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Entity
 @Table(name = "ACCOUNT")
-public class Account extends AbstractEntity {
+public class Account extends AbstractEntity implements Modifier {
 
     private static final String ACCOUNT_SEQUENCE = "ACCOUNT_SEQ";
 
@@ -43,9 +45,18 @@ public class Account extends AbstractEntity {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "ROLE")
+    @Column(name = "ROLE", length = 12, nullable = false)
     private Role role;
 
     @OneToOne(mappedBy = "account")
     private Spouse spouse;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "STATUS", length = 10, nullable = false)
+    private AccountStatus status;
+
+    @Override
+    public String getModifierName() {
+        return getEmail();
+    }
 }

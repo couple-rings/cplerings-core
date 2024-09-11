@@ -1,9 +1,13 @@
 package com.cplerings.core.domain.agreement;
 
-import java.time.Instant;
-import java.util.Set;
-
+import com.cplerings.core.domain.AbstractEntity;
 import com.cplerings.core.domain.DomainConstant;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,11 +17,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+
+import java.time.Instant;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -26,7 +28,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Entity
 @Table(name = "AGREEMENT")
-public class Agreement {
+public class Agreement extends AbstractEntity {
 
     private static final String AGREEMENT_SEQUENCE = "AGREEMENT_SEQ";
 
@@ -36,9 +38,9 @@ public class Agreement {
     @Column(name = "AGREEMENT_ID")
     private Long id;
 
-    @OneToMany(mappedBy = "agreement")
-    private Set<Spouse> spouses;
-
     @Column(name = "MARRIAGE_DATE", nullable = false)
     private Instant marriageDate;
+
+    @OneToMany(mappedBy = "agreement")
+    private Set<Spouse> spouses;
 }

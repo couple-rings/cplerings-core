@@ -2,8 +2,6 @@ package com.cplerings.core.domain.ring;
 
 import com.cplerings.core.domain.AbstractEntity;
 import com.cplerings.core.domain.DomainConstant;
-import com.cplerings.core.domain.agreement.Agreement;
-import com.cplerings.core.domain.diamond.Diamond;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,10 +16,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -29,25 +28,24 @@ import jakarta.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "RING")
-public class Ring extends AbstractEntity {
+@Table(name = "RING_WARRANTY")
+public class RingWarranty extends AbstractEntity {
 
-    private static final String RING_SEQUENCE = "RING_SEQ";
+    private static final String RING_WARRANTY_SEQUENCE = "RING_WARRANTY_SEQ";
 
     @Id
-    @GeneratedValue(generator = RING_SEQUENCE, strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = RING_SEQUENCE, allocationSize = DomainConstant.DEFAULT_ALLOCATION_SIZE)
-    @Column(name = "RING_ID")
+    @GeneratedValue(generator = RING_WARRANTY_SEQUENCE, strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = RING_WARRANTY_SEQUENCE, allocationSize = DomainConstant.DEFAULT_ALLOCATION_SIZE)
+    @Column(name = "RING_WARRANTY_ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "AGREEMENT_ID")
-    private Agreement agreement;
+    @Column(name = "START_TIME", nullable = false)
+    private Instant startTime;
 
-    @OneToOne(mappedBy = "ring")
-    private RingWarranty warranty;
+    @Column(name = "END_TIME", nullable = false)
+    private Instant endTime;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "DIAMOND_ID")
-    private Diamond diamond;
+    @JoinColumn(name = "RING_ID")
+    private Ring ring;
 }

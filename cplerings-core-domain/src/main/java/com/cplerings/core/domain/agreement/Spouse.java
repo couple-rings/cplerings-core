@@ -1,10 +1,14 @@
 package com.cplerings.core.domain.agreement;
 
-import java.time.Instant;
-
 import com.cplerings.core.domain.AbstractEntity;
 import com.cplerings.core.domain.DomainConstant;
 import com.cplerings.core.domain.account.Account;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,11 +21,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -52,7 +53,7 @@ public class Spouse extends AbstractEntity {
     @Column(name = "BIRTH_DATE", nullable = false)
     private Instant birthDate;
 
-    @Column(name = "ID_CARD_NUMBER", nullable = false, unique = true)
+    @Column(name = "ID_CARD_NUMBER", length = 12, nullable = false, unique = true)
     private String idCardNumber;
 
     @Column(name = "ID_CARD_IMAGE_URL", nullable = false, unique = true)
