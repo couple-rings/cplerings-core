@@ -7,16 +7,16 @@ spring:
   profiles:
     active: ${CPLERINGS_PROFILES_ACTIVE}
   datasource:
-    url: jdbc:postgresql://${CPLERINGS_DATABASE_URL}:${CPLERINGS_DATABASE_PORT}/cplerings-core
+    url: jdbc:postgresql://${CPLERINGS_DATABASE_URL}:${CPLERINGS_DATABASE_PORT}/${CPLERINGS_DATABASE_NAME}
     username: ${CPLERINGS_DATABASE_USERNAME}
     password: ${CPLERINGS_DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   flyway:
-    url: jdbc:postgresql://${CPLERINGS_DATABASE_URL}:${CPLERINGS_DATABASE_PORT}/cplerings-core
+    url: jdbc:postgresql://${CPLERINGS_DATABASE_URL}:${CPLERINGS_DATABASE_PORT}/${CPLERINGS_DATABASE_NAME}
     user: ${CPLERINGS_DATABASE_USERNAME}
     password: ${CPLERINGS_DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
-    locations: classpath:db/migration/shared
+    locations: classpath:db/migration/prod
 
 ---
 
@@ -25,7 +25,7 @@ spring:
     activate:
       on-profile: dev,local
   flyway:
-    locations: classpath:db/migration/shared,classpath:db/migration/dev
+    locations: classpath:db/migration/prod,classpath:db/migration/dev
 
 ---
 
@@ -34,7 +34,7 @@ spring:
     activate:
       on-profile: prod
   flyway:
-    locations: classpath:db/migration/shared
+    locations: classpath:db/migration/prod
 
 ---
 

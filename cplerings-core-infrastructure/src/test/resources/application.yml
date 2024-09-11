@@ -7,13 +7,13 @@ spring:
   profiles:
     active: test
   datasource:
-    url: jdbc:h2:mem:cplerings-core
+    url: jdbc:h2:mem:cplerings-core-test
     driver-class-name: org.h2.Driver
   flyway:
-    url: jdbc:h2:mem:cplerings-core
+    url: jdbc:h2:mem:cplerings-core-test
     user: sa
     driver-class-name: org.h2.Driver
-    locations: classpath:db/migration/shared,classpath:db/migration/dev,classpath:db/migration/test
+    locations: classpath:db/migration/prod,classpath:db/migration/dev,classpath:db/migration/test
     clean-disabled: false
 
 cplerings:

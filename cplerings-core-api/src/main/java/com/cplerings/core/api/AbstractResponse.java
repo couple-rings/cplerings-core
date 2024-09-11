@@ -23,6 +23,8 @@ public abstract class AbstractResponse<T> {
         SINGLE, LIST, INFO, ERROR
     }
 
+    public static final String ERROR_NAME = Type.ERROR.name();
+
     @Builder.Default
     private String timestamp = String.valueOf(TemporalUtils.getCurrentInstantUTC().toEpochMilli());
 
