@@ -2,8 +2,9 @@ package com.cplerings.core.domain.ring;
 
 import com.cplerings.core.domain.AbstractEntity;
 import com.cplerings.core.domain.DomainConstant;
-import com.cplerings.core.domain.agreement.Agreement;
+import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.diamond.Diamond;
+import com.cplerings.core.domain.metal.Metal;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,14 +41,19 @@ public class Ring extends AbstractEntity {
     @Column(name = "RING_ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "AGREEMENT_ID")
-    private Agreement agreement;
-
-    @OneToOne(mappedBy = "ring")
-    private RingWarranty warranty;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "DESIGN_ID")
+    private Design design;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "DIAMOND_ID")
     private Diamond diamond;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "METAL_ID")
+    private Metal metal;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "WARRANTY_ID")
+    private Warranty warranty;
 }

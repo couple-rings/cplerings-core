@@ -59,7 +59,7 @@ public class Spouse extends AbstractEntity {
     @Column(name = "ID_CARD_IMAGE_URL", nullable = false, unique = true)
     private String idCardImageURL;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ACCOUNT_ID", unique = true)
     private Account account;
 

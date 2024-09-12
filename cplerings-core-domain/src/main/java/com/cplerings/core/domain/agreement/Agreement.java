@@ -2,6 +2,7 @@ package com.cplerings.core.domain.agreement;
 
 import com.cplerings.core.domain.AbstractEntity;
 import com.cplerings.core.domain.DomainConstant;
+import com.cplerings.core.domain.ring.Ring;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,10 +12,13 @@ import lombok.experimental.SuperBuilder;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -40,6 +44,14 @@ public class Agreement extends AbstractEntity {
 
     @Column(name = "MARRIAGE_DATE", nullable = false)
     private Instant marriageDate;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "FIRST_RING_ID")
+    private Ring firstRing;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "SECOND_RING_ID")
+    private Ring secondRing;
 
     @OneToMany(mappedBy = "agreement")
     private Set<Spouse> spouses;
