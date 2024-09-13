@@ -1,7 +1,8 @@
-package com.cplerings.core.domain.account;
+package com.cplerings.core.domain.order;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.AbstractEntity;
+import com.cplerings.core.domain.DomainConstant;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,7 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -27,25 +28,22 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_account_verification", schema = DatabaseConstant.SCHEME_CORE)
-public class AccountVerification extends AbstractEntity {
+@Table(name = "tbl_order_tracing", schema = DatabaseConstant.SCHEME_CORE)
+public class OrderTracing extends AbstractEntity {
 
-    private static final String ACCOUNT_VERIFICATION_SEQUENCE = "account_verification_seq";
+    private static final String ORDER_TRACING_SEQUENCE = "order_tracing_seq";
 
     @Id
-    @GeneratedValue(generator = ACCOUNT_VERIFICATION_SEQUENCE, strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = ACCOUNT_VERIFICATION_SEQUENCE, allocationSize = 10)
-    @Column(name = "account_verification_id")
+    @GeneratedValue(generator = ORDER_TRACING_SEQUENCE, strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = ORDER_TRACING_SEQUENCE, allocationSize = DomainConstant.DEFAULT_ALLOCATION_SIZE)
+    @Column(name = "order_tracing_id")
     private Long id;
-
-    @Column(name = "verification_code", length = 6, nullable = false)
-    private String verificationCode;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 10, nullable = false)
-    private VerificationCodeStatus status;
+    private OrderStatus status;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "account_id")
-    private Account account;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "order_id")
+    private Order order;
 }

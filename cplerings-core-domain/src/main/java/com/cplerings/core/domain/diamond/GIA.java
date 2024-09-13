@@ -1,13 +1,8 @@
 package com.cplerings.core.domain.diamond;
 
+import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.AbstractEntity;
 import com.cplerings.core.domain.DomainConstant;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,6 +12,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -24,18 +24,18 @@ import jakarta.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "GIA")
+@Table(name = "tbl_gia", schema = DatabaseConstant.SCHEME_CORE)
 public class GIA extends AbstractEntity {
 
-    private static final String GIA_SEQUENCE = "GIA_SEQ";
+    private static final String GIA_SEQUENCE = "gia_seq";
 
     @Id
     @GeneratedValue(generator = GIA_SEQUENCE, strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = GIA_SEQUENCE, allocationSize = DomainConstant.DEFAULT_ALLOCATION_SIZE)
-    @Column(name = "GIA_ID")
+    @Column(name = "gia_id")
     private Long id;
 
-    @Column(name = "GIA_DOCUMENT_URL", nullable = false, unique = true)
+    @Column(name = "gia_document_url", nullable = false, unique = true)
     private String giaDocumentURL;
 
     @OneToOne(mappedBy = "gia")

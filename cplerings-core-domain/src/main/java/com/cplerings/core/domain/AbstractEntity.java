@@ -1,23 +1,22 @@
 package com.cplerings.core.domain;
 
+import java.time.Instant;
+import java.util.Objects;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.cplerings.core.common.temporal.TemporalUtils;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
-import org.apache.commons.lang3.StringUtils;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Version;
-
-import java.time.Instant;
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -45,7 +44,7 @@ public abstract class AbstractEntity {
     private String modifiedBy;
 
     @Version
-    @Column(name = "VERSION")
+    @Column(name = "VERSION", nullable = false)
     @Builder.Default
     private Integer version = DEFAULT_VERSION;
 

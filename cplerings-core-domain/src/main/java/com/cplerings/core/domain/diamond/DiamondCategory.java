@@ -1,13 +1,10 @@
 package com.cplerings.core.domain.diamond;
 
+import java.util.Set;
+
+import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.AbstractEntity;
 import com.cplerings.core.domain.DomainConstant;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,8 +15,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-
-import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -27,15 +27,15 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "DIAMOND_CATEGORY")
+@Table(name = "tbl_diamond_category", schema = DatabaseConstant.SCHEME_CORE)
 public class DiamondCategory extends AbstractEntity {
 
-    private static final String DIAMOND_CATEGORY_SEQUENCE = "DIAMOND_CATEGORY_SEQ";
+    private static final String DIAMOND_CATEGORY_SEQUENCE = "diamond_category_seq";
 
     @Id
     @GeneratedValue(generator = DIAMOND_CATEGORY_SEQUENCE, strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = DIAMOND_CATEGORY_SEQUENCE, allocationSize = DomainConstant.DEFAULT_ALLOCATION_SIZE)
-    @Column(name = "DIAMOND_CATEGORY_ID")
+    @Column(name = "diamond_category_id")
     private Long id;
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)

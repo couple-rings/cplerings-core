@@ -1,8 +1,11 @@
-package com.cplerings.core.domain.diamond;
+package com.cplerings.core.domain.transportation;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.AbstractEntity;
 import com.cplerings.core.domain.DomainConstant;
+import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.address.Address;
+import com.cplerings.core.domain.order.Order;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,22 +30,26 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_diamond", schema = DatabaseConstant.SCHEME_CORE)
-public class Diamond extends AbstractEntity {
+@Table(name = "tbl_transportation", schema = DatabaseConstant.SCHEME_CORE)
+public class Transportation extends AbstractEntity {
 
-    private static final String DIAMOND_SEQUENCE = "diamond_seq";
+    private static final String TRANSPORTATION_SEQUENCE = "transportation_seq";
 
     @Id
-    @GeneratedValue(generator = DIAMOND_SEQUENCE, strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = DIAMOND_SEQUENCE, allocationSize = DomainConstant.DEFAULT_ALLOCATION_SIZE)
-    @Column(name = "diamond_id")
+    @GeneratedValue(generator = TRANSPORTATION_SEQUENCE, strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = TRANSPORTATION_SEQUENCE, allocationSize = DomainConstant.DEFAULT_ALLOCATION_SIZE)
+    @Column(name = "transportation_id")
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "gia_id")
-    private GIA gia;
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "category_id")
-    private DiamondCategory category;
+    @JoinColumn(name = "transporter_id")
+    private Account transporter;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "address_id")
+    private Address address;
 }

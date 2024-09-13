@@ -21,14 +21,14 @@ import jakarta.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "HELLO")
+@Table(name = "hello")
 public class Hello extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "HELLO_ID")
+    @Column(name = "hello_id")
     private Long id;
 
-    @Column(name = "NAME", unique = true, nullable = false)
+    @Column(name = "name", unique = true, nullable = false)
     private String name;
 }

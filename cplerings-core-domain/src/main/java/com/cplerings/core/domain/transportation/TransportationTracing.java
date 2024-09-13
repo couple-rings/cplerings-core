@@ -1,4 +1,4 @@
-package com.cplerings.core.domain.collection;
+package com.cplerings.core.domain.transportation;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.AbstractEntity;
@@ -6,6 +6,8 @@ import com.cplerings.core.domain.DomainConstant;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,22 +28,22 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_discount_campaign_collection", schema = DatabaseConstant.SCHEME_CORE)
-public class DiscountCampaignCollection extends AbstractEntity {
+@Table(name = "tbl_transportation_tracing", schema = DatabaseConstant.SCHEME_CORE)
+public class TransportationTracing extends AbstractEntity {
 
-    private static final String DISCOUNT_CAMPAIGN_COLLECTION_SEQ = "discount_campaign_collection_seq";
+    private static final String TRANSPORTATION_TRACING_SEQUENCE = "transportation_tracing_seq";
 
     @Id
-    @GeneratedValue(generator = DISCOUNT_CAMPAIGN_COLLECTION_SEQ, strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = DISCOUNT_CAMPAIGN_COLLECTION_SEQ, allocationSize = DomainConstant.DEFAULT_ALLOCATION_SIZE)
-    @Column(name = "discount_campaign_collection_id")
+    @GeneratedValue(generator = TRANSPORTATION_TRACING_SEQUENCE, strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = TRANSPORTATION_TRACING_SEQUENCE, allocationSize = DomainConstant.DEFAULT_ALLOCATION_SIZE)
+    @Column(name = "transportation_tracing_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "collection_id")
-    private Collection collection;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 12, nullable = false)
+    private TransportationStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "discount_campaign_id")
-    private DiscountCampaign discountCampaign;
+    @JoinColumn(name = "transportation_id")
+    private Transportation transportation;
 }

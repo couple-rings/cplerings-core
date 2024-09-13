@@ -1,8 +1,9 @@
-package com.cplerings.core.domain.collection;
+package com.cplerings.core.domain.order;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.AbstractEntity;
 import com.cplerings.core.domain.DomainConstant;
+import com.cplerings.core.domain.ring.Ring;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,22 +27,22 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_discount_campaign_collection", schema = DatabaseConstant.SCHEME_CORE)
-public class DiscountCampaignCollection extends AbstractEntity {
+@Table(name = "tbl_order_ring", schema = DatabaseConstant.SCHEME_CORE)
+public class OrderRing extends AbstractEntity {
 
-    private static final String DISCOUNT_CAMPAIGN_COLLECTION_SEQ = "discount_campaign_collection_seq";
+    private static final String ORDER_RING_SEQUENCE = "order_ring_seq";
 
     @Id
-    @GeneratedValue(generator = DISCOUNT_CAMPAIGN_COLLECTION_SEQ, strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = DISCOUNT_CAMPAIGN_COLLECTION_SEQ, allocationSize = DomainConstant.DEFAULT_ALLOCATION_SIZE)
-    @Column(name = "discount_campaign_collection_id")
+    @GeneratedValue(generator = ORDER_RING_SEQUENCE, strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = ORDER_RING_SEQUENCE, allocationSize = DomainConstant.DEFAULT_ALLOCATION_SIZE)
+    @Column(name = "order_ring_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "collection_id")
-    private Collection collection;
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "discount_campaign_id")
-    private DiscountCampaign discountCampaign;
+    @JoinColumn(name = "ring_id")
+    private Ring ring;
 }

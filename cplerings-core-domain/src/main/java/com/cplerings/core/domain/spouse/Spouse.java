@@ -1,14 +1,12 @@
-package com.cplerings.core.domain.agreement;
+package com.cplerings.core.domain.spouse;
 
+import java.time.Instant;
+
+import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.AbstractEntity;
 import com.cplerings.core.domain.DomainConstant;
 import com.cplerings.core.domain.account.Account;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import com.cplerings.core.domain.agreement.Agreement;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,8 +19,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-
-import java.time.Instant;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -30,40 +31,44 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "SPOUSE")
+@Table(name = "tbl_spouse", schema = DatabaseConstant.SCHEME_CORE)
 public class Spouse extends AbstractEntity {
 
-    private static final String SPOUSE_SEQUENCE = "SPOUSE_SEQ";
+    private static final String SPOUSE_SEQUENCE = "spouse_seq";
 
     @Id
     @GeneratedValue(generator = SPOUSE_SEQUENCE, strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = SPOUSE_SEQUENCE, allocationSize = DomainConstant.DEFAULT_ALLOCATION_SIZE)
-    @Column(name = "SPOUSE_ID")
+    @Column(name = "spouse_id")
     private Long id;
 
-    @Column(name = "FIRST_NAME", length = 50, nullable = false)
+    @Column(name = "first_name", length = 50, nullable = false)
     private String firstName;
 
-    @Column(name = "MIDDLE_NAME", length = 50)
+    @Column(name = "middle_name", length = 50)
     private String middleName;
 
-    @Column(name = "LAST_NAME", length = 50, nullable = false)
+    @Column(name = "last_name", length = 50, nullable = false)
     private String lastName;
 
-    @Column(name = "BIRTH_DATE", nullable = false)
+    @Column(name = "birth_date", nullable = false)
     private Instant birthDate;
 
-    @Column(name = "ID_CARD_NUMBER", length = 12, nullable = false, unique = true)
+    @Column(name = "id_card_number", length = 12, nullable = false, unique = true)
     private String idCardNumber;
 
-    @Column(name = "ID_CARD_IMAGE_URL", nullable = false, unique = true)
+    @Column(name = "id_card_image_url", nullable = false, unique = true)
     private String idCardImageURL;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ACCOUNT_ID", unique = true)
-    private Account account;
+    @JoinColumn(name = "customer_id", unique = true)
+    private Account customer;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "verification_request_id")
+    private SpouseVerificationRequest verificationRequest;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "AGREEMENT_ID")
+    @JoinColumn(name = "agreement_id")
     private Agreement agreement;
 }

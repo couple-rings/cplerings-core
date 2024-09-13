@@ -1,291 +1,604 @@
-CREATE SEQUENCE IF NOT EXISTS ACCOUNT_SEQ START WITH 1 INCREMENT BY 10;
+CREATE SCHEMA IF NOT EXISTS core;
 
-CREATE SEQUENCE IF NOT EXISTS ACCOUNT_VERIFICATION_SEQ START WITH 1 INCREMENT BY 10;
+CREATE SEQUENCE IF NOT EXISTS core.account_seq START WITH 1 INCREMENT BY 10;
 
-CREATE SEQUENCE IF NOT EXISTS AGREEMENT_SEQ START WITH 1 INCREMENT BY 10;
+CREATE SEQUENCE IF NOT EXISTS core.account_verification_seq START WITH 1 INCREMENT BY 10;
 
-CREATE SEQUENCE IF NOT EXISTS COLLECTION_SEQ START WITH 1 INCREMENT BY 10;
+CREATE SEQUENCE IF NOT EXISTS core.address_seq START WITH 1 INCREMENT BY 10;
 
-CREATE SEQUENCE IF NOT EXISTS DESIGN_SEQ START WITH 1 INCREMENT BY 10;
+CREATE SEQUENCE IF NOT EXISTS core.agreement_seq START WITH 1 INCREMENT BY 10;
 
-CREATE SEQUENCE IF NOT EXISTS DIAMOND_CATEGORY_SEQ START WITH 1 INCREMENT BY 10;
+CREATE SEQUENCE IF NOT EXISTS core.collection_seq START WITH 1 INCREMENT BY 10;
 
-CREATE SEQUENCE IF NOT EXISTS DIAMOND_SEQ START WITH 1 INCREMENT BY 10;
+CREATE SEQUENCE IF NOT EXISTS core.contract_seq START WITH 1 INCREMENT BY 10;
 
-CREATE SEQUENCE IF NOT EXISTS DISCOUNT_CAMPAIGN_SEQ START WITH 1 INCREMENT BY 10;
+CREATE SEQUENCE IF NOT EXISTS core.custom_request_seq START WITH 1 INCREMENT BY 10;
 
-CREATE SEQUENCE IF NOT EXISTS GIA_SEQ START WITH 1 INCREMENT BY 10;
+CREATE SEQUENCE IF NOT EXISTS core.custom_request_tracing_seq START WITH 1 INCREMENT BY 10;
 
-CREATE SEQUENCE IF NOT EXISTS METAL_SEQ START WITH 1 INCREMENT BY 10;
+CREATE SEQUENCE IF NOT EXISTS core.deposit_seq START WITH 1 INCREMENT BY 10;
 
-CREATE SEQUENCE IF NOT EXISTS RING_SEQ START WITH 1 INCREMENT BY 10;
+CREATE SEQUENCE IF NOT EXISTS core.design_finder_size_seq START WITH 1 INCREMENT BY 10;
 
-CREATE SEQUENCE IF NOT EXISTS SPOUSE_SEQ START WITH 1 INCREMENT BY 10;
+CREATE SEQUENCE IF NOT EXISTS core.design_seq START WITH 1 INCREMENT BY 10;
 
-CREATE SEQUENCE IF NOT EXISTS WARRANTY_SEQ START WITH 1 INCREMENT BY 10;
+CREATE SEQUENCE IF NOT EXISTS core.diamond_category_seq START WITH 1 INCREMENT BY 10;
 
-CREATE TABLE ACCOUNT
+CREATE SEQUENCE IF NOT EXISTS core.diamond_seq START WITH 1 INCREMENT BY 10;
+
+CREATE SEQUENCE IF NOT EXISTS core.discount_campaign_collection_seq START WITH 1 INCREMENT BY 10;
+
+CREATE SEQUENCE IF NOT EXISTS core.discount_campaign_seq START WITH 1 INCREMENT BY 10;
+
+CREATE SEQUENCE IF NOT EXISTS core.finger_size_seq START WITH 1 INCREMENT BY 10;
+
+CREATE SEQUENCE IF NOT EXISTS core.gia_seq START WITH 1 INCREMENT BY 10;
+
+CREATE SEQUENCE IF NOT EXISTS core.metal_seq START WITH 1 INCREMENT BY 10;
+
+CREATE SEQUENCE IF NOT EXISTS core.order_ring_seq START WITH 1 INCREMENT BY 10;
+
+CREATE SEQUENCE IF NOT EXISTS core.order_seq START WITH 1 INCREMENT BY 10;
+
+CREATE SEQUENCE IF NOT EXISTS core.order_tracing_seq START WITH 1 INCREMENT BY 10;
+
+CREATE SEQUENCE IF NOT EXISTS core.payment_seq START WITH 1 INCREMENT BY 10;
+
+CREATE SEQUENCE IF NOT EXISTS core.ring_seq START WITH 1 INCREMENT BY 10;
+
+CREATE SEQUENCE IF NOT EXISTS core.spouse_seq START WITH 1 INCREMENT BY 10;
+
+CREATE SEQUENCE IF NOT EXISTS core.spouse_verification_request_seq START WITH 1 INCREMENT BY 10;
+
+CREATE SEQUENCE IF NOT EXISTS core.transaction_seq START WITH 1 INCREMENT BY 10;
+
+CREATE SEQUENCE IF NOT EXISTS core.transportation_seq START WITH 1 INCREMENT BY 10;
+
+CREATE SEQUENCE IF NOT EXISTS core.transportation_tracing_seq START WITH 1 INCREMENT BY 10;
+
+CREATE SEQUENCE IF NOT EXISTS core.warranty_seq START WITH 1 INCREMENT BY 10;
+
+CREATE TABLE core.tbl_account
 (
-    ACCOUNT_ID  BIGINT                      NOT NULL,
-    CREATED_AT  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    CREATE_BY   VARCHAR(50)                 NOT NULL,
-    MODIFIED_AT TIMESTAMP WITHOUT TIME ZONE,
-    MODIFIED_BY VARCHAR(50),
-    VERSION     INTEGER,
-    EMAIL       VARCHAR(100)                NOT NULL,
-    PASSWORD    VARCHAR(62)                 NOT NULL,
-    ROLE        VARCHAR(12)                 NOT NULL,
-    STATUS      VARCHAR(10)                 NOT NULL,
-    CONSTRAINT PK_ACCOUNT PRIMARY KEY (ACCOUNT_ID)
+    account_id  BIGINT                      NOT NULL,
+    created_at  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by   VARCHAR(50)                 NOT NULL,
+    modified_at TIMESTAMP WITHOUT TIME ZONE,
+    modified_by VARCHAR(50),
+    version     INTEGER                     NOT NULL,
+    email       VARCHAR(100)                NOT NULL,
+    password    VARCHAR(62)                 NOT NULL,
+    role        VARCHAR(12)                 NOT NULL,
+    status      VARCHAR(10)                 NOT NULL,
+    address_id  BIGINT,
+    CONSTRAINT pk_tbl_account PRIMARY KEY (account_id)
 );
 
-CREATE TABLE ACCOUNT_VERIFICATION
+CREATE TABLE core.tbl_account_verification
 (
-    ACCOUNT_VERIFICATION_ID BIGINT                      NOT NULL,
-    CREATED_AT              TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    CREATE_BY               VARCHAR(50)                 NOT NULL,
-    MODIFIED_AT             TIMESTAMP WITHOUT TIME ZONE,
-    MODIFIED_BY             VARCHAR(50),
-    VERSION                 INTEGER,
-    VERIFICATION_CODE       VARCHAR(6)                  NOT NULL,
-    STATUS                  VARCHAR(10)                 NOT NULL,
-    ACCOUNT_ID              BIGINT                      NOT NULL,
-    CONSTRAINT PK_ACCOUNT_VERIFICATION PRIMARY KEY (ACCOUNT_VERIFICATION_ID)
+    account_verification_id BIGINT                      NOT NULL,
+    created_at              TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by               VARCHAR(50)                 NOT NULL,
+    modified_at             TIMESTAMP WITHOUT TIME ZONE,
+    modified_by             VARCHAR(50),
+    version                 INTEGER                     NOT NULL,
+    verification_code       VARCHAR(6)                  NOT NULL,
+    status                  VARCHAR(10)                 NOT NULL,
+    account_id              BIGINT                      NOT NULL,
+    CONSTRAINT pk_tbl_account_verification PRIMARY KEY (account_verification_id)
 );
 
-CREATE TABLE AGREEMENT
+CREATE TABLE core.tbl_address
 (
-    AGREEMENT_ID   BIGINT                      NOT NULL,
-    CREATED_AT     TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    CREATE_BY      VARCHAR(50)                 NOT NULL,
-    MODIFIED_AT    TIMESTAMP WITHOUT TIME ZONE,
-    MODIFIED_BY    VARCHAR(50),
-    VERSION        INTEGER,
-    MARRIAGE_DATE  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    FIRST_RING_ID  BIGINT                      NOT NULL,
-    SECOND_RING_ID BIGINT                      NOT NULL,
-    CONSTRAINT PK_AGREEMENT PRIMARY KEY (AGREEMENT_ID)
+    address_id   BIGINT                      NOT NULL,
+    created_at   TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by    VARCHAR(50)                 NOT NULL,
+    modified_at  TIMESTAMP WITHOUT TIME ZONE,
+    modified_by  VARCHAR(50),
+    version      INTEGER                     NOT NULL,
+    house_number VARCHAR(255),
+    street       VARCHAR(255),
+    ward         VARCHAR(255),
+    district     VARCHAR(255),
+    province     VARCHAR(255),
+    CONSTRAINT pk_tbl_address PRIMARY KEY (address_id)
 );
 
-CREATE TABLE COLLECTION
+CREATE TABLE core.tbl_agreement
 (
-    COLLECTION_ID BIGINT                      NOT NULL,
-    CREATED_AT    TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    CREATE_BY     VARCHAR(50)                 NOT NULL,
-    MODIFIED_AT   TIMESTAMP WITHOUT TIME ZONE,
-    MODIFIED_BY   VARCHAR(50),
-    VERSION       INTEGER,
-    TITLE         VARCHAR(255)                NOT NULL,
-    CONSTRAINT PK_COLLECTION PRIMARY KEY (COLLECTION_ID)
+    agreement_id   BIGINT                      NOT NULL,
+    created_at     TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by      VARCHAR(50)                 NOT NULL,
+    modified_at    TIMESTAMP WITHOUT TIME ZONE,
+    modified_by    VARCHAR(50),
+    version        INTEGER                     NOT NULL,
+    marriage_date  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    first_ring_id  BIGINT                      NOT NULL,
+    second_ring_id BIGINT                      NOT NULL,
+    CONSTRAINT pk_tbl_agreement PRIMARY KEY (agreement_id)
 );
 
-CREATE TABLE DESIGN
+CREATE TABLE core.tbl_collection
 (
-    DESIGN_ID     BIGINT                      NOT NULL,
-    CREATED_AT    TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    CREATE_BY     VARCHAR(50)                 NOT NULL,
-    MODIFIED_AT   TIMESTAMP WITHOUT TIME ZONE,
-    MODIFIED_BY   VARCHAR(50),
-    VERSION       INTEGER,
-    COLLECTION_ID BIGINT,
-    CONSTRAINT PK_DESIGN PRIMARY KEY (DESIGN_ID)
+    collection_id BIGINT                      NOT NULL,
+    created_at    TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by     VARCHAR(50)                 NOT NULL,
+    modified_at   TIMESTAMP WITHOUT TIME ZONE,
+    modified_by   VARCHAR(50),
+    version       INTEGER                     NOT NULL,
+    title         VARCHAR(255)                NOT NULL,
+    CONSTRAINT pk_tbl_collection PRIMARY KEY (collection_id)
 );
 
-CREATE TABLE DIAMOND
+CREATE TABLE core.tbl_contract
 (
-    DIAMOND_ID  BIGINT                      NOT NULL,
-    CREATED_AT  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    CREATE_BY   VARCHAR(50)                 NOT NULL,
-    MODIFIED_AT TIMESTAMP WITHOUT TIME ZONE,
-    MODIFIED_BY VARCHAR(50),
-    VERSION     INTEGER,
-    GIA_ID      BIGINT                      NOT NULL,
-    CATEGORY_ID BIGINT                      NOT NULL,
-    CONSTRAINT PK_DIAMOND PRIMARY KEY (DIAMOND_ID)
+    contract_id       BIGINT                      NOT NULL,
+    created_at        TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by         VARCHAR(50)                 NOT NULL,
+    modified_at       TIMESTAMP WITHOUT TIME ZONE,
+    modified_by       VARCHAR(50),
+    version           INTEGER                     NOT NULL,
+    design_id         BIGINT                      NOT NULL,
+    custom_request_id BIGINT                      NOT NULL,
+    CONSTRAINT pk_tbl_contract PRIMARY KEY (contract_id)
 );
 
-CREATE TABLE DIAMOND_CATEGORY
+CREATE TABLE core.tbl_custom_request
 (
-    DIAMOND_CATEGORY_ID BIGINT                      NOT NULL,
-    CREATED_AT          TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    CREATE_BY           VARCHAR(50)                 NOT NULL,
-    MODIFIED_AT         TIMESTAMP WITHOUT TIME ZONE,
-    MODIFIED_BY         VARCHAR(50),
-    VERSION             INTEGER,
-    CONSTRAINT PK_DIAMOND_CATEGORY PRIMARY KEY (DIAMOND_CATEGORY_ID)
+    custom_request_id BIGINT                      NOT NULL,
+    created_at        TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by         VARCHAR(50)                 NOT NULL,
+    modified_at       TIMESTAMP WITHOUT TIME ZONE,
+    modified_by       VARCHAR(50),
+    version           INTEGER                     NOT NULL,
+    customer_id       BIGINT                      NOT NULL,
+    CONSTRAINT pk_tbl_custom_request PRIMARY KEY (custom_request_id)
 );
 
-CREATE TABLE DISCOUNT_CAMPAIGN
+CREATE TABLE core.tbl_custom_request_tracking
 (
-    DISCOUNT_CAMPAIGN_ID BIGINT                      NOT NULL,
-    CREATED_AT           TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    CREATE_BY            VARCHAR(50)                 NOT NULL,
-    MODIFIED_AT          TIMESTAMP WITHOUT TIME ZONE,
-    MODIFIED_BY          VARCHAR(50),
-    VERSION              INTEGER,
-    CONSTRAINT PK_DISCOUNT_CAMPAIGN PRIMARY KEY (DISCOUNT_CAMPAIGN_ID)
+    custom_request_tracing_id BIGINT                      NOT NULL,
+    created_at                TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by                 VARCHAR(50)                 NOT NULL,
+    modified_at               TIMESTAMP WITHOUT TIME ZONE,
+    modified_by               VARCHAR(50),
+    version                   INTEGER                     NOT NULL,
+    status                    VARCHAR(10)                 NOT NULL,
+    custom_request_id         BIGINT                      NOT NULL,
+    CONSTRAINT pk_tbl_custom_request_tracking PRIMARY KEY (custom_request_tracing_id)
 );
 
-CREATE TABLE DISCOUNT_CAMPAIGN_COLLECTION
+CREATE TABLE core.tbl_deposit
 (
-    DISCOUNT_CAMPAIGN_COLLECTION_ID BIGINT                      NOT NULL,
-    CREATED_AT                      TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    CREATE_BY                       VARCHAR(50)                 NOT NULL,
-    MODIFIED_AT                     TIMESTAMP WITHOUT TIME ZONE,
-    MODIFIED_BY                     VARCHAR(50),
-    VERSION                         INTEGER,
-    COLLECTION_ID                   BIGINT                      NOT NULL,
-    DISCOUNT_CAMPAIGN_ID            BIGINT                      NOT NULL,
-    CONSTRAINT PK_DISCOUNT_CAMPAIGN_COLLECTION PRIMARY KEY (DISCOUNT_CAMPAIGN_COLLECTION_ID)
+    deposit_id  BIGINT                      NOT NULL,
+    created_at  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by   VARCHAR(50)                 NOT NULL,
+    modified_at TIMESTAMP WITHOUT TIME ZONE,
+    modified_by VARCHAR(50),
+    version     INTEGER                     NOT NULL,
+    contract_id BIGINT                      NOT NULL,
+    payment_id  BIGINT                      NOT NULL,
+    CONSTRAINT pk_tbl_deposit PRIMARY KEY (deposit_id)
 );
 
-CREATE TABLE GIA
+CREATE TABLE core.tbl_design
 (
-    GIA_ID           BIGINT                      NOT NULL,
-    CREATED_AT       TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    CREATE_BY        VARCHAR(50)                 NOT NULL,
-    MODIFIED_AT      TIMESTAMP WITHOUT TIME ZONE,
-    MODIFIED_BY      VARCHAR(50),
-    VERSION          INTEGER,
-    GIA_DOCUMENT_URL VARCHAR(255)                NOT NULL,
-    CONSTRAINT PK_GIA PRIMARY KEY (GIA_ID)
+    design_id     BIGINT                      NOT NULL,
+    created_at    TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by     VARCHAR(50)                 NOT NULL,
+    modified_at   TIMESTAMP WITHOUT TIME ZONE,
+    modified_by   VARCHAR(50),
+    version       INTEGER                     NOT NULL,
+    collection_id BIGINT,
+    CONSTRAINT pk_tbl_design PRIMARY KEY (design_id)
 );
 
-CREATE TABLE METAL
+CREATE TABLE core.tbl_design_finger_size
 (
-    METAL_ID    BIGINT                      NOT NULL,
-    CREATED_AT  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    CREATE_BY   VARCHAR(50)                 NOT NULL,
-    MODIFIED_AT TIMESTAMP WITHOUT TIME ZONE,
-    MODIFIED_BY VARCHAR(50),
-    VERSION     INTEGER,
-    CONSTRAINT PK_METAL PRIMARY KEY (METAL_ID)
+    design_finger_size_id BIGINT                      NOT NULL,
+    created_at            TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by             VARCHAR(50)                 NOT NULL,
+    modified_at           TIMESTAMP WITHOUT TIME ZONE,
+    modified_by           VARCHAR(50),
+    version               INTEGER                     NOT NULL,
+    design_id             BIGINT                      NOT NULL,
+    finger_size_id        BIGINT                      NOT NULL,
+    CONSTRAINT pk_tbl_design_finger_size PRIMARY KEY (design_finger_size_id)
 );
 
-CREATE TABLE RING
+CREATE TABLE core.tbl_diamond
 (
-    RING_ID     BIGINT                      NOT NULL,
-    CREATED_AT  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    CREATE_BY   VARCHAR(50)                 NOT NULL,
-    MODIFIED_AT TIMESTAMP WITHOUT TIME ZONE,
-    MODIFIED_BY VARCHAR(50),
-    VERSION     INTEGER,
-    DESIGN_ID   BIGINT                      NOT NULL,
-    DIAMOND_ID  BIGINT                      NOT NULL,
-    METAL_ID    BIGINT                      NOT NULL,
-    WARRANTY_ID BIGINT                      NOT NULL,
-    CONSTRAINT PK_RING PRIMARY KEY (RING_ID)
+    diamond_id  BIGINT                      NOT NULL,
+    created_at  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by   VARCHAR(50)                 NOT NULL,
+    modified_at TIMESTAMP WITHOUT TIME ZONE,
+    modified_by VARCHAR(50),
+    version     INTEGER                     NOT NULL,
+    gia_id      BIGINT                      NOT NULL,
+    category_id BIGINT                      NOT NULL,
+    CONSTRAINT pk_tbl_diamond PRIMARY KEY (diamond_id)
 );
 
-CREATE TABLE SPOUSE
+CREATE TABLE core.tbl_diamond_category
 (
-    SPOUSE_ID         BIGINT                      NOT NULL,
-    CREATED_AT        TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    CREATE_BY         VARCHAR(50)                 NOT NULL,
-    MODIFIED_AT       TIMESTAMP WITHOUT TIME ZONE,
-    MODIFIED_BY       VARCHAR(50),
-    VERSION           INTEGER,
-    FIRST_NAME        VARCHAR(50)                 NOT NULL,
-    MIDDLE_NAME       VARCHAR(50),
-    LAST_NAME         VARCHAR(50)                 NOT NULL,
-    BIRTH_DATE        TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    ID_CARD_NUMBER    VARCHAR(12)                 NOT NULL,
-    ID_CARD_IMAGE_URL VARCHAR(255)                NOT NULL,
-    ACCOUNT_ID        BIGINT,
-    AGREEMENT_ID      BIGINT,
-    CONSTRAINT PK_SPOUSE PRIMARY KEY (SPOUSE_ID)
+    diamond_category_id BIGINT                      NOT NULL,
+    created_at          TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by           VARCHAR(50)                 NOT NULL,
+    modified_at         TIMESTAMP WITHOUT TIME ZONE,
+    modified_by         VARCHAR(50),
+    version             INTEGER                     NOT NULL,
+    CONSTRAINT pk_tbl_diamond_category PRIMARY KEY (diamond_category_id)
 );
 
-CREATE TABLE WARRANTY
+CREATE TABLE core.tbl_discount_campaign
 (
-    WARRANTY_ID BIGINT                      NOT NULL,
-    CREATED_AT  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    CREATE_BY   VARCHAR(50)                 NOT NULL,
-    MODIFIED_AT TIMESTAMP WITHOUT TIME ZONE,
-    MODIFIED_BY VARCHAR(50),
-    VERSION     INTEGER,
-    START_TIME  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    END_TIME    TIMESTAMP WITHOUT TIME ZONE,
-    CONSTRAINT PK_WARRANTY PRIMARY KEY (WARRANTY_ID)
+    discount_campaign_id BIGINT                      NOT NULL,
+    created_at           TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by            VARCHAR(50)                 NOT NULL,
+    modified_at          TIMESTAMP WITHOUT TIME ZONE,
+    modified_by          VARCHAR(50),
+    version              INTEGER                     NOT NULL,
+    CONSTRAINT pk_tbl_discount_campaign PRIMARY KEY (discount_campaign_id)
 );
 
-ALTER TABLE ACCOUNT
-    ADD CONSTRAINT UC_ACCOUNT_EMAIL UNIQUE (EMAIL);
+CREATE TABLE core.tbl_discount_campaign_collection
+(
+    discount_campaign_collection_id BIGINT                      NOT NULL,
+    created_at                      TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by                       VARCHAR(50)                 NOT NULL,
+    modified_at                     TIMESTAMP WITHOUT TIME ZONE,
+    modified_by                     VARCHAR(50),
+    version                         INTEGER                     NOT NULL,
+    collection_id                   BIGINT                      NOT NULL,
+    discount_campaign_id            BIGINT                      NOT NULL,
+    CONSTRAINT pk_tbl_discount_campaign_collection PRIMARY KEY (discount_campaign_collection_id)
+);
 
-ALTER TABLE ACCOUNT
-    ADD CONSTRAINT UC_ACCOUNT_PASSWORD UNIQUE (PASSWORD);
+CREATE TABLE core.tbl_finger_size
+(
+    fincer_size_id BIGINT                      NOT NULL,
+    created_at     TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by      VARCHAR(50)                 NOT NULL,
+    modified_at    TIMESTAMP WITHOUT TIME ZONE,
+    modified_by    VARCHAR(50),
+    version        INTEGER                     NOT NULL,
+    CONSTRAINT pk_tbl_finger_size PRIMARY KEY (fincer_size_id)
+);
 
-ALTER TABLE ACCOUNT_VERIFICATION
-    ADD CONSTRAINT UC_ACCOUNT_VERIFICATION_ACCOUNT UNIQUE (ACCOUNT_ID);
+CREATE TABLE core.tbl_gia
+(
+    gia_id           BIGINT                      NOT NULL,
+    created_at       TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by        VARCHAR(50)                 NOT NULL,
+    modified_at      TIMESTAMP WITHOUT TIME ZONE,
+    modified_by      VARCHAR(50),
+    version          INTEGER                     NOT NULL,
+    gia_document_url VARCHAR(255)                NOT NULL,
+    CONSTRAINT pk_tbl_gia PRIMARY KEY (gia_id)
+);
 
-ALTER TABLE AGREEMENT
-    ADD CONSTRAINT UC_AGREEMENT_FIRST_RING UNIQUE (FIRST_RING_ID);
+CREATE TABLE core.tbl_metal
+(
+    metal_id    BIGINT                      NOT NULL,
+    created_at  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by   VARCHAR(50)                 NOT NULL,
+    modified_at TIMESTAMP WITHOUT TIME ZONE,
+    modified_by VARCHAR(50),
+    version     INTEGER                     NOT NULL,
+    CONSTRAINT pk_tbl_metal PRIMARY KEY (metal_id)
+);
 
-ALTER TABLE AGREEMENT
-    ADD CONSTRAINT UC_AGREEMENT_SECOND_RING UNIQUE (SECOND_RING_ID);
+CREATE TABLE core.tbl_order
+(
+    order_id    BIGINT                      NOT NULL,
+    created_at  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by   VARCHAR(50)                 NOT NULL,
+    modified_at TIMESTAMP WITHOUT TIME ZONE,
+    modified_by VARCHAR(50),
+    version     INTEGER                     NOT NULL,
+    CONSTRAINT pk_tbl_order PRIMARY KEY (order_id)
+);
 
-ALTER TABLE DIAMOND
-    ADD CONSTRAINT UC_DIAMOND_GIA UNIQUE (GIA_ID);
+CREATE TABLE core.tbl_order_ring
+(
+    order_ring_id BIGINT                      NOT NULL,
+    created_at    TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by     VARCHAR(50)                 NOT NULL,
+    modified_at   TIMESTAMP WITHOUT TIME ZONE,
+    modified_by   VARCHAR(50),
+    version       INTEGER                     NOT NULL,
+    order_id      BIGINT                      NOT NULL,
+    ring_id       BIGINT                      NOT NULL,
+    CONSTRAINT pk_tbl_order_ring PRIMARY KEY (order_ring_id)
+);
 
-ALTER TABLE GIA
-    ADD CONSTRAINT UC_GIA_GIA_DOCUMENT_URL UNIQUE (GIA_DOCUMENT_URL);
+CREATE TABLE core.tbl_order_tracing
+(
+    order_tracing_id BIGINT                      NOT NULL,
+    created_at       TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by        VARCHAR(50)                 NOT NULL,
+    modified_at      TIMESTAMP WITHOUT TIME ZONE,
+    modified_by      VARCHAR(50),
+    version          INTEGER                     NOT NULL,
+    status           VARCHAR(10)                 NOT NULL,
+    order_id         BIGINT                      NOT NULL,
+    CONSTRAINT pk_tbl_order_tracing PRIMARY KEY (order_tracing_id)
+);
 
-ALTER TABLE RING
-    ADD CONSTRAINT UC_RING_DIAMOND UNIQUE (DIAMOND_ID);
+CREATE TABLE core.tbl_payment
+(
+    payment_id  BIGINT                      NOT NULL,
+    created_at  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by   VARCHAR(50)                 NOT NULL,
+    modified_at TIMESTAMP WITHOUT TIME ZONE,
+    modified_by VARCHAR(50),
+    version     INTEGER                     NOT NULL,
+    type        VARCHAR(10)                 NOT NULL,
+    status      VARCHAR(10)                 NOT NULL,
+    CONSTRAINT pk_tbl_payment PRIMARY KEY (payment_id)
+);
 
-ALTER TABLE RING
-    ADD CONSTRAINT UC_RING_METAL UNIQUE (METAL_ID);
+CREATE TABLE core.tbl_ring
+(
+    ring_id     BIGINT                      NOT NULL,
+    created_at  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by   VARCHAR(50)                 NOT NULL,
+    modified_at TIMESTAMP WITHOUT TIME ZONE,
+    modified_by VARCHAR(50),
+    version     INTEGER                     NOT NULL,
+    design_id   BIGINT                      NOT NULL,
+    diamond_id  BIGINT                      NOT NULL,
+    metal_id    BIGINT                      NOT NULL,
+    warranty_id BIGINT                      NOT NULL,
+    CONSTRAINT pk_tbl_ring PRIMARY KEY (ring_id)
+);
 
-ALTER TABLE RING
-    ADD CONSTRAINT UC_RING_WARRANTY UNIQUE (WARRANTY_ID);
+CREATE TABLE core.tbl_spouse
+(
+    spouse_id               BIGINT                      NOT NULL,
+    created_at              TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by               VARCHAR(50)                 NOT NULL,
+    modified_at             TIMESTAMP WITHOUT TIME ZONE,
+    modified_by             VARCHAR(50),
+    version                 INTEGER                     NOT NULL,
+    first_name              VARCHAR(50)                 NOT NULL,
+    middle_name             VARCHAR(50),
+    last_name               VARCHAR(50)                 NOT NULL,
+    birth_date              TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    id_card_number          VARCHAR(12)                 NOT NULL,
+    id_card_image_url       VARCHAR(255)                NOT NULL,
+    customer_id             BIGINT,
+    verification_request_id BIGINT                      NOT NULL,
+    agreement_id            BIGINT,
+    CONSTRAINT pk_tbl_spouse PRIMARY KEY (spouse_id)
+);
 
-ALTER TABLE SPOUSE
-    ADD CONSTRAINT UC_SPOUSE_ACCOUNT UNIQUE (ACCOUNT_ID);
+CREATE TABLE core.tbl_spouse_verification_request
+(
+    spouse_verification_request_id BIGINT                      NOT NULL,
+    created_at                     TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by                      VARCHAR(50)                 NOT NULL,
+    modified_at                    TIMESTAMP WITHOUT TIME ZONE,
+    modified_by                    VARCHAR(50),
+    version                        INTEGER                     NOT NULL,
+    customer_id                    BIGINT                      NOT NULL,
+    CONSTRAINT pk_tbl_spouse_verification_request PRIMARY KEY (spouse_verification_request_id)
+);
 
-ALTER TABLE SPOUSE
-    ADD CONSTRAINT UC_SPOUSE_ID_CARD_IMAGE_URL UNIQUE (ID_CARD_IMAGE_URL);
+CREATE TABLE core.tbl_transaction
+(
+    transaction_id BIGINT                      NOT NULL,
+    created_at     TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by      VARCHAR(50)                 NOT NULL,
+    modified_at    TIMESTAMP WITHOUT TIME ZONE,
+    modified_by    VARCHAR(50),
+    version        INTEGER                     NOT NULL,
+    order_id       BIGINT                      NOT NULL,
+    payment_id     BIGINT,
+    CONSTRAINT pk_tbl_transaction PRIMARY KEY (transaction_id)
+);
 
-ALTER TABLE SPOUSE
-    ADD CONSTRAINT UC_SPOUSE_ID_CARD_NUMBER UNIQUE (ID_CARD_NUMBER);
+CREATE TABLE core.tbl_transportation
+(
+    transportation_id BIGINT                      NOT NULL,
+    created_at        TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by         VARCHAR(50)                 NOT NULL,
+    modified_at       TIMESTAMP WITHOUT TIME ZONE,
+    modified_by       VARCHAR(50),
+    version           INTEGER                     NOT NULL,
+    order_id          BIGINT                      NOT NULL,
+    transporter_id    BIGINT                      NOT NULL,
+    address_id        BIGINT                      NOT NULL,
+    CONSTRAINT pk_tbl_transportation PRIMARY KEY (transportation_id)
+);
 
-ALTER TABLE ACCOUNT_VERIFICATION
-    ADD CONSTRAINT FK_ACCOUNT_VERIFICATION_ON_ACCOUNT FOREIGN KEY (ACCOUNT_ID) REFERENCES ACCOUNT (ACCOUNT_ID);
+CREATE TABLE core.tbl_transportation_tracing
+(
+    transportation_tracing_id BIGINT                      NOT NULL,
+    created_at                TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by                 VARCHAR(50)                 NOT NULL,
+    modified_at               TIMESTAMP WITHOUT TIME ZONE,
+    modified_by               VARCHAR(50),
+    version                   INTEGER                     NOT NULL,
+    status                    VARCHAR(12)                 NOT NULL,
+    transportation_id         BIGINT                      NOT NULL,
+    CONSTRAINT pk_tbl_transportation_tracing PRIMARY KEY (transportation_tracing_id)
+);
 
-ALTER TABLE AGREEMENT
-    ADD CONSTRAINT FK_AGREEMENT_ON_FIRST_RING FOREIGN KEY (FIRST_RING_ID) REFERENCES RING (RING_ID);
+CREATE TABLE core.tbl_warranty
+(
+    warranty_id BIGINT                      NOT NULL,
+    created_at  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    create_by   VARCHAR(50)                 NOT NULL,
+    modified_at TIMESTAMP WITHOUT TIME ZONE,
+    modified_by VARCHAR(50),
+    version     INTEGER                     NOT NULL,
+    start_time  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    end_time    TIMESTAMP WITHOUT TIME ZONE,
+    CONSTRAINT pk_tbl_warranty PRIMARY KEY (warranty_id)
+);
 
-ALTER TABLE AGREEMENT
-    ADD CONSTRAINT FK_AGREEMENT_ON_SECOND_RING FOREIGN KEY (SECOND_RING_ID) REFERENCES RING (RING_ID);
+ALTER TABLE core.tbl_account
+    ADD CONSTRAINT uc_tbl_account_address UNIQUE (address_id);
 
-ALTER TABLE DESIGN
-    ADD CONSTRAINT FK_DESIGN_ON_COLLECTION FOREIGN KEY (COLLECTION_ID) REFERENCES COLLECTION (COLLECTION_ID);
+ALTER TABLE core.tbl_account
+    ADD CONSTRAINT uc_tbl_account_email UNIQUE (email);
 
-ALTER TABLE DIAMOND
-    ADD CONSTRAINT FK_DIAMOND_ON_CATEGORY FOREIGN KEY (CATEGORY_ID) REFERENCES DIAMOND_CATEGORY (DIAMOND_CATEGORY_ID);
+ALTER TABLE core.tbl_account
+    ADD CONSTRAINT uc_tbl_account_password UNIQUE (password);
 
-ALTER TABLE DIAMOND
-    ADD CONSTRAINT FK_DIAMOND_ON_GIA FOREIGN KEY (GIA_ID) REFERENCES GIA (GIA_ID);
+ALTER TABLE core.tbl_account_verification
+    ADD CONSTRAINT uc_tbl_account_verification_account UNIQUE (account_id);
 
-ALTER TABLE DISCOUNT_CAMPAIGN_COLLECTION
-    ADD CONSTRAINT FK_DISCOUNT_CAMPAIGN_COLLECTION_ON_COLLECTION FOREIGN KEY (COLLECTION_ID) REFERENCES COLLECTION (COLLECTION_ID);
+ALTER TABLE core.tbl_agreement
+    ADD CONSTRAINT uc_tbl_agreement_first_ring UNIQUE (first_ring_id);
 
-ALTER TABLE DISCOUNT_CAMPAIGN_COLLECTION
-    ADD CONSTRAINT FK_DISCOUNT_CAMPAIGN_COLLECTION_ON_DISCOUNT_CAMPAIGN FOREIGN KEY (DISCOUNT_CAMPAIGN_ID) REFERENCES DISCOUNT_CAMPAIGN (DISCOUNT_CAMPAIGN_ID);
+ALTER TABLE core.tbl_agreement
+    ADD CONSTRAINT uc_tbl_agreement_second_ring UNIQUE (second_ring_id);
 
-ALTER TABLE RING
-    ADD CONSTRAINT FK_RING_ON_DESIGN FOREIGN KEY (DESIGN_ID) REFERENCES DESIGN (DESIGN_ID);
+ALTER TABLE core.tbl_contract
+    ADD CONSTRAINT uc_tbl_contract_custom_request UNIQUE (custom_request_id);
 
-ALTER TABLE RING
-    ADD CONSTRAINT FK_RING_ON_DIAMOND FOREIGN KEY (DIAMOND_ID) REFERENCES DIAMOND (DIAMOND_ID);
+ALTER TABLE core.tbl_deposit
+    ADD CONSTRAINT uc_tbl_deposit_payment UNIQUE (payment_id);
 
-ALTER TABLE RING
-    ADD CONSTRAINT FK_RING_ON_METAL FOREIGN KEY (METAL_ID) REFERENCES METAL (METAL_ID);
+ALTER TABLE core.tbl_diamond
+    ADD CONSTRAINT uc_tbl_diamond_gia UNIQUE (gia_id);
 
-ALTER TABLE RING
-    ADD CONSTRAINT FK_RING_ON_WARRANTY FOREIGN KEY (WARRANTY_ID) REFERENCES WARRANTY (WARRANTY_ID);
+ALTER TABLE core.tbl_gia
+    ADD CONSTRAINT uc_tbl_gia_gia_document_url UNIQUE (gia_document_url);
 
-ALTER TABLE SPOUSE
-    ADD CONSTRAINT FK_SPOUSE_ON_ACCOUNT FOREIGN KEY (ACCOUNT_ID) REFERENCES ACCOUNT (ACCOUNT_ID);
+ALTER TABLE core.tbl_ring
+    ADD CONSTRAINT uc_tbl_ring_diamond UNIQUE (diamond_id);
 
-ALTER TABLE SPOUSE
-    ADD CONSTRAINT FK_SPOUSE_ON_AGREEMENT FOREIGN KEY (AGREEMENT_ID) REFERENCES AGREEMENT (AGREEMENT_ID);
+ALTER TABLE core.tbl_ring
+    ADD CONSTRAINT uc_tbl_ring_metal UNIQUE (metal_id);
+
+ALTER TABLE core.tbl_ring
+    ADD CONSTRAINT uc_tbl_ring_warranty UNIQUE (warranty_id);
+
+ALTER TABLE core.tbl_spouse
+    ADD CONSTRAINT uc_tbl_spouse_customer UNIQUE (customer_id);
+
+ALTER TABLE core.tbl_spouse
+    ADD CONSTRAINT uc_tbl_spouse_id_card_image_url UNIQUE (id_card_image_url);
+
+ALTER TABLE core.tbl_spouse
+    ADD CONSTRAINT uc_tbl_spouse_id_card_number UNIQUE (id_card_number);
+
+ALTER TABLE core.tbl_spouse
+    ADD CONSTRAINT uc_tbl_spouse_verification_request UNIQUE (verification_request_id);
+
+ALTER TABLE core.tbl_transaction
+    ADD CONSTRAINT uc_tbl_transaction_order UNIQUE (order_id);
+
+ALTER TABLE core.tbl_transaction
+    ADD CONSTRAINT uc_tbl_transaction_payment UNIQUE (payment_id);
+
+ALTER TABLE core.tbl_transportation
+    ADD CONSTRAINT uc_tbl_transportation_address UNIQUE (address_id);
+
+ALTER TABLE core.tbl_transportation
+    ADD CONSTRAINT uc_tbl_transportation_order UNIQUE (order_id);
+
+ALTER TABLE core.tbl_account
+    ADD CONSTRAINT FK_TBL_ACCOUNT_ON_ADDRESS FOREIGN KEY (address_id) REFERENCES core.tbl_address (address_id);
+
+ALTER TABLE core.tbl_account_verification
+    ADD CONSTRAINT FK_TBL_ACCOUNT_VERIFICATION_ON_ACCOUNT FOREIGN KEY (account_id) REFERENCES core.tbl_account (account_id);
+
+ALTER TABLE core.tbl_agreement
+    ADD CONSTRAINT FK_TBL_AGREEMENT_ON_FIRST_RING FOREIGN KEY (first_ring_id) REFERENCES core.tbl_ring (ring_id);
+
+ALTER TABLE core.tbl_agreement
+    ADD CONSTRAINT FK_TBL_AGREEMENT_ON_SECOND_RING FOREIGN KEY (second_ring_id) REFERENCES core.tbl_ring (ring_id);
+
+ALTER TABLE core.tbl_contract
+    ADD CONSTRAINT FK_TBL_CONTRACT_ON_CUSTOM_REQUEST FOREIGN KEY (custom_request_id) REFERENCES core.tbl_custom_request (custom_request_id);
+
+ALTER TABLE core.tbl_contract
+    ADD CONSTRAINT FK_TBL_CONTRACT_ON_DESIGN FOREIGN KEY (design_id) REFERENCES core.tbl_design (design_id);
+
+ALTER TABLE core.tbl_custom_request
+    ADD CONSTRAINT FK_TBL_CUSTOM_REQUEST_ON_CUSTOMER FOREIGN KEY (customer_id) REFERENCES core.tbl_account (account_id);
+
+ALTER TABLE core.tbl_custom_request_tracking
+    ADD CONSTRAINT FK_TBL_CUSTOM_REQUEST_TRACKING_ON_CUSTOM_REQUEST FOREIGN KEY (custom_request_id) REFERENCES core.tbl_custom_request (custom_request_id);
+
+ALTER TABLE core.tbl_deposit
+    ADD CONSTRAINT FK_TBL_DEPOSIT_ON_CONTRACT FOREIGN KEY (contract_id) REFERENCES core.tbl_contract (contract_id);
+
+ALTER TABLE core.tbl_deposit
+    ADD CONSTRAINT FK_TBL_DEPOSIT_ON_PAYMENT FOREIGN KEY (payment_id) REFERENCES core.tbl_payment (payment_id);
+
+ALTER TABLE core.tbl_design_finger_size
+    ADD CONSTRAINT FK_TBL_DESIGN_FINGER_SIZE_ON_DESIGN FOREIGN KEY (design_id) REFERENCES core.tbl_design (design_id);
+
+ALTER TABLE core.tbl_design_finger_size
+    ADD CONSTRAINT FK_TBL_DESIGN_FINGER_SIZE_ON_FINGER_SIZE FOREIGN KEY (finger_size_id) REFERENCES core.tbl_finger_size (fincer_size_id);
+
+ALTER TABLE core.tbl_design
+    ADD CONSTRAINT FK_TBL_DESIGN_ON_COLLECTION FOREIGN KEY (collection_id) REFERENCES core.tbl_collection (collection_id);
+
+ALTER TABLE core.tbl_diamond
+    ADD CONSTRAINT FK_TBL_DIAMOND_ON_CATEGORY FOREIGN KEY (category_id) REFERENCES core.tbl_diamond_category (diamond_category_id);
+
+ALTER TABLE core.tbl_diamond
+    ADD CONSTRAINT FK_TBL_DIAMOND_ON_GIA FOREIGN KEY (gia_id) REFERENCES core.tbl_gia (gia_id);
+
+ALTER TABLE core.tbl_discount_campaign_collection
+    ADD CONSTRAINT FK_TBL_DISCOUNT_CAMPAIGN_COLLECTION_ON_COLLECTION FOREIGN KEY (collection_id) REFERENCES core.tbl_collection (collection_id);
+
+ALTER TABLE core.tbl_discount_campaign_collection
+    ADD CONSTRAINT FK_TBL_DISCOUNT_CAMPAIGN_COLLECTION_ON_DISCOUNT_CAMPAIGN FOREIGN KEY (discount_campaign_id) REFERENCES core.tbl_discount_campaign (discount_campaign_id);
+
+ALTER TABLE core.tbl_order_ring
+    ADD CONSTRAINT FK_TBL_ORDER_RING_ON_ORDER FOREIGN KEY (order_id) REFERENCES core.tbl_order (order_id);
+
+ALTER TABLE core.tbl_order_ring
+    ADD CONSTRAINT FK_TBL_ORDER_RING_ON_RING FOREIGN KEY (ring_id) REFERENCES core.tbl_ring (ring_id);
+
+ALTER TABLE core.tbl_order_tracing
+    ADD CONSTRAINT FK_TBL_ORDER_TRACING_ON_ORDER FOREIGN KEY (order_id) REFERENCES core.tbl_order (order_id);
+
+ALTER TABLE core.tbl_ring
+    ADD CONSTRAINT FK_TBL_RING_ON_DESIGN FOREIGN KEY (design_id) REFERENCES core.tbl_design (design_id);
+
+ALTER TABLE core.tbl_ring
+    ADD CONSTRAINT FK_TBL_RING_ON_DIAMOND FOREIGN KEY (diamond_id) REFERENCES core.tbl_diamond (diamond_id);
+
+ALTER TABLE core.tbl_ring
+    ADD CONSTRAINT FK_TBL_RING_ON_METAL FOREIGN KEY (metal_id) REFERENCES core.tbl_metal (metal_id);
+
+ALTER TABLE core.tbl_ring
+    ADD CONSTRAINT FK_TBL_RING_ON_WARRANTY FOREIGN KEY (warranty_id) REFERENCES core.tbl_warranty (warranty_id);
+
+ALTER TABLE core.tbl_spouse
+    ADD CONSTRAINT FK_TBL_SPOUSE_ON_AGREEMENT FOREIGN KEY (agreement_id) REFERENCES core.tbl_agreement (agreement_id);
+
+ALTER TABLE core.tbl_spouse
+    ADD CONSTRAINT FK_TBL_SPOUSE_ON_CUSTOMER FOREIGN KEY (customer_id) REFERENCES core.tbl_account (account_id);
+
+ALTER TABLE core.tbl_spouse
+    ADD CONSTRAINT FK_TBL_SPOUSE_ON_VERIFICATION_REQUEST FOREIGN KEY (verification_request_id) REFERENCES core.tbl_spouse_verification_request (spouse_verification_request_id);
+
+ALTER TABLE core.tbl_spouse_verification_request
+    ADD CONSTRAINT FK_TBL_SPOUSE_VERIFICATION_REQUEST_ON_CUSTOMER FOREIGN KEY (customer_id) REFERENCES core.tbl_account (account_id);
+
+ALTER TABLE core.tbl_transaction
+    ADD CONSTRAINT FK_TBL_TRANSACTION_ON_ORDER FOREIGN KEY (order_id) REFERENCES core.tbl_order (order_id);
+
+ALTER TABLE core.tbl_transaction
+    ADD CONSTRAINT FK_TBL_TRANSACTION_ON_PAYMENT FOREIGN KEY (payment_id) REFERENCES core.tbl_payment (payment_id);
+
+ALTER TABLE core.tbl_transportation
+    ADD CONSTRAINT FK_TBL_TRANSPORTATION_ON_ADDRESS FOREIGN KEY (address_id) REFERENCES core.tbl_address (address_id);
+
+ALTER TABLE core.tbl_transportation
+    ADD CONSTRAINT FK_TBL_TRANSPORTATION_ON_ORDER FOREIGN KEY (order_id) REFERENCES core.tbl_order (order_id);
+
+ALTER TABLE core.tbl_transportation
+    ADD CONSTRAINT FK_TBL_TRANSPORTATION_ON_TRANSPORTER FOREIGN KEY (transporter_id) REFERENCES core.tbl_account (account_id);
+
+ALTER TABLE core.tbl_transportation_tracing
+    ADD CONSTRAINT FK_TBL_TRANSPORTATION_TRACING_ON_TRANSPORTATION FOREIGN KEY (transportation_id) REFERENCES core.tbl_transportation (transportation_id);
