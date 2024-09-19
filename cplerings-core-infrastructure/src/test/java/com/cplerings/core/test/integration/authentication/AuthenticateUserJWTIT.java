@@ -1,7 +1,7 @@
 package com.cplerings.core.test.integration.authentication;
 
-import com.cplerings.core.api.AbstractResponse;
-import com.cplerings.core.api.ErrorCodesResponse;
+import com.cplerings.core.api.shared.AbstractResponse;
+import com.cplerings.core.api.shared.ErrorCodesResponse;
 import com.cplerings.core.api.mapper.ErrorCodeResponseMapper;
 import com.cplerings.core.application.authentication.error.AuthenticationErrorCode;
 import com.cplerings.core.test.integration.AbstractIT;

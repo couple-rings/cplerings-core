@@ -1,4 +1,4 @@
-package com.cplerings.core.api;
+package com.cplerings.core.api.shared;
 
 import com.cplerings.core.application.shared.errorcode.ErrorCode;
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;

@@ -1,4 +1,4 @@
-package com.cplerings.core.api;
+package com.cplerings.core.api.shared;
 
 import com.cplerings.core.api.mapper.ErrorCodeResponseMapper;
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
+import java.time.Instant;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -26,12 +25,11 @@ import java.util.stream.Collectors;
 public final class ErrorCodesResponse {
 
     @Builder.Default
-    private String timestamp = String.valueOf(TemporalUtils.getCurrentInstantUTC().toEpochMilli());
+    private Instant timestamp = TemporalUtils.getCurrentInstantUTC();
 
     @Builder.Default
     private AbstractResponse.Type type = AbstractResponse.Type.ERROR;
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Collection<ErrorCodeResponse> errors;
 
     public static ErrorCodesResponse create(ErrorCodes errorCodes) {

@@ -1,6 +1,6 @@
 package com.cplerings.core.api.mapper;
 
-import com.cplerings.core.api.ErrorCodeResponse;
+import com.cplerings.core.api.shared.ErrorCodeResponse;
 import com.cplerings.core.application.shared.errorcode.ErrorCode;
 import com.cplerings.core.common.locale.LocaleUtils;
 

@@ -1,6 +1,6 @@
 package com.cplerings.core.test.integration.internal;
 
-import com.cplerings.core.api.AbstractRestController;
+import com.cplerings.core.api.shared.AbstractRestController;
 import com.cplerings.core.common.security.RoleConstant;
 
 import org.springframework.http.ResponseEntity;

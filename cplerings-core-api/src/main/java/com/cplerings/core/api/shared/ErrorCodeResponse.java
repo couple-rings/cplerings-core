@@ -1,4 +1,4 @@
-package com.cplerings.core.api;
+package com.cplerings.core.api.shared;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

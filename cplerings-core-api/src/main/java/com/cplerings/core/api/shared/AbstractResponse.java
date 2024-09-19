@@ -1,19 +1,22 @@
-package com.cplerings.core.api;
+package com.cplerings.core.api.shared;
 
 import com.cplerings.core.common.temporal.TemporalUtils;
 
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-public abstract class AbstractResponse {
+import java.time.Instant;
 
-    protected final String timestamp = String.valueOf(TemporalUtils.getCurrentInstantUTC().toEpochMilli());
-    @Setter
-    protected Type type;
+@Getter
+@Setter
+public abstract class AbstractResponse {
 
     public enum Type {
 
         DATA, PAGINATED_DATA, INFO, ERROR
     }
+
+    private final Instant timestamp = TemporalUtils.getCurrentInstantUTC();
+
+    private Type type;
 }

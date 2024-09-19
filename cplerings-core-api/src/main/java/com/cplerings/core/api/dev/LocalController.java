@@ -1,6 +1,6 @@
-package com.cplerings.core.api.development;
+package com.cplerings.core.api.dev;
 
-import com.cplerings.core.api.AbstractRestController;
+import com.cplerings.core.api.shared.AbstractRestController;
 import com.cplerings.core.api.security.IsAnyone;
 import com.cplerings.core.api.security.IsCustomer;
 import com.cplerings.core.application.shared.service.jwt.JWTGenerationService;
