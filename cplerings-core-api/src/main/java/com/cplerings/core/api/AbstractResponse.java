@@ -8,13 +8,12 @@ import lombok.Setter;
 @Getter
 public abstract class AbstractResponse {
 
+    protected final String timestamp = String.valueOf(TemporalUtils.getCurrentInstantUTC().toEpochMilli());
+    @Setter
+    protected Type type;
+
     public enum Type {
 
         DATA, PAGINATED_DATA, INFO, ERROR
     }
-
-    protected final String timestamp = String.valueOf(TemporalUtils.getCurrentInstantUTC().toEpochMilli());
-
-    @Setter
-    protected Type type;
 }

@@ -1,7 +1,8 @@
 SELECT nextval('core.account_seq');
 
-INSERT INTO core.tbl_account (account_id, created_at, create_by, modified_at, modified_by, version, email, password, role,
-                     status)
+INSERT INTO core.tbl_account (account_id, created_at, create_by, modified_at, modified_by, version, email, password,
+                              role,
+                              status)
 VALUES (1, current_timestamp, 'system', current_timestamp, 'system', 0, 'customer@cplerings.com',
         '$2a$10$qJXQTQykGglKbqlBB5R4H.OjLojogvXbZzMtMiSDkaus9Ms6XTdyW', 'CUSTOMER', 'ACTIVE'),
        (2, current_timestamp, 'system', current_timestamp, 'system', 0, 'manager@cplerings.com',

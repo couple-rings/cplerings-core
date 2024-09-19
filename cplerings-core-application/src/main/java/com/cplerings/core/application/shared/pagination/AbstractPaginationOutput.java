@@ -40,17 +40,17 @@ public abstract class AbstractPaginationOutput<T> implements Pageable {
         @Getter(AccessLevel.PROTECTED)
         private Collection<T> data;
 
-        @SuppressWarnings("unchecked")
-        protected final S self() {
-            return (S) this;
-        }
-
         public final S page(int page) {
             if (page < 0) {
                 throw new IllegalArgumentException("Page cannot be negative");
             }
             this.page = page;
             return self();
+        }
+
+        @SuppressWarnings("unchecked")
+        protected final S self() {
+            return (S) this;
         }
 
         public final S pageSize(int pageSize) {

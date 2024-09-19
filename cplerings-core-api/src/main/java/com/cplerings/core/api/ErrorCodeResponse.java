@@ -18,11 +18,6 @@ import java.util.Objects;
 @AllArgsConstructor
 public final class ErrorCodeResponse implements Comparable<ErrorCodeResponse> {
 
-    public enum Type {
-
-        VALIDATION, BUSINESS, SYSTEM
-    }
-
     private String code;
     private String description;
     private Type type;
@@ -30,6 +25,11 @@ public final class ErrorCodeResponse implements Comparable<ErrorCodeResponse> {
     @Override
     public int compareTo(@Nonnull ErrorCodeResponse o) {
         return Objects.compare(code, o.code, Comparator.naturalOrder());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(code);
     }
 
     @Override
@@ -44,8 +44,8 @@ public final class ErrorCodeResponse implements Comparable<ErrorCodeResponse> {
         return Objects.equals(code, that.code);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(code);
+    public enum Type {
+
+        VALIDATION, BUSINESS, SYSTEM
     }
 }

@@ -2,6 +2,14 @@ package com.cplerings.core.application.shared.errorcode;
 
 public interface ErrorCode {
 
+    ErrorCode SYSTEM_ERROR = System.INSTANCE;
+
+    String getCode();
+
+    String getDescriptionLocale();
+
+    Type getType();
+
     enum Type {
 
         VALIDATION, BUSINESS, SYSTEM
@@ -29,12 +37,4 @@ public interface ErrorCode {
             return Type.SYSTEM;
         }
     }
-
-    ErrorCode SYSTEM_ERROR = System.INSTANCE;
-
-    String getCode();
-
-    String getDescriptionLocale();
-
-    Type getType();
 }

@@ -31,48 +31,14 @@ public abstract class AbstractUseCase<I, O> {
 
     private TransactionManager transactionManager;
 
-    @Autowired
-    public void setTransactionManager(TransactionManager transactionManager) {
-        this.transactionManager = transactionManager;
-    }
-
-    protected final boolean validate(boolean validCondition, ErrorCode errorCode) {
-        Objects.requireNonNull(errorCode);
-        if (!validCondition) {
-            validationErrorCodes.add(errorCode);
-        }
-        return validCondition;
-    }
-
-    protected final boolean hasErrors() {
-        return !validationErrorCodes.isEmpty();
-    }
-
-    protected final ErrorCodes extractAndEmptyErrorCodes() {
-        final Collection<ErrorCode> tmpErrorCodes = new ArrayList<>(validationErrorCodes);
-        validationErrorCodes.clear();
-        return ErrorCodes.create(tmpErrorCodes);
-    }
-
-    protected void validateInput(I input) {
-        // To be implemented
-    }
-
-    protected final Either<I, ErrorCodes> validateInputInternal(I input) {
-        validateInput(input);
-        if (hasErrors()) {
-            return Either.<I, ErrorCodes>builder()
-                    .right(extractAndEmptyErrorCodes())
-                    .build();
-        }
-        return Either.<I, ErrorCodes>builder()
-                .left(input)
-                .build();
-    }
-
     @SuppressWarnings("unchecked")
     protected static <T, R> Function<Object, Object> createStep(Function<T, R> function) {
         return (Function<Object, Object>) function;
+    }
+
+    @Autowired
+    public void setTransactionManager(TransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
     }
 
     @SuppressWarnings("java:S4276")
@@ -125,5 +91,39 @@ public abstract class AbstractUseCase<I, O> {
         return Either.<O, ErrorCodes>builder()
                 .left((O) result)
                 .build();
+    }
+
+    protected final Either<I, ErrorCodes> validateInputInternal(I input) {
+        validateInput(input);
+        if (hasErrors()) {
+            return Either.<I, ErrorCodes>builder()
+                    .right(extractAndEmptyErrorCodes())
+                    .build();
+        }
+        return Either.<I, ErrorCodes>builder()
+                .left(input)
+                .build();
+    }
+
+    protected final boolean validate(boolean validCondition, ErrorCode errorCode) {
+        Objects.requireNonNull(errorCode);
+        if (!validCondition) {
+            validationErrorCodes.add(errorCode);
+        }
+        return validCondition;
+    }
+
+    protected final boolean hasErrors() {
+        return !validationErrorCodes.isEmpty();
+    }
+
+    protected final ErrorCodes extractAndEmptyErrorCodes() {
+        final Collection<ErrorCode> tmpErrorCodes = new ArrayList<>(validationErrorCodes);
+        validationErrorCodes.clear();
+        return ErrorCodes.create(tmpErrorCodes);
+    }
+
+    protected void validateInput(I input) {
+        // To be implemented
     }
 }

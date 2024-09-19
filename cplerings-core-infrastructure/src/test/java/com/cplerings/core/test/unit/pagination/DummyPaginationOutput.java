@@ -4,6 +4,10 @@ import com.cplerings.core.application.shared.pagination.AbstractPaginationOutput
 
 class DummyPaginationOutput extends AbstractPaginationOutput<String> {
 
+    static Builder builder() {
+        return new Builder();
+    }
+
     static class Builder extends AbstractBuilder<Builder, DummyPaginationOutput, String> {
 
         @Override
@@ -11,9 +15,5 @@ class DummyPaginationOutput extends AbstractPaginationOutput<String> {
             calculatePagination();
             return populatePaginationInformation(new DummyPaginationOutput());
         }
-    }
-
-    static Builder builder() {
-        return new Builder();
     }
 }

@@ -1,6 +1,7 @@
 package com.cplerings.core.test.integration;
 
-import java.util.Objects;
+import com.cplerings.core.common.profile.ProfileConstant;
+import com.cplerings.core.infrastructure.CplringsCoreApplication;
 
 import org.apache.commons.lang3.StringUtils;
 import org.flywaydb.core.Flyway;
@@ -13,11 +14,11 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
-import com.cplerings.core.common.profile.ProfileConstant;
-import com.cplerings.core.infrastructure.CplringsCoreApplication;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+
+import java.util.Objects;
 
 @SpringBootTest(
         classes = {
@@ -48,18 +49,26 @@ public abstract class AbstractIT {
     @Autowired
     private CriteriaBuilderFactory cbf;
 
+    protected <B> RequestBuilder<B> requestBuilder() {
+        return new RequestBuilder<>();
+    }
+
+    @BeforeEach
+    protected final void populateDatabase() {
+        flyway.clean();
+        flyway.migrate();
+    }
+
+    protected <T> BlazeJPAQuery<T> createQuery() {
+        return new BlazeJPAQuery<>(em, cbf);
+    }
+
     protected final class RequestBuilder<B> {
-
-        public enum Method {
-
-            GET, POST, PUT, PATCH, DELETE
-        }
 
         private String path = "";
         private Method method;
         private String token;
         private B body;
-
         private RequestBuilder() {
         }
 
@@ -109,19 +118,10 @@ public abstract class AbstractIT {
             }
             return requestHeadersSpec.exchange();
         }
-    }
 
-    protected <B> RequestBuilder<B> requestBuilder() {
-        return new RequestBuilder<>();
-    }
+        public enum Method {
 
-    @BeforeEach
-    protected final void populateDatabase() {
-        flyway.clean();
-        flyway.migrate();
-    }
-
-    protected <T> BlazeJPAQuery<T> createQuery() {
-        return new BlazeJPAQuery<>(em, cbf);
+            GET, POST, PUT, PATCH, DELETE
+        }
     }
 }

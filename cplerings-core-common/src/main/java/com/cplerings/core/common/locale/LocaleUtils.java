@@ -14,6 +14,10 @@ public class LocaleUtils {
 
     private static final String LOCALE_PATH = "locale/main";
 
+    public static String translateLocale(String key) {
+        return translateLocale(key, Locale.getDefault());
+    }
+
     public static String translateLocale(String key, Locale locale) {
         if (StringUtils.isBlank(key)) {
             throw new IllegalArgumentException("Locale key is blank");
@@ -21,9 +25,5 @@ public class LocaleUtils {
         Objects.requireNonNull(locale, "Locale is null");
         final ResourceBundle resourceBundle = ResourceBundle.getBundle(LOCALE_PATH, locale);
         return resourceBundle.getString(key);
-    }
-
-    public static String translateLocale(String key) {
-        return translateLocale(key, Locale.getDefault());
     }
 }

@@ -33,6 +33,18 @@ class AuthenticateUserJWTIT extends AbstractIT {
         thenResponseBodyIsHelloMessage(response);
     }
 
+    private void thenResponseIsOk(WebTestClient.ResponseSpec response) {
+        response.expectStatus().isOk();
+    }
+
+    private void thenResponseBodyIsHelloMessage(WebTestClient.ResponseSpec response) {
+        final String helloMessage = response.expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
+        Assertions.assertThat(helloMessage)
+                .isEqualTo(TestController.DEFAULT_HELLO_MESSAGE);
+    }
+
     @Test
     void givenManager_whenPassingInAuthenticationJWTToAccessAPIForCustomerAndManager() {
         final String token = jwtTestHelper.generateToken(AccountTestConstant.MANAGER_EMAIL);
@@ -45,18 +57,6 @@ class AuthenticateUserJWTIT extends AbstractIT {
 
         thenResponseIsOk(response);
         thenResponseBodyIsHelloMessage(response);
-    }
-
-    private void thenResponseIsOk(WebTestClient.ResponseSpec response) {
-        response.expectStatus().isOk();
-    }
-
-    private void thenResponseBodyIsHelloMessage(WebTestClient.ResponseSpec response) {
-        final String helloMessage = response.expectBody(String.class)
-                .returnResult()
-                .getResponseBody();
-        Assertions.assertThat(helloMessage)
-                .isEqualTo(TestController.DEFAULT_HELLO_MESSAGE);
     }
 
     @Test
