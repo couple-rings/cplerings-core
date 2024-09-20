@@ -1,18 +1,20 @@
 package com.cplerings.core.test.integration.authentication;
 
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.WebTestClient;
+
+import com.cplerings.core.api.authentication.data.AuthenticationToken;
 import com.cplerings.core.api.authentication.request.LoginCredentialRequest;
-import com.cplerings.core.application.authentication.output.AuthenticationTokenOutput;
+import com.cplerings.core.api.authentication.response.AuthenticationTokenResponse;
+import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationResult;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationService;
 import com.cplerings.core.test.integration.AbstractIT;
 import com.cplerings.core.test.integration.internal.helper.AccountTestConstant;
 
 import lombok.extern.slf4j.Slf4j;
-
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.reactive.server.WebTestClient;
 
 @Slf4j
 class LoginIT extends AbstractIT {
@@ -31,36 +33,37 @@ class LoginIT extends AbstractIT {
                 .send();
 
         thenResponseIsOk(response);
-        final AuthenticationTokenOutput authenticationTokenOutput = thenTokenAndRefreshTokenAreReturned(response);
-        thenBothTokensAreValid(authenticationTokenOutput);
+        final AuthenticationToken token = thenTokenAndRefreshTokenAreReturned(response);
+        thenBothTokensAreValid(token);
     }
 
     private void thenResponseIsOk(WebTestClient.ResponseSpec response) {
         response.expectStatus().isOk();
     }
 
-    private AuthenticationTokenOutput thenTokenAndRefreshTokenAreReturned(WebTestClient.ResponseSpec response) {
-        final AuthenticationTokenOutput output = response.expectBody(AuthenticationTokenOutput.class)
+    private AuthenticationToken thenTokenAndRefreshTokenAreReturned(WebTestClient.ResponseSpec response) {
+        final AuthenticationTokenResponse responseBody = response.expectBody(AuthenticationTokenResponse.class)
                 .returnResult()
                 .getResponseBody();
-        Assertions.assertThat(output)
+        Assertions.assertThat(responseBody)
                 .isNotNull();
-        Assertions.assertThat(output.getToken())
-                .isNotBlank();
-        Assertions.assertThat(output.getRefreshToken())
-                .isNotBlank();
-        return output;
+        Assertions.assertThat(responseBody.getType())
+                .isEqualTo(AbstractResponse.Type.DATA);
+        Assertions.assertThat(responseBody.getData())
+                .isNotNull()
+                .isExactlyInstanceOf(AuthenticationToken.class);
+        return responseBody.getData();
     }
 
-    private void thenBothTokensAreValid(AuthenticationTokenOutput authenticationTokenOutput) {
-        final String token = authenticationTokenOutput.getToken();
+    private void thenBothTokensAreValid(AuthenticationToken authenticationToken) {
+        final String token = authenticationToken.token();
         final JWTVerificationResult tokenResult = jwtVerificationService.validateToken(token);
         Assertions.assertThat(tokenResult.getStatus())
                 .isEqualTo(JWTVerificationResult.Status.VALID);
         Assertions.assertThat(tokenResult.getSubject())
                 .isEqualTo(AccountTestConstant.CUSTOMER_EMAIL);
 
-        final String refreshToken = authenticationTokenOutput.getRefreshToken();
+        final String refreshToken = authenticationToken.refreshToken();
         final JWTVerificationResult refreshResult = jwtVerificationService.validateRefreshToken(refreshToken);
         Assertions.assertThat(refreshResult.getStatus())
                 .isEqualTo(JWTVerificationResult.Status.VALID);

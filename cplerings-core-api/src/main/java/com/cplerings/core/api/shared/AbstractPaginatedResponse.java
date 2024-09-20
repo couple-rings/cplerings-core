@@ -1,18 +1,18 @@
 package com.cplerings.core.api.shared;
 
-import com.cplerings.core.common.pagination.Buildable;
-import com.cplerings.core.common.pagination.Pageable;
-
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.Collection;
 import java.util.Objects;
 
+import com.cplerings.core.common.pagination.Buildable;
+import com.cplerings.core.common.pagination.Pageable;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Getter
 @Setter
-@Builder
 public abstract class AbstractPaginatedResponse<T> extends AbstractResponse {
 
     private int page;
@@ -21,9 +21,10 @@ public abstract class AbstractPaginatedResponse<T> extends AbstractResponse {
     private int count;
     private Collection<T> data;
 
-    @Getter
-    public abstract static class AbstractBuilder<S extends AbstractBuilder<S, R, T>,
-            R extends AbstractPaginatedResponse<T>, T> implements Buildable<R> {
+    @Getter(AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public abstract static class AbstractPaginatedResponseBuilder<S extends AbstractPaginatedResponseBuilder<S, R, T>, R extends AbstractPaginatedResponse<T>, T>
+            extends AbstractResponseBuilder<S, R> implements Buildable<R> {
 
         private final Type type = Type.PAGINATED_DATA;
 
@@ -33,22 +34,18 @@ public abstract class AbstractPaginatedResponse<T> extends AbstractResponse {
         private int count;
         private Collection<T> data;
 
-        @SuppressWarnings("unchecked")
-        public S self() {
-            return (S) this;
-        }
-
-        public S populatePaginationInfo(Pageable pageable) {
-            Objects.requireNonNull(pageable, "Pageable implementation must not be null");
-            this.page = pageable.getPage();
-            this.pageSize = pageable.getPageSize();
-            this.totalPages = pageable.getTotalPages();
+        public final S data(Pageable pageable, Collection<T> data) {
+            Objects.requireNonNull(data, "Data must not be null");
+            this.count = data.size();
+            this.data = data;
             return self();
         }
 
-        public S data(Collection<T> data) {
-            this.data = Objects.requireNonNull(data, "Data must not be null");
-            this.count = data.size();
+        public final S pageable(Pageable pageable) {
+            Objects.requireNonNull(pageable, "Pageable must not be null");
+            this.page = pageable.getPage();
+            this.pageSize = pageable.getPageSize();
+            this.totalPages = pageable.getTotalPages();
             return self();
         }
     }

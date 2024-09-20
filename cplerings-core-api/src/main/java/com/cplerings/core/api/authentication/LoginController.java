@@ -1,5 +1,11 @@
 package com.cplerings.core.api.authentication;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.cplerings.core.api.authentication.data.AuthenticationToken;
 import com.cplerings.core.api.authentication.mapper.AuthenticationAPIMapper;
 import com.cplerings.core.api.authentication.request.LoginCredentialRequest;
 import com.cplerings.core.api.authentication.response.AuthenticationTokenResponse;
@@ -14,17 +20,11 @@ import com.cplerings.core.application.shared.errorcode.ErrorCodes;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.common.either.Either;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -55,7 +55,8 @@ public class LoginController extends AbstractRestController {
         final LoginCredentialInput loginCredentialInput = authenticationAPIMapper.toInput(loginCredentialRequest);
         final Either<AuthenticationTokenOutput, ErrorCodes> authenticationTokenEither = loginUseCase.login(loginCredentialInput);
         if (authenticationTokenEither.isLeft()) {
-            return ResponseEntity.ok(authenticationAPIMapper.toResponse(authenticationTokenEither.getLeft()));
+            final AuthenticationToken token = authenticationAPIMapper.toData(authenticationTokenEither.getLeft());
+            return ResponseEntity.ok(authenticationAPIMapper.toResponse(token));
         } else {
             return handleErrorCodes(authenticationTokenEither.getRight());
         }
