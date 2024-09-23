@@ -1,4 +1,4 @@
-package com.cplerings.core.test.integration.internal.hello;
+package com.cplerings.core.test.integration.shared.hello;
 
 import com.cplerings.core.domain.AbstractEntity;
 

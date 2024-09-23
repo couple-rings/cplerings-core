@@ -1,4 +1,4 @@
-package com.cplerings.core.test.integration.internal.helper;
+package com.cplerings.core.test.integration.shared.helper;
 
 import com.cplerings.core.application.shared.service.jwt.JWTGenerationService;
 

@@ -11,8 +11,8 @@ import com.cplerings.core.api.authentication.response.AuthenticationTokenRespons
 import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationResult;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationService;
-import com.cplerings.core.test.integration.AbstractIT;
-import com.cplerings.core.test.integration.internal.helper.AccountTestConstant;
+import com.cplerings.core.test.integration.shared.AbstractIT;
+import com.cplerings.core.test.integration.shared.helper.AccountTestConstant;
 
 import lombok.extern.slf4j.Slf4j;
 

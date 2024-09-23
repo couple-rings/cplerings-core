@@ -4,10 +4,10 @@ import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.api.shared.ErrorCodesResponse;
 import com.cplerings.core.api.mapper.ErrorCodeResponseMapper;
 import com.cplerings.core.application.authentication.error.AuthenticationErrorCode;
-import com.cplerings.core.test.integration.AbstractIT;
-import com.cplerings.core.test.integration.internal.TestController;
-import com.cplerings.core.test.integration.internal.helper.AccountTestConstant;
-import com.cplerings.core.test.integration.internal.helper.JWTTestHelper;
+import com.cplerings.core.test.integration.shared.AbstractIT;
+import com.cplerings.core.test.integration.shared.TestController;
+import com.cplerings.core.test.integration.shared.helper.AccountTestConstant;
+import com.cplerings.core.test.integration.shared.helper.JWTTestHelper;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

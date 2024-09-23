@@ -1,4 +1,4 @@
-package com.cplerings.core.test.integration;
+package com.cplerings.core.test.integration.shared;
 
 import com.cplerings.core.common.profile.ProfileConstant;
 import com.cplerings.core.infrastructure.CplringsCoreApplication;

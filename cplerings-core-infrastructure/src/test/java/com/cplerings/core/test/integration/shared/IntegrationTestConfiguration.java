@@ -1,4 +1,4 @@
-package com.cplerings.core.test.integration;
+package com.cplerings.core.test.integration.shared;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
                 "com.cplerings.core.api",
                 "com.cplerings.core.application",
                 "com.cplerings.core.infrastructure",
-                "com.cplerings.core.test.integration.internal"
+                "com.cplerings.core.test.integration.shared"
         }
 )
 @EntityScan(
@@ -22,7 +22,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 )
 @EnableJpaRepositories(
         basePackages = {
-                "com.cplerings.core.test.integration.internal"
+                "com.cplerings.core.test.integration.shared"
         }
 )
 public class IntegrationTestConfiguration {

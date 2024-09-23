@@ -63,6 +63,6 @@ cplerings:
   locale: ${CPLERINGS_LOCALE}
 springdoc:
   api-docs:
-    path: ${cplerings.api.path}/docs
+    path: ${cplerings.api.path}/docs/
   swagger-ui:
-    path: ${springdoc.api-docs.path}/ui
+    path: ${springdoc.api-docs.path}/ui/

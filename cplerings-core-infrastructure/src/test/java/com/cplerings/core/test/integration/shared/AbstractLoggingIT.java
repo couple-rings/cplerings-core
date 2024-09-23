@@ -1,7 +1,6 @@
-package com.cplerings.core.test.integration;
+package com.cplerings.core.test.integration.shared;
 
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
-import com.cplerings.core.test.integration.internal.CustomLogAppender;
 
 import lombok.AccessLevel;
 import lombok.Getter;

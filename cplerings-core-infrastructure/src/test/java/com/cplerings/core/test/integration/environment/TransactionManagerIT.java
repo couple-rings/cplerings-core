@@ -2,10 +2,10 @@ package com.cplerings.core.test.integration.environment;
 
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
 import com.cplerings.core.common.either.Either;
-import com.cplerings.core.test.integration.AbstractLoggingIT;
-import com.cplerings.core.test.integration.internal.hello.HelloRepository;
-import com.cplerings.core.test.integration.internal.hello.TestFailedStepUseCase;
-import com.cplerings.core.test.integration.internal.hello.TestFailedValidationUseCase;
+import com.cplerings.core.test.integration.shared.AbstractLoggingIT;
+import com.cplerings.core.test.integration.shared.hello.HelloRepository;
+import com.cplerings.core.test.integration.shared.hello.TestFailedStepUseCase;
+import com.cplerings.core.test.integration.shared.hello.TestFailedValidationUseCase;
 
 import lombok.extern.slf4j.Slf4j;
 

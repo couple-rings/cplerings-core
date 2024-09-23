@@ -1,4 +1,4 @@
-package com.cplerings.core.test.integration.internal;
+package com.cplerings.core.test.integration.shared;
 
 import lombok.Getter;
 
