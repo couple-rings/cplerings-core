@@ -7,4 +7,6 @@ public interface Pageable {
     int getPageSize();
 
     int getTotalPages();
+
+    int getCount();
 }

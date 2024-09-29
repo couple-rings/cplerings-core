@@ -1,11 +1,11 @@
 package com.cplerings.core.test.integration.authentication;
 
+import com.cplerings.core.api.mapper.ErrorCodeResponseMapper;
 import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.api.shared.ErrorCodesResponse;
-import com.cplerings.core.api.mapper.ErrorCodeResponseMapper;
 import com.cplerings.core.application.authentication.error.AuthenticationErrorCode;
 import com.cplerings.core.test.integration.shared.AbstractIT;
-import com.cplerings.core.test.integration.shared.TestController;
+import com.cplerings.core.test.integration.shared.hello.TestController;
 import com.cplerings.core.test.integration.shared.helper.AccountTestConstant;
 import com.cplerings.core.test.integration.shared.helper.JWTTestHelper;
 

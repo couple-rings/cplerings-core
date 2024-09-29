@@ -8,11 +8,10 @@ class DummyPaginationOutput extends AbstractPaginationOutput<String> {
         return new Builder();
     }
 
-    static class Builder extends AbstractBuilder<Builder, DummyPaginationOutput, String> {
+    static final class Builder extends AbstractBuilder<Builder, DummyPaginationOutput, String> {
 
         @Override
         public DummyPaginationOutput build() {
-            calculatePagination();
             return populatePaginationInformation(new DummyPaginationOutput());
         }
     }

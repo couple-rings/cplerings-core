@@ -1,8 +1,5 @@
 package com.cplerings.core.api.shared;
 
-import java.util.Collection;
-import java.util.Objects;
-
 import com.cplerings.core.common.pagination.Buildable;
 import com.cplerings.core.common.pagination.Pageable;
 
@@ -10,6 +7,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Collection;
+import java.util.Objects;
 
 @Getter
 @Setter

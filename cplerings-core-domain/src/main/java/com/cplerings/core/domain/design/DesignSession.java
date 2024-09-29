@@ -1,7 +1,8 @@
-package com.cplerings.core.domain.account;
+package com.cplerings.core.domain.design;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.AbstractEntity;
+import com.cplerings.core.domain.account.Account;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,31 +23,33 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_account_verification")
-public class AccountVerification extends AbstractEntity {
+@Table(name = "tbl_design_session")
+public class DesignSession extends AbstractEntity {
 
-    private static final String ACCOUNT_VERIFICATION_SEQUENCE = "account_verification_seq";
+    private static final String DESIGN_SESSION_SEQUENCE = "design_session_seq";
 
     @Id
-    @GeneratedValue(generator = ACCOUNT_VERIFICATION_SEQUENCE, strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = ACCOUNT_VERIFICATION_SEQUENCE, allocationSize = DatabaseConstant.SEQ_ALLOCATION_SIZE)
-    @Column(name = "account_verification_id")
+    @GeneratedValue(generator = DESIGN_SESSION_SEQUENCE, strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = DESIGN_SESSION_SEQUENCE, allocationSize = DatabaseConstant.SEQ_ALLOCATION_SIZE)
+    @Column(name = "design_session_id")
     private Long id;
 
-    @Column(name = "code", length = 6, nullable = false)
-    private String code;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "customer_id")
+    private Account customer;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = 10, nullable = false)
-    private VerificationCodeStatus status;
+    @Column(name = "status", length = 6, nullable = false)
+    private DesignSessionStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "account_id")
-    private Account account;
+    @Column(name = "session_id", nullable = false)
+    private UUID sessionId;
 }

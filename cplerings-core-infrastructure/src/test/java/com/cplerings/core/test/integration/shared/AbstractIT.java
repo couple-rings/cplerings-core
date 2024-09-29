@@ -23,7 +23,7 @@ import java.util.Objects;
 @SpringBootTest(
         classes = {
                 CplringsCoreApplication.class,
-                IntegrationTestConfiguration.class
+                ITConfiguration.class
         },
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT
 )
@@ -69,6 +69,7 @@ public abstract class AbstractIT {
         private Method method;
         private String token;
         private B body;
+
         private RequestBuilder() {
         }
 

@@ -36,42 +36,6 @@ class PaginationOutputTest {
         return builder.build();
     }
 
-    @ParameterizedTest
-    @MethodSource("properPaginationArguments")
-    void givenPaginationOutput_whenImplementBuilderProperly(PaginationTestData data) {
-        final DummyPaginationOutput output = thenNoExceptionIsThrownWhenBuilding(data);
-        thenOutputPaginationInfoIsValid(output, data);
-    }
-
-    private DummyPaginationOutput thenNoExceptionIsThrownWhenBuilding(PaginationTestData data) {
-        try {
-            return DummyPaginationOutput.builder()
-                    .page(data.getPage())
-                    .pageSize(data.getPageSize())
-                    .totalCount(data.getTotalCount())
-                    .data(data.getData())
-                    .build();
-        } catch (Exception e) {
-            Assertions.fail(e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void thenOutputPaginationInfoIsValid(DummyPaginationOutput output, PaginationTestData data) {
-        Assertions.assertThat(output)
-                .isNotNull();
-        Assertions.assertThat(output.getPage())
-                .isEqualTo(data.getPage());
-        Assertions.assertThat(output.getPageSize())
-                .isEqualTo(data.getPageSize());
-        Assertions.assertThat(output.getCount())
-                .isEqualTo(data.getData().size());
-        Assertions.assertThat(output.getData())
-                .containsExactly(data.getData().toArray(String[]::new));
-        Assertions.assertThat(output.getTotalPages())
-                .isEqualTo(data.getExpectedTotalPages());
-    }
-
     static Stream<Arguments> invalidPaginationArguments() {
         final Stream.Builder<Arguments> builder = Stream.builder();
         builder.add(Arguments.of(PaginationTestData.builder()
@@ -110,6 +74,42 @@ class PaginationOutputTest {
                 .expectedTotalPages(2)
                 .build()));
         return builder.build();
+    }
+
+    @ParameterizedTest
+    @MethodSource("properPaginationArguments")
+    void givenPaginationOutput_whenImplementBuilderProperly(PaginationTestData data) {
+        final DummyPaginationOutput output = thenNoExceptionIsThrownWhenBuilding(data);
+        thenOutputPaginationInfoIsValid(output, data);
+    }
+
+    private DummyPaginationOutput thenNoExceptionIsThrownWhenBuilding(PaginationTestData data) {
+        try {
+            return DummyPaginationOutput.builder()
+                    .page(data.getPage())
+                    .pageSize(data.getPageSize())
+                    .totalCount(data.getTotalCount())
+                    .data(data.getData())
+                    .build();
+        } catch (Exception e) {
+            Assertions.fail(e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void thenOutputPaginationInfoIsValid(DummyPaginationOutput output, PaginationTestData data) {
+        Assertions.assertThat(output)
+                .isNotNull();
+        Assertions.assertThat(output.getPage())
+                .isEqualTo(data.getPage());
+        Assertions.assertThat(output.getPageSize())
+                .isEqualTo(data.getPageSize());
+        Assertions.assertThat(output.getCount())
+                .isEqualTo(data.getData().size());
+        Assertions.assertThat(output.getData())
+                .containsExactly(data.getData().toArray(String[]::new));
+        Assertions.assertThat(output.getTotalPages())
+                .isEqualTo(data.getExpectedTotalPages());
     }
 
     @ParameterizedTest

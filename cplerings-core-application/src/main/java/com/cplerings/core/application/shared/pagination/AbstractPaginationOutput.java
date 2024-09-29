@@ -1,5 +1,6 @@
 package com.cplerings.core.application.shared.pagination;
 
+import com.cplerings.core.common.fluentapi.AbstractSelf;
 import com.cplerings.core.common.pagination.Buildable;
 import com.cplerings.core.common.pagination.Pageable;
 import com.cplerings.core.common.pagination.PaginationConstant;
@@ -21,9 +22,8 @@ public abstract class AbstractPaginationOutput<T> implements Pageable {
     protected int totalPages;
     protected Collection<T> data;
 
-    public static abstract class AbstractBuilder<S extends AbstractBuilder<S, P, T>,
-            P extends AbstractPaginationOutput<T>,
-            T>
+    public static abstract class AbstractBuilder<S extends AbstractBuilder<S, P, T>, P extends AbstractPaginationOutput<T>, T>
+            extends AbstractSelf<S>
             implements Buildable<P> {
 
         @Getter(AccessLevel.PROTECTED)
@@ -39,11 +39,6 @@ public abstract class AbstractPaginationOutput<T> implements Pageable {
 
         @Getter(AccessLevel.PROTECTED)
         private Collection<T> data;
-
-        @SuppressWarnings("unchecked")
-        protected final S self() {
-            return (S) this;
-        }
 
         public final S page(int page) {
             if (page < 0) {
@@ -75,20 +70,20 @@ public abstract class AbstractPaginationOutput<T> implements Pageable {
             return self();
         }
 
-        protected final void calculatePagination() {
-            Objects.requireNonNull(data, "Data is required");
-            this.totalPages = Math.ceilDiv(totalCount, pageSize);
-        }
-
         protected final P populatePaginationInformation(P output) {
-            Objects.requireNonNull(data, "Data is required");
             Objects.requireNonNull(output, "Output is required");
+            calculatePagination();
             output.setPage(page);
             output.setPageSize(pageSize);
             output.setCount(data.size());
             output.setTotalPages(totalPages);
             output.setData(data);
             return output;
+        }
+
+        private void calculatePagination() {
+            Objects.requireNonNull(data, "Data is required");
+            this.totalPages = Math.ceilDiv(totalCount, pageSize);
         }
     }
 }

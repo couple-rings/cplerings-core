@@ -1,7 +1,8 @@
-package com.cplerings.core.domain.diamond;
+package com.cplerings.core.domain.blog;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.AbstractEntity;
+import com.cplerings.core.domain.image.Image;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,24 +27,22 @@ import jakarta.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_diamond")
-public class Diamond extends AbstractEntity {
+@Table(name = "tbl_blog_image")
+public class BlogImage extends AbstractEntity {
 
-    private static final String DIAMOND_SEQUENCE = "diamond_seq";
+    private static final String BLOG_IMAGE_SEQUENCE = "blog_image_seq";
 
     @Id
-    @GeneratedValue(generator = DIAMOND_SEQUENCE, strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = DIAMOND_SEQUENCE, allocationSize = DatabaseConstant.SEQ_ALLOCATION_SIZE)
-    @Column(name = "diamond_id")
+    @GeneratedValue(generator = BLOG_IMAGE_SEQUENCE, strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = BLOG_IMAGE_SEQUENCE, allocationSize = DatabaseConstant.SEQ_ALLOCATION_SIZE)
+    @Column(name = "blog_image_id")
     private Long id;
 
-    @Column(name = "gia_document", nullable = false)
-    private String giaDocument;
-
-    @Column(name = "gia_report_number", nullable = false)
-    private String giaReportNumber;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "blog_id")
+    private Blog blog;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "diamond_specification_id")
-    private DiamondSpecification diamondSpecification;
+    @JoinColumn(name = "image_id")
+    private Image image;
 }

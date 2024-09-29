@@ -54,7 +54,7 @@ public class LoginController extends AbstractRestController {
     @ErrorAPIResponse
     public ResponseEntity<Object> login(@RequestBody LoginCredentialRequest loginCredentialRequest) {
         final LoginCredentialInput loginCredentialInput = authenticationAPIMapper.toInput(loginCredentialRequest);
-        final Either<AuthenticationTokenOutput, ErrorCodes> authenticationTokenEither = loginUseCase.login(loginCredentialInput);
+        final Either<AuthenticationTokenOutput, ErrorCodes> authenticationTokenEither = loginUseCase.execute(loginCredentialInput);
         if (authenticationTokenEither.isLeft()) {
             final AuthenticationToken token = authenticationAPIMapper.toData(authenticationTokenEither.getLeft());
             return ResponseEntity.ok(authenticationAPIMapper.toResponse(token));

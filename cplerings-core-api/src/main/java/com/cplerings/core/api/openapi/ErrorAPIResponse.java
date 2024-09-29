@@ -1,7 +1,7 @@
 package com.cplerings.core.api.openapi;
 
-import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.api.shared.ErrorCodesResponse;
+import com.cplerings.core.common.api.APIConstant;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

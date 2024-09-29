@@ -13,6 +13,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public final class AuthenticationTokenResponse extends AbstractDataResponse<AuthenticationToken> {
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Builder extends AbstractDataResponseBuilder<Builder, AuthenticationTokenResponse, AuthenticationToken> {
 
@@ -23,9 +27,5 @@ public final class AuthenticationTokenResponse extends AbstractDataResponse<Auth
             response.setData(getData());
             return response;
         }
-    }
-
-    public static Builder builder() {
-        return new Builder();
     }
 }

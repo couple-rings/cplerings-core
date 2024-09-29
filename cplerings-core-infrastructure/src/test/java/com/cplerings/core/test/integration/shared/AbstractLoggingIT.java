@@ -1,6 +1,6 @@
 package com.cplerings.core.test.integration.shared;
 
-import com.cplerings.core.application.shared.usecase.AbstractUseCase;
+import com.cplerings.core.application.shared.usecase.AbstractNewUseCase;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,7 +19,7 @@ public class AbstractLoggingIT extends AbstractIT {
     @BeforeEach
     protected void setUpUseCaseLogAppender() {
         this.useCaseLogAppender = new CustomLogAppender();
-        final Logger logger = (Logger) LoggerFactory.getLogger(AbstractUseCase.class);
+        final Logger logger = (Logger) LoggerFactory.getLogger(AbstractNewUseCase.class);
         logger.addAppender(this.useCaseLogAppender);
         useCaseLogAppender.start();
     }
@@ -28,7 +28,7 @@ public class AbstractLoggingIT extends AbstractIT {
     protected void resetUseCaseLogAppender() {
         useCaseLogAppender.stop();
         useCaseLogAppender.getLoggingEvents().clear();
-        final Logger logger = (Logger) LoggerFactory.getLogger(AbstractUseCase.class);
+        final Logger logger = (Logger) LoggerFactory.getLogger(AbstractNewUseCase.class);
         logger.detachAppender(useCaseLogAppender);
     }
 }

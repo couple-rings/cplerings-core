@@ -8,6 +8,14 @@ public interface Either<L, R> {
         return new Builder<>();
     }
 
+    static <L, R> Either<L, R> left(L left) {
+        return new DefaultEither<>(left, null);
+    }
+
+    static <L, R> Either<L, R> right(R right) {
+        return new DefaultEither<>(null, right);
+    }
+
     L getLeft();
 
     R getRight();

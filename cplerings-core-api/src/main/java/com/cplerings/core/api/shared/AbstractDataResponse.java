@@ -1,13 +1,13 @@
 package com.cplerings.core.api.shared;
 
-import java.util.Objects;
-
 import com.cplerings.core.common.pagination.Buildable;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Objects;
 
 @Getter
 @Setter
