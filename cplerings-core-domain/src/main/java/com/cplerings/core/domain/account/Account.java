@@ -4,7 +4,6 @@ import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.AbstractEntity;
 import com.cplerings.core.domain.Modifier;
 import com.cplerings.core.domain.blog.Blog;
-import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.design.DesignSession;
 import com.cplerings.core.domain.spouse.SpouseAccount;
 
@@ -22,8 +21,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
@@ -77,18 +74,14 @@ public class Account extends AbstractEntity implements Modifier {
     @OneToOne(mappedBy = "account")
     private PushNotification pushNotification;
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
-    private Set<SpouseAccount> spouseAccounts;
+    @OneToOne(mappedBy = "customer")
+    private SpouseAccount spouse;
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     private Set<DesignSession> designSessions;
 
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "blogger", fetch = FetchType.LAZY)
     private Set<Blog> blogs;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "branch_id")
-    private Branch branch;
 
     @Override
     public String getModifierName() {

@@ -16,13 +16,11 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import java.time.LocalDate;
-import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -54,9 +52,9 @@ public class Spouse extends AbstractEntity {
     @Column(name = "couple_id", nullable = false)
     private UUID coupleId;
 
-    @OneToMany(mappedBy = "spouse", fetch = FetchType.LAZY)
-    private Set<SpouseAccount> spouseAccounts;
+    @OneToOne(mappedBy = "spouse")
+    private SpouseAccount spouse;
 
-    @OneToOne(mappedBy = "spouse", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "spouse")
     private Ring ring;
 }

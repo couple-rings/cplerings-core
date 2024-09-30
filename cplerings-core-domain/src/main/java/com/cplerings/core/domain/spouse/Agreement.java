@@ -20,6 +20,8 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
+import java.time.Instant;
+
 @Getter
 @Setter
 @SuperBuilder
@@ -44,4 +46,7 @@ public class Agreement extends AbstractEntity {
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "second_spouse_id", unique = true)
     private Spouse secondSpouse;
+
+    @Column(name = "signed_date", nullable = false)
+    private Instant signedDate;
 }

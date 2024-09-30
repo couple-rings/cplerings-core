@@ -42,7 +42,7 @@ public class Blog extends AbstractEntity {
     @Column(name = "blog_id")
     private Long id;
 
-    @Column(name = "title", nullable = false)
+    @Column(name = "title", nullable = false, unique = true)
     private String title;
 
     @Lob
@@ -53,13 +53,13 @@ public class Blog extends AbstractEntity {
     private String coverImage;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "account_id")
-    private Account account;
+    @JoinColumn(name = "blogger_id")
+    private Account blogger;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "topic_id")
     private Topic topic;
 
     @OneToMany(mappedBy = "blog", fetch = FetchType.LAZY)
-    private Set<BlogTag> blogTags;
+    private Set<BlogTag> tags;
 }
