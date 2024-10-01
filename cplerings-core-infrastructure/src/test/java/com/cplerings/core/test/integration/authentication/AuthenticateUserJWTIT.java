@@ -1,13 +1,13 @@
 package com.cplerings.core.test.integration.authentication;
 
-import com.cplerings.core.api.AbstractResponse;
-import com.cplerings.core.api.ErrorCodesResponse;
 import com.cplerings.core.api.mapper.ErrorCodeResponseMapper;
+import com.cplerings.core.api.shared.AbstractResponse;
+import com.cplerings.core.api.shared.ErrorCodesResponse;
 import com.cplerings.core.application.authentication.error.AuthenticationErrorCode;
-import com.cplerings.core.test.integration.AbstractIT;
-import com.cplerings.core.test.integration.internal.TestController;
-import com.cplerings.core.test.integration.internal.helper.AccountTestConstant;
-import com.cplerings.core.test.integration.internal.helper.JWTTestHelper;
+import com.cplerings.core.test.integration.shared.AbstractIT;
+import com.cplerings.core.test.integration.shared.hello.TestController;
+import com.cplerings.core.test.integration.shared.helper.AccountTestConstant;
+import com.cplerings.core.test.integration.shared.helper.JWTTestHelper;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -33,6 +33,18 @@ class AuthenticateUserJWTIT extends AbstractIT {
         thenResponseBodyIsHelloMessage(response);
     }
 
+    private void thenResponseIsOk(WebTestClient.ResponseSpec response) {
+        response.expectStatus().isOk();
+    }
+
+    private void thenResponseBodyIsHelloMessage(WebTestClient.ResponseSpec response) {
+        final String helloMessage = response.expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
+        Assertions.assertThat(helloMessage)
+                .isEqualTo(TestController.DEFAULT_HELLO_MESSAGE);
+    }
+
     @Test
     void givenManager_whenPassingInAuthenticationJWTToAccessAPIForCustomerAndManager() {
         final String token = jwtTestHelper.generateToken(AccountTestConstant.MANAGER_EMAIL);
@@ -45,18 +57,6 @@ class AuthenticateUserJWTIT extends AbstractIT {
 
         thenResponseIsOk(response);
         thenResponseBodyIsHelloMessage(response);
-    }
-
-    private void thenResponseIsOk(WebTestClient.ResponseSpec response) {
-        response.expectStatus().isOk();
-    }
-
-    private void thenResponseBodyIsHelloMessage(WebTestClient.ResponseSpec response) {
-        final String helloMessage = response.expectBody(String.class)
-                .returnResult()
-                .getResponseBody();
-        Assertions.assertThat(helloMessage)
-                .isEqualTo(TestController.DEFAULT_HELLO_MESSAGE);
     }
 
     @Test

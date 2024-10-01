@@ -45,7 +45,7 @@ public final class JWTAuthenticationFilter extends OncePerRequestFilter {
         final String authorizationHeader = request.getHeader(AUTHENTICATION_HEADER);
         if (StringUtils.isNotBlank(authorizationHeader) && authorizationHeader.startsWith(BEARER_PREFIX)) {
             final String token = authorizationHeader.substring(BEARER_PREFIX.length());
-            final Either<AccountOutput, ErrorCodes> authenticationEither = authenticateUserJWTUseCase.authenticate(JWTInput.builder()
+            final Either<AccountOutput, ErrorCodes> authenticationEither = authenticateUserJWTUseCase.execute(JWTInput.builder()
                     .token(token)
                     .build());
             if (authenticationEither.isLeft()) {

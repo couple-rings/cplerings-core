@@ -19,11 +19,6 @@ abstract class AbstractEither<L, R> implements Either<L, R> {
         this.right = right;
     }
 
-    @SuppressWarnings("unchecked")
-    protected final <S extends Either<L, R>> S self() {
-        return (S) this;
-    }
-
     @Override
     public final L getLeft() {
         return left;
@@ -53,6 +48,11 @@ abstract class AbstractEither<L, R> implements Either<L, R> {
         return self();
     }
 
+    @SuppressWarnings("unchecked")
+    protected final <S extends Either<L, R>> S self() {
+        return (S) this;
+    }
+
     @Override
     public final <S extends Either<L, R>> S ifRight(Consumer<R> consumer) {
         Objects.requireNonNull(consumer, "Consumer must not be null");
@@ -60,6 +60,11 @@ abstract class AbstractEither<L, R> implements Either<L, R> {
             consumer.accept(right);
         }
         return self();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(left, right);
     }
 
     @Override
@@ -72,10 +77,5 @@ abstract class AbstractEither<L, R> implements Either<L, R> {
         }
         return Objects.equals(left, that.getLeft())
                 && Objects.equals(right, that.getRight());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(left, right);
     }
 }

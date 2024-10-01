@@ -7,12 +7,12 @@ public final class DefaultEither<L, R> extends AbstractEither<L, R> {
     }
 
     @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
+    public int hashCode() {
+        return super.hashCode();
     }
 
     @Override
-    public int hashCode() {
-        return super.hashCode();
+    public boolean equals(Object o) {
+        return super.equals(o);
     }
 }

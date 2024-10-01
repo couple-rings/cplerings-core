@@ -1,22 +1,25 @@
 package com.cplerings.core.domain;
 
+import java.time.Instant;
+import java.util.Objects;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.common.temporal.TemporalUtils;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.persistence.Version;
-
-import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -29,26 +32,56 @@ public abstract class AbstractEntity {
     private static final int NEW_ENTITY_ID = -1;
     private static final int DEFAULT_VERSION = 1;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "CREATED_AT", nullable = false, updatable = false)
     @Builder.Default
-    private LocalDateTime createdAt = TemporalUtils.getCurrentDateTimeUTC();
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt = TemporalUtils.getCurrentInstantUTC();
 
-    @Column(name = "CREATE_BY", length = 50, nullable = false, updatable = false)
+    @Column(name = "create_by", nullable = false, updatable = false)
     private String createdBy;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "MODIFIED_AT")
     @Builder.Default
-    private LocalDateTime modifiedAt = TemporalUtils.getCurrentDateTimeUTC();
+    @Column(name = "modified_at")
+    private Instant modifiedAt = TemporalUtils.getCurrentInstantUTC();
 
-    @Column(name = "MODIFIED_BY", length = 50)
+    @Column(name = "modified_by")
     private String modifiedBy;
 
-    @Version
-    @Column(name = "VERSION")
     @Builder.Default
-    private Integer version = DEFAULT_VERSION;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "state", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
+    private State state = State.ACTIVE;
+
+    @Builder.Default
+    @Version
+    @Column(name = "opt_version", nullable = false)
+    private Integer optVersion = DEFAULT_VERSION;
+
+    @PrePersist
+    private void beforePersist() {
+        if (createdAt == null) {
+            this.createdAt = TemporalUtils.getCurrentInstantUTC();
+        }
+        if (optVersion == null || optVersion <= 0) {
+            this.optVersion = DEFAULT_VERSION;
+        }
+        if (state == null) {
+            this.state = State.ACTIVE;
+        }
+    }
+
+    public final void updateModification(Modifiable modifiable) {
+        Objects.requireNonNull(modifiable, "Modifier must not be null");
+        if (StringUtils.isBlank(modifiable.getModifierName())) {
+            throw new IllegalArgumentException("Modifier name must not be blank");
+        }
+        setModifiedAt(TemporalUtils.getCurrentInstantUTC());
+        setModifiedBy(modifiable.getModifierName());
+    }
+
+    @Override
+    public final int hashCode() {
+        return Objects.hashCode(getId());
+    }
 
     @Override
     public final boolean equals(Object o) {
@@ -64,8 +97,5 @@ public abstract class AbstractEntity {
 
     public abstract Long getId();
 
-    @Override
-    public final int hashCode() {
-        return Objects.hashCode(getId());
-    }
+    public abstract void setId(Long id);
 }

@@ -4,6 +4,18 @@ import java.util.function.Consumer;
 
 public interface Either<L, R> {
 
+    static <L, R> Builder<L, R> builder() {
+        return new Builder<>();
+    }
+
+    static <L, R> Either<L, R> left(L left) {
+        return new DefaultEither<>(left, null);
+    }
+
+    static <L, R> Either<L, R> right(R right) {
+        return new DefaultEither<>(null, right);
+    }
+
     L getLeft();
 
     R getRight();
@@ -37,9 +49,5 @@ public interface Either<L, R> {
         public Either<L, R> build() {
             return new DefaultEither<>(left, right);
         }
-    }
-
-    static <L, R> Builder<L, R> builder() {
-        return new Builder<>();
     }
 }
