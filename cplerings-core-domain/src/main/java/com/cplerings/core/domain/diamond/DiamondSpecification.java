@@ -1,25 +1,24 @@
 package com.cplerings.core.domain.diamond;
 
+import java.util.Set;
+
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.AbstractEntity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
-
-import java.util.Set;
 
 @Getter
 @Setter
@@ -59,6 +58,6 @@ public class DiamondSpecification extends AbstractEntity {
     @Column(name = "price", nullable = false)
     private double price;
 
-    @OneToMany(mappedBy = "diamond_specification")
+    @OneToMany(mappedBy = "diamondSpecification", fetch = FetchType.LAZY)
     private Set<Diamond> diamonds;
 }

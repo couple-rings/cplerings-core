@@ -1,14 +1,11 @@
 package com.cplerings.core.domain.blog;
 
+import java.util.Set;
+
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.AbstractEntity;
 import com.cplerings.core.domain.account.Account;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import com.cplerings.core.domain.image.Image;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,10 +17,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-
-import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -46,11 +47,12 @@ public class Blog extends AbstractEntity {
     private String title;
 
     @Lob
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", columnDefinition = DatabaseConstant.LOB_DEFINITION, nullable = false)
     private String content;
 
-    @Column(name = "cover_image", nullable = false)
-    private String coverImage;
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "cover_image", unique = true)
+    private Image coverImage;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "blogger_id")

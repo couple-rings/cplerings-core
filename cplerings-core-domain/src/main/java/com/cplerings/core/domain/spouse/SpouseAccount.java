@@ -29,10 +29,10 @@ import jakarta.persistence.UniqueConstraint;
 @AllArgsConstructor
 @Entity
 @Table(
-        name = "spouse_account",
+        name = "tbl_spouse_account",
         uniqueConstraints = @UniqueConstraint(
                 name = "uq_spouse_account",
-                columnNames = { "spouse_account_id", "spouse_id" }
+                columnNames = { "spouse_id", "customer_id" }
         )
 )
 public class SpouseAccount extends AbstractEntity {

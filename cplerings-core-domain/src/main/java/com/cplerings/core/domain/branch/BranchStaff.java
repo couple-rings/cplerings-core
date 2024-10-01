@@ -57,6 +57,6 @@ public class BranchStaff extends AbstractEntity {
     private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "allocation_type", nullable = false)
+    @Column(name = "allocation_type", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
     private AllocationType allocationType;
 }

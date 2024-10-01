@@ -1,27 +1,25 @@
 package com.cplerings.core.domain.spouse;
 
+import java.time.Instant;
+import java.util.UUID;
+
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.AbstractEntity;
 import com.cplerings.core.domain.ring.Ring;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-
-import java.time.LocalDate;
-import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -44,7 +42,7 @@ public class Spouse extends AbstractEntity {
     private String citizenId;
 
     @Column(name = "date_of_birth", nullable = false)
-    private LocalDate dateOfBirth;
+    private Instant dateOfBirth;
 
     @Column(name = "full_name", nullable = false)
     private String fullName;
@@ -53,7 +51,7 @@ public class Spouse extends AbstractEntity {
     private UUID coupleId;
 
     @OneToOne(mappedBy = "spouse")
-    private SpouseAccount spouse;
+    private SpouseAccount spouseAccount;
 
     @OneToOne(mappedBy = "spouse")
     private Ring ring;

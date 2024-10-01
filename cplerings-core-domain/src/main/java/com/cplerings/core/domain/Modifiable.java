@@ -1,6 +1,6 @@
 package com.cplerings.core.domain;
 
-public interface Modifier {
+public interface Modifiable {
 
     String getModifierName();
 }

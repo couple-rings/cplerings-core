@@ -2,7 +2,7 @@ package com.cplerings.core.domain.account;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.AbstractEntity;
-import com.cplerings.core.domain.Modifier;
+import com.cplerings.core.domain.Modifiable;
 import com.cplerings.core.domain.blog.Blog;
 import com.cplerings.core.domain.design.DesignSession;
 import com.cplerings.core.domain.spouse.SpouseAccount;
@@ -35,7 +35,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "tbl_account")
-public class Account extends AbstractEntity implements Modifier {
+public class Account extends AbstractEntity implements Modifiable {
 
     private static final String ACCOUNT_SEQUENCE = "account_seq";
 
@@ -61,11 +61,11 @@ public class Account extends AbstractEntity implements Modifier {
     private String avatar;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", length = 12, nullable = false)
+    @Column(name = "role", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
     private Role role;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = 10, nullable = false)
+    @Column(name = "status", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
     private AccountStatus status;
 
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)

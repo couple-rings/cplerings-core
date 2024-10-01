@@ -43,7 +43,7 @@ public class AccountVerification extends AbstractEntity {
     private String code;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = 10, nullable = false)
+    @Column(name = "status", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
     private VerificationCodeStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

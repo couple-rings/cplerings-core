@@ -1,18 +1,15 @@
 package com.cplerings.core.domain.ring;
 
+import java.time.Instant;
+
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.AbstractEntity;
 import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.spouse.Spouse;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -23,8 +20,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-
-import java.time.Instant;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -46,8 +46,8 @@ public class Ring extends AbstractEntity {
     @Column(name = "purchase_date", nullable = false)
     private Instant purchaseDate;
 
-    @Enumerated
-    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
     private RingStatus status;
 
     @Column(name = "maintanence_expired_date", nullable = false)

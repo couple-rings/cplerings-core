@@ -28,7 +28,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "agreement")
+@Table(name = "tbl_agreement")
 public class Agreement extends AbstractEntity {
 
     private static final String AGREEMENT_SEQUENCE = "agreement_seq";
