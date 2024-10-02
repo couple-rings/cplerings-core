@@ -31,6 +31,18 @@ spring:
     password: ${CPLERINGS_DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
     locations: classpath:db/migration/prod
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: caolinh1012003@gmail.com
+    password: qtba jomt clpk zfql
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 
 ---
 
