@@ -1,5 +1,5 @@
 # Dependencies
-FROM maven:3.9.6-eclipse-temurin-21 AS DEPENDENCIES
+FROM maven:3.9.6-eclipse-temurin-21 AS dependencies
 WORKDIR /cplerings
 
 COPY pom.xml ./
@@ -12,11 +12,11 @@ COPY cplerings-core-infrastructure/pom.xml ./cplerings-core-infrastructure/
 RUN mvn -B -e dependency:go-offline
 
 # Build
-FROM maven:3.9.6-eclipse-temurin-21 AS BUILD
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /cplerings
 
-COPY --from=DEPENDENCIES /root/.m2 /root/.m2/
-COPY --from=DEPENDENCIES /cplerings/ ./
+COPY --from=dependencies /root/.m2 /root/.m2/
+COPY --from=dependencies /cplerings/ ./
 COPY cplerings-core-api/src ./cplerings-core-api/src/
 COPY cplerings-core-application/src ./cplerings-core-application/src/
 COPY cplerings-core-common/src ./cplerings-core-common/src/
@@ -29,7 +29,7 @@ RUN mvn -B -e clean install -DskipTests=true
 FROM eclipse-temurin:21-jdk
 WORKDIR /cplerings
 
-COPY --from=BUILD /cplerings/cplerings-core-infrastructure/target/*.jar ./cplerings.jar
+COPY --from=build /cplerings/cplerings-core-infrastructure/target/*.jar ./cplerings.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/cplerings/cplerings.jar"]
