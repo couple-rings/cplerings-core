@@ -1,6 +1,7 @@
 SELECT nextval('account_seq');
 
-INSERT INTO tbl_account (account_id, created_at, create_by, modified_at, modified_by, opt_version, email, password, role,
+INSERT INTO tbl_account (account_id, created_at, create_by, modified_at, modified_by, opt_version, email, password,
+                         role,
                          status, username, state)
 VALUES (1, current_timestamp, 'system', current_timestamp, 'system', 0, 'customer@cplerings.com',
         '$2a$10$qJXQTQykGglKbqlBB5R4H.OjLojogvXbZzMtMiSDkaus9Ms6XTdyW', 'CUSTOMER', 'ACTIVE', 'customer', 'ACTIVE'),
@@ -13,4 +14,5 @@ VALUES (1, current_timestamp, 'system', current_timestamp, 'system', 0, 'custome
        (5, current_timestamp, 'system', current_timestamp, 'system', 0, 'jeweler@cplerings.com',
         '$2a$10$SICsn7qzibM2IS1i2plG5.FsdhfwKJReRO6NwbG7oMrb9tgM2d8ci', 'JEWELER', 'ACTIVE', 'jeweler', 'ACTIVE'),
        (6, current_timestamp, 'system', current_timestamp, 'system', 0, 'transporter@cplerings.com',
-        '$2a$10$qSM5oGiCLWWxGP1iWWKgEeTIIr3hKVlBDjEshL58M1WDS9HkuX46q', 'TRANSPORTER', 'ACTIVE', 'transporter', 'ACTIVE');
+        '$2a$10$qSM5oGiCLWWxGP1iWWKgEeTIIr3hKVlBDjEshL58M1WDS9HkuX46q', 'TRANSPORTER', 'ACTIVE', 'transporter',
+        'ACTIVE');

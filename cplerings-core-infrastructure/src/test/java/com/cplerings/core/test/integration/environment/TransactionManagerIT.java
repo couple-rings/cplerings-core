@@ -47,6 +47,11 @@ class TransactionManagerIT extends AbstractIT {
                 .isTrue();
     }
 
+    private void thenNoChangesToDatabaseWasMade() {
+        Assertions.assertThat(helloRepository.existsByName(NAME))
+                .isFalse();
+    }
+
     @Test
     void givenTransaction_whenFailedAtStep() {
         final String transactionId = UUID.randomUUID().toString();
@@ -56,10 +61,5 @@ class TransactionManagerIT extends AbstractIT {
 
         thenResultIsFailed(result);
         thenNoChangesToDatabaseWasMade();
-    }
-
-    private void thenNoChangesToDatabaseWasMade() {
-        Assertions.assertThat(helloRepository.existsByName(NAME))
-                .isFalse();
     }
 }

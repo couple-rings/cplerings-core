@@ -31,6 +31,11 @@ public class LoginUseCaseImpl extends AbstractNewUseCase<LoginCredentialInput, A
     private final JWTGenerationService jwtGenerationService;
 
     @Override
+    protected SessionInformation customizeSessionInformation() {
+        return SessionInformation.DEFAULT_QUERY_ONLY;
+    }
+
+    @Override
     protected void validateInput(UseCaseValidator validator, LoginCredentialInput input) {
         super.validateInput(validator, input);
         validator.validate(StringUtils.isNotBlank(input.getEmail()), NO_EMAIL);
@@ -48,10 +53,5 @@ public class LoginUseCaseImpl extends AbstractNewUseCase<LoginCredentialInput, A
         final String token = jwtGenerationService.generateToken(email);
         final String refreshToken = jwtGenerationService.generateRefreshToken(email);
         return new AuthenticationTokenOutput(token, refreshToken);
-    }
-
-    @Override
-    protected SessionInformation customizeSessionInformation() {
-        return SessionInformation.DEFAULT_QUERY_ONLY;
     }
 }

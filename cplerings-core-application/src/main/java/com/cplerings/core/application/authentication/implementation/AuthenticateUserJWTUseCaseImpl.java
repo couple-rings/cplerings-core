@@ -34,6 +34,11 @@ public class AuthenticateUserJWTUseCaseImpl extends AbstractNewUseCase<JWTInput,
     private final AccountApplicationMapper mapper;
 
     @Override
+    protected SessionInformation customizeSessionInformation() {
+        return SessionInformation.DEFAULT_QUERY_ONLY;
+    }
+
+    @Override
     protected void validateInput(UseCaseValidator validator, JWTInput input) {
         super.validateInput(validator, input);
         validator.validate(StringUtils.isNotBlank(input.token()), NO_TOKEN);
@@ -50,10 +55,5 @@ public class AuthenticateUserJWTUseCaseImpl extends AbstractNewUseCase<JWTInput,
         final Optional<Account> authenticatedAccount = dataSource.getAuthenticatedAccount(result.getSubject());
         validator.validateAndStopExecution(authenticatedAccount.isPresent(), ACCOUNT_WITH_EMAIL_NOT_FOUND);
         return mapper.toOutput(authenticatedAccount.get());
-    }
-
-    @Override
-    protected SessionInformation customizeSessionInformation() {
-        return SessionInformation.DEFAULT_QUERY_ONLY;
     }
 }
