@@ -3,18 +3,11 @@ on:
   pull_request:
     branches:
       - develop
-    types: [closed]
+    types: [ closed ]
 
 jobs:
-  check-if-merge:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check if PR is merged into develop
-        if: github.event.pull_request.merged
-        run: exit 0
-
   unit-testing:
-    needs: [check-if-merge]
+    if: github.event.pull_request.merged
     runs-on: ubuntu-latest
     steps:
       - name: Checkout codes
@@ -31,7 +24,7 @@ jobs:
         run: mvn clean test
 
   integration-testing:
-    needs: [check-if-merge]
+    if: github.event.pull_request.merged
     runs-on: ubuntu-latest
     steps:
       - name: Checkout codes
@@ -47,8 +40,8 @@ jobs:
       - name: Run Integration Tests
         run: mvn clean verify
 
-  deploy:
-    needs: [unit-testing, integration-testing]
+  build-push-docker:
+    needs: [ unit-testing, integration-testing ]
     runs-on: ubuntu-latest
     steps:
       - name: Set up Docker BuildX
@@ -65,3 +58,32 @@ jobs:
         with:
           push: true
           tags: cplerings/cplerings-core-dev:latest
+
+  deploy-ec2:
+    needs: [ build-push-docker ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add SSH key
+        run: |
+          printf "%s" "${{ secrets.EC2_SSH_KEY }}" > ec2_key.pem
+          chmod 400 ec2_key.pem
+
+      - name: Add env
+        run: |
+          printf "%s" "${{ secrets.DEV_ENV }}" > .env
+
+      - name: Deploy to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.DEV_EC2_HOST }} << 'EOF'
+            docker pull cplerings/cplerings-core-dev:latest
+
+            docker stop cplerings-core-dev || true
+            docker rm cplerings-core-dev || true
+
+            docker run -d --name cplerings-core-dev -p 8080:8080 --env-file .env cplerings/cplerings-core-dev:latest
+          EOF
+
+      - name: Clean up SSH key
+        run: |
+          rm ec2_key.pem
+          rm .env
