@@ -143,6 +143,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <classesDirectory>${project.build.directory}/classes</classesDirectory>
+                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -33,10 +33,6 @@ public abstract class AbstractNewUseCase<I, O> implements UseCase<I, O> {
         }
     }
 
-    protected void validateInput(UseCaseValidator validator, I input) {
-        // To be implemented by actual use case implementation
-    }
-
     /**
      * Returns customizable {@code SessionInformation} to manage the transaction of this execution.
      * <p>
@@ -49,6 +45,10 @@ public abstract class AbstractNewUseCase<I, O> implements UseCase<I, O> {
      */
     protected SessionInformation customizeSessionInformation() {
         return SessionInformation.DEFAULT;
+    }
+
+    protected void validateInput(UseCaseValidator validator, I input) {
+        // To be implemented by actual use case implementation
     }
 
     protected abstract O internalExecute(UseCaseValidator validator, I input);

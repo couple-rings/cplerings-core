@@ -1,4 +1,4 @@
-name: Check PR through Testing
+name: Checks PRs
 on:
   pull_request:
     types:
