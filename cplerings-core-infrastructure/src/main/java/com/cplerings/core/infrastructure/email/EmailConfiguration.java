@@ -12,7 +12,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 public class EmailConfiguration {
 
     @Value("${spring.mail.username}")
-    private String fromEmailId;
+    private String fromEmail;
 
     @Value("${spring.mail.password}")
     private String fromPassword;
@@ -20,13 +20,13 @@ public class EmailConfiguration {
     @Value("${spring.mail.host}")
     private String fromHost;
 
-    @Value("{spring.mail.properties.mail.smtp.auth}")
+    @Value("${spring.mail.properties.mail.smtp.auth}")
     private String getAuth;
 
-    @Value("{spring.mail.properties.mail.smtp.starttls.enable}")
+    @Value("${spring.mail.properties.mail.smtp.starttls.enable}")
     private String getStarttlsEnable;
 
-    @Value("{spring.mail.properties.mail.smtp.starttls.require}")
+    @Value("${spring.mail.properties.mail.smtp.starttls.required}")
     private String getStarttlsRequire;
 
     private static final String protocol = "mail.transport.protocol";
@@ -39,7 +39,7 @@ public class EmailConfiguration {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(fromHost);
         mailSender.setPort(587);
-        mailSender.setUsername(fromEmailId);
+        mailSender.setUsername(fromEmail);
         mailSender.setPassword(fromPassword);
 
         Properties props = mailSender.getJavaMailProperties();
