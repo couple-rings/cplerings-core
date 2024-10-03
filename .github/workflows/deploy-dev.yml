@@ -68,22 +68,21 @@ jobs:
           printf "%s" "${{ secrets.EC2_SSH_KEY }}" > ec2_key.pem
           chmod 400 ec2_key.pem
 
-      - name: Add env
-        run: |
-          printf "%s" "${{ secrets.DEV_ENV }}" > .env
-
       - name: Deploy to EC2
         run: |
           ssh -o StrictHostKeyChecking=no -i ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.DEV_EC2_HOST }} << 'EOF'
-            docker pull cplerings/cplerings-core-dev:latest
+            printf "%s" "${{ secrets.DEV_ENV }}" > .env
 
-            docker stop cplerings-core-dev || true
-            docker rm cplerings-core-dev || true
+            sudo docker pull cplerings/cplerings-core-dev:latest
 
-            docker run -d --name cplerings-core-dev -p 8080:8080 --env-file .env ${{ secrets.DOCKER_HUB_NAMESPACE }}/${{ secrets.DEV_DOCKER_HUB_REPOSITORY }}:latest
+            sudo docker stop cplerings-core-dev || true
+            sudo docker rm cplerings-core-dev || true
+
+            sudo docker run -d --name cplerings-core-dev -p 8080:8080 --env-file .env ${{ secrets.DOCKER_HUB_NAMESPACE }}/${{ secrets.DEV_DOCKER_HUB_REPOSITORY }}:latest
+
+            rm .env
           EOF
 
       - name: Clean up SSH key
         run: |
           rm ec2_key.pem
-          rm .env
