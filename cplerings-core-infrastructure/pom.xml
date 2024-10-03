@@ -197,7 +197,6 @@
                         </exclude>
                     </excludes>
                     <mainClass>com.cplerings.core.infrastructure.CplringsCoreApplication</mainClass>
-                    <layout>JAR</layout>
                 </configuration>
                 <executions>
                     <execution>
