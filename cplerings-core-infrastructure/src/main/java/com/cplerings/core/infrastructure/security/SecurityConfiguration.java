@@ -42,6 +42,10 @@ public class SecurityConfiguration {
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/docs/**"))
                         .permitAll())
+                .authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/auth/**"))
+                        .permitAll())
+                .authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
+                        .authenticated())
                 .build();
     }
 
