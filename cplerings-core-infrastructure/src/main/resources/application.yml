@@ -34,8 +34,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${CPLERINGS_EMAIL}
-    password: ${CPLERINGS_EMAIL_APP_PASSWORD}
+    username: couplerings.sep@gmail.com
+    password: bwfy eclc zsdl ieji
     properties:
       mail:
         smtp:
