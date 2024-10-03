@@ -5,27 +5,37 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 
+import com.cplerings.core.application.shared.service.email.IEmailService;
+import com.cplerings.core.common.dto.EmailDTO;
+
 import jakarta.mail.Message;
 import jakarta.mail.internet.InternetAddress;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Service
-public class EmailService {
+@RequiredArgsConstructor
+public class EmailService implements IEmailService {
 
-    private final JavaMailSender javaMailSender;
+    @NonNull
+    private JavaMailSender javaMailSender;
 
     @Value("${spring.mail.username}")
     private String emailSender;
 
-    public EmailService(JavaMailSender javaMailSender) {
-        this.javaMailSender = javaMailSender;
-    }
+    public void sendMail(EmailDTO emailDTO) {
+        if (emailDTO == null) {
+            throw new IllegalArgumentException("EmailDTO cannot be null");
+        }
+        if (emailDTO.getRecipient().isEmpty()) {
+            throw new IllegalArgumentException("Recipient cannot be empty");
+        }
 
-    public void sendMail(String recipient, String body, String subject) {
         final MimeMessagePreparator messagePreparator = mimeMessage -> {
-            mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
+            mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(emailDTO.getRecipient()));
             mimeMessage.setFrom(new InternetAddress(emailSender));
-            mimeMessage.setSubject(subject);
-            mimeMessage.setContent(body, "text/html; charset=utf-8");
+            mimeMessage.setSubject(emailDTO.getSubject());
+            mimeMessage.setContent(emailDTO.getBody(), "text/html; charset=utf-8");
         };
         javaMailSender.send(messagePreparator);
     }
