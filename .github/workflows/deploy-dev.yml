@@ -73,7 +73,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.DEV_EC2_HOST }} << 'EOF'
             printf "%s" "${{ secrets.DEV_ENV }}" > .env
 
-            sudo docker pull cplerings/cplerings-core-dev:latest
+            sudo docker pull ${{ secrets.DOCKER_HUB_NAMESPACE }}/${{ secrets.DEV_DOCKER_HUB_REPOSITORY }}:latest
 
             sudo docker stop cplerings-core-dev || true
             sudo docker rm cplerings-core-dev || true
