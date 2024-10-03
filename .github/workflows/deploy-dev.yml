@@ -57,7 +57,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: cplerings/cplerings-core-dev:latest
+          tags: ${{ secrets.DOCKER_HUB_NAMESPACE }}/${{ secrets.DEV_DOCKER_HUB_REPOSITORY }}:latest
 
   deploy-ec2:
     needs: [ build-push-docker ]
@@ -80,7 +80,7 @@ jobs:
             docker stop cplerings-core-dev || true
             docker rm cplerings-core-dev || true
 
-            docker run -d --name cplerings-core-dev -p 8080:8080 --env-file .env cplerings/cplerings-core-dev:latest
+            docker run -d --name cplerings-core-dev -p 8080:8080 --env-file .env ${{ secrets.DOCKER_HUB_NAMESPACE }}/${{ secrets.DEV_DOCKER_HUB_REPOSITORY }}:latest
           EOF
 
       - name: Clean up SSH key
