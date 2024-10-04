@@ -34,7 +34,7 @@ public abstract class AbstractPaginatedResponse<T> extends AbstractResponse {
         private int count;
         private Collection<T> data;
 
-        public final S data(Pageable pageable, Collection<T> data) {
+        public final S data(Collection<T> data) {
             Objects.requireNonNull(data, "Data must not be null");
             this.count = data.size();
             this.data = data;

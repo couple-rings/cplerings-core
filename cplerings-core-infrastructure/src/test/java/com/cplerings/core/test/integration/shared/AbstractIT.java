@@ -125,4 +125,8 @@ public abstract class AbstractIT {
             GET, POST, PUT, PATCH, DELETE
         }
     }
+
+    protected final void thenResponseIsOk(WebTestClient.ResponseSpec response) {
+        response.expectStatus().isOk();
+    }
 }

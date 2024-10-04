@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-class AuthenticateUserJWTIT extends AbstractIT {
+class AuthenticateUserUseCaseIT extends AbstractIT {
 
     @Autowired
     private JWTTestHelper jwtTestHelper;
@@ -31,10 +31,6 @@ class AuthenticateUserJWTIT extends AbstractIT {
 
         thenResponseIsOk(response);
         thenResponseBodyIsHelloMessage(response);
-    }
-
-    private void thenResponseIsOk(WebTestClient.ResponseSpec response) {
-        response.expectStatus().isOk();
     }
 
     private void thenResponseBodyIsHelloMessage(WebTestClient.ResponseSpec response) {

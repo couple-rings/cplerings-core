@@ -5,7 +5,7 @@ import static com.cplerings.core.application.authentication.error.Authentication
 import static com.cplerings.core.application.authentication.error.AuthenticationErrorCode.NO_TOKEN;
 import static com.cplerings.core.application.authentication.error.AuthenticationErrorCode.TOKEN_EXPIRED;
 
-import com.cplerings.core.application.authentication.AuthenticateUserJWTUseCase;
+import com.cplerings.core.application.authentication.AuthenticateUserUseCase;
 import com.cplerings.core.application.authentication.datasource.AuthenticateUserJWTDataSource;
 import com.cplerings.core.application.authentication.input.JWTInput;
 import com.cplerings.core.application.authentication.mapper.AccountApplicationMapper;
@@ -26,8 +26,8 @@ import java.util.Optional;
 
 @UseCaseImplementation
 @RequiredArgsConstructor
-public class AuthenticateUserJWTUseCaseImpl extends AbstractNewUseCase<JWTInput, AccountOutput>
-        implements AuthenticateUserJWTUseCase {
+public class AuthenticateUserUseCaseImpl extends AbstractNewUseCase<JWTInput, AccountOutput>
+        implements AuthenticateUserUseCase {
 
     private final JWTVerificationService jwtVerificationService;
     private final AuthenticateUserJWTDataSource dataSource;
