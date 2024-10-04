@@ -1,6 +1,6 @@
 package com.cplerings.core.infrastructure.security;
 
-import com.cplerings.core.application.authentication.AuthenticateUserJWTUseCase;
+import com.cplerings.core.application.authentication.AuthenticateUserUseCase;
 import com.cplerings.core.application.authentication.input.JWTInput;
 import com.cplerings.core.application.authentication.output.AccountOutput;
 import com.cplerings.core.application.authentication.output.RoleOutput;
@@ -35,7 +35,7 @@ public final class JWTAuthenticationFilter extends OncePerRequestFilter {
     private static final String AUTHENTICATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
 
-    private final AuthenticateUserJWTUseCase authenticateUserJWTUseCase;
+    private final AuthenticateUserUseCase authenticateUserUseCase;
     private final SecurityHelper securityHelper;
 
     @Override
@@ -45,7 +45,7 @@ public final class JWTAuthenticationFilter extends OncePerRequestFilter {
         final String authorizationHeader = request.getHeader(AUTHENTICATION_HEADER);
         if (StringUtils.isNotBlank(authorizationHeader) && authorizationHeader.startsWith(BEARER_PREFIX)) {
             final String token = authorizationHeader.substring(BEARER_PREFIX.length());
-            final Either<AccountOutput, ErrorCodes> authenticationEither = authenticateUserJWTUseCase.execute(JWTInput.builder()
+            final Either<AccountOutput, ErrorCodes> authenticationEither = authenticateUserUseCase.execute(JWTInput.builder()
                     .token(token)
                     .build());
             if (authenticationEither.isLeft()) {

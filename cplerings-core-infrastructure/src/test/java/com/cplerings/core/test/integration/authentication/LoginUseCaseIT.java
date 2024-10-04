@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 @Slf4j
-class LoginIT extends AbstractIT {
+class LoginUseCaseIT extends AbstractIT {
 
     private static final String LOGIN_PATH = "/auth/login";
 
@@ -35,10 +35,6 @@ class LoginIT extends AbstractIT {
         thenResponseIsOk(response);
         final AuthenticationToken token = thenTokenAndRefreshTokenAreReturned(response);
         thenBothTokensAreValid(token);
-    }
-
-    private void thenResponseIsOk(WebTestClient.ResponseSpec response) {
-        response.expectStatus().isOk();
     }
 
     private AuthenticationToken thenTokenAndRefreshTokenAreReturned(WebTestClient.ResponseSpec response) {
