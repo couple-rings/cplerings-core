@@ -45,6 +45,7 @@ class EmailServiceIT extends AbstractIT {
     @AfterEach
     public void tearDown() {
         // Stop GreenMail server after each test
+        greenMail.stop();
         greenMail = null;
     }
 
