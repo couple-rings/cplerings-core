@@ -14,7 +14,7 @@ import com.cplerings.core.application.shared.service.jwt.JWTGenerationService;
 import com.cplerings.core.application.shared.service.jwt.input.JWTGenerationInput;
 import com.cplerings.core.application.shared.service.password.PasswordService;
 import com.cplerings.core.application.shared.transaction.SessionInformation;
-import com.cplerings.core.application.shared.usecase.AbstractNewUseCase;
+import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.domain.account.Account;
@@ -26,7 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 
 @UseCaseImplementation
 @RequiredArgsConstructor
-public class LoginUseCaseImpl extends AbstractNewUseCase<LoginCredentialInput, AuthenticationTokenOutput>
+public class LoginUseCaseImpl extends AbstractUseCase<LoginCredentialInput, AuthenticationTokenOutput>
         implements LoginUseCase {
 
     private final LoginDataSource loginDataSource;

@@ -2,7 +2,7 @@ package com.cplerings.core.test.shared.hello;
 
 import static com.cplerings.core.application.shared.errorcode.ErrorCode.SYSTEM_ERROR;
 
-import com.cplerings.core.application.shared.usecase.AbstractNewUseCase;
+import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.TestComponent;
 
 @TestComponent
 @RequiredArgsConstructor
-public class TestFailedValidationUseCase extends AbstractNewUseCase<String, String> {
+public class TestFailedValidationUseCase extends AbstractUseCase<String, String> {
 
     private final HelloRepository helloRepository;
 

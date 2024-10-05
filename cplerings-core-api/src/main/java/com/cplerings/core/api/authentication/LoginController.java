@@ -1,19 +1,19 @@
 package com.cplerings.core.api.authentication;
 
 import com.cplerings.core.api.authentication.data.AuthenticationToken;
-import com.cplerings.core.api.authentication.mapper.AuthenticationAPIMapper;
+import com.cplerings.core.api.authentication.mapper.LoginAPIMapper;
 import com.cplerings.core.api.authentication.request.LoginCredentialRequest;
 import com.cplerings.core.api.authentication.response.AuthenticationTokenResponse;
+import com.cplerings.core.api.mapper.APIMapper;
 import com.cplerings.core.api.openapi.AuthTag;
 import com.cplerings.core.api.openapi.ErrorAPIResponse;
 import com.cplerings.core.api.security.IsAnyone;
-import com.cplerings.core.api.shared.AbstractRestController;
+import com.cplerings.core.api.shared.AbstractDataController;
 import com.cplerings.core.application.authentication.LoginUseCase;
 import com.cplerings.core.application.authentication.input.LoginCredentialInput;
 import com.cplerings.core.application.authentication.output.AuthenticationTokenOutput;
-import com.cplerings.core.application.shared.errorcode.ErrorCodes;
+import com.cplerings.core.application.shared.usecase.UseCase;
 import com.cplerings.core.common.api.APIConstant;
-import com.cplerings.core.common.either.Either;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,10 +29,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RestController
 @RequiredArgsConstructor
-public class LoginController extends AbstractRestController {
+public class LoginController extends AbstractDataController<LoginCredentialInput, AuthenticationTokenOutput, AuthenticationToken, LoginCredentialRequest, AuthenticationTokenResponse> {
 
     private final LoginUseCase loginUseCase;
-    private final AuthenticationAPIMapper authenticationAPIMapper;
+    private final LoginAPIMapper loginAPIMapper;
 
     @PostMapping("/auth/login")
     @IsAnyone
@@ -52,14 +52,17 @@ public class LoginController extends AbstractRestController {
             )
     )
     @ErrorAPIResponse
-    public ResponseEntity<Object> login(@RequestBody LoginCredentialRequest loginCredentialRequest) {
-        final LoginCredentialInput loginCredentialInput = authenticationAPIMapper.toInput(loginCredentialRequest);
-        final Either<AuthenticationTokenOutput, ErrorCodes> authenticationTokenEither = loginUseCase.execute(loginCredentialInput);
-        if (authenticationTokenEither.isLeft()) {
-            final AuthenticationToken token = authenticationAPIMapper.toData(authenticationTokenEither.getLeft());
-            return ResponseEntity.ok(authenticationAPIMapper.toResponse(token));
-        } else {
-            return handleErrorCodes(authenticationTokenEither.getRight());
-        }
+    public ResponseEntity<Object> login(@RequestBody LoginCredentialRequest request) {
+        return handleRequest(request);
+    }
+
+    @Override
+    protected UseCase<LoginCredentialInput, AuthenticationTokenOutput> getUseCase() {
+        return loginUseCase;
+    }
+
+    @Override
+    protected APIMapper<LoginCredentialInput, AuthenticationTokenOutput, AuthenticationToken, LoginCredentialRequest, AuthenticationTokenResponse> getMapper() {
+        return loginAPIMapper;
     }
 }

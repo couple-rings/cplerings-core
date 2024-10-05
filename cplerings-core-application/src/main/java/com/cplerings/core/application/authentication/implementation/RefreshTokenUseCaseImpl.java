@@ -14,7 +14,7 @@ import com.cplerings.core.application.shared.service.jwt.JWTGenerationService;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationResult;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationService;
 import com.cplerings.core.application.shared.service.jwt.input.JWTGenerationInput;
-import com.cplerings.core.application.shared.usecase.AbstractNewUseCase;
+import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.domain.account.Account;
@@ -28,7 +28,7 @@ import java.util.Optional;
 
 @UseCaseImplementation
 @RequiredArgsConstructor
-public class RefreshTokenUseCaseImpl extends AbstractNewUseCase<RefreshTokenInput, AuthenticationTokenOutput>
+public class RefreshTokenUseCaseImpl extends AbstractUseCase<RefreshTokenInput, AuthenticationTokenOutput>
         implements RefreshTokenUseCase {
 
     private final JWTVerificationService jwtVerificationService;

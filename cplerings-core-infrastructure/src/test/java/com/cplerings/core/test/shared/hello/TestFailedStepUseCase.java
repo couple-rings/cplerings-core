@@ -1,6 +1,6 @@
 package com.cplerings.core.test.shared.hello;
 
-import com.cplerings.core.application.shared.usecase.AbstractNewUseCase;
+import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.TestComponent;
 
 @TestComponent
 @RequiredArgsConstructor
-public class TestFailedStepUseCase extends AbstractNewUseCase<String, String> {
+public class TestFailedStepUseCase extends AbstractUseCase<String, String> {
 
     private final HelloRepository helloRepository;
 
