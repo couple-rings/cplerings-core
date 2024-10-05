@@ -11,11 +11,12 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 @Configuration
 public class EmailConfiguration {
 
-    private static final String protocol = "mail.transport.protocol";
-    private static final String auth = "mail.smtp.auth";
-    private static final String enable = "mail.smtp.starttls.enable";
-    private static final String required = "mail.smtp.starttls.required";
-    private static final String smtp = "smtp";
+    private static final String PROTOCOL = "mail.transport.protocol";
+    private static final String AUTHENTICATION = "mail.smtp.auth";
+    private static final String ENABLE = "mail.smtp.starttls.enable";
+    private static final String REQUIRED = "mail.smtp.starttls.required";
+    private static final String SMTP = "smtp";
+    private static final int PORT = 587;
 
     @Value("${spring.mail.username}")
     private String email;
@@ -39,15 +40,15 @@ public class EmailConfiguration {
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(host);
-        mailSender.setPort(587);
+        mailSender.setPort(PORT);
         mailSender.setUsername(email);
         mailSender.setPassword(password);
 
         Properties props = mailSender.getJavaMailProperties();
-        props.put(protocol, smtp);
-        props.put(auth, authentication);
-        props.put(enable, starttlsEnable);
-        props.put(required, starttlsRequire);
+        props.put(PROTOCOL, SMTP);
+        props.put(AUTHENTICATION, authentication);
+        props.put(ENABLE, starttlsEnable);
+        props.put(REQUIRED, starttlsRequire);
 
         return mailSender;
     }
