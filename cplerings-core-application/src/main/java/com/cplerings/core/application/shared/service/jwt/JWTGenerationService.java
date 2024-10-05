@@ -1,8 +1,10 @@
 package com.cplerings.core.application.shared.service.jwt;
 
+import com.cplerings.core.application.shared.service.jwt.input.JWTGenerationInput;
+
 public interface JWTGenerationService {
 
-    String generateToken(String email);
+    String generateToken(JWTGenerationInput input);
 
-    String generateRefreshToken(String email);
+    String generateRefreshToken(JWTGenerationInput input);
 }

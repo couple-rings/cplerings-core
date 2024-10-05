@@ -1,12 +1,6 @@
 package com.cplerings.core.api.authentication;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.cplerings.core.api.authentication.data.AuthenticationToken;
-import com.cplerings.core.api.authentication.mapper.AuthenticationAPIMapper;
 import com.cplerings.core.api.authentication.mapper.RefreshTokenAPIMapper;
 import com.cplerings.core.api.authentication.request.RefreshTokenRequest;
 import com.cplerings.core.api.authentication.response.AuthenticationTokenResponse;
@@ -21,18 +15,23 @@ import com.cplerings.core.application.authentication.output.AuthenticationTokenO
 import com.cplerings.core.application.shared.usecase.UseCase;
 import com.cplerings.core.common.api.APIConstant;
 
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 public class RefreshTokenController extends AbstractDataController<RefreshTokenInput, AuthenticationTokenOutput, AuthenticationToken, RefreshTokenRequest, AuthenticationTokenResponse> {
 
     private final RefreshTokenUseCase refreshTokenUseCase;
-    private final AuthenticationAPIMapper authenticationAPIMapper;
     private final RefreshTokenAPIMapper refreshTokenAPIMapper;
 
     @PostMapping("/auth/refresh")
@@ -58,12 +57,12 @@ public class RefreshTokenController extends AbstractDataController<RefreshTokenI
     }
 
     @Override
-    protected APIMapper<RefreshTokenInput, AuthenticationTokenOutput, AuthenticationToken, RefreshTokenRequest, AuthenticationTokenResponse> getMapper() {
-        return refreshTokenAPIMapper;
+    protected UseCase<RefreshTokenInput, AuthenticationTokenOutput> getUseCase() {
+        return refreshTokenUseCase;
     }
 
     @Override
-    protected UseCase<RefreshTokenInput, AuthenticationTokenOutput> getUseCase() {
-        return refreshTokenUseCase;
+    protected APIMapper<RefreshTokenInput, AuthenticationTokenOutput, AuthenticationToken, RefreshTokenRequest, AuthenticationTokenResponse> getMapper() {
+        return refreshTokenAPIMapper;
     }
 }

@@ -1,4 +1,4 @@
-package com.cplerings.core.test.integration.shared.hello;
+package com.cplerings.core.test.shared.hello;
 
 import com.cplerings.core.api.shared.AbstractRestController;
 import com.cplerings.core.common.security.RoleConstant;

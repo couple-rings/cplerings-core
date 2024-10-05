@@ -14,10 +14,14 @@ spring:
     user: sa
     driver-class-name: org.h2.Driver
     locations: classpath:db/migration/prod,classpath:db/migration/dev,classpath:db/migration/test
+    baseline-on-migrate: true
     clean-disabled: false
   jpa:
     show-sql: false
     open-in-view: false
+  main:
+    lazy-initialization: true
+    allow-bean-definition-overriding: true
   mail:
     host: localhost
     port: 3025
@@ -36,6 +40,6 @@ cplerings:
     path: /api/v1
   jwt:
     secret: 668798158e6707ed8d2892907ae898e43bc64820c98f3c2f3ca2b2c0894411fc76ae7b5613e165332472e58ff315482bf90f6fd08ced5fa9ca4b18c6a82c14e5
-    duration: 5
+    duration: 10
     refreshDuration: 10
   locale: vi

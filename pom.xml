@@ -137,10 +137,31 @@
                 <version>3.5.0</version>
                 <executions>
                     <execution>
+                        <id>integration-test</id>
                         <goals>
                             <goal>verify</goal>
                             <goal>integration-test</goal>
                         </goals>
+
+                        <configuration>
+                            <includes>
+                                <include>**/*IT.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>component-test</id>
+                        <goals>
+                            <goal>verify</goal>
+                            <goal>integration-test</goal>
+                        </goals>
+
+                        <configuration>
+                            <includes>
+                                <include>**/*CT.java</include>
+                            </includes>
+                        </configuration>
                     </execution>
                 </executions>
                 <configuration>

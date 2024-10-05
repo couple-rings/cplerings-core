@@ -1,11 +1,11 @@
 package com.cplerings.core.api.shared;
 
-import org.springframework.http.ResponseEntity;
-
 import com.cplerings.core.api.mapper.APIMapper;
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
 import com.cplerings.core.application.shared.usecase.UseCase;
 import com.cplerings.core.common.either.Either;
+
+import org.springframework.http.ResponseEntity;
 
 @SuppressWarnings("java:S119")
 public abstract class AbstractDataController<IN, OUT, DATA, REQ, RES>
@@ -25,7 +25,7 @@ public abstract class AbstractDataController<IN, OUT, DATA, REQ, RES>
         }
     }
 
-    protected abstract APIMapper<IN, OUT, DATA, REQ, RES> getMapper();
-
     protected abstract UseCase<IN, OUT> getUseCase();
+
+    protected abstract APIMapper<IN, OUT, DATA, REQ, RES> getMapper();
 }

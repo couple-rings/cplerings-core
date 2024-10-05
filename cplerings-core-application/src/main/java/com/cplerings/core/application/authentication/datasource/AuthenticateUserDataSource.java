@@ -4,7 +4,7 @@ import com.cplerings.core.domain.account.Account;
 
 import java.util.Optional;
 
-public interface AuthenticateUserJWTDataSource {
+public interface AuthenticateUserDataSource {
 
     Optional<Account> getAuthenticatedAccount(String email);
 }

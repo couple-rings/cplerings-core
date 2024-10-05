@@ -1,16 +1,17 @@
 package com.cplerings.core.infrastructure.email;
 
+import com.cplerings.core.application.shared.service.email.EmailService;
+import com.cplerings.core.common.dto.EmailInfo;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 
-import com.cplerings.core.application.shared.service.email.EmailService;
-import com.cplerings.core.common.dto.EmailInfo;
-
 import jakarta.mail.Message;
 import jakarta.mail.internet.InternetAddress;
-import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

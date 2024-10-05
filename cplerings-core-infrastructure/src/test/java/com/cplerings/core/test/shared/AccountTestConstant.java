@@ -1,4 +1,4 @@
-package com.cplerings.core.test.integration.shared.helper;
+package com.cplerings.core.test.shared;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

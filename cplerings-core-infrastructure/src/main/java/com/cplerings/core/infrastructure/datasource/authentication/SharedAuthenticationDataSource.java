@@ -1,7 +1,8 @@
 package com.cplerings.core.infrastructure.datasource.authentication;
 
-import com.cplerings.core.application.authentication.datasource.AuthenticateUserJWTDataSource;
+import com.cplerings.core.application.authentication.datasource.AuthenticateUserDataSource;
 import com.cplerings.core.application.authentication.datasource.LoginDataSource;
+import com.cplerings.core.application.authentication.datasource.RefreshTokenDataSource;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 @DataSource
 public class SharedAuthenticationDataSource extends AbstractDataSource
-        implements LoginDataSource, AuthenticateUserJWTDataSource {
+        implements LoginDataSource, AuthenticateUserDataSource, RefreshTokenDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
 
@@ -30,6 +31,11 @@ public class SharedAuthenticationDataSource extends AbstractDataSource
 
     @Override
     public Optional<Account> getAuthenticatedAccount(String email) {
+        return internalGetAccountByEmail(email);
+    }
+
+    @Override
+    public Optional<Account> getAccountFromToken(String email) {
         return internalGetAccountByEmail(email);
     }
 }
