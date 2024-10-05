@@ -9,7 +9,7 @@ import com.cplerings.core.common.either.Either;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class AbstractNewUseCase<I, O> implements UseCase<I, O> {
+public abstract class AbstractUseCase<I, O> implements UseCase<I, O> {
 
     private TransactionManager transactionManager;
 

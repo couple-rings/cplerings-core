@@ -13,7 +13,7 @@ import com.cplerings.core.application.authentication.output.AuthenticatedAccount
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationResult;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationService;
 import com.cplerings.core.application.shared.transaction.SessionInformation;
-import com.cplerings.core.application.shared.usecase.AbstractNewUseCase;
+import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.domain.account.Account;
@@ -26,7 +26,7 @@ import java.util.Optional;
 
 @UseCaseImplementation
 @RequiredArgsConstructor
-public class AuthenticateUserUseCaseImpl extends AbstractNewUseCase<JWTInput, AuthenticatedAccountOutput>
+public class AuthenticateUserUseCaseImpl extends AbstractUseCase<JWTInput, AuthenticatedAccountOutput>
         implements AuthenticateUserUseCase {
 
     private final JWTVerificationService jwtVerificationService;

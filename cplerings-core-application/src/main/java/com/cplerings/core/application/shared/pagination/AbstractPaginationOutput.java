@@ -23,8 +23,7 @@ public abstract class AbstractPaginationOutput<T> implements Pageable {
     protected Collection<T> data;
 
     public static abstract class AbstractBuilder<S extends AbstractBuilder<S, P, T>, P extends AbstractPaginationOutput<T>, T>
-            extends AbstractSelf<S>
-            implements Buildable<P> {
+            extends AbstractSelf<S> implements Buildable<P> {
 
         @Getter(AccessLevel.PROTECTED)
         private int page = PaginationConstant.DEFAULT_PAGE;
