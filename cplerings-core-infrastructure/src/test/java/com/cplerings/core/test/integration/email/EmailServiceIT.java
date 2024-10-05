@@ -15,7 +15,7 @@ import com.icegreen.greenmail.util.ServerSetup;
 
 import jakarta.mail.internet.MimeMessage;
 
-class EmailServiceit extends AbstractIT {
+class EmailServiceIT extends AbstractIT {
 
     @Autowired
     private JavaMailSender javaMailSender;
@@ -45,7 +45,7 @@ class EmailServiceit extends AbstractIT {
     @AfterEach
     public void tearDown() {
         // Stop GreenMail server after each test
-        greenMail.stop();
+        greenMail = null;
     }
 
     @Test
