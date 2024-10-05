@@ -8,13 +8,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import com.cplerings.core.common.dto.EmailDTO;
-import com.cplerings.core.infrastructure.email.EmailService;
+import com.cplerings.core.common.dto.EmailInfo;
+import com.cplerings.core.infrastructure.email.EmailServiceImpl;
 
 class EmailServiceTest {
 
     @InjectMocks
-    private EmailService emailService;
+    private EmailServiceImpl emailService;
 
     @Mock
     private JavaMailSender javaMailSender;
@@ -29,59 +29,21 @@ class EmailServiceTest {
         String recipient = "nguyendocaolinh@gmail.com";
         String subject = "Test Email";
         String body = "<h1>This is a test email</h1>";
-        EmailDTO emailDTO = EmailDTO.builder()
+        EmailInfo emailInfo = EmailInfo.builder()
                 .recipient(recipient)
                 .subject(subject)
                 .body(body)
                 .build();
 
         // Act
-        thenNoExceptionIsThrown(emailDTO);
+        thenNoExceptionIsThrown(emailInfo);
     }
 
-    @Test
-    void givenSystem_whenSendEmailWithoutCorrectEmailDTO() {
-        EmailDTO emailDTO = null;
-
-        // Act
-        thenEmailDTOIsInvalid(emailDTO);
-    }
-
-    @Test
-    void givenSystem_whenSendEmailWithoutRecipient() {
-        String subject = "Test Email";
-        String body = "<h1>This is a test email</h1>";
-        EmailDTO emailDTO = EmailDTO.builder()
-                .subject(subject)
-                .body(body)
-                .build();
-
-        // Act
-        thenRecipientIsInvalid(emailDTO);
-    }
-
-    private void thenEmailDTOIsInvalid(EmailDTO emailDTO) {
+    private void thenNoExceptionIsThrown(EmailInfo emailInfo) {
         try {
-            emailService.sendMail(emailDTO);
-        } catch (Exception e) {
-            Assertions.assertThat(emailDTO).isNull();
-        }
-    }
-
-    private void thenNoExceptionIsThrown(EmailDTO emailDTO) {
-        try {
-            emailService.sendMail(emailDTO);
+            emailService.sendMail(emailInfo);
         } catch (Exception e) {
             Assertions.fail(e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void thenRecipientIsInvalid(EmailDTO emailDTO) {
-        try {
-            emailService.sendMail(emailDTO);
-        } catch (Exception e) {
-            Assertions.assertThat(emailDTO.getRecipient()).isNull();
         }
     }
 }

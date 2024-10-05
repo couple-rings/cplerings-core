@@ -19,17 +19,17 @@ spring:
     show-sql: false
     open-in-view: false
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: caolinh1012003@gmail.com
-    password: wfdd qqcw imot ktes
+    host: localhost
+    port: 3025
+    username: test
+    password: test
     properties:
       mail:
         smtp:
-          auth: true
+          auth: false
           starttls:
-            enable: true
-            required: true
+            enable: false
+            required: false
 
 cplerings:
   api:

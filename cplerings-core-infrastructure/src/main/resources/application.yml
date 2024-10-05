@@ -35,7 +35,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: ${CPLERINGS_EMAIL}
-    password: ${CPLERINGS_EMAIL_APP_PASSWORD}
+    password: ${CPLERINGS_EMAIL_PASSWORD}
     properties:
       mail:
         smtp:
