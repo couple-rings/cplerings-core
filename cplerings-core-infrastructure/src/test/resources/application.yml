@@ -22,6 +22,18 @@ spring:
   main:
     lazy-initialization: true
     allow-bean-definition-overriding: true
+  mail:
+    host: localhost
+    port: 3025
+    username: test
+    password: test
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+            required: false
 
 cplerings:
   api:
