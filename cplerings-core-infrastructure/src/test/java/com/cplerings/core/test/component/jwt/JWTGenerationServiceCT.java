@@ -1,4 +1,4 @@
-package com.cplerings.core.test.component;
+package com.cplerings.core.test.component.jwt;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
