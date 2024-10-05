@@ -1,4 +1,4 @@
-package com.cplerings.core.test.integration.shared.hello;
+package com.cplerings.core.test.shared.hello;
 
 import static com.cplerings.core.application.shared.errorcode.ErrorCode.SYSTEM_ERROR;
 

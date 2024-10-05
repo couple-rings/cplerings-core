@@ -6,10 +6,10 @@ import static com.cplerings.core.application.authentication.error.Authentication
 import static com.cplerings.core.application.authentication.error.AuthenticationErrorCode.TOKEN_EXPIRED;
 
 import com.cplerings.core.application.authentication.AuthenticateUserUseCase;
-import com.cplerings.core.application.authentication.datasource.AuthenticateUserJWTDataSource;
+import com.cplerings.core.application.authentication.datasource.AuthenticateUserDataSource;
 import com.cplerings.core.application.authentication.input.JWTInput;
-import com.cplerings.core.application.authentication.mapper.AccountApplicationMapper;
-import com.cplerings.core.application.authentication.output.AccountOutput;
+import com.cplerings.core.application.authentication.mapper.AAuthenticateUserMapper;
+import com.cplerings.core.application.authentication.output.AuthenticatedAccountOutput;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationResult;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationService;
 import com.cplerings.core.application.shared.transaction.SessionInformation;
@@ -26,12 +26,12 @@ import java.util.Optional;
 
 @UseCaseImplementation
 @RequiredArgsConstructor
-public class AuthenticateUserUseCaseImpl extends AbstractNewUseCase<JWTInput, AccountOutput>
+public class AuthenticateUserUseCaseImpl extends AbstractNewUseCase<JWTInput, AuthenticatedAccountOutput>
         implements AuthenticateUserUseCase {
 
     private final JWTVerificationService jwtVerificationService;
-    private final AuthenticateUserJWTDataSource dataSource;
-    private final AccountApplicationMapper mapper;
+    private final AuthenticateUserDataSource dataSource;
+    private final AAuthenticateUserMapper mapper;
 
     @Override
     protected SessionInformation customizeSessionInformation() {
@@ -45,7 +45,7 @@ public class AuthenticateUserUseCaseImpl extends AbstractNewUseCase<JWTInput, Ac
     }
 
     @Override
-    protected AccountOutput internalExecute(UseCaseValidator validator, JWTInput input) {
+    protected AuthenticatedAccountOutput internalExecute(UseCaseValidator validator, JWTInput input) {
         final JWTVerificationResult result = jwtVerificationService.validateToken(input.token());
         if (JWTVerificationResult.Status.INVALID == result.getStatus()) {
             validator.validateAndStopExecution(false, INVALID_TOKEN);

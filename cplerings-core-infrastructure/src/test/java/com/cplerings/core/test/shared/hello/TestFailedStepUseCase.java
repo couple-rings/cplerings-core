@@ -1,4 +1,4 @@
-package com.cplerings.core.test.integration.shared.hello;
+package com.cplerings.core.test.shared.hello;
 
 import com.cplerings.core.application.shared.usecase.AbstractNewUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;

@@ -1,4 +1,4 @@
-package com.cplerings.core.test.integration.shared;
+package com.cplerings.core.test.shared;
 
 import com.cplerings.core.common.profile.ProfileConstant;
 import com.cplerings.core.infrastructure.CplringsCoreApplication;
@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -22,11 +23,11 @@ import java.util.Objects;
 
 @SpringBootTest(
         classes = {
-                CplringsCoreApplication.class,
-                ITConfiguration.class
+                CplringsCoreApplication.class
         },
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT
 )
+@Import(ITConfiguration.class)
 @ActiveProfiles(ProfileConstant.TEST)
 public abstract class AbstractIT {
 
@@ -61,6 +62,10 @@ public abstract class AbstractIT {
 
     protected <T> BlazeJPAQuery<T> createQuery() {
         return new BlazeJPAQuery<>(em, cbf);
+    }
+
+    protected final void thenResponseIsOk(WebTestClient.ResponseSpec response) {
+        response.expectStatus().isOk();
     }
 
     protected final class RequestBuilder<B> {
@@ -124,9 +129,5 @@ public abstract class AbstractIT {
 
             GET, POST, PUT, PATCH, DELETE
         }
-    }
-
-    protected final void thenResponseIsOk(WebTestClient.ResponseSpec response) {
-        response.expectStatus().isOk();
     }
 }

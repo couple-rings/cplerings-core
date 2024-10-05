@@ -1,29 +1,29 @@
 package com.cplerings.core.test.integration.authentication;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.reactive.server.WebTestClient;
-
 import com.cplerings.core.api.authentication.data.AuthenticationToken;
 import com.cplerings.core.api.authentication.request.RefreshTokenRequest;
 import com.cplerings.core.api.authentication.response.AuthenticationTokenResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
-import com.cplerings.core.application.shared.service.jwt.JWTGenerationService;
-import com.cplerings.core.test.integration.shared.AbstractIT;
-import com.cplerings.core.test.integration.shared.hello.TestController;
-import com.cplerings.core.test.integration.shared.helper.AccountTestConstant;
+import com.cplerings.core.test.shared.AbstractIT;
+import com.cplerings.core.test.shared.AccountTestConstant;
+import com.cplerings.core.test.shared.hello.TestController;
+import com.cplerings.core.test.shared.helper.JWTTestHelper;
+
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 class RefreshTokenUseCaseIT extends AbstractIT {
 
     private static final String REFRESH_TOKEN_PATH = "/auth/refresh";
 
     @Autowired
-    private JWTGenerationService jwtGenerationService;
+    private JWTTestHelper jwtTestHelper;
 
     @Test
     void givenAnyone_whenRefreshToken() {
-        final String refreshToken = jwtGenerationService.generateRefreshToken(AccountTestConstant.CUSTOMER_EMAIL);
+        final String refreshToken = jwtTestHelper.generateRefreshToken(AccountTestConstant.CUSTOMER_EMAIL);
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(REFRESH_TOKEN_PATH)
                 .method(RequestBuilder.Method.POST)

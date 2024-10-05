@@ -9,13 +9,16 @@ import com.cplerings.core.application.authentication.LoginUseCase;
 import com.cplerings.core.application.authentication.datasource.LoginDataSource;
 import com.cplerings.core.application.authentication.input.LoginCredentialInput;
 import com.cplerings.core.application.authentication.output.AuthenticationTokenOutput;
+import com.cplerings.core.application.shared.mapper.ARoleMapper;
 import com.cplerings.core.application.shared.service.jwt.JWTGenerationService;
+import com.cplerings.core.application.shared.service.jwt.input.JWTGenerationInput;
 import com.cplerings.core.application.shared.service.password.PasswordService;
 import com.cplerings.core.application.shared.transaction.SessionInformation;
 import com.cplerings.core.application.shared.usecase.AbstractNewUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.Role;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +32,7 @@ public class LoginUseCaseImpl extends AbstractNewUseCase<LoginCredentialInput, A
     private final LoginDataSource loginDataSource;
     private final PasswordService passwordService;
     private final JWTGenerationService jwtGenerationService;
+    private final ARoleMapper aRoleMapper;
 
     @Override
     protected SessionInformation customizeSessionInformation() {
@@ -47,11 +51,19 @@ public class LoginUseCaseImpl extends AbstractNewUseCase<LoginCredentialInput, A
         final Account loginAccount = loginDataSource.getLoginAccount(input.getEmail())
                 .orElse(null);
         validator.validateAndStopExecution(loginAccount != null, ACCOUNT_WITH_EMAIL_NOT_FOUND);
-        validator.validateAndStopExecution(passwordService.passwordMatchesEncrypted(input.getPassword(), loginAccount.getPassword()),
+        validator.validateAndStopExecution(passwordService.passwordMatchesEncrypted(input.getPassword(),
+                        loginAccount.getPassword()),
                 INVALID_PASSWORD);
         final String email = loginAccount.getEmail();
-        final String token = jwtGenerationService.generateToken(email);
-        final String refreshToken = jwtGenerationService.generateRefreshToken(email);
+        final Role role = loginAccount.getRole();
+        final Long accountId = loginAccount.getId();
+        final JWTGenerationInput jwtGenerationInput = JWTGenerationInput.builder()
+                .email(email)
+                .accountId(accountId)
+                .role(aRoleMapper.toRole(role))
+                .build();
+        final String token = jwtGenerationService.generateToken(jwtGenerationInput);
+        final String refreshToken = jwtGenerationService.generateRefreshToken(jwtGenerationInput);
         return new AuthenticationTokenOutput(token, refreshToken);
     }
 }

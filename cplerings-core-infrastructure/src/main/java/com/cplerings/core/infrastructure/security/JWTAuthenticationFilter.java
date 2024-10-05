@@ -2,8 +2,8 @@ package com.cplerings.core.infrastructure.security;
 
 import com.cplerings.core.application.authentication.AuthenticateUserUseCase;
 import com.cplerings.core.application.authentication.input.JWTInput;
-import com.cplerings.core.application.authentication.output.AccountOutput;
-import com.cplerings.core.application.authentication.output.RoleOutput;
+import com.cplerings.core.application.authentication.output.AuthenticatedAccountOutput;
+import com.cplerings.core.application.shared.entity.ARole;
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
 import com.cplerings.core.common.either.Either;
 import com.cplerings.core.common.security.RoleConstant;
@@ -45,7 +45,7 @@ public final class JWTAuthenticationFilter extends OncePerRequestFilter {
         final String authorizationHeader = request.getHeader(AUTHENTICATION_HEADER);
         if (StringUtils.isNotBlank(authorizationHeader) && authorizationHeader.startsWith(BEARER_PREFIX)) {
             final String token = authorizationHeader.substring(BEARER_PREFIX.length());
-            final Either<AccountOutput, ErrorCodes> authenticationEither = authenticateUserUseCase.execute(JWTInput.builder()
+            final Either<AuthenticatedAccountOutput, ErrorCodes> authenticationEither = authenticateUserUseCase.execute(JWTInput.builder()
                     .token(token)
                     .build());
             if (authenticationEither.isLeft()) {
@@ -58,13 +58,13 @@ public final class JWTAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private void authenticateUserWithToken(AccountOutput account) {
+    private void authenticateUserWithToken(AuthenticatedAccountOutput account) {
         final UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(account.getEmail(),
                 null, mapAccountRole(account.getRole()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    private Collection<? extends GrantedAuthority> mapAccountRole(RoleOutput role) {
+    private Collection<? extends GrantedAuthority> mapAccountRole(ARole role) {
         final String roleAuthority = switch (role) {
             case MANAGER -> RoleConstant.ROLE_MANAGER;
             case STAFF -> RoleConstant.ROLE_STAFF;

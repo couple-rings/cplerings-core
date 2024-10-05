@@ -1,9 +1,9 @@
 package com.cplerings.core.application.authentication;
 
 import com.cplerings.core.application.authentication.input.JWTInput;
-import com.cplerings.core.application.authentication.output.AccountOutput;
+import com.cplerings.core.application.authentication.output.AuthenticatedAccountOutput;
 import com.cplerings.core.application.shared.usecase.UseCase;
 
-public interface AuthenticateUserUseCase extends UseCase<JWTInput, AccountOutput> {
+public interface AuthenticateUserUseCase extends UseCase<JWTInput, AuthenticatedAccountOutput> {
 
 }

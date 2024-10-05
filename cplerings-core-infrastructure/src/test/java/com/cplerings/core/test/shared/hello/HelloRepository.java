@@ -1,4 +1,4 @@
-package com.cplerings.core.test.integration.shared.hello;
+package com.cplerings.core.test.shared.hello;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

@@ -1,5 +1,7 @@
 package com.cplerings.core.application.authentication.output;
 
+import com.cplerings.core.application.shared.entity.ARole;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,10 +13,10 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountOutput {
+public class AuthenticatedAccountOutput {
 
     private Long id;
     private String email;
     private String password;
-    private RoleOutput role;
+    private ARole role;
 }

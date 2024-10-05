@@ -3,7 +3,7 @@ package com.cplerings.core.test.integration.environment;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.account.Role;
-import com.cplerings.core.test.integration.shared.AbstractIT;
+import com.cplerings.core.test.shared.AbstractIT;
 
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.Assertions;
