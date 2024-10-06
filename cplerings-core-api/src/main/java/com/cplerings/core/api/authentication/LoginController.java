@@ -1,13 +1,17 @@
 package com.cplerings.core.api.authentication;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.cplerings.core.api.authentication.data.AuthenticationToken;
-import com.cplerings.core.api.authentication.mapper.LoginAPIMapper;
+import com.cplerings.core.api.authentication.mapper.APILoginMapper;
 import com.cplerings.core.api.authentication.request.LoginCredentialRequest;
 import com.cplerings.core.api.authentication.response.AuthenticationTokenResponse;
 import com.cplerings.core.api.mapper.APIMapper;
 import com.cplerings.core.api.openapi.AuthTag;
 import com.cplerings.core.api.openapi.ErrorAPIResponse;
-import com.cplerings.core.api.security.IsAnyone;
 import com.cplerings.core.api.shared.AbstractDataController;
 import com.cplerings.core.application.authentication.LoginUseCase;
 import com.cplerings.core.application.authentication.input.LoginCredentialInput;
@@ -15,27 +19,20 @@ import com.cplerings.core.application.authentication.output.AuthenticationTokenO
 import com.cplerings.core.application.shared.usecase.UseCase;
 import com.cplerings.core.common.api.APIConstant;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 public class LoginController extends AbstractDataController<LoginCredentialInput, AuthenticationTokenOutput, AuthenticationToken, LoginCredentialRequest, AuthenticationTokenResponse> {
 
     private final LoginUseCase loginUseCase;
-    private final LoginAPIMapper loginAPIMapper;
+    private final APILoginMapper apiLoginMapper;
 
     @PostMapping("/auth/login")
-    @IsAnyone
     @AuthTag
     @Operation(summary = "Login into the app and receive Authentication JWT")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -63,6 +60,6 @@ public class LoginController extends AbstractDataController<LoginCredentialInput
 
     @Override
     protected APIMapper<LoginCredentialInput, AuthenticationTokenOutput, AuthenticationToken, LoginCredentialRequest, AuthenticationTokenResponse> getMapper() {
-        return loginAPIMapper;
+        return apiLoginMapper;
     }
 }

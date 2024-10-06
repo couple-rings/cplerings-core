@@ -1,23 +1,25 @@
 package com.cplerings.core.application.shared.errorcode;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
+import static com.cplerings.core.application.shared.errorcode.ErrorCode.System.ERROR;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @ToString
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ErrorCodes {
 
-    public static final ErrorCodes SYSTEM_ERROR = ErrorCodes.create(ErrorCode.SYSTEM_ERROR);
+    public static final ErrorCodes SYSTEM_ERROR = ErrorCodes.create(ERROR);
 
     private final Collection<ErrorCode> errors;
 

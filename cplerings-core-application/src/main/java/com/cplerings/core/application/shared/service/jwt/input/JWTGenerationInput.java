@@ -1,6 +1,6 @@
 package com.cplerings.core.application.shared.service.jwt.input;
 
-import com.cplerings.core.application.shared.entity.ARole;
+import com.cplerings.core.application.shared.entity.account.ARole;
 
 import lombok.Builder;
 
