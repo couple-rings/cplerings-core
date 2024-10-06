@@ -2,13 +2,13 @@ package com.cplerings.core.test.component.jwt;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.cplerings.core.application.shared.entity.ARole;
+import com.cplerings.core.application.shared.entity.account.ARole;
 import com.cplerings.core.application.shared.service.jwt.JWTGenerationService;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationResult;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationService;
 import com.cplerings.core.application.shared.service.jwt.input.JWTGenerationInput;
 import com.cplerings.core.test.shared.AbstractCT;
-import com.cplerings.core.test.shared.AccountTestConstant;
+import com.cplerings.core.test.shared.account.AccountTestConstant;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

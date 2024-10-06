@@ -5,7 +5,7 @@ import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.api.shared.ErrorCodesResponse;
 import com.cplerings.core.application.authentication.error.AuthenticationErrorCode;
 import com.cplerings.core.test.shared.AbstractIT;
-import com.cplerings.core.test.shared.AccountTestConstant;
+import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.hello.TestController;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
 

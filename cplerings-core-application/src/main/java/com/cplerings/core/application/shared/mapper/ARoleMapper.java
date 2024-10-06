@@ -1,6 +1,6 @@
 package com.cplerings.core.application.shared.mapper;
 
-import com.cplerings.core.application.shared.entity.ARole;
+import com.cplerings.core.application.shared.entity.account.ARole;
 import com.cplerings.core.common.mapper.SpringMapperConfiguration;
 import com.cplerings.core.domain.account.Role;
 

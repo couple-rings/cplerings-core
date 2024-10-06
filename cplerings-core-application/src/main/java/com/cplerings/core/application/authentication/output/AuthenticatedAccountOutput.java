@@ -1,6 +1,6 @@
 package com.cplerings.core.application.authentication.output;
 
-import com.cplerings.core.application.shared.entity.ARole;
+import com.cplerings.core.application.shared.entity.account.ARole;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

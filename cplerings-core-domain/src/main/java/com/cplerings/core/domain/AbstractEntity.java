@@ -1,16 +1,12 @@
 package com.cplerings.core.domain;
 
-import com.cplerings.core.common.database.DatabaseConstant;
-import com.cplerings.core.common.temporal.TemporalUtils;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import java.time.Instant;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.cplerings.core.common.database.DatabaseConstant;
+import com.cplerings.core.common.temporal.TemporalUtils;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
@@ -18,9 +14,12 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Version;
-
-import java.time.Instant;
-import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -70,13 +69,22 @@ public abstract class AbstractEntity {
         }
     }
 
-    public final void updateModification(Modifiable modifiable) {
-        Objects.requireNonNull(modifiable, "Modifier must not be null");
-        if (StringUtils.isBlank(modifiable.getModifierName())) {
-            throw new IllegalArgumentException("Modifier name must not be blank");
+    public final void setCreator(Auditor auditor) {
+        Objects.requireNonNull(auditor, "Auditor must not be null");
+        if (StringUtils.isBlank(auditor.getAuditorName())) {
+            throw new IllegalArgumentException("Auditor name must not be blank");
+        }
+        setCreatedAt(TemporalUtils.getCurrentInstantUTC());
+        setCreatedBy(auditor.getAuditorName());
+    }
+
+    public final void updateModifier(Auditor auditor) {
+        Objects.requireNonNull(auditor, "Auditor must not be null");
+        if (StringUtils.isBlank(auditor.getAuditorName())) {
+            throw new IllegalArgumentException("Auditor name must not be blank");
         }
         setModifiedAt(TemporalUtils.getCurrentInstantUTC());
-        setModifiedBy(modifiable.getModifierName());
+        setModifiedBy(auditor.getAuditorName());
     }
 
     @Override

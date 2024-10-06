@@ -18,14 +18,12 @@ public final class AuthenticationTokenResponse extends AbstractDataResponse<Auth
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Builder extends AbstractDataResponseBuilder<Builder, AuthenticationTokenResponse, AuthenticationToken> {
+    public static class Builder
+            extends AbstractDataResponseBuilder<Builder, AuthenticationTokenResponse, AuthenticationToken> {
 
         @Override
-        public AuthenticationTokenResponse build() {
-            final AuthenticationTokenResponse response = new AuthenticationTokenResponse();
-            response.setType(getType());
-            response.setData(getData());
-            return response;
+        protected AuthenticationTokenResponse getResponseInstance() {
+            return new AuthenticationTokenResponse();
         }
     }
 }

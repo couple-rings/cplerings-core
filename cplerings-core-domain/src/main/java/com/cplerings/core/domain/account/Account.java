@@ -2,7 +2,7 @@ package com.cplerings.core.domain.account;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.AbstractEntity;
-import com.cplerings.core.domain.Modifiable;
+import com.cplerings.core.domain.Auditor;
 import com.cplerings.core.domain.blog.Blog;
 import com.cplerings.core.domain.design.DesignSession;
 import com.cplerings.core.domain.spouse.SpouseAccount;
@@ -35,7 +35,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "tbl_account")
-public class Account extends AbstractEntity implements Modifiable {
+public class Account extends AbstractEntity implements Auditor {
 
     private static final String ACCOUNT_SEQUENCE = "account_seq";
 
@@ -84,7 +84,7 @@ public class Account extends AbstractEntity implements Modifiable {
     private Set<Blog> blogs;
 
     @Override
-    public String getModifierName() {
+    public String getAuditorName() {
         return getEmail();
     }
 }

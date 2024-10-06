@@ -1,7 +1,5 @@
 package com.cplerings.core.test.component.email;
 
-import com.cplerings.core.test.shared.AbstractCT;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +9,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
+import com.cplerings.core.test.shared.AbstractCT;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 
@@ -59,18 +58,18 @@ class EmailServiceCT extends AbstractCT {
         helper.setSubject("Test Subject");
         helper.setText("Test Body", true);
 
-        thenTheEmailIsSendWithNoFault(mimeMessage);
-    }
-
-    private void thenTheEmailIsSendWithNoFault(MimeMessage mimeMessage) throws Exception {
         // Act
         javaMailSender.send(mimeMessage);
 
+        thenTheEmailIsSendWithNoFault();
+    }
+
+    private void thenTheEmailIsSendWithNoFault() throws Exception {
         // Assert
         MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
         Assertions.assertThat(receivedMessages).hasSize(1);
         MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
         Assertions.assertThat(receivedMessage.getSubject()).isEqualTo("Test Subject");
-        Assertions.assertThat(receivedMessage.getAllRecipients()[0].toString()).isEqualTo("test@example.com");
+        Assertions.assertThat(receivedMessage.getAllRecipients()[0]).hasToString("test@example.com");
     }
 }

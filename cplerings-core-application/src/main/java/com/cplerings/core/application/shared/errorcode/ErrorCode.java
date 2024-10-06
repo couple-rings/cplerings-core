@@ -1,8 +1,9 @@
 package com.cplerings.core.application.shared.errorcode;
 
-public interface ErrorCode {
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-    ErrorCode SYSTEM_ERROR = System.INSTANCE;
+public interface ErrorCode {
 
     String getCode();
 
@@ -15,26 +16,16 @@ public interface ErrorCode {
         VALIDATION, BUSINESS, SYSTEM
     }
 
-    class System implements ErrorCode {
+    @Getter
+    @RequiredArgsConstructor
+    enum System implements ErrorCode {
 
-        private static final System INSTANCE = new System();
+        ERROR("000", "system.error", Type.SYSTEM),
+        INPUT_REQUIRED("001", "system.error.inputRequired", Type.VALIDATION),
+        ;
 
-        private System() {
-        }
-
-        @Override
-        public String getCode() {
-            return "000";
-        }
-
-        @Override
-        public String getDescriptionLocale() {
-            return "system.error";
-        }
-
-        @Override
-        public Type getType() {
-            return Type.SYSTEM;
-        }
+        private final String code;
+        private final String descriptionLocale;
+        private final Type type;
     }
 }

@@ -3,7 +3,7 @@ package com.cplerings.core.infrastructure.security;
 import com.cplerings.core.application.authentication.AuthenticateUserUseCase;
 import com.cplerings.core.application.authentication.input.JWTInput;
 import com.cplerings.core.application.authentication.output.AuthenticatedAccountOutput;
-import com.cplerings.core.application.shared.entity.ARole;
+import com.cplerings.core.application.shared.entity.account.ARole;
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
 import com.cplerings.core.common.either.Either;
 import com.cplerings.core.common.security.RoleConstant;

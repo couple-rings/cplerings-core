@@ -7,7 +7,7 @@ import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationResult;
 import com.cplerings.core.application.shared.service.jwt.JWTVerificationService;
 import com.cplerings.core.test.shared.AbstractIT;
-import com.cplerings.core.test.shared.AccountTestConstant;
+import com.cplerings.core.test.shared.account.AccountTestConstant;
 
 import lombok.extern.slf4j.Slf4j;
 
