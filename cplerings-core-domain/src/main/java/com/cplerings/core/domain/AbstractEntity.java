@@ -1,12 +1,16 @@
 package com.cplerings.core.domain;
 
-import java.time.Instant;
-import java.util.Objects;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.common.temporal.TemporalUtils;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
+import org.apache.commons.lang3.StringUtils;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
@@ -14,12 +18,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Version;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+
+import java.time.Instant;
+import java.util.Objects;
 
 @Getter
 @Setter

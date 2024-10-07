@@ -43,3 +43,4 @@ cplerings:
     duration: 10
     refreshDuration: 10
   locale: vi
+  allowed-origins: http://localhost:${server.port}

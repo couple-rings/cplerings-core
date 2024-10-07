@@ -1,75 +1,79 @@
 package com.cplerings.core.test.component.email;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+
+import com.cplerings.core.application.shared.service.email.EmailInfo;
+import com.cplerings.core.application.shared.service.email.EmailService;
+import com.cplerings.core.infrastructure.service.email.EmailServiceImpl;
+import com.cplerings.core.test.shared.AbstractCT;
+import com.cplerings.core.test.shared.account.AccountTestConstant;
+import com.cplerings.core.test.shared.helper.EmailHelper;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
 
-import com.cplerings.core.test.shared.AbstractCT;
 import com.icegreen.greenmail.util.GreenMail;
-import com.icegreen.greenmail.util.ServerSetup;
 
 import jakarta.mail.internet.MimeMessage;
 
 class EmailServiceCT extends AbstractCT {
 
+    private static final String TEST_BODY = "Hello, World!";
+
     @Autowired
-    private JavaMailSender javaMailSender;
+    private EmailHelper emailHelper;
+
+    @Autowired
+    private EmailService emailService;
 
     private GreenMail greenMail;
 
     @BeforeEach
-    public void setUp() {
-        // Set up GreenMail SMTP server for testing
-        greenMail = new GreenMail(new ServerSetup(3025, null, "smtp"));
-        greenMail.start();
-
-        // Configure JavaMailSender
-        JavaMailSenderImpl mailSender = (JavaMailSenderImpl) javaMailSender;
-        mailSender.setHost("localhost");
-        mailSender.setPort(3025);
-
-        mailSender.getJavaMailProperties().put("mail.smtp.starttls.enable", "false");
-        mailSender.getJavaMailProperties().put("mail.smtp.ssl.enable", "false");
-        mailSender.getJavaMailProperties().put("mail.smtp.auth", "false");
-        mailSender.getJavaMailProperties().put("mail.transport.protocol", "smtp");
-
-        mailSender.setUsername(null);
-        mailSender.setPassword(null);
+    public void startGreenMail() {
+        final Pair<GreenMail, JavaMailSender> mailPair = emailHelper.startServer();
+        this.greenMail = mailPair.getLeft();
+        if (emailService instanceof EmailServiceImpl emailServiceImpl) {
+            emailServiceImpl.setJavaMailSender(mailPair.getRight());
+        }
     }
 
     @AfterEach
-    public void tearDown() {
-        // Stop GreenMail server after each test
+    public void stopGreenMail() {
         greenMail.stop();
-        greenMail = null;
     }
 
     @Test
     void givenSystem_whenSendingEmail() throws Exception {
-        // Arrange
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-        helper.setTo("test@example.com");
-        helper.setSubject("Test Subject");
-        helper.setText("Test Body", true);
+        final EmailInfo emailInfo = EmailInfo.builder()
+                .recipient(EmailHelper.TEST_EMAIL)
+                .subject(AccountTestConstant.CUSTOMER_EMAIL)
+                .body(TEST_BODY)
+                .build();
 
-        // Act
-        javaMailSender.send(mimeMessage);
-
-        thenTheEmailIsSendWithNoFault();
+        thenEmailIsSentWithoutFailure(emailInfo);
+        thenEmailContentIsCorrect();
     }
 
-    private void thenTheEmailIsSendWithNoFault() throws Exception {
-        // Assert
+    private void thenEmailIsSentWithoutFailure(EmailInfo emailInfo) {
+        assertThatNoException().isThrownBy(() -> emailService.sendMail(emailInfo));
+    }
+
+    private void thenEmailContentIsCorrect() throws Exception {
         MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
-        Assertions.assertThat(receivedMessages).hasSize(1);
+        assertThat(receivedMessages).hasSize(1);
+
         MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
-        Assertions.assertThat(receivedMessage.getSubject()).isEqualTo("Test Subject");
-        Assertions.assertThat(receivedMessage.getAllRecipients()[0]).hasToString("test@example.com");
+        assertThat(receivedMessage).isNotNull();
+        assertThat(receivedMessage.getSubject()).isEqualTo(AccountTestConstant.CUSTOMER_EMAIL);
+
+        final Object content = receivedMessage.getContent();
+        assertThat(content).isInstanceOf(String.class);
+        final String body = (String) content;
+        assertThat(body).isEqualTo(TEST_BODY);
     }
 }

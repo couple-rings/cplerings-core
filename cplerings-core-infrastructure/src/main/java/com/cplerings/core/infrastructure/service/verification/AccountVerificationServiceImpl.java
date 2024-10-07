@@ -3,10 +3,6 @@ package com.cplerings.core.infrastructure.service.verification;
 import static com.cplerings.core.application.shared.service.verification.VerificationCode.FailedReason.ACCOUNT_NOT_IN_VERIFYING_STATUS;
 import static com.cplerings.core.application.shared.service.verification.VerificationCode.FailedReason.INVALID_ARGUMENTS;
 
-import java.security.SecureRandom;
-
-import org.springframework.stereotype.Service;
-
 import com.cplerings.core.application.shared.service.email.EmailInfo;
 import com.cplerings.core.application.shared.service.email.EmailService;
 import com.cplerings.core.application.shared.service.verification.AccountVerificationService;
@@ -19,8 +15,13 @@ import com.cplerings.core.domain.account.AccountStatus;
 import com.cplerings.core.domain.account.AccountVerification;
 import com.cplerings.core.domain.account.VerificationCodeStatus;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.stereotype.Service;
+
+import jakarta.transaction.Transactional;
+
+import java.security.SecureRandom;
 
 @Service
 @Transactional(rollbackOn = Exception.class)

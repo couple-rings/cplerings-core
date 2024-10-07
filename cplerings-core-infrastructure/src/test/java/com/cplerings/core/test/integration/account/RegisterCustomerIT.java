@@ -3,24 +3,29 @@ package com.cplerings.core.test.integration.account;
 import static com.cplerings.core.api.shared.AbstractResponse.Type.DATA;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.UUID;
+import com.cplerings.core.api.account.data.CustomerRegistration;
+import com.cplerings.core.api.account.request.RegisterCustomerRequest;
+import com.cplerings.core.api.account.response.CustomerRegistrationResponse;
+import com.cplerings.core.application.shared.service.email.EmailService;
+import com.cplerings.core.common.locale.LocaleUtils;
+import com.cplerings.core.infrastructure.service.email.EmailServiceImpl;
+import com.cplerings.core.test.shared.AbstractIT;
+import com.cplerings.core.test.shared.account.AccountTestConstant;
+import com.cplerings.core.test.shared.helper.EmailHelper;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import com.cplerings.core.api.account.data.CustomerRegistration;
-import com.cplerings.core.api.account.request.RegisterCustomerRequest;
-import com.cplerings.core.api.account.response.CustomerRegistrationResponse;
-import com.cplerings.core.common.locale.LocaleUtils;
-import com.cplerings.core.test.shared.AbstractIT;
-import com.cplerings.core.test.shared.account.AccountTestConstant;
-import com.cplerings.core.test.shared.helper.EmailHelper;
 import com.icegreen.greenmail.util.GreenMail;
 
 import jakarta.mail.internet.MimeMessage;
+
+import java.util.UUID;
 
 class RegisterCustomerIT extends AbstractIT {
 
@@ -29,11 +34,18 @@ class RegisterCustomerIT extends AbstractIT {
     @Autowired
     private EmailHelper emailHelper;
 
+    @Autowired
+    private EmailService emailService;
+
     private GreenMail greenMail;
 
     @BeforeEach
     public void startEmailService() {
-        this.greenMail = emailHelper.startServer();
+        final Pair<GreenMail, JavaMailSender> mailPair = emailHelper.startServer();
+        this.greenMail = mailPair.getLeft();
+        if (emailService instanceof EmailServiceImpl emailServiceImpl) {
+            emailServiceImpl.setJavaMailSender(mailPair.getRight());
+        }
     }
 
     @AfterEach
@@ -56,11 +68,11 @@ class RegisterCustomerIT extends AbstractIT {
                 .send();
 
         thenResponseIsOk(response);
-        thenResponseContainsNewEmail(response);
+        thenResponseContainsRegistrationEmail(response);
         thenExistsEmailWithVerificationCode();
     }
 
-    private void thenResponseContainsNewEmail(WebTestClient.ResponseSpec response) {
+    private void thenResponseContainsRegistrationEmail(WebTestClient.ResponseSpec response) {
         final CustomerRegistrationResponse customerRegistrationResponse = response.expectBody(CustomerRegistrationResponse.class)
                 .returnResult()
                 .getResponseBody();

@@ -1,10 +1,13 @@
 package com.cplerings.core.infrastructure.security;
 
+import com.cplerings.core.common.profile.ProfileConstant;
+import com.cplerings.core.common.security.RoleConstant;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -12,17 +15,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.cplerings.core.common.profile.ProfileConstant;
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(
-        securedEnabled = true,
-        jsr250Enabled = true
-)
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
@@ -35,10 +35,13 @@ public class SecurityConfiguration {
     @Value("${spring.profiles.active}")
     private String activeProfile;
 
+    @Value("${cplerings.allowed-origins}")
+    private String[] allowedOrigins;
+
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         HttpSecurity localHttp = http.csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
+                .cors(config -> config.configurationSource(corsConfigurationSource()))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .exceptionHandling(config -> config.accessDeniedHandler(accessDeniedHandler))
@@ -47,17 +50,24 @@ public class SecurityConfiguration {
         handleDocsAPI(localHttp);
         handleAuthAPI(localHttp);
         handleAccountAPI(localHttp);
-        if (ProfileConstant.DEVELOPMENT.equals(activeProfile)) {
-            localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/dev/**"))
-                    .permitAll());
-        }
-        if (ProfileConstant.TEST.equals(activeProfile)) {
-            localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/test/**"))
-                    .permitAll());
-        }
+        handleDevelopmentAPI(localHttp);
+        handleTestAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
                 .denyAll());
         return localHttp.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        final CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedOrigins(List.of(allowedOrigins));
+        corsConfiguration.setAllowedMethods(List.of("*"));
+        corsConfiguration.setAllowedHeaders(List.of("*"));
+        corsConfiguration.setAllowCredentials(true);
+
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return source;
     }
 
     private void handleDocsAPI(HttpSecurity localHttp) throws Exception {
@@ -73,6 +83,22 @@ public class SecurityConfiguration {
     private void handleAccountAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/accounts/customer/register"))
                 .permitAll());
+    }
+
+    private void handleDevelopmentAPI(HttpSecurity localHttp) throws Exception {
+        if (ProfileConstant.DEVELOPMENT.equals(activeProfile)) {
+            localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/dev/**"))
+                    .permitAll());
+        }
+    }
+
+    private void handleTestAPI(HttpSecurity localHttp) throws Exception {
+        if (ProfileConstant.TEST.equals(activeProfile)) {
+            localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/test/hello"))
+                            .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_MANAGER))
+                    .authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/test/**"))
+                            .permitAll());
+        }
     }
 
     private String resolvePath(String path) {

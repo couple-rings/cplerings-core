@@ -72,6 +72,7 @@ cplerings:
     duration: ${CPLERINGS_JWT_DURATION}
     refreshDuration: ${CPLERINGS_JWT_REFRESH_DURATION}
   locale: ${CPLERINGS_LOCALE}
+  allowed-origins: ${CPLERINGS_ALLOWED_ORIGINS}
 springdoc:
   api-docs:
     path: ${cplerings.api.path}/docs

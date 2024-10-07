@@ -30,13 +30,13 @@ public abstract class AbstractDataResponse<T> extends AbstractResponse {
             return self();
         }
 
-        protected abstract R getResponseInstance();
-
         public R build() {
             final R response = getResponseInstance();
             response.setData(data);
             response.setType(type);
             return response;
         }
+
+        protected abstract R getResponseInstance();
     }
 }
