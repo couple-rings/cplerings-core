@@ -1,8 +1,11 @@
-package com.cplerings.core.infrastructure.service.email;
+package com.cplerings.core.infrastructure.email;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Scope;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
@@ -37,7 +40,13 @@ public class EmailConfiguration {
     private String starttlsRequire;
 
     @Bean
+    @Profile("!test")
+    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     public JavaMailSender javaMailSender() {
+        return setUpJavaMailSender();
+    }
+
+    private JavaMailSender setUpJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(host);
         mailSender.setPort(PORT);
@@ -51,5 +60,12 @@ public class EmailConfiguration {
         props.put(REQUIRED, starttlsRequire);
 
         return mailSender;
+    }
+
+    @Bean
+    @Profile("test")
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public JavaMailSender testJavaMailSender() {
+        return setUpJavaMailSender();
     }
 }

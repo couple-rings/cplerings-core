@@ -182,13 +182,13 @@
             <version>${jackson.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.icegreen/greenmail-junit5 -->
         <dependency>
             <groupId>com.icegreen</groupId>
-            <artifactId>greenmail</artifactId>
-            <version>2.0.0</version>
+            <artifactId>greenmail-junit5</artifactId>
+            <version>${greenmail.version}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>

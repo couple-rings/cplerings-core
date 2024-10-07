@@ -1,20 +1,22 @@
 package com.cplerings.core.infrastructure.security;
 
-import java.io.IOException;
-import java.util.Optional;
+import com.cplerings.core.api.shared.ErrorCodesResponse;
+import com.cplerings.core.application.shared.errorcode.ErrorCodes;
+import com.cplerings.core.domain.Auditor;
+import com.cplerings.core.infrastructure.annotation.Helper;
+
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.cplerings.core.api.shared.ErrorCodesResponse;
-import com.cplerings.core.application.shared.errorcode.ErrorCodes;
-import com.cplerings.core.domain.Auditor;
-import com.cplerings.core.infrastructure.annotation.Helper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+
+import java.io.IOException;
+import java.util.Optional;
 
 @Helper
 @RequiredArgsConstructor

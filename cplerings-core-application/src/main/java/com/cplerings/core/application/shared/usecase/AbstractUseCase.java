@@ -2,8 +2,6 @@ package com.cplerings.core.application.shared.usecase;
 
 import static com.cplerings.core.application.shared.errorcode.ErrorCode.System.ERROR;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
 import com.cplerings.core.application.shared.transaction.Session;
 import com.cplerings.core.application.shared.transaction.SessionInformation;
@@ -12,6 +10,8 @@ import com.cplerings.core.application.shared.transaction.TransactionManager;
 import com.cplerings.core.common.either.Either;
 
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Slf4j
 public abstract class AbstractUseCase<I, O> implements UseCase<I, O> {

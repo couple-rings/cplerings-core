@@ -6,7 +6,7 @@ import com.cplerings.core.api.authentication.response.AuthenticationTokenRespons
 import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
-import com.cplerings.core.test.shared.hello.TestController;
+import com.cplerings.core.test.shared.hello.HelloController;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
 
 import org.assertj.core.api.Assertions;
@@ -51,7 +51,7 @@ class RefreshTokenUseCaseIT extends AbstractIT {
 
     private void thenReturnedTokenCanBeUsedToLogin(String token) {
         final WebTestClient.ResponseSpec response = requestBuilder()
-                .path(TestController.TEST_HELLO_PATH)
+                .path(HelloController.TEST_HELLO_PATH)
                 .method(RequestBuilder.Method.GET)
                 .authorizationHeader(token)
                 .send();
@@ -65,6 +65,6 @@ class RefreshTokenUseCaseIT extends AbstractIT {
                 .returnResult()
                 .getResponseBody();
         Assertions.assertThat(helloMessage)
-                .isEqualTo(TestController.DEFAULT_HELLO_MESSAGE);
+                .isEqualTo(HelloController.DEFAULT_HELLO_MESSAGE);
     }
 }

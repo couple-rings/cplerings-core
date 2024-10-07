@@ -8,8 +8,6 @@ import static com.cplerings.core.application.account.error.AccountErrorCode.USER
 import static com.cplerings.core.application.account.error.AccountErrorCode.USERNAME_REQUIRED;
 import static com.cplerings.core.application.shared.errorcode.ErrorCode.System.ERROR;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.cplerings.core.application.account.RegisterCustomerUseCase;
 import com.cplerings.core.application.account.datasource.RegisterCustomerDataSource;
 import com.cplerings.core.application.account.input.RegisterCustomerInput;
@@ -27,6 +25,8 @@ import com.cplerings.core.domain.account.AccountStatus;
 import com.cplerings.core.domain.account.Role;
 
 import lombok.RequiredArgsConstructor;
+
+import org.apache.commons.lang3.StringUtils;
 
 @UseCaseImplementation
 @RequiredArgsConstructor

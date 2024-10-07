@@ -14,7 +14,8 @@ public enum AccountErrorCode implements ErrorCode {
     USERNAME_REQUIRED("004", "account.error.usernameRequired", Type.VALIDATION),
     EMAIL_ALREADY_REGISTERED("005", "account.error.emailAlreadyRegistered", Type.BUSINESS),
     USERNAME_ALREADY_REGISTERED("006", "account.error.usernameAlreadyRegistered", Type.BUSINESS),
-    ACCOUNT_NOT_IN_VERIFYING_STATE("007", "account.error.notInVerifyingState", Type.BUSINESS),;
+    ACCOUNT_NOT_IN_VERIFYING_STATE("007", "account.error.notInVerifyingState", Type.BUSINESS),
+    ;
 
     private final String code;
     private final String descriptionLocale;
