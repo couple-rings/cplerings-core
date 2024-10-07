@@ -1,5 +1,7 @@
 package com.cplerings.core.application.authentication.implementation;
 
+import static com.cplerings.core.application.authentication.error.AuthenticationErrorCode.ACCOUNT_NOT_DISABLED;
+import static com.cplerings.core.application.authentication.error.AuthenticationErrorCode.ACCOUNT_NOT_VERIFIED;
 import static com.cplerings.core.application.authentication.error.AuthenticationErrorCode.ACCOUNT_WITH_EMAIL_NOT_FOUND;
 import static com.cplerings.core.application.authentication.error.AuthenticationErrorCode.INVALID_PASSWORD;
 import static com.cplerings.core.application.authentication.error.AuthenticationErrorCode.NO_EMAIL;
@@ -18,6 +20,7 @@ import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.AccountStatus;
 import com.cplerings.core.domain.account.Role;
 
 import lombok.RequiredArgsConstructor;
@@ -51,6 +54,8 @@ public class LoginUseCaseImpl extends AbstractUseCase<LoginCredentialInput, Auth
         final Account loginAccount = loginDataSource.getLoginAccount(input.getEmail())
                 .orElse(null);
         validator.validateAndStopExecution(loginAccount != null, ACCOUNT_WITH_EMAIL_NOT_FOUND);
+        validator.validateAndStopExecution(loginAccount.getStatus() != AccountStatus.INACTIVE, ACCOUNT_NOT_DISABLED);
+        validator.validateAndStopExecution(loginAccount.getStatus() != AccountStatus.VERIFYING, ACCOUNT_NOT_VERIFIED);
         validator.validateAndStopExecution(passwordService.passwordMatchesEncrypted(input.getPassword(),
                         loginAccount.getPassword()),
                 INVALID_PASSWORD);
