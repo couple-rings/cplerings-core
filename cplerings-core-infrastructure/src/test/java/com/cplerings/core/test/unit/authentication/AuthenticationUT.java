@@ -45,29 +45,17 @@ class AuthenticationUT {
     @Mock
     private LoginDataSource loginDataSource;
 
-    private PlatformTransactionManager platformTransactionManager;
-
-    @Mock
-    private SessionMapper sessionMapper;
-
     @Mock
     private SessionImpl session;
 
+    @Mock
     private TransactionManager transactionManager;
 
-    @InjectMocks
     private LoginUseCaseImpl loginUseCase;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-
-        transactionManager = Mockito.mock(TransactionManager.class);
-        loginDataSource = Mockito.mock(LoginDataSource.class);
-        passwordService = Mockito.mock(PasswordService.class);
-        jwtGenerationService = Mockito.mock(JWTGenerationService.class);
-        aRoleMapper = Mockito.mock(ARoleMapper.class);
-
         LoginUseCaseImpl loginUseCaseImpl = new LoginUseCaseImpl(
                 loginDataSource,
                 passwordService,
@@ -89,41 +77,49 @@ class AuthenticationUT {
                 .email(AccountTestConstant.CUSTOMER_EMAIL)
                 .status(AccountStatus.INACTIVE)
                 .build();
+        List<ErrorCode> errorCodeList = null;
+
+        // Mock
         Mockito.when(loginDataSource.getLoginAccount(AccountTestConstant.CUSTOMER_EMAIL))
                 .thenReturn(Optional.of(account));
         // Act
         Either<AuthenticationTokenOutput, ErrorCodes> result = loginUseCase.execute(input);
-        List<ErrorCode> errorCodeList = result.getRight().getErrors().stream().toList();
+        if (result.isRight()) {
+            errorCodeList = result.getRight().getErrors().stream().toList();
+        }
 
         // Assert
-        thenReturnAccountIsDisabledErrorcode(result, errorCodeList);
+        thenReturnAccountIsDisabledErrorcode(errorCodeList);
     }
 
-    private void thenReturnAccountIsDisabledErrorcode(Either<AuthenticationTokenOutput, ErrorCodes> result, List<ErrorCode> errorCodeList) {
-        Assertions.assertThat(result.isRight());
-        Assertions.assertThat(errorCodeList.get(0)).isEqualTo(AuthenticationErrorCode.ACCOUNT_NOT_DISABLED);
+    private void thenReturnAccountIsDisabledErrorcode(List<ErrorCode> errorCodeList) {
+        Assertions.assertThat(errorCodeList).contains(AuthenticationErrorCode.ACCOUNT_DISABLED);
     }
 
     @Test
-    void givenAnyone_whenLoginWithUnVerifiedAccount() {
+    void givenAnyone_whenLoginWithUnverifiedAccount() {
         LoginCredentialInput input = new LoginCredentialInput(AccountTestConstant.CUSTOMER_EMAIL, AccountTestConstant.PASSWORD);
         // Arrange
         Account account = Account.builder()
                 .email(AccountTestConstant.CUSTOMER_EMAIL)
                 .status(AccountStatus.VERIFYING)
                 .build();
+        List<ErrorCode> errorCodeList = null;
+
+        // Mock
         Mockito.when(loginDataSource.getLoginAccount(AccountTestConstant.CUSTOMER_EMAIL))
                 .thenReturn(Optional.of(account));
         // Act
         Either<AuthenticationTokenOutput, ErrorCodes> result = loginUseCase.execute(input);
-        List<ErrorCode> errorCodeList = result.getRight().getErrors().stream().toList();
+        if (result.isRight()) {
+            errorCodeList = result.getRight().getErrors().stream().toList();
+        }
 
         // Assert
-        thenReturnAccountIsUnVerifiedWithErrorcode(result, errorCodeList);
+        thenReturnAccountIsUnverifiedWithErrorcode(errorCodeList);
     }
 
-    private void thenReturnAccountIsUnVerifiedWithErrorcode(Either<AuthenticationTokenOutput, ErrorCodes> result, List<ErrorCode> errorCodeList) {
-        Assertions.assertThat(result.isRight());
-        Assertions.assertThat(errorCodeList.get(0)).isEqualTo(AuthenticationErrorCode.ACCOUNT_NOT_VERIFIED);
+    private void thenReturnAccountIsUnverifiedWithErrorcode(List<ErrorCode> errorCodeList) {
+        Assertions.assertThat(errorCodeList).contains(AuthenticationErrorCode.ACCOUNT_NOT_VERIFIED);
     }
 }

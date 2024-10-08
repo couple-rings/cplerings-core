@@ -18,7 +18,7 @@ public enum AuthenticationErrorCode implements ErrorCode {
     TOKEN_EXPIRED("007", "authentication.error.tokenExpired", Type.VALIDATION),
     UNAUTHORIZED("008", "authentication.error.unauthorized", Type.VALIDATION),
     INVALID_ACCOUNT_FROM_TOKEN("009", "authentication.error.invalidAccountFromToken", Type.VALIDATION),
-    ACCOUNT_NOT_DISABLED("010", "authentication.error.disabled", Type.BUSINESS),
+    ACCOUNT_DISABLED("010", "authentication.error.disabled", Type.BUSINESS),
     ACCOUNT_NOT_VERIFIED("011", "authentication.error.notVerified", Type.BUSINESS);
 
     private final String code;
