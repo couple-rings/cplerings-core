@@ -17,6 +17,7 @@ import com.cplerings.core.domain.account.VerificationCodeStatus;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -35,6 +36,9 @@ public class AccountVerificationServiceImpl implements AccountVerificationServic
 
     private final EmailService emailService;
     private final AccountVerificationDataSource accountVerificationDataSource;
+
+    @Value("${cplerings.verification-duration}")
+    private int verificationDuration;
 
     @Override
     public VerificationResult verifyAccount(VerificationInfo verificationInfo) {

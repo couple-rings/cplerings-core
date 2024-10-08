@@ -7,6 +7,6 @@ public record VerificationResult(Status status) {
 
     public enum Status {
 
-        VALID, INVALID
+        VALID, INVALID, EXPIRED
     }
 }
