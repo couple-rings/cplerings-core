@@ -3,13 +3,18 @@ package com.cplerings.core.infrastructure.service.verification;
 import static com.cplerings.core.application.shared.service.verification.VerificationCode.FailedReason.ACCOUNT_NOT_IN_VERIFYING_STATUS;
 import static com.cplerings.core.application.shared.service.verification.VerificationCode.FailedReason.INVALID_ARGUMENTS;
 
+import com.cplerings.core.application.shared.errorcode.ErrorCode;
+import com.cplerings.core.application.shared.errorcode.ErrorCodes;
 import com.cplerings.core.application.shared.service.email.EmailInfo;
 import com.cplerings.core.application.shared.service.email.EmailService;
 import com.cplerings.core.application.shared.service.verification.AccountVerificationService;
 import com.cplerings.core.application.shared.service.verification.VerificationCode;
 import com.cplerings.core.application.shared.service.verification.VerificationInfo;
-import com.cplerings.core.application.shared.service.verification.VerificationResult;
+import com.cplerings.core.application.shared.service.verification.error.AccountVerificationServiceErrorCode;
+import com.cplerings.core.common.either.Either;
+import com.cplerings.core.common.either.NoResult;
 import com.cplerings.core.common.locale.LocaleUtils;
+import com.cplerings.core.common.temporal.TemporalUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountStatus;
 import com.cplerings.core.domain.account.AccountVerification;
@@ -23,6 +28,8 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
 import java.security.SecureRandom;
+import java.time.Instant;
+import java.util.Objects;
 
 @Service
 @Transactional(rollbackOn = Exception.class)
@@ -41,8 +48,33 @@ public class AccountVerificationServiceImpl implements AccountVerificationServic
     private int verificationDuration;
 
     @Override
-    public VerificationResult verifyAccount(VerificationInfo verificationInfo) {
-        return null;
+    public Either<NoResult, ErrorCodes> verifyAccount(VerificationInfo verificationInfo) {
+        if ((verificationInfo == null)
+                || (verificationInfo.accountToVerify() == null)
+                || (verificationInfo.verification() == null)) {
+            return Either.right(ErrorCodes.create(ErrorCode.System.INPUT_REQUIRED));
+        }
+        final Account accountToVerify = verificationInfo.accountToVerify();
+        if (accountToVerify.getStatus() != AccountStatus.VERIFYING) {
+            return Either.right(ErrorCodes.create(AccountVerificationServiceErrorCode.ACCOUNT_NOT_IN_VERIFYING_STATUS));
+        }
+        final AccountVerification accountVerification = verificationInfo.verification();
+        if (accountVerification.getStatus() != VerificationCodeStatus.PENDING) {
+            return Either.right(ErrorCodes.create(AccountVerificationServiceErrorCode.ACCOUNT_VERIFICATION_CODE_IS_USED));
+        }
+        if (accountVerificationCodeIsExpired(accountVerification)) {
+            return Either.right(ErrorCodes.create(AccountVerificationServiceErrorCode.ACCOUNT_VERIFICATION_CODE_IS_EXPIRED));
+        }
+        if (Objects.equals(accountVerification.getCode(), verificationInfo.verificationCode())) {
+            return Either.left(NoResult.INSTANCE);
+        }
+        return Either.right(ErrorCodes.create(AccountVerificationServiceErrorCode.INVALID_VERIFICATION_CODE));
+    }
+
+    private boolean accountVerificationCodeIsExpired(AccountVerification accountVerification) {
+        final Instant now = TemporalUtils.getCurrentInstantUTC();
+        final Instant accountVerificationCreatedAt = accountVerification.getCreatedAt();
+        return accountVerificationCreatedAt.isBefore(now.minusSeconds(verificationDuration));
     }
 
     @Override

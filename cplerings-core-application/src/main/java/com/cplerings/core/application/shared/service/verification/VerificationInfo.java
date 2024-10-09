@@ -6,6 +6,6 @@ import com.cplerings.core.domain.account.AccountVerification;
 import lombok.Builder;
 
 @Builder
-public record VerificationInfo(Account accountToVerify, AccountVerification verification) {
+public record VerificationInfo(Account accountToVerify, AccountVerification verification, String verificationCode) {
 
 }

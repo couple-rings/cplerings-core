@@ -7,6 +7,7 @@ import com.cplerings.core.api.account.data.CustomerRegistration;
 import com.cplerings.core.api.account.request.RegisterCustomerRequest;
 import com.cplerings.core.api.account.response.CustomerRegistrationResponse;
 import com.cplerings.core.application.shared.service.email.EmailService;
+import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.common.locale.LocaleUtils;
 import com.cplerings.core.infrastructure.service.email.EmailServiceImpl;
 import com.cplerings.core.test.shared.AbstractIT;
@@ -28,8 +29,6 @@ import jakarta.mail.internet.MimeMessage;
 import java.util.UUID;
 
 class RegisterCustomerIT extends AbstractIT {
-
-    private static final String REGISTER_PATH = "/accounts/customer/register";
 
     @Autowired
     private EmailHelper emailHelper;
@@ -62,7 +61,7 @@ class RegisterCustomerIT extends AbstractIT {
                 .username(username)
                 .build();
         final WebTestClient.ResponseSpec response = requestBuilder()
-                .path(REGISTER_PATH)
+                .path(APIConstant.REGISTER_CUSTOMER_PATH)
                 .method(RequestBuilder.Method.POST)
                 .body(request)
                 .send();

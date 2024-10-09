@@ -1,5 +1,6 @@
 package com.cplerings.core.infrastructure.security;
 
+import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.common.profile.ProfileConstant;
 import com.cplerings.core.common.security.RoleConstant;
 
@@ -81,8 +82,10 @@ public class SecurityConfiguration {
     }
 
     private void handleAccountAPI(HttpSecurity localHttp) throws Exception {
-        localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/accounts/customer/register"))
-                .permitAll());
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.REGISTER_CUSTOMER_PATH))
+                        .permitAll())
+                .authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.VERIFY_CUSTOMER_PATH))
+                        .permitAll());
     }
 
     private void handleDevelopmentAPI(HttpSecurity localHttp) throws Exception {
