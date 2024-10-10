@@ -4,6 +4,7 @@ import com.cplerings.core.api.authentication.data.AuthenticationToken;
 import com.cplerings.core.api.authentication.request.RefreshTokenRequest;
 import com.cplerings.core.api.authentication.response.AuthenticationTokenResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
+import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.hello.HelloController;
@@ -16,8 +17,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 class RefreshTokenUseCaseIT extends AbstractIT {
 
-    private static final String REFRESH_TOKEN_PATH = "/auth/refresh";
-
     @Autowired
     private JWTTestHelper jwtTestHelper;
 
@@ -25,7 +24,7 @@ class RefreshTokenUseCaseIT extends AbstractIT {
     void givenAnyone_whenRefreshToken() {
         final String refreshToken = jwtTestHelper.generateRefreshToken(AccountTestConstant.CUSTOMER_EMAIL);
         final WebTestClient.ResponseSpec response = requestBuilder()
-                .path(REFRESH_TOKEN_PATH)
+                .path(APIConstant.REFRESH_TOKEN_PATH)
                 .method(RequestBuilder.Method.POST)
                 .body(new RefreshTokenRequest(refreshToken))
                 .send();
