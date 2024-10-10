@@ -36,7 +36,7 @@ import jakarta.mail.internet.MimeMessage;
 class ResendVerificationIT extends AbstractIT {
 
     private final String TEST_EMAIL = "test2@test.com";
-    private static final String RESEND_VERIFICATION_PATH = "/accounts/customer/verification";
+    private static final String RESEND_VERIFICATION_PATH = "/accounts/customer/verification/resend";
 
     @Autowired
     private EmailHelper emailHelper;

@@ -35,7 +35,7 @@ public class ResendVerificationController extends AbstractController<ResendVerif
     private final ResendVerificationUseCase resendVerificationUseCase;
     private final APIResendVerificationMapper apiResendVerificationMapper;
 
-    @PostMapping("/accounts/customer/verification")
+    @PostMapping("/accounts/customer/verification/resend")
     @VerificationTag
     @Operation(summary = "Resend verification code")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
