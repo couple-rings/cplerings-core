@@ -28,7 +28,7 @@ import jakarta.mail.internet.MimeMessage;
 
 import java.util.UUID;
 
-class RegisterCustomerIT extends AbstractIT {
+class RegisterCustomerUseCaseIT extends AbstractIT {
 
     @Autowired
     private EmailHelper emailHelper;

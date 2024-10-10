@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-public class VerifyCustomerIT extends AbstractIT {
+public class VerifyCustomerUseCaseIT extends AbstractIT {
 
     @Autowired
     private AccountRepository accountRepository;

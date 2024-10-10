@@ -33,7 +33,7 @@ public class LoginController extends AbstractDataController<LoginCredentialInput
     private final LoginUseCase loginUseCase;
     private final APILoginMapper apiLoginMapper;
 
-    @PostMapping("/auth/login")
+    @PostMapping(APIConstant.LOGIN_PATH)
     @AuthTag
     @Operation(summary = "Login into the app and receive Authentication JWT")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(

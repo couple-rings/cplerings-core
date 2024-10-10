@@ -33,7 +33,7 @@ public class RefreshTokenController extends AbstractDataController<RefreshTokenI
     private final RefreshTokenUseCase refreshTokenUseCase;
     private final APIRefreshTokenMapper apiRefreshTokenMapper;
 
-    @PostMapping("/auth/refresh")
+    @PostMapping(APIConstant.REFRESH_TOKEN_PATH)
     @AuthTag
     @ErrorAPIResponse
     @Operation(summary = "Send refresh token for new Authentication JWT")
