@@ -33,7 +33,7 @@ public class RegisterCustomerController extends AbstractDataController<RegisterC
     private final RegisterCustomerUseCase registerCustomerUseCase;
     private final APIRegisterAccountMapper apiRegisterAccountMapper;
 
-    @PostMapping("/accounts/customer/register")
+    @PostMapping(APIConstant.REGISTER_CUSTOMER_PATH)
     @AccountTag
     @Operation(summary = "Register customer account")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
