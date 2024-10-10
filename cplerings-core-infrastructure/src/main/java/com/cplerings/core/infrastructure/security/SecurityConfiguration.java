@@ -53,6 +53,7 @@ public class SecurityConfiguration {
         handleAccountAPI(localHttp);
         handleDevelopmentAPI(localHttp);
         handleTestAPI(localHttp);
+        handleVerificationAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
                 .denyAll());
         return localHttp.build();
@@ -102,6 +103,11 @@ public class SecurityConfiguration {
                     .authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/test/**"))
                             .permitAll());
         }
+    }
+
+    private void handleVerificationAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/accounts/customer/verification"))
+                    .permitAll());
     }
 
     private String resolvePath(String path) {
