@@ -15,6 +15,9 @@ public enum AccountErrorCode implements ErrorCode {
     EMAIL_ALREADY_REGISTERED("005", "account.error.emailAlreadyRegistered", Type.BUSINESS),
     USERNAME_ALREADY_REGISTERED("006", "account.error.usernameAlreadyRegistered", Type.BUSINESS),
     ACCOUNT_NOT_IN_VERIFYING_STATE("007", "account.error.notInVerifyingState", Type.BUSINESS),
+    VERIFICATION_CODE_REQUIRED("008", "account.error.verificationCodeRequired", Type.VALIDATION),
+    ACCOUNT_WITH_EMAIL_NOT_FOUND("009", "account.error.accountWithEmailNotFound", Type.BUSINESS),
+    VERIFICATION_CODE_NOT_CREATED("010", "account.error.verificationCodeNotCreated", Type.BUSINESS),
     ;
 
     private final String code;

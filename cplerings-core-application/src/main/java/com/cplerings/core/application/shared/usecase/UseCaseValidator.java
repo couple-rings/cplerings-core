@@ -11,14 +11,14 @@ import java.util.Objects;
 
 public final class UseCaseValidator {
 
-    private final Collection<ErrorCode> errorCodes = new ArrayList<>();
+    private final Collection<ErrorCode> storedErrorCodes = new ArrayList<>();
 
     public void validate(boolean validCase, ErrorCode errorCode) {
         Objects.requireNonNull(errorCode);
         if (validCase) {
             return;
         }
-        errorCodes.add(errorCode);
+        storedErrorCodes.add(errorCode);
     }
 
     public void validateAndStopExecution(boolean validCase, ErrorCode errorCode) {
@@ -26,15 +26,23 @@ public final class UseCaseValidator {
         if (validCase) {
             return;
         }
-        errorCodes.add(errorCode);
+        storedErrorCodes.add(errorCode);
         clearAndThrowErrorCodes();
     }
 
     public void clearAndThrowErrorCodes() {
-        if (CollectionUtils.isNotEmpty(errorCodes)) {
-            final ErrorCodes errors = ErrorCodes.create(errorCodes);
-            errorCodes.clear();
+        if (CollectionUtils.isNotEmpty(storedErrorCodes)) {
+            final ErrorCodes errors = ErrorCodes.create(storedErrorCodes);
+            storedErrorCodes.clear();
             throw new ErrorCodeException(errors);
         }
+    }
+
+    public void submitErrorCodesAndThrow(ErrorCodes errorCodes) {
+        Objects.requireNonNull(errorCodes);
+        final Collection<ErrorCode> finalErrorCodes = new ArrayList<>(storedErrorCodes);
+        storedErrorCodes.clear();
+        finalErrorCodes.addAll(errorCodes.getErrors());
+        throw new ErrorCodeException(ErrorCodes.create(finalErrorCodes));
     }
 }

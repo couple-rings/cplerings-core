@@ -13,6 +13,6 @@ public interface ARegisterCustomerMapper {
 
     CustomerRegistrationOutput toOutput(Account account);
 
-    @Mapping(target = "password", source = "password")
-    Account toAccount(RegisterCustomerInput input, String password);
+    @Mapping(target = "password", source = "encryptedPassword")
+    Account toAccount(RegisterCustomerInput input, String encryptedPassword);
 }
