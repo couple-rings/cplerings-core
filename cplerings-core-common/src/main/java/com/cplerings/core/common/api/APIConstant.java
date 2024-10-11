@@ -20,7 +20,7 @@ public final class APIConstant {
     public static final String CUSTOMER_PASSWORD_PATH = CUSTOMER_PATH + "/password";
     public static final String REQUEST_RESET_PASSWORD_PATH = CUSTOMER_PASSWORD_PATH + "/forget";
     public static final String RESET_PASSWORD_PATH = CUSTOMER_PASSWORD_PATH + "/reset";
-
+    public static final String PROFILE_PATH = CUSTOMER_PATH + "/{id}/profile";
     /*
         Authentication's paths
      */

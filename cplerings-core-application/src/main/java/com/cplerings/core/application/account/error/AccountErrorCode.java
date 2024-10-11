@@ -18,6 +18,7 @@ public enum AccountErrorCode implements ErrorCode {
     VERIFICATION_CODE_REQUIRED("008", "account.error.verificationCodeRequired", Type.VALIDATION),
     ACCOUNT_WITH_EMAIL_NOT_FOUND("009", "account.error.accountWithEmailNotFound", Type.BUSINESS),
     VERIFICATION_CODE_NOT_CREATED("010", "account.error.verificationCodeNotCreated", Type.BUSINESS),
+<<<<<<< HEAD
     ACCOUNT_NOT_IN_ACTIVE_STATE("011", "account.error.notInActiveState", Type.BUSINESS),
     INVALID_EMAIL_FORMAT("012", "account.error.invalidEmailFormat", Type.VALIDATION),
     NEW_PASSWORD_REQUIRED("013", "account.error.newPasswordRequired", Type.VALIDATION),
@@ -26,6 +27,9 @@ public enum AccountErrorCode implements ErrorCode {
     INVALID_RESET_PASSWORD_OTP("016", "account.error.invalidResetPasswordOTP", Type.VALIDATION),
     RESET_PASSWORD_OTP_EXPIRED("017", "account.error.resetPasswordOTPExpired", Type.VALIDATION),
     RESET_PASSWORD_OTP_ALREADY_USED("018", "account.error.resetPasswordOTPAlreadyUsed", Type.VALIDATION),
+=======
+    ACCOUNT_WITH_ID_NOT_FOUND("011", "account.error.accountIdNotFound", Type.BUSINESS)
+>>>>>>> 5d216cc (View Profile)
     ;
 
     private final String code;
