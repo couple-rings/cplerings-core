@@ -1,5 +1,6 @@
 package com.cplerings.core.application.account.implementation;
 
+import static com.cplerings.core.application.account.error.AccountErrorCode.ACCOUNT_NOT_IN_ACTIVE_STATE;
 import static com.cplerings.core.application.account.error.AccountErrorCode.ACCOUNT_WITH_EMAIL_NOT_FOUND;
 import static com.cplerings.core.application.account.error.AccountErrorCode.EMAIL_REQUIRED;
 
@@ -11,7 +12,9 @@ import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.AccountPasswordReset;
 import com.cplerings.core.domain.account.AccountStatus;
+import com.cplerings.core.domain.account.ResetCodeStatus;
 
 import lombok.RequiredArgsConstructor;
 
@@ -37,7 +40,12 @@ public class RequestResetPasswordUseCaseImpl extends AbstractUseCase<RequestRese
         final Optional<Account> accountOptional = requestResetPasswordDataSource.findByEmail(input.email());
         validator.validateAndStopExecution(accountOptional.isPresent(), ACCOUNT_WITH_EMAIL_NOT_FOUND);
         final Account account = accountOptional.get();
-        validator.validateAndStopExecution(account.getStatus() != AccountStatus.ACTIVE, );
+        validator.validateAndStopExecution(account.getStatus() != AccountStatus.ACTIVE, ACCOUNT_NOT_IN_ACTIVE_STATE);
+        final AccountPasswordReset accountPasswordReset = AccountPasswordReset.builder()
+                .account(account)
+                .status(ResetCodeStatus.PENDING)
+                .code()
+                .build();
         return null;
     }
 }
