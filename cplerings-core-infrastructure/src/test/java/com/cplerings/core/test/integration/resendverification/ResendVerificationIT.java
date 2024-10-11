@@ -3,22 +3,17 @@ package com.cplerings.core.test.integration.resendverification;
 import static com.cplerings.core.api.shared.AbstractResponse.Type.DATA;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.UUID;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import com.cplerings.core.api.verification.data.ResendVerification;
+import com.cplerings.core.api.account.data.CustomerEmailInfo;
+import com.cplerings.core.api.account.response.CustomerEmailInfoResponse;
 import com.cplerings.core.api.verification.request.ResendVerificationRequest;
-import com.cplerings.core.api.verification.response.ResendVerificationResponse;
 import com.cplerings.core.application.shared.service.email.EmailService;
 import com.cplerings.core.common.locale.LocaleUtils;
 import com.cplerings.core.domain.State;
@@ -95,13 +90,13 @@ class ResendVerificationIT extends AbstractIT {
     }
 
     private void thenResponseContainsRegistrationEmail(WebTestClient.ResponseSpec response) {
-        final ResendVerificationResponse resendVerificationResponse = response.expectBody(ResendVerificationResponse.class)
+        final CustomerEmailInfoResponse resendVerificationResponse = response.expectBody(CustomerEmailInfoResponse.class)
                 .returnResult()
                 .getResponseBody();
         assertThat(resendVerificationResponse).isNotNull();
         assertThat(resendVerificationResponse.getType()).isEqualTo(DATA);
 
-        final ResendVerification customerRegistration = resendVerificationResponse.getData();
+        final CustomerEmailInfo customerRegistration = resendVerificationResponse.getData();
         assertThat(customerRegistration).isNotNull();
         assertThat(customerRegistration.email()).isEqualTo(TEST_EMAIL);
     }

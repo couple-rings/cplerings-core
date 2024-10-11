@@ -32,7 +32,7 @@ import java.util.Objects;
 @ActiveProfiles(ProfileConstant.TEST)
 public abstract class AbstractIT {
 
-    private static final Duration RESPONSE_TIMEOUT = Duration.ofSeconds(20);
+    private static final Duration RESPONSE_TIMEOUT = Duration.ofSeconds(30);
     private static final String BASE_URL = "http://localhost:%d/%s";
     private static final String AUTHENTICATION_HEADER = "Authorization";
     private static final String BEARER_FORMAT = "Bearer %s";

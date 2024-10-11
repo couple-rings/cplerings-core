@@ -3,9 +3,9 @@ package com.cplerings.core.test.integration.account;
 import static com.cplerings.core.api.shared.AbstractResponse.Type.DATA;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.cplerings.core.api.account.data.CustomerRegistration;
+import com.cplerings.core.api.account.data.CustomerEmailInfo;
 import com.cplerings.core.api.account.request.RegisterCustomerRequest;
-import com.cplerings.core.api.account.response.CustomerRegistrationResponse;
+import com.cplerings.core.api.account.response.CustomerEmailInfoResponse;
 import com.cplerings.core.application.shared.service.email.EmailService;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.common.locale.LocaleUtils;
@@ -72,13 +72,13 @@ class RegisterCustomerUseCaseIT extends AbstractIT {
     }
 
     private void thenResponseContainsRegistrationEmail(WebTestClient.ResponseSpec response) {
-        final CustomerRegistrationResponse customerRegistrationResponse = response.expectBody(CustomerRegistrationResponse.class)
+        final CustomerEmailInfoResponse customerRegistrationResponse = response.expectBody(CustomerEmailInfoResponse.class)
                 .returnResult()
                 .getResponseBody();
         assertThat(customerRegistrationResponse).isNotNull();
         assertThat(customerRegistrationResponse.getType()).isEqualTo(DATA);
 
-        final CustomerRegistration customerRegistration = customerRegistrationResponse.getData();
+        final CustomerEmailInfo customerRegistration = customerRegistrationResponse.getData();
         assertThat(customerRegistration).isNotNull();
         assertThat(customerRegistration.email()).isEqualTo(EmailHelper.TEST_EMAIL);
     }

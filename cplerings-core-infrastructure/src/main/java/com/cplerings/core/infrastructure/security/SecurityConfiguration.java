@@ -106,7 +106,7 @@ public class SecurityConfiguration {
     }
 
     private void handleVerificationAPI(HttpSecurity localHttp) throws Exception {
-        localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/accounts/customer/verification/resend"))
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.RESEND_VERIFICATION_CODE_PATH))
                     .permitAll());
     }
 

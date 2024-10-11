@@ -1,9 +1,9 @@
 package com.cplerings.core.api.account;
 
-import com.cplerings.core.api.account.data.CustomerRegistration;
+import com.cplerings.core.api.account.data.CustomerEmailInfo;
 import com.cplerings.core.api.account.mapper.APIRegisterAccountMapper;
 import com.cplerings.core.api.account.request.RegisterCustomerRequest;
-import com.cplerings.core.api.account.response.CustomerRegistrationResponse;
+import com.cplerings.core.api.account.response.CustomerEmailInfoResponse;
 import com.cplerings.core.api.mapper.APIMapper;
 import com.cplerings.core.api.openapi.AccountTag;
 import com.cplerings.core.api.openapi.ErrorAPIResponse;
@@ -28,7 +28,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RestController
 @RequiredArgsConstructor
-public class RegisterCustomerController extends AbstractDataController<RegisterCustomerInput, CustomerRegistrationOutput, CustomerRegistration, RegisterCustomerRequest, CustomerRegistrationResponse> {
+public class RegisterCustomerController extends AbstractDataController<RegisterCustomerInput, CustomerRegistrationOutput, CustomerEmailInfo, RegisterCustomerRequest, CustomerEmailInfoResponse> {
 
     private final RegisterCustomerUseCase registerCustomerUseCase;
     private final APIRegisterAccountMapper apiRegisterAccountMapper;
@@ -46,7 +46,7 @@ public class RegisterCustomerController extends AbstractDataController<RegisterC
             responseCode = "200",
             content = @Content(
                     mediaType = APIConstant.APPLICATION_JSON,
-                    schema = @Schema(implementation = CustomerRegistrationResponse.class)
+                    schema = @Schema(implementation = CustomerEmailInfoResponse.class)
             )
     )
     @ErrorAPIResponse
@@ -60,7 +60,7 @@ public class RegisterCustomerController extends AbstractDataController<RegisterC
     }
 
     @Override
-    protected APIMapper<RegisterCustomerInput, CustomerRegistrationOutput, CustomerRegistration, RegisterCustomerRequest, CustomerRegistrationResponse> getMapper() {
+    protected APIMapper<RegisterCustomerInput, CustomerRegistrationOutput, CustomerEmailInfo, RegisterCustomerRequest, CustomerEmailInfoResponse> getMapper() {
         return apiRegisterAccountMapper;
     }
 }

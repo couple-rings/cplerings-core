@@ -1,9 +1,9 @@
 package com.cplerings.core.application.verification.implementation;
 
 import static com.cplerings.core.application.shared.errorcode.ErrorCode.System.ERROR;
-import static com.cplerings.core.application.verification.error.ResendVerificationErrorCode.ACCOUNT_NOT_IN_VERIFYING;
-import static com.cplerings.core.application.verification.error.ResendVerificationErrorCode.ACCOUNT_WITH_EMAIL_NOT_FOUND;
-import static com.cplerings.core.application.verification.error.ResendVerificationErrorCode.EMAIL_REQUIRED;
+import static com.cplerings.core.application.account.error.AccountErrorCode.ACCOUNT_NOT_IN_VERIFYING;
+import static com.cplerings.core.application.account.error.AccountErrorCode.ACCOUNT_WITH_EMAIL_NOT_FOUND;
+import static com.cplerings.core.application.account.error.AccountErrorCode.EMAIL_REQUIRED;
 
 import org.apache.commons.lang3.StringUtils;
 
