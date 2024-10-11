@@ -3,6 +3,7 @@ package com.cplerings.core.infrastructure.datasource.account;
 import static com.querydsl.jpa.JPAExpressions.select;
 
 import com.cplerings.core.application.account.datasource.RegisterCustomerDataSource;
+import com.cplerings.core.application.account.datasource.RequestResetPasswordDataSource;
 import com.cplerings.core.application.account.datasource.VerifyCustomerDataSource;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountVerification;
@@ -20,7 +21,7 @@ import java.util.Optional;
 @DataSource
 @RequiredArgsConstructor
 public class SharedAccountDataSource extends AbstractDataSource
-        implements RegisterCustomerDataSource, VerifyCustomerDataSource {
+        implements RegisterCustomerDataSource, VerifyCustomerDataSource, RequestResetPasswordDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QAccountVerification Q_ACCOUNT_VERIFICATION = QAccountVerification.accountVerification;
@@ -69,5 +70,10 @@ public class SharedAccountDataSource extends AbstractDataSource
     @Override
     public Account saveAccount(Account account) {
         return save(account);
+    }
+
+    @Override
+    public Optional<Account> findByEmail(String email) {
+        return accountRepository.findByEmail(email);
     }
 }
