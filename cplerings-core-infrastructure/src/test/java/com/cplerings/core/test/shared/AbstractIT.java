@@ -2,8 +2,10 @@ package com.cplerings.core.test.shared;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.Duration;
-import java.util.Objects;
+import com.cplerings.core.api.shared.AbstractResponse;
+import com.cplerings.core.api.shared.NoResponse;
+import com.cplerings.core.common.profile.ProfileConstant;
+import com.cplerings.core.infrastructure.CplringsCoreApplication;
 
 import org.apache.commons.lang3.StringUtils;
 import org.flywaydb.core.Flyway;
@@ -17,13 +19,12 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
-import com.cplerings.core.api.shared.AbstractResponse;
-import com.cplerings.core.api.shared.NoResponse;
-import com.cplerings.core.common.profile.ProfileConstant;
-import com.cplerings.core.infrastructure.CplringsCoreApplication;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+
+import java.time.Duration;
+import java.util.Objects;
 
 @SpringBootTest(
         classes = {
@@ -71,6 +72,15 @@ public abstract class AbstractIT {
 
     protected final void thenResponseIsOk(WebTestClient.ResponseSpec response) {
         response.expectStatus().isOk();
+    }
+
+    protected final void thenNoResponseIsReturned(WebTestClient.ResponseSpec response) {
+        final NoResponse responseBody = response.expectBody(NoResponse.class)
+                .returnResult()
+                .getResponseBody();
+        assertThat(responseBody).isNotNull();
+        assertThat(responseBody.getType()).isEqualTo(AbstractResponse.Type.INFO);
+        assertThat(responseBody.getData()).isNull();
     }
 
     protected final class RequestBuilder<B> {
@@ -135,14 +145,5 @@ public abstract class AbstractIT {
 
             GET, POST, PUT, PATCH, DELETE
         }
-    }
-
-    protected final void thenNoResponseIsReturned(WebTestClient.ResponseSpec response) {
-        final NoResponse responseBody = response.expectBody(NoResponse.class)
-                .returnResult()
-                .getResponseBody();
-        assertThat(responseBody).isNotNull();
-        assertThat(responseBody.getType()).isEqualTo(AbstractResponse.Type.INFO);
-        assertThat(responseBody.getData()).isNull();
     }
 }

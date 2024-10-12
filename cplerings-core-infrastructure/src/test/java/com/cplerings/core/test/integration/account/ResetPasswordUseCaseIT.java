@@ -2,10 +2,6 @@ package com.cplerings.core.test.integration.account;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.reactive.server.WebTestClient;
-
 import com.cplerings.core.api.account.request.ResetPasswordRequest;
 import com.cplerings.core.application.shared.service.password.PasswordService;
 import com.cplerings.core.common.api.APIConstant;
@@ -17,6 +13,10 @@ import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.helper.AccountHelper;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 class ResetPasswordUseCaseIT extends AbstractIT {
 

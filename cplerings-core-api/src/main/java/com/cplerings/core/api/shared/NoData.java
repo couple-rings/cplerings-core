@@ -1,9 +1,9 @@
 package com.cplerings.core.api.shared;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @JsonSerialize(using = NoDataSerializer.class)
