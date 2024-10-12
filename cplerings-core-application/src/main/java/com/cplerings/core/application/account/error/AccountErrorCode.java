@@ -18,7 +18,8 @@ public enum AccountErrorCode implements ErrorCode {
     VERIFICATION_CODE_REQUIRED("008", "account.error.verificationCodeRequired", Type.VALIDATION),
     ACCOUNT_WITH_EMAIL_NOT_FOUND("009", "account.error.accountWithEmailNotFound", Type.BUSINESS),
     VERIFICATION_CODE_NOT_CREATED("010", "account.error.verificationCodeNotCreated", Type.BUSINESS),
-    ACCOUNT_NOT_IN_VERIFYING("011", "account.error.accountNotInVerifying", Type.BUSINESS)
+    ACCOUNT_NOT_IN_ACTIVE_STATE("011", "account.error.notInActiveState", Type.BUSINESS),
+    INVALID_EMAIL_FORMAT("012", "account.error.invalidEmailFormat", Type.VALIDATION),
     ;
 
     private final String code;

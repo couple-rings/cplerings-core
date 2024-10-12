@@ -3,6 +3,7 @@ package com.cplerings.core.application.account.implementation;
 import static com.cplerings.core.application.account.error.AccountErrorCode.ACCOUNT_NOT_IN_VERIFYING_STATE;
 import static com.cplerings.core.application.account.error.AccountErrorCode.EMAIL_ALREADY_REGISTERED;
 import static com.cplerings.core.application.account.error.AccountErrorCode.EMAIL_REQUIRED;
+import static com.cplerings.core.application.account.error.AccountErrorCode.INVALID_EMAIL_FORMAT;
 import static com.cplerings.core.application.account.error.AccountErrorCode.PASSWORD_REQUIRED;
 import static com.cplerings.core.application.account.error.AccountErrorCode.USERNAME_ALREADY_REGISTERED;
 import static com.cplerings.core.application.account.error.AccountErrorCode.USERNAME_REQUIRED;
@@ -20,6 +21,7 @@ import com.cplerings.core.application.shared.service.verification.VerificationIn
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
+import com.cplerings.core.common.input.InputValidator;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountStatus;
 import com.cplerings.core.domain.account.Role;
@@ -42,6 +44,7 @@ public class RegisterCustomerUseCaseImpl extends AbstractUseCase<RegisterCustome
     protected void validateInput(UseCaseValidator validator, RegisterCustomerInput input) {
         super.validateInput(validator, input);
         validator.validate(StringUtils.isNotBlank(input.email()), EMAIL_REQUIRED);
+        validator.validate(InputValidator.emailIsValid(input.email()), INVALID_EMAIL_FORMAT);
         validator.validate(StringUtils.isNotBlank(input.password()), PASSWORD_REQUIRED);
         validator.validate(StringUtils.isNotBlank(input.username()), USERNAME_REQUIRED);
     }
