@@ -6,11 +6,13 @@ import com.cplerings.core.application.account.datasource.RegisterCustomerDataSou
 import com.cplerings.core.application.account.datasource.RequestResetPasswordDataSource;
 import com.cplerings.core.application.account.datasource.VerifyCustomerDataSource;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.AccountPasswordReset;
 import com.cplerings.core.domain.account.AccountVerification;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.account.QAccountVerification;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
+import com.cplerings.core.infrastructure.repository.AccountPasswordResetRepository;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.infrastructure.repository.AccountVerificationRepository;
 
@@ -28,6 +30,7 @@ public class SharedAccountDataSource extends AbstractDataSource
 
     private final AccountRepository accountRepository;
     private final AccountVerificationRepository accountVerificationRepository;
+    private final AccountPasswordResetRepository accountPasswordResetRepository;
 
     @Override
     public boolean emailIsNew(String email) {
@@ -75,5 +78,11 @@ public class SharedAccountDataSource extends AbstractDataSource
     @Override
     public Optional<Account> findByEmail(String email) {
         return accountRepository.findByEmail(email);
+    }
+
+    @Override
+    public void save(AccountPasswordReset accountPasswordReset) {
+        updateAuditor(accountPasswordReset);
+        accountPasswordResetRepository.save(accountPasswordReset);
     }
 }

@@ -7,4 +7,6 @@ import com.cplerings.core.application.shared.service.CpleringsService;
         description = "Service for generating OTP code"
 )
 public interface OTPService {
+
+    String generate();
 }
