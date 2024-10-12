@@ -83,6 +83,9 @@ public class Account extends AbstractEntity implements Auditor {
     @OneToMany(mappedBy = "blogger", fetch = FetchType.LAZY)
     private Set<Blog> blogs;
 
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    private Set<AccountPasswordReset> passwordResets;
+
     @Override
     public String getAuditorName() {
         return getEmail();

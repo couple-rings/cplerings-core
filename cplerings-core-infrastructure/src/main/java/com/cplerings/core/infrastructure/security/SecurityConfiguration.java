@@ -88,6 +88,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.VERIFY_CUSTOMER_PATH))
                         .permitAll())
                 .authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.REQUEST_RESET_PASSWORD_PATH))
+                        .permitAll())
+                .authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.RESET_PASSWORD_PATH))
                         .permitAll());
     }
 

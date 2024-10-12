@@ -1,5 +1,9 @@
 package com.cplerings.core.test.shared;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.cplerings.core.api.shared.AbstractResponse;
+import com.cplerings.core.api.shared.NoResponse;
 import com.cplerings.core.common.profile.ProfileConstant;
 import com.cplerings.core.infrastructure.CplringsCoreApplication;
 
@@ -68,6 +72,15 @@ public abstract class AbstractIT {
 
     protected final void thenResponseIsOk(WebTestClient.ResponseSpec response) {
         response.expectStatus().isOk();
+    }
+
+    protected final void thenNoResponseIsReturned(WebTestClient.ResponseSpec response) {
+        final NoResponse responseBody = response.expectBody(NoResponse.class)
+                .returnResult()
+                .getResponseBody();
+        assertThat(responseBody).isNotNull();
+        assertThat(responseBody.getType()).isEqualTo(AbstractResponse.Type.INFO);
+        assertThat(responseBody.getData()).isNull();
     }
 
     protected final class RequestBuilder<B> {
