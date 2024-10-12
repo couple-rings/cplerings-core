@@ -20,6 +20,12 @@ public enum AccountErrorCode implements ErrorCode {
     VERIFICATION_CODE_NOT_CREATED("010", "account.error.verificationCodeNotCreated", Type.BUSINESS),
     ACCOUNT_NOT_IN_ACTIVE_STATE("011", "account.error.notInActiveState", Type.BUSINESS),
     INVALID_EMAIL_FORMAT("012", "account.error.invalidEmailFormat", Type.VALIDATION),
+    NEW_PASSWORD_REQUIRED("013", "account.error.newPasswordRequired", Type.VALIDATION),
+    OTP_REQUIRED("014", "account.error.otpRequired", Type.VALIDATION),
+    RESET_PASSWORD_OTP_NOT_CREATED("015", "account.error.resetPasswordOTPNotCreated", Type.BUSINESS),
+    INVALID_RESET_PASSWORD_OTP("016", "account.error.invalidResetPasswordOTP", Type.VALIDATION),
+    RESET_PASSWORD_OTP_EXPIRED("017", "account.error.resetPasswordOTPExpired", Type.VALIDATION),
+    RESET_PASSWORD_OTP_ALREADY_USED("018", "account.error.resetPasswordOTPAlreadyUsed", Type.VALIDATION),
     ;
 
     private final String code;

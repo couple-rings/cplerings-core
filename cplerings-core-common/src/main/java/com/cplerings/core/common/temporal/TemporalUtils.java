@@ -17,4 +17,11 @@ public final class TemporalUtils {
     public static Instant getCurrentInstantUTC() {
         return Instant.now();
     }
+
+    public static boolean isAfterOrEqual(Instant instantToCheck, Instant instantToCheckAgainst) {
+        if (instantToCheck == null || instantToCheckAgainst == null) {
+            return false;
+        }
+        return !instantToCheck.isBefore(instantToCheckAgainst);
+    }
 }

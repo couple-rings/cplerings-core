@@ -74,6 +74,7 @@ cplerings:
   locale: ${CPLERINGS_LOCALE}
   allowed-origins: ${CPLERINGS_ALLOWED_ORIGINS}
   verification-duration: ${CPLERINGS_VERIFICATION_DURATION}
+  reset_password_duration: ${CPLERINGS_RESET_PASSWORD_DURATION}
 
 springdoc:
   api-docs:

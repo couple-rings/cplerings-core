@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@SuppressWarnings("java:S1075")
 public final class APIConstant {
 
     public static final String APPLICATION_JSON = "application/json";
@@ -18,6 +19,7 @@ public final class APIConstant {
     public static final String REGISTER_CUSTOMER_PATH = CUSTOMER_PATH + "/registration";
     public static final String CUSTOMER_PASSWORD_PATH = CUSTOMER_PATH + "/password";
     public static final String REQUEST_RESET_PASSWORD_PATH = CUSTOMER_PASSWORD_PATH + "/forget";
+    public static final String RESET_PASSWORD_PATH = CUSTOMER_PASSWORD_PATH + "/reset";
 
     /*
         Authentication's paths

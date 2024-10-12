@@ -2,13 +2,17 @@ package com.cplerings.core.infrastructure.datasource.account;
 
 import static com.querydsl.jpa.JPAExpressions.select;
 
+import java.util.Optional;
+
 import com.cplerings.core.application.account.datasource.RegisterCustomerDataSource;
 import com.cplerings.core.application.account.datasource.RequestResetPasswordDataSource;
+import com.cplerings.core.application.account.datasource.ResetPasswordDataSource;
 import com.cplerings.core.application.account.datasource.VerifyCustomerDataSource;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountPasswordReset;
 import com.cplerings.core.domain.account.AccountVerification;
 import com.cplerings.core.domain.account.QAccount;
+import com.cplerings.core.domain.account.QAccountPasswordReset;
 import com.cplerings.core.domain.account.QAccountVerification;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
@@ -18,15 +22,14 @@ import com.cplerings.core.infrastructure.repository.AccountVerificationRepositor
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.Optional;
-
 @DataSource
 @RequiredArgsConstructor
 public class SharedAccountDataSource extends AbstractDataSource
-        implements RegisterCustomerDataSource, VerifyCustomerDataSource, RequestResetPasswordDataSource {
+        implements RegisterCustomerDataSource, VerifyCustomerDataSource, RequestResetPasswordDataSource, ResetPasswordDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QAccountVerification Q_ACCOUNT_VERIFICATION = QAccountVerification.accountVerification;
+    private static final QAccountPasswordReset Q_ACCOUNT_PASSWORD_RESET = QAccountPasswordReset.accountPasswordReset;
 
     private final AccountRepository accountRepository;
     private final AccountVerificationRepository accountVerificationRepository;
@@ -84,5 +87,21 @@ public class SharedAccountDataSource extends AbstractDataSource
     public void save(AccountPasswordReset accountPasswordReset) {
         updateAuditor(accountPasswordReset);
         accountPasswordResetRepository.save(accountPasswordReset);
+    }
+
+    @Override
+    public Optional<Account> findAccountByEmailWithMostRecentResetPasswordOTP(String email) {
+        final QAccountPasswordReset accountPasswordResetSubQuery = new QAccountPasswordReset("accountPasswordResetSubQuery");
+        return Optional.ofNullable(createQuery().select(Q_ACCOUNT)
+                .from(Q_ACCOUNT)
+                .leftJoin(Q_ACCOUNT.passwordResets, Q_ACCOUNT_PASSWORD_RESET)
+                .on(Q_ACCOUNT_PASSWORD_RESET.account.eq(Q_ACCOUNT)
+                        .and(Q_ACCOUNT_PASSWORD_RESET.id.in(select(accountPasswordResetSubQuery.id)
+                                .from(accountPasswordResetSubQuery)
+                                .orderBy(accountPasswordResetSubQuery.id.desc())
+                                .limit(1))))
+                .fetchJoin()
+                .where(Q_ACCOUNT.email.eq(email))
+                .fetchFirst());
     }
 }
