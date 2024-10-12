@@ -14,10 +14,10 @@ public final class APIConstant {
     public static final String ACCOUNTS_PATH = "/accounts";
     public static final String CUSTOMER_PATH = ACCOUNTS_PATH + "/customer";
     public static final String VERIFY_CUSTOMER_PATH = CUSTOMER_PATH + "/verification";
+    public static final String RESEND_CUSTOMER_VERIFICATION_CODE_PATH = VERIFY_CUSTOMER_PATH + "/resend";
     public static final String REGISTER_CUSTOMER_PATH = CUSTOMER_PATH + "/registration";
-    public static final String PASSWORD_PATH = ACCOUNTS_PATH + "/password";
-    public static final String REQUEST_RESET_PASSWORD_PATH = PASSWORD_PATH + "/forget";
-    public static final String RESEND_VERIFICATION_CODE_PATH = VERIFY_CUSTOMER_PATH + "/resend";
+    public static final String CUSTOMER_PASSWORD_PATH = CUSTOMER_PATH + "/password";
+    public static final String REQUEST_RESET_PASSWORD_PATH = CUSTOMER_PASSWORD_PATH + "/forget";
 
     /*
         Authentication's paths

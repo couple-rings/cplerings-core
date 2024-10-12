@@ -39,7 +39,10 @@ public class RequestResetPasswordController extends AbstractDataController<Reque
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Email of account to reset password",
             required = true,
-            content = @Content(schema = @Schema(implementation = RequestResetPasswordRequest.class))
+            content = @Content(
+                    mediaType = APIConstant.APPLICATION_JSON,
+                    schema = @Schema(implementation = RequestResetPasswordRequest.class)
+            )
     )
     @ApiResponse(
             description = "The requester's email",
@@ -50,7 +53,7 @@ public class RequestResetPasswordController extends AbstractDataController<Reque
             )
     )
     @ErrorAPIResponse
-    public ResponseEntity<Object> register(@RequestBody RequestResetPasswordRequest request) {
+    public ResponseEntity<Object> request(@RequestBody RequestResetPasswordRequest request) {
         return handleRequest(request);
     }
 

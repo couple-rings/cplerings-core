@@ -40,7 +40,10 @@ public class RefreshTokenController extends AbstractDataController<RefreshTokenI
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Refresh token",
             required = true,
-            content = @Content(schema = @Schema(implementation = RefreshTokenRequest.class))
+            content = @Content(
+                    mediaType = APIConstant.APPLICATION_JSON,
+                    schema = @Schema(implementation = RefreshTokenRequest.class)
+            )
     )
     @ApiResponse(
             description = "The token for further access to the system",

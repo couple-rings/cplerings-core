@@ -39,7 +39,10 @@ public class VerifyCustomerController extends AbstractDataController<VerifyCusto
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Verification detail",
             required = true,
-            content = @Content(schema = @Schema(implementation = VerifyCustomerRequest.class))
+            content = @Content(
+                    mediaType = APIConstant.APPLICATION_JSON,
+                    schema = @Schema(implementation = VerifyCustomerRequest.class)
+            )
     )
     @ApiResponse(
             description = "The authentication token",
@@ -50,7 +53,7 @@ public class VerifyCustomerController extends AbstractDataController<VerifyCusto
             )
     )
     @ErrorAPIResponse
-    public ResponseEntity<Object> register(@RequestBody VerifyCustomerRequest request) {
+    public ResponseEntity<Object> verify(@RequestBody VerifyCustomerRequest request) {
         return handleRequest(request);
     }
 

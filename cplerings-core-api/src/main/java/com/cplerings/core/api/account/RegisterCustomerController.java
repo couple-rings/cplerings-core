@@ -1,7 +1,7 @@
 package com.cplerings.core.api.account;
 
 import com.cplerings.core.api.account.data.CustomerEmailInfo;
-import com.cplerings.core.api.account.mapper.APIRegisterAccountMapper;
+import com.cplerings.core.api.account.mapper.APIRegisterCustomerMapper;
 import com.cplerings.core.api.account.request.RegisterCustomerRequest;
 import com.cplerings.core.api.account.response.CustomerEmailInfoResponse;
 import com.cplerings.core.api.mapper.APIMapper;
@@ -31,7 +31,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 public class RegisterCustomerController extends AbstractDataController<RegisterCustomerInput, CustomerRegistrationOutput, CustomerEmailInfo, RegisterCustomerRequest, CustomerEmailInfoResponse> {
 
     private final RegisterCustomerUseCase registerCustomerUseCase;
-    private final APIRegisterAccountMapper apiRegisterAccountMapper;
+    private final APIRegisterCustomerMapper apiRegisterCustomerMapper;
 
     @PostMapping(APIConstant.REGISTER_CUSTOMER_PATH)
     @AccountTag
@@ -39,7 +39,10 @@ public class RegisterCustomerController extends AbstractDataController<RegisterC
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Customer info",
             required = true,
-            content = @Content(schema = @Schema(implementation = RegisterCustomerRequest.class))
+            content = @Content(
+                    mediaType = APIConstant.APPLICATION_JSON,
+                    schema = @Schema(implementation = RegisterCustomerRequest.class)
+            )
     )
     @ApiResponse(
             description = "The customer's account info for verification",
@@ -61,6 +64,6 @@ public class RegisterCustomerController extends AbstractDataController<RegisterC
 
     @Override
     protected APIMapper<RegisterCustomerInput, CustomerRegistrationOutput, CustomerEmailInfo, RegisterCustomerRequest, CustomerEmailInfoResponse> getMapper() {
-        return apiRegisterAccountMapper;
+        return apiRegisterCustomerMapper;
     }
 }
