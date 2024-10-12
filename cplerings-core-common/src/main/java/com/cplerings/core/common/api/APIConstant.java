@@ -15,6 +15,8 @@ public final class APIConstant {
     public static final String CUSTOMER_PATH = ACCOUNTS_PATH + "/customer";
     public static final String VERIFY_CUSTOMER_PATH = CUSTOMER_PATH + "/verification";
     public static final String REGISTER_CUSTOMER_PATH = CUSTOMER_PATH + "/registration";
+    public static final String PASSWORD_PATH = ACCOUNTS_PATH + "/password";
+    public static final String REQUEST_RESET_PASSWORD_PATH = PASSWORD_PATH + "/forget";
 
     /*
         Authentication's paths

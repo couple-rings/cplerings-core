@@ -16,7 +16,7 @@ import com.icegreen.greenmail.util.ServerSetupTest;
 @RequiredArgsConstructor
 public class EmailHelper {
 
-    public static final String TEST_EMAIL = "localhost";
+    public static final String TEST_EMAIL = "test@cplerings.com";
 
     private final ApplicationContext applicationContext;
 

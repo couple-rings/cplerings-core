@@ -2,6 +2,7 @@ package com.cplerings.core.application.account.implementation;
 
 import static com.cplerings.core.application.account.error.AccountErrorCode.ACCOUNT_WITH_EMAIL_NOT_FOUND;
 import static com.cplerings.core.application.account.error.AccountErrorCode.EMAIL_REQUIRED;
+import static com.cplerings.core.application.account.error.AccountErrorCode.INVALID_EMAIL_FORMAT;
 import static com.cplerings.core.application.account.error.AccountErrorCode.VERIFICATION_CODE_NOT_CREATED;
 import static com.cplerings.core.application.account.error.AccountErrorCode.VERIFICATION_CODE_REQUIRED;
 
@@ -21,6 +22,7 @@ import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.common.either.Either;
 import com.cplerings.core.common.either.NoResult;
+import com.cplerings.core.common.input.InputValidator;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountStatus;
 import com.cplerings.core.domain.account.AccountVerification;
@@ -46,6 +48,7 @@ public class VerifyCustomerUseCaseImpl extends AbstractUseCase<VerifyCustomerInp
     protected void validateInput(UseCaseValidator validator, VerifyCustomerInput input) {
         super.validateInput(validator, input);
         validator.validate(StringUtils.isNotBlank(input.email()), EMAIL_REQUIRED);
+        validator.validate(InputValidator.emailIsValid(input.email()), INVALID_EMAIL_FORMAT);
         validator.validate(StringUtils.isNotBlank(input.verificationCode()), VERIFICATION_CODE_REQUIRED);
     }
 

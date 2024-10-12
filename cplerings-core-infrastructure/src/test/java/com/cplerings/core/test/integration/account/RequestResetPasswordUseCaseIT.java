@@ -4,7 +4,7 @@ import static com.cplerings.core.api.shared.AbstractResponse.Type.DATA;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cplerings.core.api.account.data.CustomerEmailInfo;
-import com.cplerings.core.api.account.request.RegisterCustomerRequest;
+import com.cplerings.core.api.account.request.RequestResetPasswordRequest;
 import com.cplerings.core.api.account.response.CustomerEmailInfoResponse;
 import com.cplerings.core.application.shared.service.email.EmailService;
 import com.cplerings.core.common.api.APIConstant;
@@ -26,9 +26,7 @@ import com.icegreen.greenmail.util.GreenMail;
 
 import jakarta.mail.internet.MimeMessage;
 
-import java.util.UUID;
-
-class RegisterCustomerUseCaseIT extends AbstractIT {
+class RequestResetPasswordUseCaseIT extends AbstractIT {
 
     @Autowired
     private EmailHelper emailHelper;
@@ -53,25 +51,22 @@ class RegisterCustomerUseCaseIT extends AbstractIT {
     }
 
     @Test
-    void givenRegisterCustomer_whenRegisterNewEmailAndUsername() throws Exception {
-        final String username = UUID.randomUUID().toString();
-        final RegisterCustomerRequest request = RegisterCustomerRequest.builder()
-                .email(EmailHelper.TEST_EMAIL)
-                .password(AccountTestConstant.PASSWORD)
-                .username(username)
+    void givenAnyone_whenRequestResetPassword() throws Exception {
+        final RequestResetPasswordRequest request = RequestResetPasswordRequest.builder()
+                .email(AccountTestConstant.CUSTOMER_EMAIL)
                 .build();
         final WebTestClient.ResponseSpec response = requestBuilder()
-                .path(APIConstant.REGISTER_CUSTOMER_PATH)
+                .path(APIConstant.REQUEST_RESET_PASSWORD_PATH)
                 .method(RequestBuilder.Method.POST)
                 .body(request)
                 .send();
 
         thenResponseIsOk(response);
-        thenResponseContainsRegistrationEmail(response);
+        thenResponseContainsResetPasswordEmail(response);
         thenExistsEmailWithVerificationCode();
     }
 
-    private void thenResponseContainsRegistrationEmail(WebTestClient.ResponseSpec response) {
+    private void thenResponseContainsResetPasswordEmail(WebTestClient.ResponseSpec response) {
         final CustomerEmailInfoResponse customerEmailInfoResponse = response.expectBody(CustomerEmailInfoResponse.class)
                 .returnResult()
                 .getResponseBody();
@@ -80,7 +75,7 @@ class RegisterCustomerUseCaseIT extends AbstractIT {
 
         final CustomerEmailInfo customerEmailInfo = customerEmailInfoResponse.getData();
         assertThat(customerEmailInfo).isNotNull();
-        assertThat(customerEmailInfo.email()).isEqualTo(EmailHelper.TEST_EMAIL);
+        assertThat(customerEmailInfo.email()).isEqualTo(AccountTestConstant.CUSTOMER_EMAIL);
     }
 
     private void thenExistsEmailWithVerificationCode() throws Exception {
@@ -89,8 +84,8 @@ class RegisterCustomerUseCaseIT extends AbstractIT {
 
         final MimeMessage email = emails[0];
         assertThat(email).isNotNull();
-        assertThat(email.getSubject()).isEqualTo(LocaleUtils.translateLocale("accountVerificationService.text.subject"),
-                EmailHelper.TEST_EMAIL);
+        assertThat(email.getSubject()).isEqualTo(LocaleUtils.translateLocale("requestResetPassword.text.subject"),
+                AccountTestConstant.CUSTOMER_EMAIL);
 
         final Object body = email.getContent();
         assertThat(body).isInstanceOf(String.class);
