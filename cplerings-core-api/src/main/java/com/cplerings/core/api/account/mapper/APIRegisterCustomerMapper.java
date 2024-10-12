@@ -11,6 +11,6 @@ import com.cplerings.core.common.mapper.SpringMapperConfiguration;
 import org.mapstruct.Mapper;
 
 @Mapper(config = SpringMapperConfiguration.class)
-public interface APIRegisterAccountMapper extends APIMapper<RegisterCustomerInput, CustomerRegistrationOutput, CustomerEmailInfo, RegisterCustomerRequest, CustomerEmailInfoResponse> {
+public interface APIRegisterCustomerMapper extends APIMapper<RegisterCustomerInput, CustomerRegistrationOutput, CustomerEmailInfo, RegisterCustomerRequest, CustomerEmailInfoResponse> {
 
 }

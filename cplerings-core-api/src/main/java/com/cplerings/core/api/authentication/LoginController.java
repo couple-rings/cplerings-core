@@ -39,7 +39,10 @@ public class LoginController extends AbstractDataController<LoginCredentialInput
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Login credential",
             required = true,
-            content = @Content(schema = @Schema(implementation = LoginCredentialRequest.class))
+            content = @Content(
+                    mediaType = APIConstant.APPLICATION_JSON,
+                    schema = @Schema(implementation = LoginCredentialRequest.class)
+            )
     )
     @ApiResponse(
             description = "The token for further access to the system",
