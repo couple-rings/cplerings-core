@@ -80,7 +80,6 @@ public class SharedAccountDataSource extends AbstractDataSource
     }
 
     @Override
-<<<<<<< HEAD
     public Optional<Account> findByEmail(String email) {
         return accountRepository.findByEmail(email);
     }
@@ -104,13 +103,14 @@ public class SharedAccountDataSource extends AbstractDataSource
                 .fetchJoin()
                 .where(Q_ACCOUNT.email.eq(email))
                 .fetchFirst());
-=======
+    }
+
+    @Override
     public Optional<Account> getAccountById(Long id) {
         return Optional.ofNullable(createQuery()
                 .select(Q_ACCOUNT)
                 .from(Q_ACCOUNT)
                 .where(Q_ACCOUNT.id.eq(id))
                 .fetchOne());
->>>>>>> 5d216cc (View Profile)
     }
 }

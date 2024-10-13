@@ -85,7 +85,7 @@ public class SecurityConfiguration {
     private void handleAccountAPI(HttpSecurity localHttp) throws Exception {
         localHttp.
                 authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.PROFILE_PATH))
-                        .permitAll())
+                        .authenticated())
                 .authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.REGISTER_CUSTOMER_PATH))
                         .permitAll())
                 .authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.VERIFY_CUSTOMER_PATH))
