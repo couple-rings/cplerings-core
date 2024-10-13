@@ -35,7 +35,7 @@ class ResetPasswordUseCaseIT extends AbstractIT {
     private PasswordService passwordService;
 
     @Test
-    void givenAnyone_whenVerifyTheirAccount() {
+    void givenAnyone_whenResetPassword() {
         Account customerAccount = accountRepository.findByEmail(AccountTestConstant.CUSTOMER_EMAIL)
                 .orElse(null);
         assertThat(customerAccount).isNotNull();
