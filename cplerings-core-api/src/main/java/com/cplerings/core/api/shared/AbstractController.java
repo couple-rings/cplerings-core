@@ -1,6 +1,7 @@
 package com.cplerings.core.api.shared;
 
 import com.cplerings.core.api.mapper.APIMapper;
+import com.cplerings.core.api.mapper.CustomRequestMapper;
 import com.cplerings.core.application.shared.errorcode.ErrorCode;
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
 import com.cplerings.core.application.shared.usecase.UseCase;
@@ -11,10 +12,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 
 @RequestMapping("${cplerings.api.path}")
 public abstract class AbstractController<IN, OUT, DATA, REQ, RES> {
+
+    protected final <CUSTOM_REQ> ResponseEntity<Object> handleRequest(CUSTOM_REQ customRequest, CustomRequestMapper<CUSTOM_REQ, REQ> customRequestMapper) {
+        Objects.requireNonNull(customRequestMapper);
+        final REQ request = customRequestMapper.map(customRequest);
+        return handleRequest(request);
+    }
 
     protected final ResponseEntity<Object> handleRequest(REQ request) {
         UseCase<IN, OUT> useCase = getUseCase();
@@ -34,7 +42,7 @@ public abstract class AbstractController<IN, OUT, DATA, REQ, RES> {
 
     protected abstract APIMapper<IN, OUT, DATA, REQ, RES> getMapper();
 
-    private final ResponseEntity<Object> handleErrorCodes(ErrorCodes errorCodes) {
+    private ResponseEntity<Object> handleErrorCodes(ErrorCodes errorCodes) {
         final Collection<ErrorCode> errors = errorCodes.getErrors();
         final Optional<ErrorCode> exceptionError = errors.stream()
                 .filter(errorCode -> (ErrorCode.Type.SYSTEM == errorCode.getType()))
