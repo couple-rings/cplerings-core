@@ -30,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.Instant;
+import java.util.Comparator;
 import java.util.Optional;
 
 @UseCaseImplementation
@@ -59,7 +60,7 @@ public class ResetPasswordUseCaseImpl extends AbstractUseCase<ResetPasswordInput
         validator.validateAndStopExecution(account.getStatus() == AccountStatus.ACTIVE, ACCOUNT_NOT_IN_ACTIVE_STATE);
         final Optional<AccountPasswordReset> accountPasswordResetOptional = account.getPasswordResets()
                 .stream()
-                .findFirst();
+                .max(Comparator.comparing(AccountPasswordReset::getId));
         validator.validateAndStopExecution(accountPasswordResetOptional.isPresent(), RESET_PASSWORD_OTP_NOT_CREATED);
         final AccountPasswordReset accountPasswordReset = accountPasswordResetOptional.get();
         validator.validateAndStopExecution(accountPasswordReset.getStatus() != ResetCodeStatus.VERIFIED, RESET_PASSWORD_OTP_ALREADY_USED);
