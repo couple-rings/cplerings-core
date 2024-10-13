@@ -9,7 +9,7 @@ import com.cplerings.core.api.account.response.CustomerEmailInfoResponse;
 import com.cplerings.core.application.shared.service.email.EmailService;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.common.locale.LocaleUtils;
-import com.cplerings.core.domain.State;
+import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountStatus;
 import com.cplerings.core.domain.account.Role;

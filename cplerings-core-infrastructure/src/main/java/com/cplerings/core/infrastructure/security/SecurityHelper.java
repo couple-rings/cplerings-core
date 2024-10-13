@@ -2,7 +2,7 @@ package com.cplerings.core.infrastructure.security;
 
 import com.cplerings.core.api.shared.ErrorCodesResponse;
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
-import com.cplerings.core.domain.Auditor;
+import com.cplerings.core.domain.shared.Auditor;
 import com.cplerings.core.infrastructure.annotation.Helper;
 
 import lombok.RequiredArgsConstructor;

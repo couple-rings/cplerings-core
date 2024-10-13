@@ -1,7 +1,7 @@
 package com.cplerings.core.infrastructure.datasource;
 
-import com.cplerings.core.domain.AbstractEntity;
-import com.cplerings.core.domain.Auditor;
+import com.cplerings.core.domain.shared.AbstractEntity;
+import com.cplerings.core.domain.shared.Auditor;
 import com.cplerings.core.infrastructure.security.SecurityHelper;
 
 import org.springframework.beans.factory.annotation.Autowired;

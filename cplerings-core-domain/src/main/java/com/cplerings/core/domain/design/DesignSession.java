@@ -1,7 +1,7 @@
 package com.cplerings.core.domain.design;
 
 import com.cplerings.core.common.database.DatabaseConstant;
-import com.cplerings.core.domain.AbstractEntity;
+import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.account.Account;
 
 import lombok.AllArgsConstructor;
