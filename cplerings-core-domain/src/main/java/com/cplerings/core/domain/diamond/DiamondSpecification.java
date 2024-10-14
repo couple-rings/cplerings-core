@@ -50,9 +50,6 @@ public class DiamondSpecification extends AbstractEntity {
     @Column(name = "clarity", nullable = false)
     private String clarity;
 
-    @Column(name = "cut", nullable = false)
-    private String cut;
-
     @Column(name = "shape", nullable = false)
     private String shape;
 

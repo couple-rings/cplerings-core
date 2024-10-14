@@ -1,6 +1,8 @@
 package com.cplerings.core.domain.design;
 
 import com.cplerings.core.common.database.DatabaseConstant;
+import com.cplerings.core.domain.diamond.DiamondSpecification;
+import com.cplerings.core.domain.metal.MetalSpecification;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.valueobject.DesignSize;
 import com.cplerings.core.domain.shared.valueobject.MetalWeight;
@@ -14,9 +16,12 @@ import lombok.experimental.SuperBuilder;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -43,7 +48,7 @@ public class Design extends AbstractEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", length = DatabaseConstant.DEFAULT_DESCRIPTION_LENGTH, nullable = false)
     private String description;
 
     @Column(name = "blueprint", nullable = false)
@@ -57,4 +62,16 @@ public class Design extends AbstractEntity {
 
     @Column(name = "size_diamonds_count", nullable = false)
     private Integer sideDiamondsCount;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "diamond_specification_id")
+    private DiamondSpecification diamondSpecification;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "metal_specification_id")
+    private MetalSpecification metalSpecification;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "design_collection_id")
+    private DesignCollection designCollection;
 }
