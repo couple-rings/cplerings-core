@@ -2,6 +2,7 @@ package com.cplerings.core.domain.diamond;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.shared.AbstractEntity;
+import com.cplerings.core.domain.shared.valueobject.Money;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -53,8 +56,12 @@ public class DiamondSpecification extends AbstractEntity {
     @Column(name = "shape", nullable = false)
     private String shape;
 
-    @Column(name = "price", nullable = false)
-    private double price;
+    @Embedded
+    @AttributeOverride(
+            name = "amount",
+            column = @Column(name = "price", nullable = false)
+    )
+    private Money price;
 
     @OneToMany(mappedBy = "diamondSpecification", fetch = FetchType.LAZY)
     private Set<Diamond> diamonds;

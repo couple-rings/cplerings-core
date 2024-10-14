@@ -1,4 +1,4 @@
-package com.cplerings.core.domain.design;
+package com.cplerings.core.domain.jewelry;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.shared.AbstractEntity;
@@ -23,15 +23,15 @@ import jakarta.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_design_collection")
-public class DesignCollection extends AbstractEntity {
+@Table(name = "tbl_jewelry_category")
+public class JewelryCategory extends AbstractEntity {
 
-    private static final String DESIGN_COLLECTION_SEQUENCE = "design_collection_seq";
+    private static final String JEWELRY_CATEGORY_SEQUENCE = "jewelry_category_seq";
 
     @Id
-    @GeneratedValue(generator = DESIGN_COLLECTION_SEQUENCE, strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = DESIGN_COLLECTION_SEQUENCE, allocationSize = DatabaseConstant.SEQ_ALLOCATION_SIZE)
-    @Column(name = "design_collection_id")
+    @GeneratedValue(generator = JEWELRY_CATEGORY_SEQUENCE, strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = JEWELRY_CATEGORY_SEQUENCE, allocationSize = DatabaseConstant.SEQ_ALLOCATION_SIZE)
+    @Column(name = "jewelry_category_id")
     private Long id;
 
     @Column(name = "name", nullable = false)

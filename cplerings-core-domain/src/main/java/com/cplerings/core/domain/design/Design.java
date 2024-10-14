@@ -2,6 +2,7 @@ package com.cplerings.core.domain.design;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.diamond.DiamondSpecification;
+import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.metal.MetalSpecification;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.valueobject.DesignSize;
@@ -22,6 +23,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -51,8 +53,9 @@ public class Design extends AbstractEntity {
     @Column(name = "description", length = DatabaseConstant.DEFAULT_DESCRIPTION_LENGTH, nullable = false)
     private String description;
 
-    @Column(name = "blueprint", nullable = false)
-    private String blueprint;
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "blueprint_id", nullable = false)
+    private Document blueprint;
 
     @Column(name = "characteristic", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
     private String characteristic;

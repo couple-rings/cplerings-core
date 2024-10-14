@@ -1,8 +1,8 @@
 package com.cplerings.core.domain.spouse;
 
 import com.cplerings.core.common.database.DatabaseConstant;
+import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.shared.AbstractEntity;
-import com.cplerings.core.domain.image.Image;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

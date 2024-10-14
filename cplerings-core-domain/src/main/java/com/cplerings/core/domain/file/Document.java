@@ -1,4 +1,4 @@
-package com.cplerings.core.domain.image;
+package com.cplerings.core.domain.file;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.shared.AbstractEntity;
@@ -23,17 +23,17 @@ import jakarta.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_image")
-public class Image extends AbstractEntity {
+@Table(name = "tbl_file")
+public class Document extends AbstractEntity {
 
-    private static final String IMAGE_SEQUENCE = "image_seq";
+    private static final String DOCUMENT_SEQUENCE = "document_seq";
 
     @Id
-    @GeneratedValue(generator = IMAGE_SEQUENCE, strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = IMAGE_SEQUENCE, allocationSize = DatabaseConstant.SEQ_ALLOCATION_SIZE)
-    @Column(name = "image_id")
+    @GeneratedValue(generator = DOCUMENT_SEQUENCE, strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = DOCUMENT_SEQUENCE, allocationSize = DatabaseConstant.SEQ_ALLOCATION_SIZE)
+    @Column(name = "document_id")
     private Long id;
 
-    @Column(name = "URL", nullable = false, unique = true)
+    @Column(name = "url", nullable = false, unique = true)
     private String url;
 }

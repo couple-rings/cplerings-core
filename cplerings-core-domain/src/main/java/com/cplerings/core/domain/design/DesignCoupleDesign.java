@@ -1,6 +1,7 @@
 package com.cplerings.core.domain.design;
 
 import com.cplerings.core.common.database.DatabaseConstant;
+import com.cplerings.core.domain.shared.AbstractEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,8 +26,8 @@ import jakarta.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "design_couple_design")
-public class DesignCoupleDesign {
+@Table(name = "tbl_design_couple_design")
+public class DesignCoupleDesign extends AbstractEntity {
 
     private static final String DESIGN_COUPLE_DESIGN_SEQUENCE = "design_couple_design_seq";
 

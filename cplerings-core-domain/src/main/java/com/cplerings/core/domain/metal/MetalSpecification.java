@@ -1,6 +1,7 @@
 package com.cplerings.core.domain.metal;
 
 import com.cplerings.core.common.database.DatabaseConstant;
+import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ import jakarta.persistence.Table;
 @AllArgsConstructor
 @Entity
 @Table(name = "tbl_metal_specification")
-public class MetalSpecification {
+public class MetalSpecification extends AbstractEntity {
 
     private static final String METAL_SPECIFICATION_SEQUENCE = "metal_specification_seq";
 
@@ -42,10 +43,10 @@ public class MetalSpecification {
     @Embedded
     @AttributeOverride(
             name = "amount",
-            column = @Column(name = "price_per_unit", nullable = false)
+            column = @Column(name = "price_per_unit", nullable = false, precision = 12, scale = 3)
     )
     private Money pricePerUnit;
 
-    @Column(name = "color", nullable = false)
-    private String color;
+    @Column(name = "color", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
+    private MetalColor color;
 }

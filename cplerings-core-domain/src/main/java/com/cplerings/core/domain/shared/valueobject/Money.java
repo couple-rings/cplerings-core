@@ -16,20 +16,20 @@ import java.util.Objects;
 @Embeddable
 public final class Money {
 
-    @Column(name = "amount", nullable = false, precision = 12, scale = 2)
+    @Column(name = "amount", nullable = false, precision = 12, scale = 3)
     private BigDecimal amount;
 
     public Money() {
         this.amount = sanitizeMoney(BigDecimal.ZERO);
     }
 
-    public static Money create(BigDecimal amount) {
-        return new Money(sanitizeMoney(amount));
-    }
-
     private static BigDecimal sanitizeMoney(BigDecimal amount) {
         return Objects.requireNonNullElse(amount, BigDecimal.ZERO)
                 .setScale(3, RoundingMode.HALF_EVEN);
+    }
+
+    public static Money create(BigDecimal amount) {
+        return new Money(sanitizeMoney(amount));
     }
 
     private void setAmount(BigDecimal amount) {
