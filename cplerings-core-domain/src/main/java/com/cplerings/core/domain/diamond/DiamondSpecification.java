@@ -4,6 +4,8 @@ import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -53,8 +55,9 @@ public class DiamondSpecification extends AbstractEntity {
     @Column(name = "clarity", nullable = false)
     private String clarity;
 
-    @Column(name = "shape", nullable = false)
-    private String shape;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "shape", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
+    private DiamondShape shape;
 
     @Embedded
     @AttributeOverride(
