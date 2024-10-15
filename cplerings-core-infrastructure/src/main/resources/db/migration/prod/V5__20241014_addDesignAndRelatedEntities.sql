@@ -245,5 +245,9 @@ ALTER TABLE tbl_ring
 ALTER TABLE tbl_diamond_specification
     ADD price DECIMAL(12, 3);
 
+UPDATE tbl_diamond_specification
+SET price = 0.0
+WHERE price IS NULL;
+
 ALTER TABLE tbl_diamond_specification
     ALTER COLUMN price SET NOT NULL;

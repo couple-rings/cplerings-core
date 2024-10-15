@@ -3,9 +3,8 @@ package com.cplerings.core.domain.diamond;
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.valueobject.Money;
+import com.cplerings.core.domain.shared.valueobject.Weight;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +15,8 @@ import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -46,14 +47,16 @@ public class DiamondSpecification extends AbstractEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "weight", nullable = false)
-    private double weight;
+    @Embedded
+    private Weight weight;
 
-    @Column(name = "color", nullable = false)
-    private String color;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "color", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
+    private DiamondColor color;
 
-    @Column(name = "clarity", nullable = false)
-    private String clarity;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "clarity", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
+    private DiamondClarity clarity;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "shape", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)

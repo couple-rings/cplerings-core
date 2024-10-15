@@ -8,12 +8,12 @@ import java.math.RoundingMode;
 import java.util.Objects;
 
 @Embeddable
-public final class MetalWeight {
+public final class Weight {
 
-    @Column(name = "metal_weight", nullable = false, precision = 10, scale = 2)
+    @Column(name = "weight", nullable = false, precision = 10, scale = 2)
     private BigDecimal weight;
 
-    public MetalWeight() {
+    public Weight() {
         this.weight = sanitizeWeightValue(null);
     }
 
@@ -22,12 +22,12 @@ public final class MetalWeight {
                 .setScale(2, RoundingMode.HALF_EVEN);
     }
 
-    private MetalWeight(BigDecimal weight) {
+    private Weight(BigDecimal weight) {
         this.weight = sanitizeWeightValue(weight);
     }
 
-    public static MetalWeight create(BigDecimal weightValue) {
-        return new MetalWeight(weightValue);
+    public static Weight create(BigDecimal weightValue) {
+        return new Weight(weightValue);
     }
 
     public BigDecimal getWeightValue() {

@@ -6,7 +6,7 @@ import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.metal.MetalSpecification;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.valueobject.DesignSize;
-import com.cplerings.core.domain.shared.valueobject.MetalWeight;
+import com.cplerings.core.domain.shared.valueobject.Weight;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,9 +14,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -45,7 +48,11 @@ public class Design extends AbstractEntity {
     private Long id;
 
     @Embedded
-    private MetalWeight metalWeight;
+    @AttributeOverride(
+            name = "weight",
+            column = @Column(name = "metal_weight", nullable = false, precision = 10, scale = 2)
+    )
+    private Weight metalWeight;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -57,8 +64,9 @@ public class Design extends AbstractEntity {
     @JoinColumn(name = "blueprint_id", nullable = false)
     private Document blueprint;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "characteristic", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
-    private String characteristic;
+    private DesignCharacteristic characteristic;
 
     @Embedded
     private DesignSize size;
