@@ -121,7 +121,7 @@ public class SecurityConfiguration {
 
     private void handleSpouseAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.SPOUSES_PATH))
-                .permitAll());
+                .authenticated());
     }
 
     private String resolvePath(String path) {
