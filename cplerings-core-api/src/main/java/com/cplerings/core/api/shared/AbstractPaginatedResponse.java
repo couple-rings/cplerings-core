@@ -1,7 +1,6 @@
 package com.cplerings.core.api.shared;
 
 import com.cplerings.core.common.pagination.Buildable;
-import com.cplerings.core.common.pagination.Pageable;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -38,14 +37,6 @@ public abstract class AbstractPaginatedResponse<T> extends AbstractResponse {
             Objects.requireNonNull(data, "Data must not be null");
             this.count = data.size();
             this.data = data;
-            return self();
-        }
-
-        public final S pageable(Pageable pageable) {
-            Objects.requireNonNull(pageable, "Pageable must not be null");
-            this.page = pageable.getPage();
-            this.pageSize = pageable.getPageSize();
-            this.totalPages = pageable.getTotalPages();
             return self();
         }
     }

@@ -1,8 +1,8 @@
 package com.cplerings.core.test.integration.authentication;
 
-import com.cplerings.core.api.mapper.ErrorCodeResponseMapper;
 import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.api.shared.ErrorCodesResponse;
+import com.cplerings.core.api.shared.mapper.ErrorCodeResponseMapper;
 import com.cplerings.core.application.authentication.error.AuthenticationErrorCode;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
@@ -67,10 +67,6 @@ class AuthenticateUserUseCaseIT extends AbstractIT {
 
         thenResponseIsForbidden(response);
         thenResponseBodyIsError(response);
-    }
-
-    private void thenResponseIsForbidden(WebTestClient.ResponseSpec response) {
-        response.expectStatus().isForbidden();
     }
 
     private void thenResponseBodyIsError(WebTestClient.ResponseSpec response) {

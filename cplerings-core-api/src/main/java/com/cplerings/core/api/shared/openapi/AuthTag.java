@@ -1,4 +1,4 @@
-package com.cplerings.core.api.openapi;
+package com.cplerings.core.api.shared.openapi;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 

@@ -1,7 +1,7 @@
 package com.cplerings.core.api.shared;
 
-import com.cplerings.core.api.mapper.APIMapper;
-import com.cplerings.core.api.mapper.CustomRequestMapper;
+import com.cplerings.core.api.shared.mapper.APIMapper;
+import com.cplerings.core.api.shared.mapper.CustomRequestMapper;
 import com.cplerings.core.application.shared.errorcode.ErrorCode;
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
 import com.cplerings.core.application.shared.usecase.UseCase;
@@ -54,5 +54,10 @@ public abstract class AbstractController<IN, OUT, DATA, REQ, RES> {
         }
         final ErrorCodesResponse response = ErrorCodesResponse.create(errorCodes);
         return ResponseEntity.badRequest().body(response);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected final ResponseEntity<Object> handleRequest() {
+        return handleRequest((REQ) NoRequest.INSTANCE);
     }
 }

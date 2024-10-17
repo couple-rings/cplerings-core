@@ -2,12 +2,12 @@ package com.cplerings.core.api.account;
 
 import com.cplerings.core.api.account.mapper.APIResetPasswordMapper;
 import com.cplerings.core.api.account.request.ResetPasswordRequest;
-import com.cplerings.core.api.mapper.APIMapper;
-import com.cplerings.core.api.openapi.AccountTag;
-import com.cplerings.core.api.openapi.ErrorAPIResponse;
 import com.cplerings.core.api.shared.AbstractDataController;
 import com.cplerings.core.api.shared.NoData;
 import com.cplerings.core.api.shared.NoResponse;
+import com.cplerings.core.api.shared.mapper.APIMapper;
+import com.cplerings.core.api.shared.openapi.AccountTag;
+import com.cplerings.core.api.shared.openapi.ErrorAPIResponse;
 import com.cplerings.core.application.account.ResetPasswordUseCase;
 import com.cplerings.core.application.account.input.ResetPasswordInput;
 import com.cplerings.core.application.shared.output.NoOutput;

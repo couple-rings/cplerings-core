@@ -1,4 +1,4 @@
-package com.cplerings.core.api.mapper;
+package com.cplerings.core.api.shared.mapper;
 
 @SuppressWarnings("java:S119")
 public interface APIMapper<IN, OUT, DATA, REQ, RES> {

@@ -1,4 +1,6 @@
-package com.cplerings.core.api.shared;
+package com.cplerings.core.infrastructure.jackson.serializer;
+
+import com.cplerings.core.api.shared.NoData;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;

@@ -1,6 +1,6 @@
 package com.cplerings.core.api.shared;
 
-import com.cplerings.core.api.mapper.ErrorCodeResponseMapper;
+import com.cplerings.core.api.shared.mapper.ErrorCodeResponseMapper;
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
 import com.cplerings.core.common.temporal.TemporalUtils;
 
