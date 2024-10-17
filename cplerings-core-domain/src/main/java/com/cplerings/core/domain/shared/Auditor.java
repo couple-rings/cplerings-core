@@ -1,4 +1,4 @@
-package com.cplerings.core.domain;
+package com.cplerings.core.domain.shared;
 
 public interface Auditor {
 

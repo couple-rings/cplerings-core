@@ -1,8 +1,9 @@
 package com.cplerings.core.domain.ring;
 
 import com.cplerings.core.common.database.DatabaseConstant;
-import com.cplerings.core.domain.AbstractEntity;
 import com.cplerings.core.domain.branch.Branch;
+import com.cplerings.core.domain.file.Document;
+import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.spouse.Spouse;
 
 import lombok.AllArgsConstructor;
@@ -51,11 +52,12 @@ public class Ring extends AbstractEntity {
     @Column(name = "status", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
     private RingStatus status;
 
-    @Column(name = "maintanence_expired_date", nullable = false)
-    private Instant maintanenceExpiredDate;
+    @Column(name = "maintenance_expired_date", nullable = false)
+    private Instant maintenanceExpiredDate;
 
-    @Column(name = "maintanance_document", nullable = false)
-    private String maintananceDocument;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "maintenance_document_id", nullable = false)
+    private Document maintenanceDocument;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "branch_id")

@@ -13,4 +13,6 @@ public final class DatabaseConstant {
     public static final String LOB_DEFINITION = "TEXT";
 
     public static final int DEFAULT_ENUM_LENGTH = 12;
+
+    public static final int DEFAULT_DESCRIPTION_LENGTH = 1000;
 }

@@ -1,4 +1,4 @@
-package com.cplerings.core.domain.blog;
+package com.cplerings.core.domain.design;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.file.Image;
@@ -27,22 +27,24 @@ import jakarta.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_blog_image")
-public class BlogImage extends AbstractEntity {
+@Table(name = "tbl_design_couple")
+public class DesignCouple extends AbstractEntity {
 
-    private static final String BLOG_IMAGE_SEQUENCE = "blog_image_seq";
+    private static final String DESIGN_COUPLE_SEQUENCE = "design_couple_seq";
 
     @Id
-    @GeneratedValue(generator = BLOG_IMAGE_SEQUENCE, strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = BLOG_IMAGE_SEQUENCE, allocationSize = DatabaseConstant.SEQ_ALLOCATION_SIZE)
-    @Column(name = "blog_image_id")
+    @GeneratedValue(generator = DESIGN_COUPLE_SEQUENCE, strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = DESIGN_COUPLE_SEQUENCE, allocationSize = DatabaseConstant.SEQ_ALLOCATION_SIZE)
+    @Column(name = "design_couple_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "blog_id")
-    private Blog blog;
+    @JoinColumn(name = "preview_image_id")
+    private Image previewImage;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "image_id")
-    private Image image;
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "description", length = DatabaseConstant.DEFAULT_DESCRIPTION_LENGTH, nullable = false)
+    private String description;
 }

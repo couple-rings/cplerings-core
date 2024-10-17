@@ -1,7 +1,9 @@
 package com.cplerings.core.domain.diamond;
 
 import com.cplerings.core.common.database.DatabaseConstant;
-import com.cplerings.core.domain.AbstractEntity;
+import com.cplerings.core.domain.shared.AbstractEntity;
+import com.cplerings.core.domain.shared.valueobject.Money;
+import com.cplerings.core.domain.shared.valueobject.Weight;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +11,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -41,23 +47,27 @@ public class DiamondSpecification extends AbstractEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "weight", nullable = false)
-    private double weight;
+    @Embedded
+    private Weight weight;
 
-    @Column(name = "color", nullable = false)
-    private String color;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "color", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
+    private DiamondColor color;
 
-    @Column(name = "clarity", nullable = false)
-    private String clarity;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "clarity", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
+    private DiamondClarity clarity;
 
-    @Column(name = "cut", nullable = false)
-    private String cut;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "shape", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
+    private DiamondShape shape;
 
-    @Column(name = "shape", nullable = false)
-    private String shape;
-
-    @Column(name = "price", nullable = false)
-    private double price;
+    @Embedded
+    @AttributeOverride(
+            name = "amount",
+            column = @Column(name = "price", nullable = false)
+    )
+    private Money price;
 
     @OneToMany(mappedBy = "diamondSpecification", fetch = FetchType.LAZY)
     private Set<Diamond> diamonds;

@@ -1,7 +1,8 @@
 package com.cplerings.core.domain.diamond;
 
 import com.cplerings.core.common.database.DatabaseConstant;
-import com.cplerings.core.domain.AbstractEntity;
+import com.cplerings.core.domain.file.Document;
+import com.cplerings.core.domain.shared.AbstractEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +18,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -37,8 +39,9 @@ public class Diamond extends AbstractEntity {
     @Column(name = "diamond_id")
     private Long id;
 
-    @Column(name = "gia_document", nullable = false)
-    private String giaDocument;
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "gia_document_id", nullable = false)
+    private Document giaDocument;
 
     @Column(name = "gia_report_number", nullable = false)
     private String giaReportNumber;

@@ -1,7 +1,7 @@
 package com.cplerings.core.test.shared.helper;
 
-import com.cplerings.core.domain.AbstractEntity;
-import com.cplerings.core.domain.Auditor;
+import com.cplerings.core.domain.shared.AbstractEntity;
+import com.cplerings.core.domain.shared.Auditor;
 
 import lombok.RequiredArgsConstructor;
 

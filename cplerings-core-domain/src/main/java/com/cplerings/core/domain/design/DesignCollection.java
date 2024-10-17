@@ -1,4 +1,4 @@
-package com.cplerings.core.test.shared.hello;
+package com.cplerings.core.domain.design;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.shared.AbstractEntity;
@@ -23,17 +23,20 @@ import jakarta.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_hello")
-public class Hello extends AbstractEntity {
+@Table(name = "tbl_design_collection")
+public class DesignCollection extends AbstractEntity {
 
-    private static final String HELLO_SEQUENCE = "hello_seq";
+    private static final String DESIGN_COLLECTION_SEQUENCE = "design_collection_seq";
 
     @Id
-    @GeneratedValue(generator = HELLO_SEQUENCE, strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = HELLO_SEQUENCE, allocationSize = DatabaseConstant.SEQ_ALLOCATION_SIZE)
-    @Column(name = "hello_id")
+    @GeneratedValue(generator = DESIGN_COLLECTION_SEQUENCE, strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = DESIGN_COLLECTION_SEQUENCE, allocationSize = DatabaseConstant.SEQ_ALLOCATION_SIZE)
+    @Column(name = "design_collection_id")
     private Long id;
 
-    @Column(name = "name", unique = true, nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "description", length = DatabaseConstant.DEFAULT_DESCRIPTION_LENGTH, nullable = false)
+    private String description;
 }

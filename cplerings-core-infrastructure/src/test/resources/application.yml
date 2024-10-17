@@ -7,12 +7,9 @@ spring:
   profiles:
     active: test
   datasource:
-    url: jdbc:h2:mem:cplerings-core-test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;
-    driver-class-name: org.h2.Driver
+    url: jdbc:tc:postgresql:16.3:///cplerings-core-test
   flyway:
-    url: jdbc:h2:mem:cplerings-core-test
-    user: sa
-    driver-class-name: org.h2.Driver
+    url: jdbc:tc:postgresql:16.3:///cplerings-core-test
     locations: classpath:db/migration/prod,classpath:db/migration/dev,classpath:db/migration/test
     baseline-on-migrate: true
     clean-disabled: false

@@ -1,7 +1,7 @@
-package com.cplerings.core.domain.blog;
+package com.cplerings.core.domain.jewelry;
 
 import com.cplerings.core.common.database.DatabaseConstant;
-import com.cplerings.core.domain.file.Image;
+import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.shared.AbstractEntity;
 
 import lombok.AllArgsConstructor;
@@ -27,22 +27,22 @@ import jakarta.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_blog_image")
-public class BlogImage extends AbstractEntity {
+@Table(name = "tbl_jewelry_category_design")
+public class JewelryCategoryDesign extends AbstractEntity {
 
-    private static final String BLOG_IMAGE_SEQUENCE = "blog_image_seq";
+    private static final String JEWELRY_CATEGORY_DESIGN_SEQUENCE = "jewelry_category_design_seq";
 
     @Id
-    @GeneratedValue(generator = BLOG_IMAGE_SEQUENCE, strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = BLOG_IMAGE_SEQUENCE, allocationSize = DatabaseConstant.SEQ_ALLOCATION_SIZE)
-    @Column(name = "blog_image_id")
+    @GeneratedValue(generator = JEWELRY_CATEGORY_DESIGN_SEQUENCE, strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = JEWELRY_CATEGORY_DESIGN_SEQUENCE, allocationSize = DatabaseConstant.SEQ_ALLOCATION_SIZE)
+    @Column(name = "jewelry_category_design_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "blog_id")
-    private Blog blog;
+    @JoinColumn(name = "jewelry_category_id")
+    private JewelryCategory jewelryCategory;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "image_id")
-    private Image image;
+    @JoinColumn(name = "design_id")
+    private Design design;
 }
