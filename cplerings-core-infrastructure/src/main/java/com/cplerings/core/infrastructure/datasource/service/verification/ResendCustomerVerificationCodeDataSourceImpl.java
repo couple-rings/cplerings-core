@@ -1,10 +1,10 @@
 package com.cplerings.core.infrastructure.datasource.service.verification;
 
 import com.cplerings.core.application.account.datasource.ResendCustomerVerificationCodeDataSource;
-import com.cplerings.core.domain.State;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.account.QAccountVerification;
+import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 

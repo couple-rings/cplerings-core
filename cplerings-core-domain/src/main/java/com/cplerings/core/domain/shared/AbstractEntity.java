@@ -1,4 +1,4 @@
-package com.cplerings.core.domain;
+package com.cplerings.core.domain.shared;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.common.temporal.TemporalUtils;
