@@ -23,7 +23,7 @@ import jakarta.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_file")
+@Table(name = "tbl_document")
 public class Document extends AbstractEntity {
 
     private static final String DOCUMENT_SEQUENCE = "document_seq";

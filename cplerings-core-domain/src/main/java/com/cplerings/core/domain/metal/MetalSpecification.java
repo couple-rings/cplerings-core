@@ -14,6 +14,8 @@ import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -47,6 +49,7 @@ public class MetalSpecification extends AbstractEntity {
     )
     private Money pricePerUnit;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "color", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
     private MetalColor color;
 }

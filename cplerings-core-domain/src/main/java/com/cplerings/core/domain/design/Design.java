@@ -3,7 +3,6 @@ package com.cplerings.core.domain.design;
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.diamond.DiamondSpecification;
 import com.cplerings.core.domain.file.Document;
-import com.cplerings.core.domain.metal.MetalSpecification;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.valueobject.DesignSize;
 import com.cplerings.core.domain.shared.valueobject.Weight;
@@ -26,9 +25,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+
+import java.util.Set;
 
 @Getter
 @Setter
@@ -71,16 +73,15 @@ public class Design extends AbstractEntity {
     @Embedded
     private DesignSize size;
 
-    @Column(name = "size_diamonds_count", nullable = false)
+    @Column(name = "side_diamonds_count", nullable = false)
     private Integer sideDiamondsCount;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "diamond_specification_id")
     private DiamondSpecification diamondSpecification;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "metal_specification_id")
-    private MetalSpecification metalSpecification;
+    @OneToMany(mappedBy = "design", fetch = FetchType.LAZY)
+    private Set<DesignMetalSpecification> designMetalSpecifications;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "design_collection_id")
