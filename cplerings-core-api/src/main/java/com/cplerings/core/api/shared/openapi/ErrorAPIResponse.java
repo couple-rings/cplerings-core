@@ -1,4 +1,4 @@
-package com.cplerings.core.api.openapi;
+package com.cplerings.core.api.shared.openapi;
 
 import com.cplerings.core.api.shared.ErrorCodesResponse;
 import com.cplerings.core.common.api.APIConstant;

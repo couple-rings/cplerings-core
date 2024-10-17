@@ -83,14 +83,18 @@ public class SecurityConfiguration {
     }
 
     private void handleAccountAPI(HttpSecurity localHttp) throws Exception {
-        localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.REGISTER_CUSTOMER_PATH))
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.ACCOUNT_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER, RoleConstant.ROLE_ADMIN))
+                .authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.REGISTER_CUSTOMER_PATH))
                         .permitAll())
                 .authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.VERIFY_CUSTOMER_PATH))
                         .permitAll())
                 .authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.REQUEST_RESET_PASSWORD_PATH))
                         .permitAll())
                 .authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.RESET_PASSWORD_PATH))
-                        .permitAll());
+                        .permitAll())
+                .authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.CURRENT_PROFILE_PATH))
+                        .authenticated());
     }
 
     private void handleDevelopmentAPI(HttpSecurity localHttp) throws Exception {

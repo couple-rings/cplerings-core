@@ -1,4 +1,4 @@
-package com.cplerings.core.api.mapper;
+package com.cplerings.core.api.shared.mapper;
 
 import com.cplerings.core.common.pagination.Pageable;
 

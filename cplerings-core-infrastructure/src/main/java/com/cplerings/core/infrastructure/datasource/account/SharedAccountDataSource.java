@@ -6,6 +6,8 @@ import com.cplerings.core.application.account.datasource.RegisterCustomerDataSou
 import com.cplerings.core.application.account.datasource.RequestResetPasswordDataSource;
 import com.cplerings.core.application.account.datasource.ResetPasswordDataSource;
 import com.cplerings.core.application.account.datasource.VerifyCustomerDataSource;
+import com.cplerings.core.application.account.datasource.ViewAccountDataSource;
+import com.cplerings.core.application.account.datasource.ViewCurrentProfileDataSource;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountPasswordReset;
 import com.cplerings.core.domain.account.AccountVerification;
@@ -25,7 +27,8 @@ import java.util.Optional;
 @DataSource
 @RequiredArgsConstructor
 public class SharedAccountDataSource extends AbstractDataSource
-        implements RegisterCustomerDataSource, VerifyCustomerDataSource, RequestResetPasswordDataSource, ResetPasswordDataSource {
+        implements RegisterCustomerDataSource, VerifyCustomerDataSource, RequestResetPasswordDataSource,
+        ResetPasswordDataSource, ViewAccountDataSource, ViewCurrentProfileDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QAccountVerification Q_ACCOUNT_VERIFICATION = QAccountVerification.accountVerification;
@@ -102,5 +105,19 @@ public class SharedAccountDataSource extends AbstractDataSource
                 .fetchJoin()
                 .where(Q_ACCOUNT.email.eq(email))
                 .fetchFirst());
+    }
+
+    @Override
+    public Optional<Account> getAccountById(Long id) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_ACCOUNT)
+                .from(Q_ACCOUNT)
+                .where(Q_ACCOUNT.id.eq(id))
+                .fetchOne());
+    }
+
+    @Override
+    public Optional<Account> findAccountByEmail(String email) {
+        return accountRepository.findByEmail(email);
     }
 }

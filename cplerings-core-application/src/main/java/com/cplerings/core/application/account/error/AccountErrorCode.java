@@ -26,6 +26,10 @@ public enum AccountErrorCode implements ErrorCode {
     INVALID_RESET_PASSWORD_OTP("016", "account.error.invalidResetPasswordOTP", Type.VALIDATION),
     RESET_PASSWORD_OTP_EXPIRED("017", "account.error.resetPasswordOTPExpired", Type.VALIDATION),
     RESET_PASSWORD_OTP_ALREADY_USED("018", "account.error.resetPasswordOTPAlreadyUsed", Type.VALIDATION),
+    ACCOUNT_WITH_ID_NOT_FOUND("019", "account.error.accountIdNotFound", Type.BUSINESS),
+    ACCOUNT_ID_REQUIRED("020", "account.error.idRequired", Type.VALIDATION),
+    INVALID_ACCOUNT_ID("021", "account.error.invalidAccountId", Type.VALIDATION),
+    UNAUTHENTICATED("022", "account.error.unauthenticated", Type.BUSINESS),
     ;
 
     private final String code;

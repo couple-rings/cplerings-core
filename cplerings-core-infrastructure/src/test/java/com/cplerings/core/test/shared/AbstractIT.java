@@ -74,6 +74,10 @@ public abstract class AbstractIT {
         response.expectStatus().isOk();
     }
 
+    protected final void thenResponseIsForbidden(WebTestClient.ResponseSpec response) {
+        response.expectStatus().isForbidden();
+    }
+
     protected final void thenNoResponseIsReturned(WebTestClient.ResponseSpec response) {
         final NoResponse responseBody = response.expectBody(NoResponse.class)
                 .returnResult()
