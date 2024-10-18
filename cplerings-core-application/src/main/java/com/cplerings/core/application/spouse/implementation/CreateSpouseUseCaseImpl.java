@@ -34,7 +34,7 @@ public class CreateSpouseUseCaseImpl extends AbstractUseCase<CreateSpouseInput, 
         // Check valid account (will change message and error code when get the code in view profile)
         final Account customer = spouseDataSource.getAccountById(input.primarySpouse().customerId())
                 .orElse(null);
-        validator.validateAndStopExecution(customer != null, SpouseErrorCode.WILL_BE_REPLACED);
+        validator.validateAndStopExecution(customer != null, SpouseErrorCode.ACCOUNT_NOT_FOUND_WITH_ID);
 
         // check citizenId of primary spouse
         final Spouse primarySpouse = spouseDataSource.getSpouseByCitizenId(input.primarySpouse().citizenId())
@@ -61,8 +61,8 @@ public class CreateSpouseUseCaseImpl extends AbstractUseCase<CreateSpouseInput, 
         spouseDataSource.save(spouseAccount);
         Spouse secondarySpouseCreate = Spouse.builder()
                 .citizenId(input.secondarySpouse().citizenId())
-                .dateOfBirth(input.primarySpouse().dateOfBirth())
-                .fullName(input.primarySpouse().fullName())
+                .dateOfBirth(input.secondarySpouse().dateOfBirth())
+                .fullName(input.secondarySpouse().fullName())
                 .coupleId(coupleId)
                 .build();
         spouseDataSource.save(secondarySpouseCreate);

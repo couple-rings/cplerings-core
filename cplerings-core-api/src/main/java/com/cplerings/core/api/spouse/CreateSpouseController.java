@@ -5,12 +5,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cplerings.core.api.mapper.APIMapper;
-import com.cplerings.core.api.openapi.ErrorAPIResponse;
 import com.cplerings.core.api.openapi.SpouseTag;
 import com.cplerings.core.api.shared.AbstractController;
 import com.cplerings.core.api.shared.NoData;
 import com.cplerings.core.api.shared.NoResponse;
+import com.cplerings.core.api.shared.mapper.APIMapper;
+import com.cplerings.core.api.shared.openapi.ErrorAPIResponse;
 import com.cplerings.core.api.spouse.mapper.APICreateSpouseMapper;
 import com.cplerings.core.api.spouse.request.CreateSpouseRequest;
 import com.cplerings.core.application.shared.output.NoOutput;

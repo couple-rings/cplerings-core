@@ -9,10 +9,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum SpouseErrorCode implements ErrorCode{
 
-    WILL_BE_REPLACED("002", "spouse.error.spouseHasBeenCreated",ErrorCode.Type.BUSINESS),
-    PRIMARY_SPOUSE_REQUIRED("002", "spouse.error.primarySpouseRequired", Type.VALIDATION),
-    SECONDARY_SPOUSE_REQUIRED("003", "spouse.error.secondarySpouseRequired",ErrorCode.Type.VALIDATION),
-    SPOUSE_HAS_BEEN_CREATED("004", "spouse.error.spouseHasBeenCreated",ErrorCode.Type.BUSINESS);
+    ACCOUNT_NOT_FOUND_WITH_ID("002", "spouse.error.accountNotFoundWithId",ErrorCode.Type.BUSINESS),
+    PRIMARY_SPOUSE_REQUIRED("003", "spouse.error.primarySpouseRequired", Type.VALIDATION),
+    SECONDARY_SPOUSE_REQUIRED("004", "spouse.error.secondarySpouseRequired",ErrorCode.Type.VALIDATION),
+    SPOUSE_HAS_BEEN_CREATED("005", "spouse.error.spouseHasBeenCreated",ErrorCode.Type.BUSINESS);
 
     private final String code;
     private final String descriptionLocale;
