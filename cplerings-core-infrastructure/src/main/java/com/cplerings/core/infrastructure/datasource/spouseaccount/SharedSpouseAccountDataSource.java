@@ -1,14 +1,13 @@
 package com.cplerings.core.infrastructure.datasource.spouseaccount;
 
-import java.util.Optional;
-
-import com.cplerings.core.domain.spouse.QSpouse;
 import com.cplerings.core.domain.spouse.QSpouseAccount;
 import com.cplerings.core.domain.spouse.SpouseAccount;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.Optional;
 
 @DataSource
 @RequiredArgsConstructor

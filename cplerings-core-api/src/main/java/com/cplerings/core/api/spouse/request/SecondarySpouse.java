@@ -1,11 +1,12 @@
 package com.cplerings.core.api.spouse.request;
 
-import java.time.Instant;
-
-import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 
+import jakarta.validation.constraints.NotBlank;
+
+import java.time.Instant;
+
 @Builder
-public record SecondarySpouse (@NotBlank String citizenId, @NotBlank Instant dateOfBirth, @NotBlank String fullName) {
+public record SecondarySpouse(@NotBlank String citizenId, @NotBlank Instant dateOfBirth, @NotBlank String fullName) {
 
 }

@@ -2,7 +2,7 @@ package com.cplerings.core.test.integration.authentication;
 
 import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.api.shared.ErrorCodesResponse;
-import com.cplerings.core.api.shared.mapper.ErrorCodeResponseMapper;
+import com.cplerings.core.api.shared.mapper.APIErrorCodeResponseMapper;
 import com.cplerings.core.application.authentication.error.AuthenticationErrorCode;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
@@ -79,6 +79,6 @@ class AuthenticateUserUseCaseIT extends AbstractIT {
                 .isEqualTo(AbstractResponse.Type.ERROR);
         Assertions.assertThat(error.getErrors())
                 .hasSize(1)
-                .containsExactly(ErrorCodeResponseMapper.INSTANCE.toResponse(AuthenticationErrorCode.UNAUTHORIZED));
+                .containsExactly(APIErrorCodeResponseMapper.INSTANCE.toResponse(AuthenticationErrorCode.UNAUTHORIZED));
     }
 }

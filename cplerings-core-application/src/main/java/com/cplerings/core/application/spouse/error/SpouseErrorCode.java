@@ -7,12 +7,17 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum SpouseErrorCode implements ErrorCode{
+public enum SpouseErrorCode implements ErrorCode {
 
-    ACCOUNT_NOT_FOUND_WITH_ID("002", "spouse.error.accountNotFoundWithId",ErrorCode.Type.BUSINESS),
+    ACCOUNT_NOT_FOUND_WITH_ID("002", "spouse.error.accountNotFoundWithId", ErrorCode.Type.BUSINESS),
     PRIMARY_SPOUSE_REQUIRED("003", "spouse.error.primarySpouseRequired", Type.VALIDATION),
-    SECONDARY_SPOUSE_REQUIRED("004", "spouse.error.secondarySpouseRequired",ErrorCode.Type.VALIDATION),
-    SPOUSE_HAS_BEEN_CREATED("005", "spouse.error.spouseHasBeenCreated",ErrorCode.Type.BUSINESS);
+    SECONDARY_SPOUSE_REQUIRED("004", "spouse.error.secondarySpouseRequired", ErrorCode.Type.VALIDATION),
+    SPOUSE_HAS_BEEN_CREATED("005", "spouse.error.spouseHasBeenCreated", ErrorCode.Type.BUSINESS),
+    SPOUSE_CITIZEN_ID_REQUIRED("006", "spouse.error.citizenIdRequired", ErrorCode.Type.VALIDATION),
+    CUSTOMER_ID_REQUIRED("007", "spouse.error.customerIdRequired", ErrorCode.Type.VALIDATION),
+    DATE_OF_BIRTH_REQUIRED("008", "spouse.error.dateOfBirthRequired", ErrorCode.Type.VALIDATION),
+    FULL_NAME_REQUIRED("009", "spouse.error.fullNameRequired", ErrorCode.Type.VALIDATION),
+    ;
 
     private final String code;
     private final String descriptionLocale;

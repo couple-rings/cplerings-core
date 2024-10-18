@@ -1,16 +1,11 @@
 package com.cplerings.core.api.spouse;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.cplerings.core.api.openapi.SpouseTag;
 import com.cplerings.core.api.shared.AbstractController;
 import com.cplerings.core.api.shared.NoData;
 import com.cplerings.core.api.shared.NoResponse;
 import com.cplerings.core.api.shared.mapper.APIMapper;
 import com.cplerings.core.api.shared.openapi.ErrorAPIResponse;
+import com.cplerings.core.api.shared.openapi.SpouseTag;
 import com.cplerings.core.api.spouse.mapper.APICreateSpouseMapper;
 import com.cplerings.core.api.spouse.request.CreateSpouseRequest;
 import com.cplerings.core.application.shared.output.NoOutput;
@@ -19,11 +14,17 @@ import com.cplerings.core.application.spouse.CreateSpouseUseCase;
 import com.cplerings.core.application.spouse.input.CreateSpouseInput;
 import com.cplerings.core.common.api.APIConstant;
 
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,7 +37,7 @@ public class CreateSpouseController extends AbstractController<CreateSpouseInput
     @SpouseTag
     @Operation(summary = "Create spouse")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "Create spouse",
+            description = "Spouses info",
             required = true,
             content = @Content(
                     mediaType = APIConstant.APPLICATION_JSON,

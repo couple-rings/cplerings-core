@@ -5,4 +5,5 @@ import com.cplerings.core.application.shared.usecase.UseCase;
 import com.cplerings.core.application.spouse.input.CreateSpouseInput;
 
 public interface CreateSpouseUseCase extends UseCase<CreateSpouseInput, NoOutput> {
+
 }

@@ -16,4 +16,8 @@ public final class InputValidator {
         }
         return email.matches(EMAIL_REGEX);
     }
+
+    public static boolean numberIsPositive(Long number) {
+        return ((number != null) && (number > 0));
+    }
 }

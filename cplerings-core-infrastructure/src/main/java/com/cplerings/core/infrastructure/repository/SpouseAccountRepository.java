@@ -1,19 +1,12 @@
 package com.cplerings.core.infrastructure.repository;
 
-import java.util.Optional;
+import com.cplerings.core.domain.spouse.SpouseAccount;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
-import com.cplerings.core.domain.spouse.SpouseAccount;
+import java.util.Optional;
 
 public interface SpouseAccountRepository extends JpaRepository<SpouseAccount, Long> {
 
-    @Query(
-            value = """
-                        select sa from SpouseAccount sa
-                        where sa.spouse.id = ?1
-                        and sa.customer.id = ?2
-                    """)
-    Optional<SpouseAccount> findBySpouseAndCustomer(Long spouseId, Long customerId);
+    Optional<SpouseAccount> findSpouseAccountBySpouseCitizenId(String spouseCitizenId);
 }
