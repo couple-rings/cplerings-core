@@ -10,9 +10,9 @@ import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
-public interface ErrorCodeResponseMapper {
+public interface APIErrorCodeResponseMapper {
 
-    ErrorCodeResponseMapper INSTANCE = Mappers.getMapper(ErrorCodeResponseMapper.class);
+    APIErrorCodeResponseMapper INSTANCE = Mappers.getMapper(APIErrorCodeResponseMapper.class);
 
     @Mapping(target = "description", expression = "java(toDescription(errorCode))")
     ErrorCodeResponse toResponse(ErrorCode errorCode);

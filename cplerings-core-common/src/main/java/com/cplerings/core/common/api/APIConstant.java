@@ -29,4 +29,9 @@ public final class APIConstant {
     public static final String AUTH_PATH = "/auth";
     public static final String LOGIN_PATH = AUTH_PATH + "/login";
     public static final String REFRESH_TOKEN_PATH = AUTH_PATH + "/refresh";
+
+    /*
+        Spouses' paths
+     */
+    public static final String SPOUSES_PATH = "/spouses";
 }

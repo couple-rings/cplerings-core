@@ -1,6 +1,6 @@
 package com.cplerings.core.api.shared;
 
-import com.cplerings.core.api.shared.mapper.ErrorCodeResponseMapper;
+import com.cplerings.core.api.shared.mapper.APIErrorCodeResponseMapper;
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
 import com.cplerings.core.common.temporal.TemporalUtils;
 
@@ -35,7 +35,7 @@ public final class ErrorCodesResponse {
         Objects.requireNonNull(errorCodes, "Error codes cannot be null");
         return ErrorCodesResponse.builder()
                 .errors(errorCodes.getErrors().stream()
-                        .map(ErrorCodeResponseMapper.INSTANCE::toResponse)
+                        .map(APIErrorCodeResponseMapper.INSTANCE::toResponse)
                         .sorted()
                         .collect(Collectors.toCollection(LinkedHashSet::new)))
                 .build();

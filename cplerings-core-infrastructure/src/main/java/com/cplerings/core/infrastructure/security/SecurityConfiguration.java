@@ -54,6 +54,7 @@ public class SecurityConfiguration {
         handleDevelopmentAPI(localHttp);
         handleTestAPI(localHttp);
         handleVerificationAPI(localHttp);
+        handleSpouseAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
                 .denyAll());
         return localHttp.build();
@@ -116,6 +117,11 @@ public class SecurityConfiguration {
     private void handleVerificationAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.RESEND_CUSTOMER_VERIFICATION_CODE_PATH))
                 .permitAll());
+    }
+
+    private void handleSpouseAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.SPOUSES_PATH))
+                .authenticated());
     }
 
     private String resolvePath(String path) {
