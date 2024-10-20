@@ -4,12 +4,9 @@ import com.cplerings.core.application.shared.service.otp.OTPService;
 
 import org.springframework.stereotype.Service;
 
-import jakarta.transaction.Transactional;
-
 import java.security.SecureRandom;
 
 @Service
-@Transactional(rollbackOn = Exception.class)
 public class OTPServiceImpl implements OTPService {
 
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();

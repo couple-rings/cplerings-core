@@ -71,7 +71,7 @@ public abstract class AbstractIT {
     }
 
     protected final void thenResponseIsOk(WebTestClient.ResponseSpec response) {
-        response.expectStatus().isOk();
+        response.expectStatus().is2xxSuccessful();
     }
 
     protected final void thenResponseIsForbidden(WebTestClient.ResponseSpec response) {

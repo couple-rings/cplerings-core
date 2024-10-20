@@ -28,11 +28,17 @@ public final class Money {
                 .setScale(3, RoundingMode.HALF_EVEN);
     }
 
-    public static Money create(BigDecimal amount) {
-        return new Money(sanitizeMoney(amount));
-    }
-
     private void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public Money divide(BigDecimal divisor) {
+        final BigDecimal current = this.amount;
+        final BigDecimal sanitizedDivisor = sanitizeMoney(divisor);
+        return Money.create(current.divide(sanitizedDivisor, RoundingMode.HALF_EVEN));
+    }
+
+    public static Money create(BigDecimal amount) {
+        return new Money(sanitizeMoney(amount));
     }
 }

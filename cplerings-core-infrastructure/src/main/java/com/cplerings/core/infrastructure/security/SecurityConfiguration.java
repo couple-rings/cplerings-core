@@ -55,6 +55,7 @@ public class SecurityConfiguration {
         handleTestAPI(localHttp);
         handleVerificationAPI(localHttp);
         handleSpouseAPI(localHttp);
+        handlePaymentAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
                 .denyAll());
         return localHttp.build();
@@ -122,6 +123,11 @@ public class SecurityConfiguration {
     private void handleSpouseAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.SPOUSES_PATH))
                 .authenticated());
+    }
+
+    private void handlePaymentAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.VNPAY_PATH))
+                .permitAll());
     }
 
     private String resolvePath(String path) {

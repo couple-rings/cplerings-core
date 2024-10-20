@@ -75,6 +75,13 @@ cplerings:
   allowed-origins: ${CPLERINGS_ALLOWED_ORIGINS}
   verification-duration: ${CPLERINGS_VERIFICATION_DURATION}
   reset_password_duration: ${CPLERINGS_RESET_PASSWORD_DURATION}
+  vnpay:
+    version: 2.1.0
+    tmn-code: ${CPLERINGS_VNPAY_TERMINAL_ID}
+    return-url: ${CPLERINGS_VNPAY_RETURN_URL}
+    expiration-duration: ${CPLERINGS_VNPAY_EXPIRATION_DURATION}
+    secret-key: ${CPLERINGS_VNPAY_SECRET_KEY}
+    url: ${CPLERINGS_VNPAY_URL}
 
 springdoc:
   api-docs:

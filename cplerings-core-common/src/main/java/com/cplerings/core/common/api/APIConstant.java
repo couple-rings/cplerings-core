@@ -34,4 +34,10 @@ public final class APIConstant {
         Spouses' paths
      */
     public static final String SPOUSES_PATH = "/spouses";
+
+    /*
+        Payments' paths
+     */
+    public static final String PAYMENTS_PATH = "/payments";
+    public static final String VNPAY_PATH = PAYMENTS_PATH + "/vnpay";
 }

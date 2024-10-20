@@ -15,4 +15,10 @@ public final class DatabaseConstant {
     public static final int DEFAULT_ENUM_LENGTH = 12;
 
     public static final int DEFAULT_DESCRIPTION_LENGTH = 1000;
+
+    public static final int DEFAULT_BANK_CODE_LENGTH = 20;
+
+    public static final int DEFAULT_CARD_TYPE_LENGTH = 20;
+
+    public static final int DEFAULT_PAYMENT_SECURE_HASH_LENGTH = 256;
 }
