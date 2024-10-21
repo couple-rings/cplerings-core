@@ -47,6 +47,6 @@ cplerings:
     version: 2.1.0
     tmn-code: F5WT9T0W
     return-url: http://localhost:${server.port}
-    expiration-duration: 600
+    expiration-duration: 5
     secret-key: 5YPVF53LDH7BDOPKWA1AIGCN0RIDW697
     url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html

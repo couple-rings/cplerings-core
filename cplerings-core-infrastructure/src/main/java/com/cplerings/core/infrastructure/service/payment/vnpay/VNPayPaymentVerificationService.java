@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collector;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +34,16 @@ public class VNPayPaymentVerificationService extends AbstractVNPayPaymentService
         if (!StringUtils.equals(terminalCode, vnPayPaymentInput.getTerminalCode())) {
             return false;
         }
-        final Map<String, Object> paymentQueries = createQueriesWithoutSecureHash(vnPayPaymentInput);
+        final Map<String, Object> paymentQueries = createQueriesWithoutSecureHash(vnPayPaymentInput).entrySet()
+                .stream()
+                .filter(entry -> entry.getValue() != null)
+                .collect(Collector.of(TreeMap::new,
+                        (map, o) -> map.put(o.getKey(), o.getValue()),
+                        (map1, map2) -> {
+                            final TreeMap<String, Object> mergedMap = new TreeMap<>(map1);
+                            mergedMap.putAll(map2);
+                            return mergedMap;
+                        }));
         final String secureHashType = StringUtils.trimToEmpty(vnPayPaymentInput.getSecureHashType());
         final String secureHash;
         if (StringUtils.equalsIgnoreCase("SHA256", secureHashType)) {

@@ -1,7 +1,7 @@
 package com.cplerings.core.api.payment.response;
 
+import com.cplerings.core.api.payment.data.VNPayPaymentResult;
 import com.cplerings.core.api.shared.AbstractDataResponse;
-import com.cplerings.core.api.shared.NoData;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 @Getter
 @Setter
 @NoArgsConstructor
-public class VNPayPaymentResponse extends AbstractDataResponse<NoData> {
+public class VNPayPaymentResponse extends AbstractDataResponse<VNPayPaymentResult> {
 
     private String RspCode;
     private String Message;
@@ -22,7 +22,7 @@ public class VNPayPaymentResponse extends AbstractDataResponse<NoData> {
     }
 
     @Getter
-    public static final class Builder extends AbstractDataResponseBuilder<Builder, VNPayPaymentResponse, NoData> {
+    public static final class Builder extends AbstractDataResponseBuilder<Builder, VNPayPaymentResponse, VNPayPaymentResult> {
 
         private String RspCode;
         private String Message;
@@ -42,7 +42,6 @@ public class VNPayPaymentResponse extends AbstractDataResponse<NoData> {
             final VNPayPaymentResponse response = super.build();
             response.setRspCode(RspCode);
             response.setMessage(Message);
-            response.setType(Type.INFO);
             return response;
         }
 

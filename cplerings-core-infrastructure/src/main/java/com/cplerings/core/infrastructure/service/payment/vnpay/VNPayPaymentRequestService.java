@@ -12,7 +12,6 @@ import com.cplerings.core.common.temporal.TemporalUtils;
 import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.payment.PaymentStatus;
 import com.cplerings.core.domain.payment.PaymentType;
-import com.cplerings.core.infrastructure.service.payment.PaymentRequestImpl;
 import com.cplerings.core.infrastructure.service.payment.datasource.VNPayPaymentServiceDataSource;
 
 import lombok.RequiredArgsConstructor;
@@ -73,7 +72,7 @@ public class VNPayPaymentRequestService extends AbstractVNPayPaymentService impl
                 secureHash);
         payment.setSecureHash(secureHash);
         payment = vnPayPaymentServiceDataSource.save(payment);
-        return PaymentRequestImpl.builder()
+        return PaymentRequest.builder()
                 .paymentLink(paymentURL)
                 .paymentType(PaymentType.VNPAY)
                 .payment(payment)

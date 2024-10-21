@@ -3,11 +3,16 @@ package com.cplerings.core.application.shared.service.payment;
 import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.payment.PaymentType;
 
-public interface PaymentRequest {
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-    PaymentType getPaymentType();
+@Getter
+@Setter
+@Builder
+public class PaymentRequest {
 
-    String getPaymentLink();
-
-    Payment getPayment();
+    private PaymentType paymentType;
+    private String paymentLink;
+    private Payment payment;
 }

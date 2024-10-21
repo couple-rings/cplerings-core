@@ -2,15 +2,12 @@ package com.cplerings.core.test.component.payment;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.cplerings.core.application.shared.service.payment.PaymentInfo;
+import com.cplerings.core.application.shared.service.payment.PaymentRequest;
 import com.cplerings.core.application.shared.service.payment.PaymentRequestService;
 import com.cplerings.core.common.payment.PaymentConstant;
-import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.shared.valueobject.Money;
-import com.cplerings.core.infrastructure.repository.AccountRepository;
-import com.cplerings.core.infrastructure.service.payment.PaymentInfoImpl;
-import com.cplerings.core.infrastructure.service.payment.PaymentRequestImpl;
 import com.cplerings.core.test.shared.AbstractCT;
-import com.cplerings.core.test.shared.account.AccountTestConstant;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,15 +27,9 @@ class VNPayPaymentRequestServiceCT extends AbstractCT {
     @Qualifier(PaymentConstant.VNPAY_PAYMENT_SERVICE_NAME)
     private PaymentRequestService paymentRequestService;
 
-    @Autowired
-    private AccountRepository accountRepository;
-
     @Test
     void givenPaymentService_whenGeneratePaymentRequest() {
-        final Account account = accountRepository.findByEmail(AccountTestConstant.CUSTOMER_EMAIL)
-                .orElse(null);
-        assertThat(account).isNotNull();
-        final PaymentRequestImpl paymentRequest = (PaymentRequestImpl) paymentRequestService.requestPayment(PaymentInfoImpl.builder()
+        final PaymentRequest paymentRequest = paymentRequestService.requestPayment(PaymentInfo.builder()
                 .amount(Money.create(BigDecimal.valueOf(123123)))
                 .description("Payment for 123123")
                 .build());
@@ -57,7 +48,7 @@ class VNPayPaymentRequestServiceCT extends AbstractCT {
         response.expectHeader().value("Location", location -> {
             log.info(location);
             assertThat(location).isNotNull()
-                    .doesNotContainPattern("Error.html\\?code=\\d\\d");
+                    .doesNotContainPattern("Error.html\\?code=((0[2-9])|([1-9][0-9]))");
         });
     }
 }

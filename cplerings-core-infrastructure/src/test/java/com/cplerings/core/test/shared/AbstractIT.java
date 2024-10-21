@@ -7,6 +7,9 @@ import com.cplerings.core.api.shared.NoResponse;
 import com.cplerings.core.common.profile.ProfileConstant;
 import com.cplerings.core.infrastructure.CplringsCoreApplication;
 
+import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,16 +19,24 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.util.UriBuilder;
 
 import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+import java.lang.reflect.Modifier;
+import java.net.URI;
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 
+@Slf4j
 @SpringBootTest(
         classes = {
                 CplringsCoreApplication.class
@@ -56,6 +67,9 @@ public abstract class AbstractIT {
     @Autowired
     private CriteriaBuilderFactory cbf;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     protected <B> RequestBuilder<B> requestBuilder() {
         return new RequestBuilder<>();
     }
@@ -68,6 +82,13 @@ public abstract class AbstractIT {
 
     protected <T> BlazeJPAQuery<T> createQuery() {
         return new BlazeJPAQuery<>(em, cbf);
+    }
+
+    protected final TestDataLoader getTestDataLoader(String folder) {
+        return TestDataLoader.builder()
+                .folder(folder)
+                .objectMapper(objectMapper)
+                .build();
     }
 
     protected final void thenResponseIsOk(WebTestClient.ResponseSpec response) {
@@ -89,6 +110,7 @@ public abstract class AbstractIT {
 
     protected final class RequestBuilder<B> {
 
+        private final Map<String, String> queries = new TreeMap<>();
         private String path = "";
         private Method method;
         private String token;
@@ -117,6 +139,30 @@ public abstract class AbstractIT {
             return this;
         }
 
+        public <Q> RequestBuilder<B> query(Q queryObject) {
+            extractQueriesFromObject(queryObject);
+            return this;
+        }
+
+        private <Q> void extractQueriesFromObject(Q queryObject) {
+            Arrays.stream(queryObject.getClass().getDeclaredFields())
+                    .filter(field -> !Modifier.isStatic(field.getModifiers()))
+                    .forEach(field -> {
+                        final boolean originalAccessible = field.canAccess(queryObject);
+                        try {
+                            field.setAccessible(true);
+                            final Object value = field.get(queryObject);
+                            if (value != null) {
+                                queries.put(field.getName(), Objects.toString(value));
+                            }
+                        } catch (Exception e) {
+                            log.error(e.getMessage(), e);
+                        } finally {
+                            field.setAccessible(originalAccessible);
+                        }
+                    });
+        }
+
         public WebTestClient.ResponseSpec send() {
             Objects.requireNonNull(path);
             final WebTestClient webTestClient = WebTestClient.bindToServer()
@@ -125,24 +171,35 @@ public abstract class AbstractIT {
                     .build();
             final WebTestClient.RequestHeadersSpec<?> requestHeadersSpec = switch (method) {
                 case GET -> webTestClient.get()
-                        .uri(path);
+                        .uri(this::buildUri);
                 case POST -> webTestClient.post()
-                        .uri(path)
+                        .uri(this::buildUri)
                         .bodyValue(body);
                 case PUT -> webTestClient.put()
-                        .uri(path)
+                        .uri(this::buildUri)
                         .bodyValue(body);
                 case PATCH -> webTestClient.patch()
-                        .uri(path)
+                        .uri(this::buildUri)
                         .bodyValue(body);
                 case DELETE -> webTestClient.delete()
-                        .uri(path);
+                        .uri(this::buildUri);
             };
             if (StringUtils.isNotBlank(token)) {
                 return requestHeadersSpec.header(AUTHENTICATION_HEADER, String.format(BEARER_FORMAT, token))
                         .exchange();
             }
             return requestHeadersSpec.exchange();
+        }
+
+        private URI buildUri(UriBuilder uriBuilder) {
+            UriBuilder builder = uriBuilder.path(path);
+            if (MapUtils.isEmpty(queries)) {
+                return builder.build();
+            }
+            for (Map.Entry<String, String> query : queries.entrySet()) {
+                builder = builder.queryParam(query.getKey(), query.getValue());
+            }
+            return builder.build();
         }
 
         public enum Method {

@@ -1,17 +1,18 @@
 package com.cplerings.core.api.payment;
 
+import com.cplerings.core.api.payment.data.VNPayPaymentResult;
 import com.cplerings.core.api.payment.mapper.APIProcessVNPayPaymentMapper;
 import com.cplerings.core.api.payment.request.VNPayPaymentRequest;
 import com.cplerings.core.api.payment.response.VNPayPaymentResponse;
 import com.cplerings.core.api.shared.AbstractDataController;
-import com.cplerings.core.api.shared.NoData;
 import com.cplerings.core.api.shared.NoResponse;
 import com.cplerings.core.api.shared.mapper.APIMapper;
 import com.cplerings.core.api.shared.openapi.ErrorAPIResponse;
 import com.cplerings.core.api.shared.openapi.PaymentTag;
 import com.cplerings.core.application.payment.ProcessVNPayPaymentUseCase;
 import com.cplerings.core.application.payment.input.VNPayPaymentInput;
-import com.cplerings.core.application.shared.output.NoOutput;
+import com.cplerings.core.application.payment.output.VNPayPaymentOutput;
+import com.cplerings.core.application.shared.entity.payment.APaymentStatus;
 import com.cplerings.core.application.shared.usecase.UseCase;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.common.payment.VNPayConstant;
@@ -30,7 +31,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RestController
 @RequiredArgsConstructor
-public class ProcessVNPayPaymentController extends AbstractDataController<VNPayPaymentInput, NoOutput, NoData, VNPayPaymentRequest, VNPayPaymentResponse> {
+public class ProcessVNPayPaymentController extends AbstractDataController<VNPayPaymentInput, VNPayPaymentOutput, VNPayPaymentResult, VNPayPaymentRequest, VNPayPaymentResponse> {
 
     private final ProcessVNPayPaymentUseCase processVNPayPaymentUseCase;
     private final APIProcessVNPayPaymentMapper apiProcessVNPayPaymentMapper;
@@ -50,31 +51,40 @@ public class ProcessVNPayPaymentController extends AbstractDataController<VNPayP
     public ResponseEntity<Object> process(@ModelAttribute VNPayPaymentRequest request) {
         final ResponseEntity<Object> response = handleRequest(request);
         if (response.getBody() instanceof VNPayPaymentResponse vnPayPaymentResponse) {
-            if (response.getStatusCode().is2xxSuccessful() || response.getStatusCode().is3xxRedirection()) {
-                vnPayPaymentResponse.setRspCode(VNPayConstant.RESPONSE_CODE_SUCCESSFUL);
-                vnPayPaymentResponse.setMessage("OK");
-            } else {
-                vnPayPaymentResponse.setRspCode(VNPayConstant.RESPONSE_CODE_ERROR);
-                vnPayPaymentResponse.setMessage("KO");
-            }
-            return response;
+            return handleSuccessfulPayment(vnPayPaymentResponse, response);
         } else {
-            final VNPayPaymentResponse vnPayPaymentResponse = VNPayPaymentResponse.builder()
-                    .RspCode(VNPayConstant.RESPONSE_CODE_ERROR)
-                    .Message("KO")
-                    .build();
-            return ResponseEntity.status(response.getStatusCode())
-                    .body(vnPayPaymentResponse);
+            return handleFailedPayment(response);
         }
     }
 
+    private static ResponseEntity<Object> handleSuccessfulPayment(VNPayPaymentResponse vnPayPaymentResponse, ResponseEntity<Object> response) {
+        final VNPayPaymentResult result = vnPayPaymentResponse.getData();
+        if (result == null) {
+            return handleFailedPayment(response);
+        }
+        if (result.paymentStatus() == APaymentStatus.FAILED) {
+            return handleFailedPayment(response);
+        }
+        vnPayPaymentResponse.setRspCode(VNPayConstant.RESPONSE_CODE_SUCCESSFUL);
+        vnPayPaymentResponse.setMessage("OK");
+        return response;
+    }
+
+    private static ResponseEntity<Object> handleFailedPayment(ResponseEntity<Object> response) {
+        final VNPayPaymentResponse vnPayPaymentResponse = VNPayPaymentResponse.builder()
+                .RspCode(VNPayConstant.RESPONSE_CODE_ERROR)
+                .Message("KO")
+                .build();
+        return ResponseEntity.badRequest().body(vnPayPaymentResponse);
+    }
+
     @Override
-    protected UseCase<VNPayPaymentInput, NoOutput> getUseCase() {
+    protected UseCase<VNPayPaymentInput, VNPayPaymentOutput> getUseCase() {
         return processVNPayPaymentUseCase;
     }
 
     @Override
-    protected APIMapper<VNPayPaymentInput, NoOutput, NoData, VNPayPaymentRequest, VNPayPaymentResponse> getMapper() {
+    protected APIMapper<VNPayPaymentInput, VNPayPaymentOutput, VNPayPaymentResult, VNPayPaymentRequest, VNPayPaymentResponse> getMapper() {
         return apiProcessVNPayPaymentMapper;
     }
 }

@@ -9,7 +9,8 @@ import static com.cplerings.core.application.payment.error.PaymentErrorCode.TERM
 import com.cplerings.core.application.payment.ProcessVNPayPaymentUseCase;
 import com.cplerings.core.application.payment.datasource.ProcessVNPayPaymentDataSource;
 import com.cplerings.core.application.payment.input.VNPayPaymentInput;
-import com.cplerings.core.application.shared.output.NoOutput;
+import com.cplerings.core.application.payment.output.VNPayPaymentOutput;
+import com.cplerings.core.application.shared.mapper.APaymentStatusMapper;
 import com.cplerings.core.application.shared.service.payment.PaymentVerificationService;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
@@ -28,11 +29,12 @@ import java.util.Optional;
 
 @UseCaseImplementation
 @RequiredArgsConstructor
-public class ProcessVNPayPaymentUseCaseImpl extends AbstractUseCase<VNPayPaymentInput, NoOutput>
+public class ProcessVNPayPaymentUseCaseImpl extends AbstractUseCase<VNPayPaymentInput, VNPayPaymentOutput>
         implements ProcessVNPayPaymentUseCase {
 
     private final PaymentVerificationService<VNPayPaymentInput> paymentVerificationService;
     private final ProcessVNPayPaymentDataSource processVNPayPaymentDataSource;
+    private final APaymentStatusMapper aPaymentStatusMapper;
 
     @Override
     protected void validateInput(UseCaseValidator validator, VNPayPaymentInput input) {
@@ -43,31 +45,40 @@ public class ProcessVNPayPaymentUseCaseImpl extends AbstractUseCase<VNPayPayment
     }
 
     @Override
-    protected NoOutput internalExecute(UseCaseValidator validator, VNPayPaymentInput input) {
+    protected VNPayPaymentOutput internalExecute(UseCaseValidator validator, VNPayPaymentInput input) {
         validator.validateAndStopExecution(paymentVerificationService.paymentIsValid(input), INVALID_PAYMENT_RESULT);
         final Optional<Payment> paymentOptional = processVNPayPaymentDataSource.findPaymentByIdWithVNPayTransaction(input.getPaymentId());
         validator.validateAndStopExecution(paymentOptional.isPresent(), PAYMENT_WITH_ID_NOT_FOUND);
         Payment payment = paymentOptional.get();
-        payment.setStatus(switch (input.getResponseCode()) {
+        boolean paymentIsSuccessful = false;
+        final PaymentStatus paymentStatus = (switch (input.getResponseCode()) {
             case VNPayConstant.RESPONSE_CODE_SUCCESSFUL,
-                 VNPayConstant.RESPONSE_CODE_ABNORMAL_SUCCESSFUL -> PaymentStatus.SUCCESSFUL;
+                 VNPayConstant.RESPONSE_CODE_ABNORMAL_SUCCESSFUL -> {
+                paymentIsSuccessful = true;
+                yield PaymentStatus.SUCCESSFUL;
+            }
             case VNPayConstant.RESPONSE_CODE_EXPIRED -> PaymentStatus.EXPIRED;
             case VNPayConstant.RESPONSE_CODE_CANCELLED -> PaymentStatus.CANCELLED;
             default -> PaymentStatus.FAILED;
         });
+        payment.setStatus(paymentStatus);
         processVNPayPaymentDataSource.save(payment);
-        final VNPayTransaction vnPayTransaction = VNPayTransaction.builder()
-                .payDate(input.getPayDate())
-                .amount(input.getAmount().divide(BigDecimal.valueOf(100)))
-                .bankCode(input.getBankCode())
-                .transactionId(input.getTransactionId())
-                .bankTransferId(input.getBankTransferId())
-                .orderInfo(input.getOrderInfo())
-                .cardType(input.getCardType())
-                .payment(payment)
-                .secureHash(input.getSecureHash())
+        if (paymentIsSuccessful) {
+            final VNPayTransaction vnPayTransaction = VNPayTransaction.builder()
+                    .payDate(input.getPayDate())
+                    .amount(input.getAmount().divide(BigDecimal.valueOf(100)))
+                    .bankCode(input.getBankCode())
+                    .transactionId(input.getTransactionId())
+                    .bankTransferId(input.getBankTransferId())
+                    .orderInfo(input.getOrderInfo())
+                    .cardType(input.getCardType())
+                    .payment(payment)
+                    .secureHash(input.getSecureHash())
+                    .build();
+            processVNPayPaymentDataSource.save(vnPayTransaction);
+        }
+        return VNPayPaymentOutput.builder()
+                .paymentStatus(aPaymentStatusMapper.toStatus(paymentStatus))
                 .build();
-        processVNPayPaymentDataSource.save(vnPayTransaction);
-        return NoOutput.INSTANCE;
     }
 }

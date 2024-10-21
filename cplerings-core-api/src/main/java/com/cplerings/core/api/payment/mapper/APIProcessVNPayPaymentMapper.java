@@ -1,12 +1,12 @@
 package com.cplerings.core.api.payment.mapper;
 
+import com.cplerings.core.api.payment.data.VNPayPaymentResult;
 import com.cplerings.core.api.payment.request.VNPayPaymentRequest;
 import com.cplerings.core.api.payment.response.VNPayPaymentResponse;
-import com.cplerings.core.api.shared.NoData;
 import com.cplerings.core.api.shared.mapper.APIMapper;
 import com.cplerings.core.application.payment.input.VNPayPaymentInput;
+import com.cplerings.core.application.payment.output.VNPayPaymentOutput;
 import com.cplerings.core.application.shared.mapper.MoneyMapper;
-import com.cplerings.core.application.shared.output.NoOutput;
 import com.cplerings.core.common.mapper.SpringMapperConfiguration;
 import com.cplerings.core.common.payment.VNPayUtils;
 
@@ -21,7 +21,7 @@ import java.time.Instant;
                 MoneyMapper.class
         }
 )
-public interface APIProcessVNPayPaymentMapper extends APIMapper<VNPayPaymentInput, NoOutput, NoData, VNPayPaymentRequest, VNPayPaymentResponse> {
+public interface APIProcessVNPayPaymentMapper extends APIMapper<VNPayPaymentInput, VNPayPaymentOutput, VNPayPaymentResult, VNPayPaymentRequest, VNPayPaymentResponse> {
 
     @Override
     @Mapping(target = "bankCode", source = "vnp_BankCode")
@@ -41,10 +41,5 @@ public interface APIProcessVNPayPaymentMapper extends APIMapper<VNPayPaymentInpu
 
     default Instant toDate(String date) {
         return VNPayUtils.toInstant(date);
-    }
-
-    @Override
-    default NoData toData(NoOutput output) {
-        return NoData.INSTANCE;
     }
 }

@@ -2,9 +2,15 @@ package com.cplerings.core.application.shared.service.payment;
 
 import com.cplerings.core.domain.shared.valueobject.Money;
 
-public interface PaymentInfo {
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-    Money getAmount();
+@Getter
+@Setter
+@Builder
+public class PaymentInfo {
 
-    String getDescription();
+    private Money amount;
+    private String description;
 }

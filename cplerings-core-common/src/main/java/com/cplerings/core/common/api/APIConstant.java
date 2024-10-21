@@ -10,6 +10,15 @@ public final class APIConstant {
     public static final String APPLICATION_JSON = "application/json";
 
     /*
+        Dev' paths
+     */
+    public static final String DEV_PATH = "/dev";
+    public static final String DEV_HELLO_PATH = DEV_PATH + "/hello";
+    public static final String DEV_TOKEN_PATH = DEV_PATH + "/token";
+    public static final String DEV_PAYMENTS_PATH = DEV_PATH + "/payments";
+    public static final String DEV_VNPAY_PATH = DEV_PAYMENTS_PATH + "/vnpay";
+
+    /*
         Accounts' paths
      */
     public static final String ACCOUNTS_PATH = "/accounts";
