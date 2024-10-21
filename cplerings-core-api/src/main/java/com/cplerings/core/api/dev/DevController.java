@@ -1,9 +1,12 @@
 package com.cplerings.core.api.dev;
 
 import com.cplerings.core.api.shared.AbstractRestController;
+import com.cplerings.core.api.shared.openapi.DevTag;
 import com.cplerings.core.application.shared.entity.account.ARole;
 import com.cplerings.core.application.shared.service.jwt.JWTGenerationService;
 import com.cplerings.core.application.shared.service.jwt.input.JWTGenerationInput;
+import com.cplerings.core.application.shared.service.payment.PaymentRequestService;
+import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.common.profile.LocalDevelopmentProfileConstant;
 import com.cplerings.core.common.profile.ProfileConstant;
 
@@ -16,28 +19,24 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
-
 @Slf4j
 @RequiredArgsConstructor
 @RestController
 @Profile({ ProfileConstant.DEVELOPMENT, ProfileConstant.LOCAL })
-@Tag(name = "DEVELOPMENT_ONLY", description = "APIs for development only")
+@DevTag
 public class DevController extends AbstractRestController {
-
-    private static final String BASE_PATH = "/dev";
-    private static final String HELLO_PATH = BASE_PATH + "/hello";
-    private static final String TOKEN_PATH = BASE_PATH + "/token";
 
     private final JWTGenerationService jwtGenerationService;
 
-    @GetMapping(HELLO_PATH)
+    private PaymentRequestService paymentRequestService;
+
+    @GetMapping(APIConstant.DEV_HELLO_PATH)
     public ResponseEntity<String> sayHello() {
         log.info("Request to say hello initiated");
         return ResponseEntity.ok(LocalDevelopmentProfileConstant.HELLO_MESSAGE);
     }
 
-    @GetMapping(TOKEN_PATH)
+    @GetMapping(APIConstant.DEV_TOKEN_PATH)
     public ResponseEntity<String> getToken(@RequestParam("email") String email) {
         return ResponseEntity.ok(jwtGenerationService.generateToken(JWTGenerationInput.builder()
                 .email(email)

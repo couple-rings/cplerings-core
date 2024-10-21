@@ -3,6 +3,7 @@ package com.cplerings.core.domain.shared.valueobject;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -12,6 +13,7 @@ import java.math.RoundingMode;
 import java.util.Objects;
 
 @Getter
+@Setter(AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Embeddable
 public final class Money {
@@ -28,11 +30,30 @@ public final class Money {
                 .setScale(3, RoundingMode.HALF_EVEN);
     }
 
+    public Money divide(BigDecimal divisor) {
+        final BigDecimal current = this.amount;
+        final BigDecimal sanitizedDivisor = sanitizeMoney(divisor);
+        return Money.create(current.divide(sanitizedDivisor, RoundingMode.HALF_EVEN));
+    }
+
     public static Money create(BigDecimal amount) {
         return new Money(sanitizeMoney(amount));
     }
 
-    private void setAmount(BigDecimal amount) {
-        this.amount = amount;
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(amount);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if ((o == null) || (getClass() != o.getClass())) {
+            return false;
+        }
+        final Money money = (Money) o;
+        return Objects.equals(amount, money.amount);
     }
 }

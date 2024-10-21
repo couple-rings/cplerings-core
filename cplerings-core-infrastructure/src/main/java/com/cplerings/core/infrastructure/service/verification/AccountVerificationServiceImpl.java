@@ -32,7 +32,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Service
-@Transactional(rollbackOn = Exception.class)
+@Transactional(rollbackOn = Throwable.class)
 @RequiredArgsConstructor
 public class AccountVerificationServiceImpl implements AccountVerificationService {
 

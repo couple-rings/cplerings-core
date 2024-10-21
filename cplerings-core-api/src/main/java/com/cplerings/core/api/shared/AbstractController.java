@@ -42,7 +42,7 @@ public abstract class AbstractController<IN, OUT, DATA, REQ, RES> {
 
     protected abstract APIMapper<IN, OUT, DATA, REQ, RES> getMapper();
 
-    private ResponseEntity<Object> handleErrorCodes(ErrorCodes errorCodes) {
+    protected final ResponseEntity<Object> handleErrorCodes(ErrorCodes errorCodes) {
         final Collection<ErrorCode> errors = errorCodes.getErrors();
         final Optional<ErrorCode> exceptionError = errors.stream()
                 .filter(errorCode -> (ErrorCode.Type.SYSTEM == errorCode.getType()))

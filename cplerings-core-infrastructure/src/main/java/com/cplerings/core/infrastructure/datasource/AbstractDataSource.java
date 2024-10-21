@@ -4,6 +4,7 @@ import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.Auditor;
 import com.cplerings.core.infrastructure.security.SecurityHelper;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -38,14 +39,14 @@ public abstract class AbstractDataSource {
         if (currentAuditor.isPresent()) {
             // Use currently logged in Auditor
             final Auditor auditor = currentAuditor.get();
-            if (entityIsNew(entity)) {
+            if (entityIsNew(entity) || StringUtils.isBlank(entity.getCreatedBy()) || entity.getCreatedAt() == null) {
                 entity.setCreator(auditor);
             }
             entity.updateModifier(auditor);
         } else {
             // Default to the system as Auditor
             final Auditor systemAuditor = (() -> systemName);
-            if (entityIsNew(entity)) {
+            if (entityIsNew(entity) || StringUtils.isBlank(entity.getCreatedBy()) || entity.getCreatedAt() == null) {
                 entity.setCreator(systemAuditor);
             }
             entity.updateModifier(systemAuditor);
