@@ -9,8 +9,10 @@ import lombok.Setter;
 @Builder
 public class ViewCoupleDesignInput {
 
+    private int page;
+    private int pageSize;
     private Long collectionId;
-    private Integer metalSpecificationId;
+    private Long metalSpecificationId;
     private Double minPrice ;
     private Double maxPrice;
 }

@@ -57,6 +57,7 @@ public class SecurityConfiguration {
         handleVerificationAPI(localHttp);
         handleSpouseAPI(localHttp);
         handlePaymentAPI(localHttp);
+        handleDesignCoupleAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
                 .denyAll());
         return localHttp.build();
@@ -127,7 +128,11 @@ public class SecurityConfiguration {
     }
 
     private void handlePaymentAPI(HttpSecurity localHttp) throws Exception {
-        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VNPAY_PATH))
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VNPAY_PATH)));
+    }
+
+    private void handleDesignCoupleAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.DESIGN_PATH))
                 .permitAll());
     }
 

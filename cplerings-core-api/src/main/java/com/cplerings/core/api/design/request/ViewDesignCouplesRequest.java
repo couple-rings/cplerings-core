@@ -13,6 +13,6 @@ public class ViewDesignCouplesRequest extends AbstractPaginatedRequest {
 
     private Long collectionId;
     private Integer metalSpecificationId;
-    private Double minPrice ;
+    private Double minPrice;
     private Double maxPrice;
 }

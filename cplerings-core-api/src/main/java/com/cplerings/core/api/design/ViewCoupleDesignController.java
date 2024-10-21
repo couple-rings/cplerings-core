@@ -4,13 +4,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cplerings.core.api.design.data.CoupleDesignInformation;
+import com.cplerings.core.api.design.data.DesignCoupleData;
+import com.cplerings.core.api.design.mapper.APIVIewCoupleDesignMapper;
 import com.cplerings.core.api.design.request.ViewDesignCouplesRequest;
 import com.cplerings.core.api.design.response.ViewCoupleDesignResponse;
 import com.cplerings.core.api.shared.AbstractPaginatedController;
 import com.cplerings.core.api.shared.mapper.APIMapper;
 import com.cplerings.core.api.shared.openapi.DesignTag;
 import com.cplerings.core.api.shared.openapi.ErrorAPIResponse;
+import com.cplerings.core.application.design.ViewCoupleDesignUseCase;
 import com.cplerings.core.application.design.input.ViewCoupleDesignInput;
 import com.cplerings.core.application.design.output.ViewCoupleDesignOutput;
 import com.cplerings.core.application.shared.usecase.UseCase;
@@ -24,7 +26,11 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-public class ViewCoupleDesignController extends AbstractPaginatedController<ViewCoupleDesignInput, ViewCoupleDesignOutput, CoupleDesignInformation, ViewDesignCouplesRequest, ViewCoupleDesignResponse> {
+public class ViewCoupleDesignController extends AbstractPaginatedController<ViewCoupleDesignInput, ViewCoupleDesignOutput, DesignCoupleData, ViewDesignCouplesRequest, ViewCoupleDesignResponse> {
+
+    private final APIVIewCoupleDesignMapper apivIewCoupleDesignMapper;
+    private final ViewCoupleDesignUseCase viewCoupleDesignUseCase;
+
 
     @GetMapping(APIConstant.DESIGN_COUPLE_PATH)
     @DesignTag
@@ -44,11 +50,11 @@ public class ViewCoupleDesignController extends AbstractPaginatedController<View
 
     @Override
     protected UseCase<ViewCoupleDesignInput, ViewCoupleDesignOutput> getUseCase() {
-        return null;
+        return viewCoupleDesignUseCase;
     }
 
     @Override
-    protected APIMapper<ViewCoupleDesignInput, ViewCoupleDesignOutput, CoupleDesignInformation, ViewDesignCouplesRequest, ViewCoupleDesignResponse> getMapper() {
-        return null;
+    protected APIMapper<ViewCoupleDesignInput, ViewCoupleDesignOutput, DesignCoupleData, ViewDesignCouplesRequest, ViewCoupleDesignResponse> getMapper() {
+        return apivIewCoupleDesignMapper;
     }
 }

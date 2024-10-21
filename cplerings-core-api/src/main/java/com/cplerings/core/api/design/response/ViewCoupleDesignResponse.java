@@ -1,20 +1,20 @@
 package com.cplerings.core.api.design.response;
 
-import com.cplerings.core.api.design.data.CoupleDesignInformation;
+import java.util.List;
+
+import com.cplerings.core.api.design.data.DesignCoupleInformation;
 import com.cplerings.core.api.shared.AbstractDataResponse;
 
-public class ViewCoupleDesignResponse extends AbstractDataResponse<CoupleDesignInformation> {
+import lombok.Getter;
+import lombok.Setter;
 
-    public static Builder builder() {
-        return new Builder();
-    }
+@Setter
+@Getter
+public class ViewCoupleDesignResponse extends AbstractDataResponse<List<DesignCoupleInformation>> {
 
-    public static final class Builder
-            extends AbstractDataResponseBuilder<Builder, ViewCoupleDesignResponse, CoupleDesignInformation> {
-
-        @Override
-        protected ViewCoupleDesignResponse getResponseInstance() {
-            return new ViewCoupleDesignResponse();
-        }
-    }
+    private int page;
+    private int pageSize;
+    private int totalPages;
+    private long count;
+    private final Type type = Type.PAGINATED_DATA;
 }

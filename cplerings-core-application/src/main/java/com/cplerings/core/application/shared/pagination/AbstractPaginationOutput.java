@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Getter
-@Setter(AccessLevel.PROTECTED)
+@Setter(AccessLevel.PUBLIC)
 public abstract class AbstractPaginationOutput<T> implements Pageable {
 
     protected int page;
@@ -25,18 +25,18 @@ public abstract class AbstractPaginationOutput<T> implements Pageable {
     public static abstract class AbstractBuilder<S extends AbstractBuilder<S, P, T>, P extends AbstractPaginationOutput<T>, T>
             extends AbstractSelf<S> implements Buildable<P> {
 
-        @Getter(AccessLevel.PROTECTED)
+        @Getter(AccessLevel.PUBLIC)
         private int page = PaginationConstant.DEFAULT_PAGE;
 
-        @Getter(AccessLevel.PROTECTED)
+        @Getter(AccessLevel.PUBLIC)
         private int pageSize = PaginationConstant.DEFAULT_PAGE_SIZE;
 
         private int totalCount;
 
-        @Getter(AccessLevel.PROTECTED)
+        @Getter(AccessLevel.PUBLIC)
         private int totalPages;
 
-        @Getter(AccessLevel.PROTECTED)
+        @Getter(AccessLevel.PUBLIC)
         private Collection<T> data;
 
         public final S page(int page) {
