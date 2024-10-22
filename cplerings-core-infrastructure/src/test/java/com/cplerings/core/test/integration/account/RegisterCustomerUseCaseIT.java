@@ -9,6 +9,8 @@ import com.cplerings.core.api.account.response.CustomerEmailInfoResponse;
 import com.cplerings.core.application.shared.service.email.EmailService;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.common.locale.LocaleUtils;
+import com.cplerings.core.domain.account.AccountVerification;
+import com.cplerings.core.infrastructure.repository.AccountVerificationRepository;
 import com.cplerings.core.infrastructure.service.email.EmailServiceImpl;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
@@ -35,6 +37,9 @@ class RegisterCustomerUseCaseIT extends AbstractIT {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private AccountVerificationRepository accountVerificationRepository;
 
     private GreenMail greenMail;
 
@@ -92,10 +97,13 @@ class RegisterCustomerUseCaseIT extends AbstractIT {
         assertThat(email.getSubject()).isEqualTo(LocaleUtils.translateLocale("accountVerificationService.text.subject"),
                 EmailHelper.TEST_EMAIL);
 
+        final AccountVerification accountVerification = accountVerificationRepository.findByAccountEmail(EmailHelper.TEST_EMAIL)
+                .orElse(null);
+        assertThat(accountVerification).isNotNull();
+
         final Object body = email.getContent();
         assertThat(body).isInstanceOf(String.class);
         final String verificationCode = (String) body;
-        assertThat(verificationCode).hasSize(6)
-                .containsOnlyDigits();
+        assertThat(verificationCode).contains(accountVerification.getCode());
     }
 }
