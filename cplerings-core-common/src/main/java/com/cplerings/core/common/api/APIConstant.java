@@ -54,5 +54,5 @@ public final class APIConstant {
         Design's paths
      */
     public static final String DESIGN_PATH = "/designs";
-    public static final String DESIGN_COUPLE_PATH = "/designs/couple";
+    public static final String DESIGN_COUPLE_PATH = DESIGN_PATH + "/couple";
 }

@@ -132,7 +132,7 @@ public class SecurityConfiguration {
     }
 
     private void handleDesignCoupleAPI(HttpSecurity localHttp) throws Exception {
-        localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.DESIGN_PATH))
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.DESIGN_COUPLE_PATH))
                 .permitAll());
     }
 

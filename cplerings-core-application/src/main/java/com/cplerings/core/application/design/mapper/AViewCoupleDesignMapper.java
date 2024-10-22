@@ -4,10 +4,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import com.cplerings.core.application.design.output.DesignCoupleInformation;
+import com.cplerings.core.application.design.queryoutput.DesignCoupleQueryOutput;
 import com.cplerings.core.application.design.queryoutput.DesignCouples;
 import com.cplerings.core.application.design.output.ViewCoupleDesignOutput;
 import com.cplerings.core.common.mapper.SpringMapperConfiguration;
-import com.cplerings.core.domain.design.DesignCouple;
 
 @Mapper(config = SpringMapperConfiguration.class)
 public interface AViewCoupleDesignMapper {
@@ -16,5 +16,5 @@ public interface AViewCoupleDesignMapper {
     ViewCoupleDesignOutput toOutput(DesignCouples designs);
 
     @Mapping(target = "imageUrl", source = "previewImage.url")
-    DesignCoupleInformation toCoupleDesignInformation(DesignCouple designCouple);
+    DesignCoupleInformation toCoupleDesignInformation(DesignCoupleQueryOutput designCoupleQueryOutput);
 }

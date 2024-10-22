@@ -15,7 +15,7 @@ import lombok.Setter;
 @Builder
 public class DesignCouples {
 
-    private List<DesignCouple> designCouples;
+    private List<DesignCoupleQueryOutput> designCouples;
     private long count;
     private int page;
     private int pageSize;
