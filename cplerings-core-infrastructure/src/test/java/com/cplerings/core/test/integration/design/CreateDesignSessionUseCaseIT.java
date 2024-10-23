@@ -6,9 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import com.cplerings.core.api.account.data.Profile;
-import com.cplerings.core.api.account.response.ProfileResponse;
 import com.cplerings.core.api.design.data.DesignSession;
+import com.cplerings.core.api.design.request.CreateDesignSessionRequest;
 import com.cplerings.core.api.design.response.CreateDesignSessionResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.common.api.APIConstant;
@@ -23,12 +22,13 @@ class CreateDesignSessionUseCaseIT extends AbstractIT {
 
     @Test
     void givenStaff_whenCreateDesignSessionUseCase() {
-
+        CreateDesignSessionRequest createDesignSessionRequest = new CreateDesignSessionRequest(1L);
         final String customerToken = jwtTestHelper.generateToken(AccountTestConstant.CUSTOMER_EMAIL);
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(APIConstant.DESIGN_SESSION_PATH)
                 .authorizationHeader(customerToken)
-                .method(RequestBuilder.Method.GET)
+                .body(createDesignSessionRequest)
+                .method(RequestBuilder.Method.POST)
                 .send();
 
         thenResponseIsOk(response);
