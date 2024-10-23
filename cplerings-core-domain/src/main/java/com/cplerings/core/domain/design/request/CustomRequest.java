@@ -50,4 +50,8 @@ public class CustomRequest extends AbstractEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customer_id")
     private Account customer;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "design_custom_request_id")
+    private DesignCustomRequest designCustomRequest;
 }

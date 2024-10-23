@@ -8,6 +8,7 @@ import com.cplerings.core.application.customrequest.output.ViewCustomRequestOutp
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
+import com.cplerings.core.domain.design.request.CustomRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class ViewCustomRequestUseCaseImpl extends AbstractUseCase<ViewCustomRequestInput, ViewCustomRequestOutput>
                 implements ViewCustomRequestUseCase {
 
-    private final ViewCustomRequestDataSource viewCustomRequestDataSource;
+//    private final ViewCustomRequestDataSource viewCustomRequestDataSource;
     private final AViewCustomRequestMapper aViewCustomRequestMapper;
 
     @Override
@@ -27,9 +28,10 @@ public class ViewCustomRequestUseCaseImpl extends AbstractUseCase<ViewCustomRequ
 
     @Override
     protected ViewCustomRequestOutput internalExecute(UseCaseValidator validator, ViewCustomRequestInput input) {
-        Customrequest customRequest = viewCustomRequestDataSource.getCustomRequestById(input.customRequestId())
-                .orElse(null);
-        validator.validateAndStopExecution(customRequest != null, );
-        return aViewCustomRequestMapper.toOutput(customRequest);
+//        CustomRequest customRequest = viewCustomRequestDataSource.getCustomRequestById(input.customRequestId())
+//                .orElse(null);
+//        validator.validateAndStopExecution(customRequest != null, );
+//        return aViewCustomRequestMapper.toOutput(customRequest);
+        return null;
     }
 }
