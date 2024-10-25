@@ -1,6 +1,7 @@
 package com.cplerings.core.domain.jewelry;
 
 import com.cplerings.core.common.database.DatabaseConstant;
+import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.shared.AbstractEntity;
 
 import lombok.AllArgsConstructor;
@@ -11,11 +12,15 @@ import lombok.experimental.SuperBuilder;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+
+import java.util.Set;
 
 @Getter
 @Setter
@@ -39,4 +44,7 @@ public class JewelryCategory extends AbstractEntity {
 
     @Column(name = "description", length = DatabaseConstant.DEFAULT_DESCRIPTION_LENGTH, nullable = false)
     private String description;
+
+    @OneToMany(mappedBy = "jewelryCategory", fetch = FetchType.LAZY)
+    private Set<Design> designs;
 }

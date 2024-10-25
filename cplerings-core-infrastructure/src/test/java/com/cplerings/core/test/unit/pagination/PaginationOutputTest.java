@@ -79,17 +79,17 @@ class PaginationOutputTest {
     @ParameterizedTest
     @MethodSource("properPaginationArguments")
     void givenPaginationOutput_whenImplementBuilderProperly(PaginationTestData data) {
-        final DummyPaginationOutput output = thenNoExceptionIsThrownWhenBuilding(data);
+        final DummyPaginatedOutput output = thenNoExceptionIsThrownWhenBuilding(data);
         thenOutputPaginationInfoIsValid(output, data);
     }
 
-    private DummyPaginationOutput thenNoExceptionIsThrownWhenBuilding(PaginationTestData data) {
+    private DummyPaginatedOutput thenNoExceptionIsThrownWhenBuilding(PaginationTestData data) {
         try {
-            return DummyPaginationOutput.builder()
+            return DummyPaginatedOutput.builder()
                     .page(data.getPage())
                     .pageSize(data.getPageSize())
                     .totalCount(data.getTotalCount())
-                    .data(data.getData())
+                    .items(data.getData())
                     .build();
         } catch (Exception e) {
             Assertions.fail(e);
@@ -97,7 +97,7 @@ class PaginationOutputTest {
         }
     }
 
-    private void thenOutputPaginationInfoIsValid(DummyPaginationOutput output, PaginationTestData data) {
+    private void thenOutputPaginationInfoIsValid(DummyPaginatedOutput output, PaginationTestData data) {
         Assertions.assertThat(output)
                 .isNotNull();
         Assertions.assertThat(output.getPage())
@@ -106,7 +106,7 @@ class PaginationOutputTest {
                 .isEqualTo(data.getPageSize());
         Assertions.assertThat(output.getCount())
                 .isEqualTo(data.getData().size());
-        Assertions.assertThat(output.getData())
+        Assertions.assertThat(output.getItems())
                 .containsExactly(data.getData().toArray(String[]::new));
         Assertions.assertThat(output.getTotalPages())
                 .isEqualTo(data.getExpectedTotalPages());
@@ -120,11 +120,11 @@ class PaginationOutputTest {
 
     private void thenExceptionIsThrown(PaginationTestData data) {
         Assertions.assertThatException()
-                .isThrownBy(() -> DummyPaginationOutput.builder()
+                .isThrownBy(() -> DummyPaginatedOutput.builder()
                         .page(data.getPage())
                         .pageSize(data.getPageSize())
                         .totalCount(data.getTotalCount())
-                        .data(data.getData())
+                        .items(data.getData())
                         .totalCount(data.getTotalCount())
                         .build());
     }

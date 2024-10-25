@@ -16,6 +16,15 @@ spring:
   jpa:
     show-sql: false
     open-in-view: false
+    properties:
+      hibernate:
+        default_batch_fetch_size: 10
+        format_sql: true
+        show_sql: true
+        order_updates: true
+        jdbc:
+          fetch_size: 10
+          batch_size: 10
   main:
     lazy-initialization: true
     allow-bean-definition-overriding: true
