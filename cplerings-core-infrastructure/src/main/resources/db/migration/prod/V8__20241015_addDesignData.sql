@@ -181,6 +181,60 @@ $$
         design_metal_spec_id52       BIGINT;
         design_metal_spec_id53       BIGINT;
         design_metal_spec_id54       BIGINT;
+        design_diamond_spec_id1      BIGINT;
+        design_diamond_spec_id2      BIGINT;
+        design_diamond_spec_id3      BIGINT;
+        design_diamond_spec_id4      BIGINT;
+        design_diamond_spec_id5      BIGINT;
+        design_diamond_spec_id6      BIGINT;
+        design_diamond_spec_id7      BIGINT;
+        design_diamond_spec_id8      BIGINT;
+        design_diamond_spec_id9      BIGINT;
+        design_diamond_spec_id10     BIGINT;
+        design_diamond_spec_id11     BIGINT;
+        design_diamond_spec_id12     BIGINT;
+        design_diamond_spec_id13     BIGINT;
+        design_diamond_spec_id14     BIGINT;
+        design_diamond_spec_id15     BIGINT;
+        design_diamond_spec_id16     BIGINT;
+        design_diamond_spec_id17     BIGINT;
+        design_diamond_spec_id18     BIGINT;
+        design_diamond_spec_id19     BIGINT;
+        design_diamond_spec_id20     BIGINT;
+        design_diamond_spec_id21     BIGINT;
+        design_diamond_spec_id22     BIGINT;
+        design_diamond_spec_id23     BIGINT;
+        design_diamond_spec_id24     BIGINT;
+        design_diamond_spec_id25     BIGINT;
+        design_diamond_spec_id26     BIGINT;
+        design_diamond_spec_id27     BIGINT;
+        design_diamond_spec_id28     BIGINT;
+        design_diamond_spec_id29     BIGINT;
+        design_diamond_spec_id30     BIGINT;
+        design_diamond_spec_id31     BIGINT;
+        design_diamond_spec_id32     BIGINT;
+        design_diamond_spec_id33     BIGINT;
+        design_diamond_spec_id34     BIGINT;
+        design_diamond_spec_id35     BIGINT;
+        design_diamond_spec_id36     BIGINT;
+        design_diamond_spec_id37     BIGINT;
+        design_diamond_spec_id38     BIGINT;
+        design_diamond_spec_id39     BIGINT;
+        design_diamond_spec_id40     BIGINT;
+        design_diamond_spec_id41     BIGINT;
+        design_diamond_spec_id42     BIGINT;
+        design_diamond_spec_id43     BIGINT;
+        design_diamond_spec_id44     BIGINT;
+        design_diamond_spec_id45     BIGINT;
+        design_diamond_spec_id46     BIGINT;
+        design_diamond_spec_id47     BIGINT;
+        design_diamond_spec_id48     BIGINT;
+        design_diamond_spec_id49     BIGINT;
+        design_diamond_spec_id50     BIGINT;
+        design_diamond_spec_id51     BIGINT;
+        design_diamond_spec_id52     BIGINT;
+        design_diamond_spec_id53     BIGINT;
+        design_diamond_spec_id54     BIGINT;
     BEGIN
         -- Diamond specifications
         diamond_spec_heart_id1 := nextval('diamond_specification_seq');
@@ -462,98 +516,98 @@ $$
         design_id18 := nextval('design_seq');
 
         INSERT INTO tbl_design (design_id, created_at, create_by, modified_at, modified_by, state, opt_version, name,
-                                description, blueprint_id, characteristic, side_diamonds_count,
-                                diamond_specification_id, design_collection_id, metal_weight, size)
+                                description, blueprint_id, characteristic, side_diamonds_count, design_collection_id,
+                                metal_weight, size, design_couple_id)
         VALUES (design_id1, current_timestamp, 'CoupleRings',
                 current_timestamp, 'CoupleRings', 'ACTIVE', 0, 'Harmonia',
                 'Harmonia is a symbol of balance and grace, designed for brides who embody harmony in their relationship. Its elegant and refined details represent the peace and unity a loving partner brings to their union, making it a timeless choice for brides seeking beauty and poise.',
                 design_blueprint_id1, 'FEMININE', 0,
-                diamond_spec_heart_id1, design_collection_id1, 2.0, 16),
+                design_collection_id1, 2.0, 16, design_couple_id1),
                (design_id2, current_timestamp, 'CoupleRings',
                 current_timestamp, 'CoupleRings', 'ACTIVE', 0, 'Concordia',
                 'Concordia is crafted for grooms who value strength and unity in their partnership. The design reflects a sense of stability and harmony, perfect for men who appreciate the balance and enduring nature of their commitment to their partner.',
                 design_blueprint_id2, 'MASCULINE', 1,
-                diamond_spec_heart_id2, design_collection_id1, 3.0, 18),
+                design_collection_id1, 3.0, 18, design_couple_id1),
                (design_id3, current_timestamp, 'CoupleRings',
                 current_timestamp, 'CoupleRings', 'ACTIVE', 0, 'Radiance',
                 'Radiance shines with brilliance, designed for brides who light up the lives of those around them. Its sparkling facets and intricate design reflect the joy and energy a loving bride brings to her relationship, making it a dazzling choice for her special day.',
                 design_blueprint_id3, 'FEMININE', 2,
-                diamond_spec_heart_id3, design_collection_id1, 2.5, 17),
+                design_collection_id1, 2.5, 17, design_couple_id2),
                (design_id4, current_timestamp, 'CoupleRings',
                 current_timestamp, 'CoupleRings', 'ACTIVE', 0, 'Brilliance',
                 'Brilliance is designed for grooms who radiate clarity and strength. With its clean, bold lines, this ring symbolizes the brilliance a groom brings to his partnership, making it a fitting choice for those who want their love to shine brightly.',
                 design_blueprint_id4, 'MASCULINE', 3,
-                diamond_spec_oval_id1, design_collection_id1, 3, 18),
+                design_collection_id1, 3, 18, design_couple_id2),
                (design_id5, current_timestamp, 'CoupleRings',
                 current_timestamp, 'CoupleRings', 'ACTIVE', 0, 'Serenity',
                 'Serenity is for brides who find peace and comfort in their relationship. Its simple yet elegant design speaks to a quiet strength and grace, making it a perfect reflection of a love that is calm, enduring, and steadfast.',
                 design_blueprint_id5, 'FEMININE', 0,
-                diamond_spec_oval_id2, design_collection_id1, 2, 16),
+                design_collection_id1, 2, 16, design_couple_id3),
                (design_id6, current_timestamp, 'CoupleRings',
                 current_timestamp, 'CoupleRings', 'ACTIVE', 0, 'Solace',
                 'Solace represents a groom’s quiet, steady support in a relationship. Crafted with subtle elegance, this ring is ideal for men who provide comfort and strength to their partner, embodying a love that offers calm in the storm.',
                 design_blueprint_id6, 'MASCULINE', 1,
-                diamond_spec_oval_id3, design_collection_id1, 3, 17),
+                design_collection_id1, 3, 17, design_couple_id3),
                (design_id7, current_timestamp, 'CoupleRings',
                 current_timestamp, 'CoupleRings', 'ACTIVE', 0, 'Celeste',
                 'Celeste is for brides who dream beyond the stars. With its celestial-inspired design, this ring reflects the infinite possibilities of a love that knows no bounds, perfect for women who see their relationship as a journey across the universe.',
                 design_blueprint_id7, 'FEMININE', 2,
-                diamond_spec_round_id1, design_collection_id2, 2, 16),
+                design_collection_id2, 2, 16, design_couple_id4),
                (design_id8, current_timestamp, 'CoupleRings',
                 current_timestamp, 'CoupleRings', 'ACTIVE', 0, 'Orion',
                 'Orion is a strong, celestial design for grooms who see themselves as protectors and companions in their relationship. Its bold and cosmic motifs are for men whose love is as vast as the night sky, offering stability and adventure in equal measure.',
                 design_blueprint_id8, 'MASCULINE', 3,
-                diamond_spec_round_id2, design_collection_id2, 3, 18),
+                design_collection_id2, 3, 18, design_couple_id4),
                (design_id9, current_timestamp, 'CoupleRings',
                 current_timestamp, 'CoupleRings', 'ACTIVE', 0, 'Aurora',
                 'Aurora is inspired by the first light of dawn, perfect for brides who bring warmth and new beginnings to their partnership. Its radiant and delicate design symbolizes a love that continues to grow and brighten each day, ideal for a woman whose presence lights up the room.',
                 design_blueprint_id9, 'FEMININE', 0,
-                diamond_spec_round_id3, design_collection_id2, 2.5, 17),
+                design_collection_id2, 2.5, 17, design_couple_id5),
                (design_id10, current_timestamp, 'CoupleRings',
                 current_timestamp, 'CoupleRings', 'ACTIVE', 0, 'Stellar',
                 'Stellar is for the groom who shines with quiet confidence. Its sleek and refined design reflects a man who brings constant light to his relationship, a steady guiding star in his partner’s life, symbolizing strength and reliability.',
                 design_blueprint_id10, 'MASCULINE', 1,
-                diamond_spec_heart_id1, design_collection_id2, 3, 18),
+                design_collection_id2, 3, 18, design_couple_id5),
                (design_id11, current_timestamp, 'CoupleRings',
                 current_timestamp, 'CoupleRings', 'ACTIVE', 0, 'Luna',
                 'Luna reflects the quiet beauty of the moon, for brides who offer gentle strength and light. Its soft curves and serene design are ideal for women who embrace a calm, nurturing presence in their relationship, bringing peace and balance to their union.',
                 design_blueprint_id11, 'FEMININE', 2,
-                diamond_spec_heart_id2, design_collection_id2, 2, 16),
+                design_collection_id2, 2, 16, design_couple_id6),
                (design_id12, current_timestamp, 'CoupleRings',
                 current_timestamp, 'CoupleRings', 'ACTIVE', 0, 'Apollo',
                 'Apollo represents the brilliance of the sun, designed for grooms who lead with strength and energy. Bold and bright, this ring is a symbol of a man whose love is fierce and constant, shining down on his partner with unwavering commitment.',
                 design_blueprint_id12, 'MASCULINE', 3,
-                diamond_spec_heart_id3, design_collection_id2, 3, 18),
+                design_collection_id2, 3, 18, design_couple_id6),
                (design_id13, current_timestamp, 'CoupleRings',
                 current_timestamp, 'CoupleRings', 'ACTIVE', 0, 'Grace',
                 'Grace is for brides who carry themselves with elegance and dignity. Its refined lines and classic design represent a love filled with beauty and poise, making it the ideal choice for women who want their ring to reflect the grace they bring to their relationship.',
                 design_blueprint_id13, 'FEMININE', 0,
-                diamond_spec_oval_id1, design_collection_id3, 2.5, 17),
+                design_collection_id3, 2.5, 17, design_couple_id7),
                (design_id14, current_timestamp, 'CoupleRings',
                 current_timestamp, 'CoupleRings', 'ACTIVE', 0, 'Honor',
                 'Honor is designed for grooms who value loyalty and integrity. With its strong, classic design, this ring is perfect for men who hold their relationship in the highest regard, offering a timeless symbol of the respect and devotion they bring to their partner.',
                 design_blueprint_id14, 'MASCULINE', 1,
-                diamond_spec_oval_id2, design_collection_id3, 3, 18),
+                design_collection_id3, 3, 18, design_couple_id7),
                (design_id15, current_timestamp, 'CoupleRings',
                 current_timestamp, 'CoupleRings', 'ACTIVE', 0, 'Cherish',
                 'Cherish symbolizes a bride’s deep affection and care in her relationship. Its soft, delicate design is for women who nurture and protect their bond, representing a love that is cherished and cared for with tenderness and devotion.',
                 design_blueprint_id15, 'FEMININE', 1,
-                diamond_spec_oval_id3, design_collection_id3, 2, 16),
+                design_collection_id3, 2, 16, design_couple_id8),
                (design_id16, current_timestamp, 'CoupleRings',
                 current_timestamp, 'CoupleRings', 'ACTIVE', 0, 'Devotion',
                 'Devotion is crafted for grooms who are dedicated and loyal to their partner. This ring’s strong, enduring design is perfect for men who approach their relationship with unwavering commitment, serving as a constant reminder of their enduring love.',
                 design_blueprint_id16, 'MASCULINE', 2,
-                diamond_spec_round_id1, design_collection_id3, 3, 18),
+                design_collection_id3, 3, 18, design_couple_id8),
                (design_id17, current_timestamp, 'CoupleRings',
                 current_timestamp, 'CoupleRings', 'ACTIVE', 0, 'Adore',
                 'Adore reflects a bride’s deep love and admiration for her partner. Its intricate details represent a love that is cherished above all else, making it the ideal choice for women who treasure their bond and hold their partner in the highest regard.',
                 design_blueprint_id17, 'FEMININE', 3,
-                diamond_spec_round_id2, design_collection_id3, 2, 16),
+                design_collection_id3, 2, 16, design_couple_id9),
                (design_id18, current_timestamp, 'CoupleRings',
                 current_timestamp, 'CoupleRings', 'ACTIVE', 0, 'Admire',
                 'Admire is designed for grooms who hold their partner in the highest esteem. This ring is for men who show deep respect and admiration for their relationship, offering a design that celebrates a love that grows deeper with every passing day.',
                 design_blueprint_id18, 'MASCULINE', 4,
-                diamond_spec_round_id3, design_collection_id3, 3, 18);
+                design_collection_id3, 3, 18, design_couple_id9);
 
         -- Design metal specification images
         design_metal_spec_image_id1 := nextval('image_seq');
@@ -996,5 +1050,227 @@ $$
                (design_metal_spec_id54, current_timestamp, 'CoupleRings',
                 current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id18,
                 metal_spec_id6, design_metal_spec_image_id54);
+
+        -- design diamond specification
+        design_diamond_spec_id1 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id2 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id3 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id4 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id5 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id6 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id7 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id8 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id9 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id10 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id11 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id12 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id13 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id14 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id15 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id16 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id17 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id18 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id19 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id20 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id21 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id22 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id23 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id24 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id25 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id26 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id27 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id28 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id29 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id30 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id31 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id32 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id33 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id34 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id35 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id36 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id37 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id38 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id39 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id40 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id41 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id42 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id43 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id44 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id45 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id46 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id47 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id48 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id49 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id50 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id51 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id52 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id53 := nextval('design_diamond_specification_seq');
+        design_diamond_spec_id54 := nextval('design_diamond_specification_seq');
+
+        INSERT INTO tbl_design_diamond_specification (design_diamond_specification_id, created_at, create_by,
+                                                      modified_at, modified_by, state, opt_version, design_id,
+                                                      diamond_specification_id)
+        VALUES (design_diamond_spec_id1, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id1,
+                diamond_spec_round_id3),
+               (design_diamond_spec_id2, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id1,
+                diamond_spec_heart_id2),
+               (design_diamond_spec_id3, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id1,
+                diamond_spec_heart_id3),
+               (design_diamond_spec_id4, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id2,
+                diamond_spec_heart_id2),
+               (design_diamond_spec_id5, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id2,
+                diamond_spec_round_id2),
+               (design_diamond_spec_id6, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id2,
+                diamond_spec_heart_id2),
+               (design_diamond_spec_id7, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id3,
+                diamond_spec_round_id3),
+               (design_diamond_spec_id8, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id3,
+                diamond_spec_round_id2),
+               (design_diamond_spec_id9, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id3,
+                diamond_spec_round_id2),
+               (design_diamond_spec_id10, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id4,
+                diamond_spec_oval_id3),
+               (design_diamond_spec_id11, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id4,
+                diamond_spec_heart_id1),
+               (design_diamond_spec_id12, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id4,
+                diamond_spec_heart_id3),
+               (design_diamond_spec_id13, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id5,
+                diamond_spec_heart_id3),
+               (design_diamond_spec_id14, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id5,
+                diamond_spec_round_id3),
+               (design_diamond_spec_id15, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id5,
+                diamond_spec_round_id3),
+               (design_diamond_spec_id16, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id6,
+                diamond_spec_oval_id2),
+               (design_diamond_spec_id17, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id6,
+                diamond_spec_oval_id2),
+               (design_diamond_spec_id18, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id6,
+                diamond_spec_round_id3),
+               (design_diamond_spec_id19, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id7,
+                diamond_spec_heart_id1),
+               (design_diamond_spec_id20, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id7,
+                diamond_spec_round_id1),
+               (design_diamond_spec_id21, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id7,
+                diamond_spec_round_id1),
+               (design_diamond_spec_id22, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id8,
+                diamond_spec_oval_id1),
+               (design_diamond_spec_id23, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id8,
+                diamond_spec_round_id2),
+               (design_diamond_spec_id24, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id8,
+                diamond_spec_round_id1),
+               (design_diamond_spec_id25, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id9,
+                diamond_spec_oval_id3),
+               (design_diamond_spec_id26, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id9,
+                diamond_spec_round_id1),
+               (design_diamond_spec_id27, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id9,
+                diamond_spec_round_id2),
+               (design_diamond_spec_id28, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id10,
+                diamond_spec_heart_id1),
+               (design_diamond_spec_id29, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id10,
+                diamond_spec_oval_id3),
+               (design_diamond_spec_id30, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id10,
+                diamond_spec_round_id2),
+               (design_diamond_spec_id31, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id11,
+                diamond_spec_heart_id1),
+               (design_diamond_spec_id32, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id11,
+                diamond_spec_oval_id2),
+               (design_diamond_spec_id33, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id11,
+                diamond_spec_heart_id2),
+               (design_diamond_spec_id34, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id12,
+                diamond_spec_round_id1),
+               (design_diamond_spec_id35, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id12,
+                diamond_spec_oval_id2),
+               (design_diamond_spec_id36, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id12,
+                diamond_spec_heart_id3),
+               (design_diamond_spec_id37, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id13,
+                diamond_spec_round_id2),
+               (design_diamond_spec_id38, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id13,
+                diamond_spec_heart_id2),
+               (design_diamond_spec_id39, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id13,
+                diamond_spec_oval_id2),
+               (design_diamond_spec_id40, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id14,
+                diamond_spec_round_id2),
+               (design_diamond_spec_id41, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id14,
+                diamond_spec_round_id3),
+               (design_diamond_spec_id42, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id14,
+                diamond_spec_heart_id1),
+               (design_diamond_spec_id43, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id15,
+                diamond_spec_oval_id3),
+               (design_diamond_spec_id44, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id15,
+                diamond_spec_round_id2),
+               (design_diamond_spec_id45, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id15,
+                diamond_spec_heart_id3),
+               (design_diamond_spec_id46, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id16,
+                diamond_spec_heart_id2),
+               (design_diamond_spec_id47, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id16,
+                diamond_spec_heart_id3),
+               (design_diamond_spec_id48, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id16,
+                diamond_spec_round_id3),
+               (design_diamond_spec_id49, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id17,
+                diamond_spec_round_id2),
+               (design_diamond_spec_id50, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id17,
+                diamond_spec_round_id2),
+               (design_diamond_spec_id51, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id17,
+                diamond_spec_round_id2),
+               (design_diamond_spec_id52, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id18,
+                diamond_spec_oval_id1),
+               (design_diamond_spec_id53, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id18,
+                diamond_spec_heart_id3),
+               (design_diamond_spec_id54, current_timestamp, 'CoupleRings',
+                current_timestamp, 'CoupleRings', 'ACTIVE', 0, design_id18,
+                diamond_spec_heart_id1);
     END;
 $$;

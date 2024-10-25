@@ -133,7 +133,7 @@ public class SecurityConfiguration {
     }
 
     private void handleDesignAPI(HttpSecurity localHttp) throws Exception {
-        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.DESIGN_SESSION_PATH))
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.DESIGN_COUPLE_PATH))
                 .permitAll());
     }
 

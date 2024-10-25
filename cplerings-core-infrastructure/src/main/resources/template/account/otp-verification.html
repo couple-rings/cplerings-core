@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 90%;
+            font-size: 1.1rem;
+            border: 1px solid #e5e5e5;
+            border-radius: 15px;
+            padding: 2%;
+            margin: 5% auto;
+        }
+
+        .greeting {
+            margin: 6% 0;
+            font-size: 1.2rem;
+        }
+
+        .info {
+            margin-bottom: 8%;
+        }
+
+        .otp {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 7%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #1d82ff;
+            background-color: aliceblue;
+            color: black;
+            font-weight: 600;
+            font-size: 1.5rem;
+            width: 20%;
+            min-width: 50px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+                padding: 5%;
+            }
+
+            .greeting {
+                font-size: 1rem;
+            }
+
+            .info {
+                font-size: 1rem;
+            }
+
+            .otp {
+                font-size: 1.3rem;
+                width: 25%;
+                padding: 8px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .otp {
+                font-size: 1.1rem;
+                width: 35%;
+                padding: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="greeting">Chào {username},</div>
+    <div class="info">
+        <p>Bạn phải kích hoạt tài khoản của mình bằng cách sử dụng mã OTP dưới đây.</p>
+        <p>Nhập mã OTP sau:</p>
+    </div>
+    <div class="otp">{otp}</div>
+</div>
+</body>
+</html>

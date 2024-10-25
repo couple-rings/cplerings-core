@@ -4,12 +4,16 @@ import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.Auditor;
 import com.cplerings.core.infrastructure.security.SecurityHelper;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
+import com.querydsl.core.types.dsl.BooleanExpression;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -57,6 +61,10 @@ public abstract class AbstractDataSource {
         return ((entity.getId() == null) || (entity.getId() <= 0));
     }
 
+    protected final BooleanExpressionBuilder createBooleanExpressionBuilder() {
+        return new BooleanExpressionBuilder();
+    }
+
     @Autowired
     public final void setCriteriaBuilderFactory(CriteriaBuilderFactory cbf) {
         this.cbf = cbf;
@@ -65,5 +73,39 @@ public abstract class AbstractDataSource {
     @Autowired
     public void setSecurityHelper(SecurityHelper securityHelper) {
         this.securityHelper = securityHelper;
+    }
+
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    protected static final class BooleanExpressionBuilder {
+
+        private BooleanExpression predicate;
+
+        public BooleanExpressionBuilder and(BooleanExpression predicate) {
+            if (predicate == null) {
+                return this;
+            }
+            if (this.predicate == null) {
+                this.predicate = predicate;
+            } else {
+                this.predicate = this.predicate.and(predicate);
+            }
+            return this;
+        }
+
+        public BooleanExpressionBuilder or(BooleanExpression predicate) {
+            if (predicate == null) {
+                return this;
+            }
+            if (this.predicate == null) {
+                this.predicate = predicate;
+            } else {
+                this.predicate = this.predicate.or(predicate);
+            }
+            return this;
+        }
+
+        public BooleanExpression build() {
+            return this.predicate;
+        }
     }
 }

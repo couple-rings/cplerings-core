@@ -1,7 +1,7 @@
 package com.cplerings.core.api.shared;
 
+import com.cplerings.core.common.builder.Buildable;
 import com.cplerings.core.common.fluentapi.AbstractSelf;
-import com.cplerings.core.common.pagination.Buildable;
 import com.cplerings.core.common.temporal.TemporalUtils;
 
 import lombok.AccessLevel;

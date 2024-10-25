@@ -9,10 +9,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum DesignErrorCode implements ErrorCode {
 
-    INVALID_CUSTOMER_ID("002", "design.session.error.invalidCustomerId", Type.VALIDATION),
-    NOT_FOUND_CUSTOMER("003", "design.session.error.customerNotFound", Type.BUSINESS);
+    INVALID_METAL_SPECIFICATION_ID("002", "design.error.invalidMetalSpecId", ErrorCode.Type.VALIDATION),
+    INVALID_COLLECTION_ID("003", "design.error.invalidCollectionId", ErrorCode.Type.VALIDATION),
+    INVALID_PAGE("004", "design.error.invalidPage", ErrorCode.Type.VALIDATION),
+    INVALID_PAGE_SIZE("005", "design.error.invalidPageSize", ErrorCode.Type.VALIDATION),
+    MIN_PRICE_LARGER_EQUAL_MAX_PRICE("006", "design.error.minPriceLargerOrEqualMaxPrice", ErrorCode.Type.VALIDATION),
+    ;
 
     private final String code;
     private final String descriptionLocale;
-    private final Type type;
+    private final ErrorCode.Type type;
 }

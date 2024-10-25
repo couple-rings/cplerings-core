@@ -14,6 +14,7 @@ import com.cplerings.core.application.shared.service.verification.error.AccountV
 import com.cplerings.core.common.either.Either;
 import com.cplerings.core.common.either.NoResult;
 import com.cplerings.core.common.locale.LocaleUtils;
+import com.cplerings.core.common.template.FileLoader;
 import com.cplerings.core.common.temporal.TemporalUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountStatus;
@@ -40,6 +41,8 @@ public class AccountVerificationServiceImpl implements AccountVerificationServic
     private static final String SUBJECT_FORMAT = LocaleUtils.translateLocale("accountVerificationService.text.subject");
 
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+
+    private static final String TEMPLATE_PATH = "template/account/otp-verification.html";
 
     private final EmailService emailService;
     private final AccountVerificationDataSource accountVerificationDataSource;
@@ -98,10 +101,13 @@ public class AccountVerificationServiceImpl implements AccountVerificationServic
                 .status(VerificationCodeStatus.PENDING)
                 .build();
         accountVerificationDataSource.save(accountVerification);
+        final String body = FileLoader.loadTemplate(TEMPLATE_PATH)
+                .replace("{username}", account.getUsername())
+                .replace("{otp}", verificationCode);
         emailService.sendMail(EmailInfo.builder()
                 .recipient(email)
                 .subject(String.format(SUBJECT_FORMAT, email))
-                .body(verificationCode)
+                .body(body)
                 .build());
         return VerificationCode.builder()
                 .code(verificationCode)

@@ -1,4 +1,4 @@
-package com.cplerings.core.common.pagination;
+package com.cplerings.core.common.builder;
 
 public interface Buildable<T> {
 
