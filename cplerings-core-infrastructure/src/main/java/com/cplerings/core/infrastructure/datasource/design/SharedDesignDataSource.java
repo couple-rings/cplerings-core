@@ -2,8 +2,10 @@ package com.cplerings.core.infrastructure.datasource.design;
 
 import com.cplerings.core.application.design.datasource.CheckRemainingDesignSessionDataSource;
 import com.cplerings.core.application.design.datasource.CreateDesignSessionDataSource;
+import com.cplerings.core.application.design.datasource.CreateDesignVersionDataSource;
 import com.cplerings.core.application.design.datasource.ProcessDesignSessionPaymentDataSource;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.design.session.DesignSessionStatus;
@@ -13,6 +15,7 @@ import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
 import com.cplerings.core.infrastructure.repository.DesignSessionRepository;
+import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
 import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -23,12 +26,14 @@ import java.util.Optional;
 @DataSource
 @RequiredArgsConstructor
 public class SharedDesignDataSource extends AbstractDataSource
-        implements CreateDesignSessionDataSource, ProcessDesignSessionPaymentDataSource, CheckRemainingDesignSessionDataSource {
+        implements CreateDesignSessionDataSource, ProcessDesignSessionPaymentDataSource, CheckRemainingDesignSessionDataSource,
+        CreateDesignVersionDataSource {
 
     private final DesignSessionRepository designSessionRepository;
     private final AccountRepository accountRepository;
     private final PaymentReceiverRepository paymentReceiverRepository;
     private final CustomRequestRepository customRequestRepository;
+    private final DesignVersionRepository designVersionRepository;
 
     @Override
     public Optional<Account> getAccountByEmail(String email) {
@@ -66,5 +71,11 @@ public class SharedDesignDataSource extends AbstractDataSource
     @Override
     public int getRemainingDesignSessionsCount(Long accountId) {
         return designSessionRepository.countByCustomerIdAndStatus(accountId, DesignSessionStatus.UNUSED);
+    }
+
+    @Override
+    public void save(DesignVersion designVersion) {
+        updateAuditor(designVersion);
+        designVersionRepository.save(designVersion);
     }
 }
