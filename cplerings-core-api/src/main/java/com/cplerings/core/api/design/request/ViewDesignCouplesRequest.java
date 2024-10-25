@@ -1,48 +1,25 @@
 package com.cplerings.core.api.design.request;
 
 import com.cplerings.core.api.shared.AbstractPaginatedRequest;
+import com.cplerings.core.common.pagination.FilterableByPrice;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
+import java.math.BigDecimal;
 
 @Getter
 @Setter
-public class ViewDesignCouplesRequest extends AbstractPaginatedRequest<ViewDesignCouplesRequest, ViewDesignCouplesRequest.ViewDesignCouplesRequestBuilder> {
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ViewDesignCouplesRequest extends AbstractPaginatedRequest implements FilterableByPrice {
 
     private Long collectionId;
-    private Integer metalSpecificationId;
-    private Double minPrice;
-    private Double maxPrice;
-
-    // Builder class extending AbstractBuilder
-    public static class ViewDesignCouplesRequestBuilder extends AbstractBuilder<ViewDesignCouplesRequest, ViewDesignCouplesRequestBuilder> {
-
-        public ViewDesignCouplesRequestBuilder() {
-            super(new ViewDesignCouplesRequest());
-        }
-
-        public ViewDesignCouplesRequestBuilder collectionId(Long collectionId) {
-            instance.collectionId = collectionId;
-            return self();
-        }
-
-        public ViewDesignCouplesRequestBuilder metalSpecificationId(Integer metalSpecificationId) {
-            instance.metalSpecificationId = metalSpecificationId;
-            return self();
-        }
-
-        public ViewDesignCouplesRequestBuilder minPrice(Double minPrice) {
-            instance.minPrice = minPrice;
-            return self();
-        }
-
-        public ViewDesignCouplesRequestBuilder maxPrice(Double maxPrice) {
-            instance.maxPrice = maxPrice;
-            return self();
-        }
-
-        @Override
-        protected ViewDesignCouplesRequestBuilder self() {
-            return this;
-        }
-    }
+    private Long metalSpecificationId;
+    private BigDecimal minPrice;
+    private BigDecimal maxPrice;
 }

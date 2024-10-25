@@ -12,8 +12,15 @@ public interface MoneyMapper {
 
     default Money toMoney(Long amount) {
         if (amount == null) {
-            return null;
+            return Money.create(BigDecimal.ZERO);
         }
         return Money.create(BigDecimal.valueOf(amount));
+    }
+
+    default BigDecimal toAmount(Money money) {
+        if (money == null) {
+            return BigDecimal.ZERO;
+        }
+        return money.getAmount();
     }
 }

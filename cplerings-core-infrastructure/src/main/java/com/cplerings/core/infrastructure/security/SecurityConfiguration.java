@@ -128,7 +128,8 @@ public class SecurityConfiguration {
     }
 
     private void handlePaymentAPI(HttpSecurity localHttp) throws Exception {
-        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VNPAY_PATH)));
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VNPAY_PATH))
+                .permitAll());
     }
 
     private void handleDesignCoupleAPI(HttpSecurity localHttp) throws Exception {

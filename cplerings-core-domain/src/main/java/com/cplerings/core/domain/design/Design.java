@@ -1,8 +1,8 @@
 package com.cplerings.core.domain.design;
 
 import com.cplerings.core.common.database.DatabaseConstant;
-import com.cplerings.core.domain.diamond.DiamondSpecification;
 import com.cplerings.core.domain.file.Document;
+import com.cplerings.core.domain.jewelry.JewelryCategory;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.valueobject.DesignSize;
 import com.cplerings.core.domain.shared.valueobject.Weight;
@@ -77,13 +77,20 @@ public class Design extends AbstractEntity {
     private Integer sideDiamondsCount;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "diamond_specification_id")
-    private DiamondSpecification diamondSpecification;
+    @JoinColumn(name = "design_collection_id")
+    private DesignCollection designCollection;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "design_couple_id")
+    private DesignCouple designCouple;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "jewelry_category_id")
+    private JewelryCategory jewelryCategory;
 
     @OneToMany(mappedBy = "design", fetch = FetchType.LAZY)
     private Set<DesignMetalSpecification> designMetalSpecifications;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "design_collection_id")
-    private DesignCollection designCollection;
+    @OneToMany(mappedBy = "design", fetch = FetchType.LAZY)
+    private Set<DesignDiamondSpecification> designDiamondSpecifications;
 }

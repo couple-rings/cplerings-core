@@ -1,7 +1,7 @@
 package com.cplerings.core.application.shared.pagination;
 
+import com.cplerings.core.common.builder.Buildable;
 import com.cplerings.core.common.fluentapi.AbstractSelf;
-import com.cplerings.core.common.pagination.Buildable;
 import com.cplerings.core.common.pagination.Pageable;
 import com.cplerings.core.common.pagination.PaginationConstant;
 
@@ -14,15 +14,15 @@ import java.util.Objects;
 
 @Getter
 @Setter(AccessLevel.PUBLIC)
-public abstract class AbstractPaginationOutput<T> implements Pageable {
+public abstract class AbstractPaginatedOutput<T> implements Pageable {
 
     protected int page;
     protected int pageSize = PaginationConstant.DEFAULT_PAGE_SIZE;
     protected int count;
     protected int totalPages;
-    protected Collection<T> data;
+    protected Collection<T> items;
 
-    public static abstract class AbstractBuilder<S extends AbstractBuilder<S, P, T>, P extends AbstractPaginationOutput<T>, T>
+    public static abstract class AbstractPaginatedOutputBuilder<S extends AbstractPaginatedOutputBuilder<S, P, T>, P extends AbstractPaginatedOutput<T>, T>
             extends AbstractSelf<S> implements Buildable<P> {
 
         @Getter(AccessLevel.PUBLIC)
@@ -37,7 +37,7 @@ public abstract class AbstractPaginationOutput<T> implements Pageable {
         private int totalPages;
 
         @Getter(AccessLevel.PUBLIC)
-        private Collection<T> data;
+        private Collection<T> items;
 
         public final S page(int page) {
             if (page < 0) {
@@ -63,25 +63,28 @@ public abstract class AbstractPaginationOutput<T> implements Pageable {
             return self();
         }
 
-        public final S data(Collection<T> data) {
-            Objects.requireNonNull(data, "Data cannot be null");
-            this.data = data;
+        public final S items(Collection<T> items) {
+            Objects.requireNonNull(items, "Data cannot be null");
+            this.items = items;
             return self();
         }
 
-        protected final P populatePaginationInformation(P output) {
-            Objects.requireNonNull(output, "Output is required");
+        @Override
+        public P build() {
+            final P output = getOutputInstance();
             calculatePagination();
             output.setPage(page);
             output.setPageSize(pageSize);
-            output.setCount(data.size());
+            output.setCount(items.size());
             output.setTotalPages(totalPages);
-            output.setData(data);
+            output.setItems(items);
             return output;
         }
 
+        protected abstract P getOutputInstance();
+
         private void calculatePagination() {
-            Objects.requireNonNull(data, "Data is required");
+            Objects.requireNonNull(items, "Data is required");
             this.totalPages = Math.ceilDiv(totalCount, pageSize);
         }
     }

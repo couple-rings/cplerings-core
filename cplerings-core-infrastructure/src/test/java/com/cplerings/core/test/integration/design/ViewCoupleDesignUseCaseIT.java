@@ -2,30 +2,27 @@ package com.cplerings.core.test.integration.design;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.test.web.reactive.server.WebTestClient;
-
-import com.cplerings.core.api.design.data.DesignCoupleInformation;
+import com.cplerings.core.api.design.data.DesignCoupleData;
 import com.cplerings.core.api.design.request.ViewDesignCouplesRequest;
 import com.cplerings.core.api.design.response.ViewCoupleDesignResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.test.shared.AbstractIT;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.test.web.reactive.server.WebTestClient;
+
+import java.math.BigDecimal;
+
 class ViewCoupleDesignUseCaseIT extends AbstractIT {
 
     @Test
     void givenAnyone_whenViewCoupleDesign() {
-        ViewDesignCouplesRequest request = new ViewDesignCouplesRequest.
-                ViewDesignCouplesRequestBuilder()
-                .minPrice(1D)
-                .maxPrice(200000000000D)
+        ViewDesignCouplesRequest request = ViewDesignCouplesRequest.builder()
+                .minPrice(BigDecimal.valueOf(1))
+                .maxPrice(BigDecimal.valueOf(15000000L))
                 .collectionId(1L)
-                .metalSpecificationId(11)
-                .page(1)
-                .pageSize(2)
+                .metalSpecificationId(1L)
                 .build();
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(APIConstant.DESIGN_COUPLE_PATH)
@@ -45,17 +42,12 @@ class ViewCoupleDesignUseCaseIT extends AbstractIT {
                 .isNotNull();
         assertThat(responseBody.getType())
                 .isEqualTo(AbstractResponse.Type.PAGINATED_DATA);
-        assertThat(responseBody.getTotalPages())
-                .isGreaterThan(0);
-        assertThat(responseBody.getCount())
-                .isGreaterThan(0);
 
-        List<DesignCoupleInformation> data = responseBody.getData();
-        assertThat(data.get(0).description())
-                .isNotNull();
-        assertThat(data.get(0).imageUrl())
-                .isNotNull();
-        assertThat(data.get(0).name())
-                .isNotNull();
+        final DesignCoupleData designCoupleData = responseBody.getData();
+        assertThat(designCoupleData).isNotNull();
+        assertThat(designCoupleData.getPage()).isEqualTo(0);
+        assertThat(designCoupleData.getPageSize()).isEqualTo(10);
+        assertThat(designCoupleData.getItems()).hasSize(1);
+        assertThat(designCoupleData.getTotalPages()).isEqualTo(1);
     }
 }

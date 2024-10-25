@@ -32,6 +32,8 @@ import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -145,7 +147,9 @@ public abstract class AbstractIT {
         }
 
         private <Q> void extractQueriesFromObject(Q queryObject) {
-            Arrays.stream(queryObject.getClass().getDeclaredFields())
+            final Collection<Class<?>> classAndItsParents = extractClassAndItsParents(queryObject);
+            classAndItsParents.stream()
+                    .flatMap(clazz -> Arrays.stream(clazz.getDeclaredFields()))
                     .filter(field -> !Modifier.isStatic(field.getModifiers()))
                     .forEach(field -> {
                         final boolean originalAccessible = field.canAccess(queryObject);
@@ -161,6 +165,16 @@ public abstract class AbstractIT {
                             field.setAccessible(originalAccessible);
                         }
                     });
+        }
+
+        private <Q> Collection<Class<?>> extractClassAndItsParents(Q obj) {
+            final Collection<Class<?>> classAndItsParents = new HashSet<>();
+            Class<?> clazz = obj.getClass();
+            while (clazz != null && !clazz.equals(Object.class)) {
+                classAndItsParents.add(clazz);
+                clazz = clazz.getSuperclass();
+            }
+            return classAndItsParents;
         }
 
         public WebTestClient.ResponseSpec send() {
