@@ -1,4 +1,4 @@
-package com.cplerings.core.domain.design;
+package com.cplerings.core.domain.design.session;
 
 public enum DesignSessionStatus {
 
