@@ -187,15 +187,30 @@ public abstract class AbstractIT {
             final WebTestClient.RequestHeadersSpec<?> requestHeadersSpec = switch (method) {
                 case GET -> webTestClient.get()
                         .uri(this::buildUri);
-                case POST -> webTestClient.post()
-                        .uri(this::buildUri)
-                        .bodyValue(body);
-                case PUT -> webTestClient.put()
-                        .uri(this::buildUri)
-                        .bodyValue(body);
-                case PATCH -> webTestClient.patch()
-                        .uri(this::buildUri)
-                        .bodyValue(body);
+                case POST -> {
+                    var tmp = webTestClient.post()
+                            .uri(this::buildUri);
+                    if (body != null) {
+                        tmp.bodyValue(body);
+                    }
+                    yield tmp;
+                }
+                case PUT -> {
+                    var tmp = webTestClient.put()
+                            .uri(this::buildUri);
+                    if (body != null) {
+                        tmp.bodyValue(body);
+                    }
+                    yield tmp;
+                }
+                case PATCH -> {
+                    var tmp = webTestClient.patch()
+                            .uri(this::buildUri);
+                    if (body != null) {
+                        tmp.bodyValue(body);
+                    }
+                    yield tmp;
+                }
                 case DELETE -> webTestClient.delete()
                         .uri(this::buildUri);
             };
