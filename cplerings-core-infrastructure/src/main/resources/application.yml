@@ -88,3 +88,16 @@ springdoc:
     path: ${cplerings.api.path}/docs
   swagger-ui:
     path: ${springdoc.api-docs.path}/ui
+
+cloud:
+  aws:
+    credentials:
+      access-key: AKIATCKAMM7C2AICYYUP
+      secret-key: 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
+    region:
+      static: us-east-1
+    stack:
+      auto: false
+application:
+  bucket:
+    name: upload-cplerings-test

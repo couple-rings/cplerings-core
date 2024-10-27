@@ -55,4 +55,9 @@ public final class APIConstant {
      */
     public static final String DESIGN_PATH = "/designs";
     public static final String DESIGN_COUPLE_PATH = DESIGN_PATH + "/couple";
+
+    /*
+       Uploading path
+    */
+    public static final String UPLOAD_PATH = "/upload";
 }
