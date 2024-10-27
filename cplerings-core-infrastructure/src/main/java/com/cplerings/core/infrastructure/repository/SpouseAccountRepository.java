@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface SpouseAccountRepository extends JpaRepository<SpouseAccount, Long> {
 
     Optional<SpouseAccount> findSpouseAccountBySpouseCitizenId(String spouseCitizenId);
+
+    boolean existsByCustomerId(Long customerId);
 }
