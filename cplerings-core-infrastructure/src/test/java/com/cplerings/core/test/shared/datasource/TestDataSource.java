@@ -3,6 +3,8 @@ package com.cplerings.core.test.shared.datasource;
 import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.payment.PaymentReceiver;
+import com.cplerings.core.domain.spouse.Spouse;
+import com.cplerings.core.domain.spouse.SpouseAccount;
 
 public interface TestDataSource {
 
@@ -11,4 +13,8 @@ public interface TestDataSource {
     PaymentReceiver save(PaymentReceiver paymentReceiver);
 
     DesignSession save(DesignSession designSession);
+
+    Spouse save(Spouse spouse);
+
+    SpouseAccount save(SpouseAccount spouseAccount);
 }

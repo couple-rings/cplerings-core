@@ -2,7 +2,7 @@ package com.cplerings.core.test.integration.account;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.cplerings.core.api.account.data.Profile;
+import com.cplerings.core.api.account.data.ProfileData;
 import com.cplerings.core.api.account.response.ProfileResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.common.api.APIConstant;
@@ -11,6 +11,7 @@ import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
+import com.cplerings.core.test.shared.spouse.SpouseTestHelper;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ class ViewCurrentProfileUseCaseIT extends AbstractIT {
 
     @Autowired
     private JWTTestHelper jwtTestHelper;
+
+    @Autowired
+    private SpouseTestHelper spouseTestHelper;
 
     @Test
     void givenAnyone_whenViewingTheirOwnProfile() {
@@ -51,13 +55,86 @@ class ViewCurrentProfileUseCaseIT extends AbstractIT {
                 .isEqualTo(AbstractResponse.Type.DATA);
         assertThat(responseBody.getData())
                 .isNotNull()
-                .isExactlyInstanceOf(Profile.class);
+                .isExactlyInstanceOf(ProfileData.class);
 
-        final Profile profile = responseBody.getData();
+        final ProfileData profile = responseBody.getData();
         assertThat(profile.id()).isEqualTo(account.getId());
         assertThat(profile.email()).isEqualTo(account.getEmail());
         assertThat(profile.username()).isEqualTo(account.getUsername());
         assertThat(profile.phone()).isEqualTo(account.getPhone());
         assertThat(profile.avatar()).isEqualTo(account.getAvatar());
+    }
+
+    @Test
+    void givenCustomer_whenViewingTheirOwnProfileWithSpouseRegistered() {
+        spouseTestHelper.createSpouseFromCustomerEmail(AccountTestConstant.CUSTOMER_EMAIL);
+
+        final String customerToken = jwtTestHelper.generateToken(AccountTestConstant.CUSTOMER_EMAIL);
+        final WebTestClient.ResponseSpec response = requestBuilder()
+                .path(APIConstant.CURRENT_PROFILE_PATH)
+                .authorizationHeader(customerToken)
+                .method(RequestBuilder.Method.GET)
+                .send();
+
+        thenResponseIsOk(response);
+        thenResponseHasSpouseStatusTrue(response);
+    }
+
+    private void thenResponseHasSpouseStatusTrue(WebTestClient.ResponseSpec response) {
+        final ProfileResponse responseBody = response.expectBody(ProfileResponse.class)
+                .returnResult()
+                .getResponseBody();
+        assertThat(responseBody)
+                .isNotNull();
+        assertThat(responseBody.getType())
+                .isEqualTo(AbstractResponse.Type.DATA);
+        assertThat(responseBody.getData())
+                .isNotNull()
+                .isExactlyInstanceOf(ProfileData.class);
+
+        final ProfileData profile = responseBody.getData();
+        assertThat(profile.hasSpouse()).isTrue();
+    }
+
+    @Test
+    void givenCustomer_whenViewingTheirOwnProfileWithSpouseNotRegistered() {
+        final String customerToken = jwtTestHelper.generateToken(AccountTestConstant.CUSTOMER_EMAIL);
+        final WebTestClient.ResponseSpec response = requestBuilder()
+                .path(APIConstant.CURRENT_PROFILE_PATH)
+                .authorizationHeader(customerToken)
+                .method(RequestBuilder.Method.GET)
+                .send();
+
+        thenResponseIsOk(response);
+        thenResponseHasSpouseStatusFalse(response);
+    }
+
+    private void thenResponseHasSpouseStatusFalse(WebTestClient.ResponseSpec response) {
+        final ProfileResponse responseBody = response.expectBody(ProfileResponse.class)
+                .returnResult()
+                .getResponseBody();
+        assertThat(responseBody)
+                .isNotNull();
+        assertThat(responseBody.getType())
+                .isEqualTo(AbstractResponse.Type.DATA);
+        assertThat(responseBody.getData())
+                .isNotNull()
+                .isExactlyInstanceOf(ProfileData.class);
+
+        final ProfileData profile = responseBody.getData();
+        assertThat(profile.hasSpouse()).isFalse();
+    }
+
+    @Test
+    void givenNotCustomer_whenViewingTheirOwnProfileWithSpouseNotRegistered() {
+        final String customerToken = jwtTestHelper.generateToken(AccountTestConstant.JEWELER_EMAIL);
+        final WebTestClient.ResponseSpec response = requestBuilder()
+                .path(APIConstant.CURRENT_PROFILE_PATH)
+                .authorizationHeader(customerToken)
+                .method(RequestBuilder.Method.GET)
+                .send();
+
+        thenResponseIsOk(response);
+        thenResponseHasSpouseStatusFalse(response);
     }
 }

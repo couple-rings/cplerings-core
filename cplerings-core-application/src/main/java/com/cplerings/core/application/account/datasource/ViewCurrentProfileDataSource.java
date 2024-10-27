@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface ViewCurrentProfileDataSource {
 
     Optional<Account> findAccountByEmail(String email);
+
+    boolean accountHasSpouse(Long accountId);
 }

@@ -19,6 +19,7 @@ import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.AccountPasswordResetRepository;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.infrastructure.repository.AccountVerificationRepository;
+import com.cplerings.core.infrastructure.repository.SpouseAccountRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -37,6 +38,7 @@ public class SharedAccountDataSource extends AbstractDataSource
     private final AccountRepository accountRepository;
     private final AccountVerificationRepository accountVerificationRepository;
     private final AccountPasswordResetRepository accountPasswordResetRepository;
+    private final SpouseAccountRepository spouseAccountRepository;
 
     @Override
     public boolean emailIsNew(String email) {
@@ -114,6 +116,11 @@ public class SharedAccountDataSource extends AbstractDataSource
                 .from(Q_ACCOUNT)
                 .where(Q_ACCOUNT.id.eq(id))
                 .fetchOne());
+    }
+
+    @Override
+    public boolean accountHasSpouse(Long accountId) {
+        return spouseAccountRepository.existsByCustomerId(accountId);
     }
 
     @Override

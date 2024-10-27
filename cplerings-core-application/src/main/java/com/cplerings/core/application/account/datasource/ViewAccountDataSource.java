@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface ViewAccountDataSource {
 
     Optional<Account> getAccountById(Long id);
+
+    boolean accountHasSpouse(Long accountId);
 }
