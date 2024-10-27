@@ -32,6 +32,9 @@ public final class VNPayUtils {
     }
 
     public static Instant toInstant(String vnPayDate) {
+        if (StringUtils.isBlank(vnPayDate)) {
+            return null;
+        }
         return LocalDateTime.parse(vnPayDate, DATE_TIME_FORMATTER)
                 .atZone(ZoneOffset.ofHours(7))
                 .toInstant();

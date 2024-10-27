@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -43,7 +44,7 @@ import java.util.TreeMap;
         classes = {
                 CplringsCoreApplication.class
         },
-        webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @Import(ITConfiguration.class)
 @ActiveProfiles(ProfileConstant.TEST)
@@ -54,7 +55,7 @@ public abstract class AbstractIT {
     private static final String AUTHENTICATION_HEADER = "Authorization";
     private static final String BEARER_FORMAT = "Bearer %s";
 
-    @Value("${server.port}")
+    @LocalServerPort
     private int port;
 
     @Value("${cplerings.api.path}")

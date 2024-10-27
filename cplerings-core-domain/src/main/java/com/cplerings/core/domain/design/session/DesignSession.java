@@ -1,4 +1,4 @@
-package com.cplerings.core.domain.design;
+package com.cplerings.core.domain.design.session;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.account.Account;

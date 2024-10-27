@@ -55,4 +55,6 @@ public final class APIConstant {
      */
     public static final String DESIGN_PATH = "/designs";
     public static final String DESIGN_COUPLE_PATH = DESIGN_PATH + "/couple";
+    public static final String DESIGN_SESSION_PATH = DESIGN_PATH + "/session";
+    public static final String CREATE_DESIGN_SESSION_PATH = DESIGN_SESSION_PATH + "/create";
 }

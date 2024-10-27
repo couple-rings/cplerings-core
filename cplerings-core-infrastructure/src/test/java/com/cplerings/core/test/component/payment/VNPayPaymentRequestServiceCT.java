@@ -19,6 +19,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 @Slf4j
 class VNPayPaymentRequestServiceCT extends AbstractCT {
@@ -36,6 +37,7 @@ class VNPayPaymentRequestServiceCT extends AbstractCT {
         final String paymentLink = URLDecoder.decode(paymentRequest.getPaymentLink(), StandardCharsets.US_ASCII);
         final WebTestClient.ResponseSpec response = WebTestClient.bindToServer()
                 .baseUrl(paymentLink)
+                .responseTimeout(Duration.ofSeconds(30))
                 .build()
                 .get()
                 .exchange();

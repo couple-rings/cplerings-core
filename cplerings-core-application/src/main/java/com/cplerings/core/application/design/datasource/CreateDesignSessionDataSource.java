@@ -1,13 +1,15 @@
 package com.cplerings.core.application.design.datasource;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.cplerings.core.domain.account.Account;
-import com.cplerings.core.domain.design.DesignSession;
+import com.cplerings.core.domain.payment.PaymentReceiver;
+
+import java.util.Optional;
 
 public interface CreateDesignSessionDataSource {
 
-    void createDesignSession(List<DesignSession> designSession);
-    Optional<Account> getAccountById(Long id);
+    Optional<Account> getAccountByEmail(String email);
+
+    boolean thereIsNoUnusedDesignSession(Long accountId);
+
+    PaymentReceiver save(PaymentReceiver paymentReceiver);
 }

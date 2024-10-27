@@ -21,4 +21,6 @@ public final class DatabaseConstant {
     public static final int DEFAULT_CARD_TYPE_LENGTH = 20;
 
     public static final int DEFAULT_PAYMENT_SECURE_HASH_LENGTH = 256;
+
+    public static final int DEFAULT_CONFIGURATION_KEY_LENGTH = 10;
 }

@@ -2,7 +2,7 @@ package com.cplerings.core.domain.account;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.blog.Blog;
-import com.cplerings.core.domain.design.DesignSession;
+import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.Auditor;
 import com.cplerings.core.domain.spouse.SpouseAccount;
