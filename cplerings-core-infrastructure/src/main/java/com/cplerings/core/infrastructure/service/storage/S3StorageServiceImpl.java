@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +46,7 @@ public class S3StorageServiceImpl implements S3StorageService {
     private String bucketName;
 
     private final AmazonS3 s3Client;
+    private S3StorageService s3StorageService;
 
     @Override
     public FileReturn uploadFile(FileInput file) {
@@ -70,7 +72,7 @@ public class S3StorageServiceImpl implements S3StorageService {
 
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, imageKey)
                 .withMethod(HttpMethod.GET)
-                .withExpiration(new Date(System.currentTimeMillis() + 7L * 24 * 3600 * 1000)); // available 1 year
+                .withExpiration(new Date(System.currentTimeMillis() + 7L * 24 * 3600 * 1000)); // available 7 days
 
         String fileUrl = s3Client.generatePresignedUrl(request).toString();
         return new FileReturn(fileUrl, false);
@@ -111,5 +113,10 @@ public class S3StorageServiceImpl implements S3StorageService {
         }
 
         return false;
+    }
+
+    @Autowired
+    public void setS3Service(S3StorageService s3StorageService) {
+        this.s3StorageService = s3StorageService;
     }
 }
