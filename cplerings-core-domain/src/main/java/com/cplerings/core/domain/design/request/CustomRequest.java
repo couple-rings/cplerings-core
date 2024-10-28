@@ -1,9 +1,12 @@
 package com.cplerings.core.domain.design.request;
 
+import java.util.Set;
+
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.shared.AbstractEntity;
 
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,7 +54,6 @@ public class CustomRequest extends AbstractEntity {
     @JoinColumn(name = "customer_id")
     private Account customer;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "design_custom_request_id")
-    private DesignCustomRequest designCustomRequest;
+    @OneToMany(mappedBy = "customRequest", fetch = FetchType.LAZY)
+    private Set<DesignCustomRequest> designCustomRequests;
 }

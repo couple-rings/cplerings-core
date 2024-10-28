@@ -35,7 +35,7 @@ public class ViewSingleCustomRequestController extends AbstractController<ViewCu
 
     @GetMapping(APIConstant.CUSTOM_SINGLE_REQUEST_PATH)
     @CustomRequestTag
-    @Operation(summary = "View account detail")
+    @Operation(summary = "View custom request detail")
     @Parameter(
             name = "customRequestId",
             description = "custom request ID"

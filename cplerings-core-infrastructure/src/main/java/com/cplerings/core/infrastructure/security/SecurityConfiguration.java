@@ -58,6 +58,7 @@ public class SecurityConfiguration {
         handleSpouseAPI(localHttp);
         handlePaymentAPI(localHttp);
         handleDesignAPI(localHttp);
+        handleCustomRequestAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
                 .denyAll());
         return localHttp.build();
@@ -139,6 +140,11 @@ public class SecurityConfiguration {
                         .hasAuthority(RoleConstant.ROLE_CUSTOMER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.DESIGN_SESSION_PATH))
                         .hasAuthority(RoleConstant.ROLE_CUSTOMER));
+    }
+
+    private void handleCustomRequestAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.CUSTOM_SINGLE_REQUEST_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_STAFF));
     }
 
     private String resolvePath(String path) {

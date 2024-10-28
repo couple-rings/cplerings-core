@@ -95,7 +95,6 @@ public class Design extends AbstractEntity {
     @OneToMany(mappedBy = "design", fetch = FetchType.LAZY)
     private Set<DesignDiamondSpecification> designDiamondSpecifications;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "design_custom_request_id")
-    private DesignCustomRequest designCustomRequest;
+    @OneToMany(mappedBy = "design", fetch = FetchType.LAZY)
+    private Set<DesignCustomRequest> designCustomRequests;
 }

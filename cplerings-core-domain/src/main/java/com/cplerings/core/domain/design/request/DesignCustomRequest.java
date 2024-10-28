@@ -12,6 +12,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -35,12 +37,14 @@ public class DesignCustomRequest extends AbstractEntity {
     @Id
     @GeneratedValue(generator = DESIGN_CUSTOM_REQUEST_SEQUENCE, strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = DESIGN_CUSTOM_REQUEST_SEQUENCE, allocationSize = DatabaseConstant.SEQ_ALLOCATION_SIZE)
-    @Column(name = "custom_request_id")
+    @Column(name = "design_custom_request_id")
     private Long id;
 
-    @OneToMany(mappedBy = "designCustomRequest", fetch = FetchType.LAZY)
-    private Set<CustomRequest> customRequests;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "design_id")
+    private Design design;
 
-    @OneToMany(mappedBy = "designCustomRequest", fetch = FetchType.LAZY)
-    private Set<Design> designs;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "custom_request_id")
+    private CustomRequest customRequest;
 }
