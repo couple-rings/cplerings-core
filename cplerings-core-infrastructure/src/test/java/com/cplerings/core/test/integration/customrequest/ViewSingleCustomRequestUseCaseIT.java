@@ -18,15 +18,21 @@ import com.cplerings.core.domain.design.request.CustomRequestStatus;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
 import com.cplerings.core.test.shared.AbstractIT;
+import com.cplerings.core.test.shared.helper.JWTTestHelper;
 
 class ViewSingleCustomRequestUseCaseIT extends AbstractIT {
 
     @Autowired
     private CustomRequestRepository customRequestRepository;
 
+    @Autowired
+    private JWTTestHelper jwtTestHelper;
+
     @Test
     void givenAnyone_whenViewCoupleDesign() {
         ViewCustomRequestRequest request = new ViewCustomRequestRequest(1L);
+
+        String token = jwtTestHelper.generateToken("staff@cplerings.com");
 
         com.cplerings.core.domain.design.request.CustomRequest customRequest =
                 com.cplerings.core.domain.design.request.CustomRequest.builder()
@@ -44,6 +50,7 @@ class ViewSingleCustomRequestUseCaseIT extends AbstractIT {
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(APIConstant.CUSTOM_SINGLE_REQUEST_PATH.replace("{customRequestId}", Long.toString(customRequest.getId())))
                 .method(RequestBuilder.Method.GET)
+                .authorizationHeader(token)
                 .query(request)
                 .send();
         thenResponseIsOk(response);
