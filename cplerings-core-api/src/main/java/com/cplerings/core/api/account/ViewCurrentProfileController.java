@@ -1,6 +1,6 @@
 package com.cplerings.core.api.account;
 
-import com.cplerings.core.api.account.data.Profile;
+import com.cplerings.core.api.account.data.ProfileData;
 import com.cplerings.core.api.account.mapper.APIViewCurrentProfileMapper;
 import com.cplerings.core.api.account.response.ProfileResponse;
 import com.cplerings.core.api.shared.AbstractDataController;
@@ -27,7 +27,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RestController
 @RequiredArgsConstructor
-public class ViewCurrentProfileController extends AbstractDataController<NoInput, ProfileOutput, Profile, NoRequest, ProfileResponse> {
+public class ViewCurrentProfileController extends AbstractDataController<NoInput, ProfileOutput, ProfileData, NoRequest, ProfileResponse> {
 
     private final ViewCurrentProfileUseCase viewCurrentProfileUseCase;
     private final APIViewCurrentProfileMapper apiViewCurrentProfileMapper;
@@ -54,7 +54,7 @@ public class ViewCurrentProfileController extends AbstractDataController<NoInput
     }
 
     @Override
-    protected APIMapper<NoInput, ProfileOutput, Profile, NoRequest, ProfileResponse> getMapper() {
+    protected APIMapper<NoInput, ProfileOutput, ProfileData, NoRequest, ProfileResponse> getMapper() {
         return apiViewCurrentProfileMapper;
     }
 }

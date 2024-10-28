@@ -1,6 +1,6 @@
 package com.cplerings.core.api.account;
 
-import com.cplerings.core.api.account.data.Account;
+import com.cplerings.core.api.account.data.AccountData;
 import com.cplerings.core.api.account.mapper.APIViewAccountMapper;
 import com.cplerings.core.api.account.request.ViewAccountRequest;
 import com.cplerings.core.api.account.response.AccountResponse;
@@ -30,7 +30,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RestController
 @RequiredArgsConstructor
-public class ViewAccountController extends AbstractDataController<ViewAccountInput, AccountOutput, Account, ViewAccountRequest, AccountResponse> {
+public class ViewAccountController extends AbstractDataController<ViewAccountInput, AccountOutput, AccountData, ViewAccountRequest, AccountResponse> {
 
     private final ViewAccountUseCase viewAccountUseCase;
     private final APIViewAccountMapper apiViewAccountMapper;
@@ -64,7 +64,7 @@ public class ViewAccountController extends AbstractDataController<ViewAccountInp
     }
 
     @Override
-    protected APIMapper<ViewAccountInput, AccountOutput, Account, ViewAccountRequest, AccountResponse> getMapper() {
+    protected APIMapper<ViewAccountInput, AccountOutput, AccountData, ViewAccountRequest, AccountResponse> getMapper() {
         return apiViewAccountMapper;
     }
 }

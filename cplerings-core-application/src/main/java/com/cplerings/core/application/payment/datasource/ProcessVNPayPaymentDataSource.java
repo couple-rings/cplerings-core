@@ -1,6 +1,7 @@
 package com.cplerings.core.application.payment.datasource;
 
 import com.cplerings.core.domain.payment.Payment;
+import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.payment.transaction.VNPayTransaction;
 
 import java.util.Optional;
@@ -12,4 +13,6 @@ public interface ProcessVNPayPaymentDataSource {
     Payment save(Payment payment);
 
     void save(VNPayTransaction vnPayTransaction);
+
+    Optional<PaymentReceiver> findPaymentReceiverByPaymentId(Long paymentId);
 }

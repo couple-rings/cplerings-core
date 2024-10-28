@@ -13,6 +13,7 @@ import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.Role;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,6 +37,12 @@ public class ViewAccountUseCaseImpl extends AbstractUseCase<ViewAccountInput, Ac
         final Account account = viewAccountDataSource.getAccountById(input.id())
                 .orElse(null);
         validator.validateAndStopExecution(account != null, ACCOUNT_WITH_ID_NOT_FOUND);
-        return aViewAccountMapper.toOutput(account);
+        final AccountOutput accountOutput = aViewAccountMapper.toOutput(account);
+        if (account.getRole() == Role.CUSTOMER) {
+            accountOutput.setHasSpouse(viewAccountDataSource.accountHasSpouse(account.getId()));
+        } else {
+            accountOutput.setHasSpouse(false);
+        }
+        return accountOutput;
     }
 }

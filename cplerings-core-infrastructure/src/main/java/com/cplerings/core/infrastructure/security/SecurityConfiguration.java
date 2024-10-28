@@ -57,7 +57,7 @@ public class SecurityConfiguration {
         handleVerificationAPI(localHttp);
         handleSpouseAPI(localHttp);
         handlePaymentAPI(localHttp);
-        handleDesignCoupleAPI(localHttp);
+        handleDesignAPI(localHttp);
         handleFileUploadAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
                 .denyAll());
@@ -133,9 +133,13 @@ public class SecurityConfiguration {
                 .permitAll());
     }
 
-    private void handleDesignCoupleAPI(HttpSecurity localHttp) throws Exception {
-        localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.DESIGN_COUPLE_PATH))
-                .permitAll());
+    private void handleDesignAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.DESIGN_COUPLE_PATH))
+                        .permitAll())
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.CREATE_DESIGN_SESSION_PATH))
+                        .hasAuthority(RoleConstant.ROLE_CUSTOMER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.DESIGN_SESSION_PATH))
+                        .hasAuthority(RoleConstant.ROLE_CUSTOMER));
     }
 
     private void handleFileUploadAPI(HttpSecurity localHttp) throws Exception {

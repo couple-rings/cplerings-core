@@ -1,22 +1,29 @@
 package com.cplerings.core.application.payment.implementation;
 
 import static com.cplerings.core.application.payment.error.PaymentErrorCode.INVALID_PAYMENT_RESULT;
+import static com.cplerings.core.application.payment.error.PaymentErrorCode.PAYMENT_RECEIVER_HANDLER_FAILED;
 import static com.cplerings.core.application.payment.error.PaymentErrorCode.PAYMENT_WITH_ID_NOT_FOUND;
 import static com.cplerings.core.application.payment.error.PaymentErrorCode.RESULT_CODE_REQUIRED;
 import static com.cplerings.core.application.payment.error.PaymentErrorCode.SECURE_HASH_REQUIRED;
 import static com.cplerings.core.application.payment.error.PaymentErrorCode.TERMINAL_CODE_REQUIRED;
 
+import com.cplerings.core.application.design.ProcessDesignSessionPaymentUseCase;
 import com.cplerings.core.application.payment.ProcessVNPayPaymentUseCase;
 import com.cplerings.core.application.payment.datasource.ProcessVNPayPaymentDataSource;
+import com.cplerings.core.application.payment.input.PaymentReceiverInput;
 import com.cplerings.core.application.payment.input.VNPayPaymentInput;
 import com.cplerings.core.application.payment.output.VNPayPaymentOutput;
+import com.cplerings.core.application.shared.errorcode.ErrorCodes;
 import com.cplerings.core.application.shared.mapper.APaymentStatusMapper;
+import com.cplerings.core.application.shared.output.NoOutput;
 import com.cplerings.core.application.shared.service.payment.PaymentVerificationService;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
+import com.cplerings.core.common.either.Either;
 import com.cplerings.core.common.payment.VNPayConstant;
 import com.cplerings.core.domain.payment.Payment;
+import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.payment.PaymentStatus;
 import com.cplerings.core.domain.payment.transaction.VNPayTransaction;
 
@@ -35,6 +42,7 @@ public class ProcessVNPayPaymentUseCaseImpl extends AbstractUseCase<VNPayPayment
     private final PaymentVerificationService<VNPayPaymentInput> paymentVerificationService;
     private final ProcessVNPayPaymentDataSource processVNPayPaymentDataSource;
     private final APaymentStatusMapper aPaymentStatusMapper;
+    private final ProcessDesignSessionPaymentUseCase processDesignSessionPaymentUseCase;
 
     @Override
     protected void validateInput(UseCaseValidator validator, VNPayPaymentInput input) {
@@ -76,9 +84,28 @@ public class ProcessVNPayPaymentUseCaseImpl extends AbstractUseCase<VNPayPayment
                     .secureHash(input.getSecureHash())
                     .build();
             processVNPayPaymentDataSource.save(vnPayTransaction);
+            handlePaymentReceiver(validator, payment);
         }
         return VNPayPaymentOutput.builder()
                 .paymentStatus(aPaymentStatusMapper.toStatus(paymentStatus))
                 .build();
+    }
+
+    private void handlePaymentReceiver(UseCaseValidator validator, Payment payment) {
+        final PaymentReceiver paymentReceiver = processVNPayPaymentDataSource.findPaymentReceiverByPaymentId(payment.getId())
+                .orElse(null);
+        if (paymentReceiver == null) {
+            return;
+        }
+        final PaymentReceiverInput input = PaymentReceiverInput.builder()
+                .paymentReceiver(paymentReceiver)
+                .build();
+        switch (paymentReceiver.getReceiverType()) {
+            case DESIGN_FEE -> {
+                final Either<NoOutput, ErrorCodes> result = processDesignSessionPaymentUseCase.execute(input);
+                validator.validateAndStopExecution(result.isLeft(), PAYMENT_RECEIVER_HANDLER_FAILED);
+            }
+            default -> validator.validateAndStopExecution(false, PAYMENT_WITH_ID_NOT_FOUND);
+        }
     }
 }

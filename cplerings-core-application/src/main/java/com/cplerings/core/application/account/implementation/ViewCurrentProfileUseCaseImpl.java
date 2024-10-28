@@ -37,6 +37,8 @@ public class ViewCurrentProfileUseCaseImpl extends AbstractUseCase<NoInput, Prof
         validator.validateAndStopExecution(accountOptional.isPresent(), ACCOUNT_WITH_EMAIL_NOT_FOUND);
         final Account account = accountOptional.get();
         validator.validateAndStopExecution(account.getStatus() == AccountStatus.ACTIVE, ACCOUNT_NOT_IN_ACTIVE_STATE);
-        return aViewCurrentProfileMapper.toOutput(account);
+        final ProfileOutput profileOutput = aViewCurrentProfileMapper.toOutput(account);
+        profileOutput.setHasSpouse(viewCurrentProfileDataSource.accountHasSpouse(account.getId()));
+        return profileOutput;
     }
 }
