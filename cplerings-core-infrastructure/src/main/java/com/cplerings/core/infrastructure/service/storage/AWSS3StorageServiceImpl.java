@@ -7,9 +7,9 @@ import static com.cplerings.core.application.file.error.FileErrorCode.INVALID_FI
 import static com.cplerings.core.application.file.error.FileErrorCode.INVALID_MAGIC_BYTES;
 
 import com.cplerings.core.application.shared.errorcode.ErrorCode;
-import com.cplerings.core.application.shared.service.storage.FileInfo;
-import com.cplerings.core.application.shared.service.storage.FileStorageService;
-import com.cplerings.core.application.shared.service.storage.FileUploadInfo;
+import com.cplerings.core.application.shared.service.file.FileInfo;
+import com.cplerings.core.application.shared.service.file.FileStorageService;
+import com.cplerings.core.application.shared.service.file.FileUploadInfo;
 import com.cplerings.core.common.either.Either;
 import com.cplerings.core.common.file.FileType;
 import com.cplerings.core.common.temporal.TemporalUtils;
@@ -27,30 +27,16 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 import java.util.Base64;
-import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class FileStorageServiceImpl implements FileStorageService {
-
-    private static final String S3_FILE_PATH_FORMAT = "https://cplerings-bucket.s3.ap-southeast-1.amazonaws.com/static/static_design-metal-spec-admire-3_1729022484708.jpg";
-    private static final String JPEG_MAGIC_BYTES_1 = "/9j/";
-    private static final String JPEG_MAGIC_BYTES_2 = "/9k/";
-    private static final String PNG_MAGIC_BYTES = "iVBORw0KGgoAAAANSUhEUgAA";
-    private static final String PDF_MAGIC_BYTES = "JVBER";
-
-    private static final Map<String, String> MIMES = Map.of(
-            "data:image/jpeg;base64", ".jpeg",
-            "data:image/jpg;base64", ".jpg",
-            "data:image/png;base64", ".png",
-            "data:application/pdf;base64", ".pdf"
-    );
+public class AWSS3StorageServiceImpl implements FileStorageService {
 
     private final S3Client s3Client;
 
-    @Value("${application.bucket.name}")
+    @Value("${cplerings.aws.s3.bucket-name}")
     private String bucketName;
 
     @Value("${cplerings.aws.s3.max-file-upload-size}")
@@ -69,7 +55,7 @@ public class FileStorageServiceImpl implements FileStorageService {
             return Either.right(EMPTY_FILE);
         }
 
-        final String base64ContentType = base64FileParts[0].substring(5, base64FileParts[0].indexOf(";"));
+        final String base64ContentType = base64FileParts[0].substring(0, base64FileParts[0].indexOf(";"));
         final FileType fileType = FileType.getFileTypeByBase64Extension(base64ContentType);
         if (fileType == null) {
             return Either.right(INVALID_FILE_FORMAT);
@@ -110,13 +96,13 @@ public class FileStorageServiceImpl implements FileStorageService {
         }
     }
 
-    private boolean fileExceedAllowedSize(byte[] fileBytes) {
-        return (fileBytes.length > (maxFileUploadSizeInMB * 1024 * 1024));
-    }
-
     private boolean fileHasIncorrectMagicBytes(String base64File, FileType fileType) {
         final String magicBytes = fileType.getMagicBytesInBase64();
-        return StringUtils.startsWith(base64File, magicBytes);
+        return !StringUtils.startsWith(base64File, magicBytes);
+    }
+
+    private boolean fileExceedAllowedSize(byte[] fileBytes) {
+        return (fileBytes.length > (maxFileUploadSizeInMB * 1024 * 1024));
     }
 
     private String prepareFilePath(FileUploadInfo fileUploadInfo, FileType fileType) {
@@ -124,7 +110,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         switch (fileUploadInfo.getType()) {
             case STATIC -> builder.append("static/static_");
             case DYNAMIC -> builder.append("dynamic/dynamic_");
-            default -> throw new IllegalStateException("Unexpected value: " + fileUploadInfo.getType());
+            default -> throw new IllegalStateException("Unexpected value: " + fileType.name());
         }
         builder.append(UUID.randomUUID());
         builder.append('_');

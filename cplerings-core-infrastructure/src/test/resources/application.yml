@@ -60,8 +60,10 @@ cplerings:
     secret-key: 5YPVF53LDH7BDOPKWA1AIGCN0RIDW697
     url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
   aws:
-    region: ${CPLERINGS_AWS_REGION}
+    region: ap-southeast-1
     s3:
-      bucket-name: ${CPLERINGS_AWS_S3_BUCKET_NAME}
-      max-file-upload-size: ${CPLERINGS_MAX_FILE_UPLOAD_SIZE}
-      file-path-format: https://${cplerings.aws.s3.bucket-name}.s3.${cplerings.aws.region}.amazonaws.com/%s
+      bucket-name: cplerings-bucket-test
+      max-file-upload-size: 25
+      file-path-format: http://localhost:4566/${cplerings.aws.s3.bucket-name}.s3.${cplerings.aws.region}.amazonaws.com/%s
+    access-key: test
+    secret-key: test

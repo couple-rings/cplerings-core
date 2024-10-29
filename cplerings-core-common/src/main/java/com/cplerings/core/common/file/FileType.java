@@ -12,7 +12,8 @@ public enum FileType {
 
     JPG("/9j/", "image/jpeg", "jpeg"),
     PNG("iVBORw0KGgo=", "image/png", "png"),
-    PDF("JVBER", "application/pdf", "pdf"),;
+    PDF("JVBER", "application/pdf", "pdf"),
+    ;
 
     private final String magicBytesInBase64;
     private final String contentType;
@@ -23,9 +24,9 @@ public enum FileType {
             return null;
         }
         return switch (StringUtils.trim(base64Extension)) {
-            case "data:image/jpeg;base64", "data:image/jpg;base64" -> JPG;
-            case "data:image/png;base64" -> PNG;
-            case "data:application/pdf;base64" -> PDF;
+            case "data:image/jpeg", "data:image/jpg" -> JPG;
+            case "data:image/png" -> PNG;
+            case "data:application/pdf" -> PDF;
             default -> null;
         };
     }

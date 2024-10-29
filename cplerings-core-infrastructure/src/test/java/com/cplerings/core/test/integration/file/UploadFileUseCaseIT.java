@@ -1,74 +1,76 @@
 package com.cplerings.core.test.integration.file;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
-import com.cplerings.core.application.shared.errorcode.ErrorCode;
-import com.cplerings.core.application.shared.service.storage.FileInfo;
-import com.cplerings.core.application.shared.service.storage.FileUploadInfo;
-import com.cplerings.core.common.either.Either;
-import com.cplerings.core.infrastructure.service.storage.FileStorageServiceImpl;
+import com.cplerings.core.api.file.data.FileData;
+import com.cplerings.core.api.file.request.FileUploadRequest;
+import com.cplerings.core.api.file.response.FileUploadResponse;
+import com.cplerings.core.api.shared.AbstractResponse;
+import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.test.shared.AbstractIT;
+import com.cplerings.core.test.shared.account.AccountTestConstant;
+import com.cplerings.core.test.shared.helper.JWTTestHelper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
+import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
-import java.io.ByteArrayInputStream;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
+import java.util.UUID;
 
-public class UploadFileUseCaseIT extends AbstractIT {
+class UploadFileUseCaseIT extends AbstractIT {
 
-    @Mock
+    private static final String FILE_FOLDER = "data/integration/file";
+    private static final String VALID_IMAGE_FILE = "/valid-jpeg.json";
+
+    @MockBean
     private S3Client s3Client;
 
-    @InjectMocks
-    private FileStorageServiceImpl s3StorageService;
-
-    private String sampleBase64Image;
+    @Autowired
+    private JWTTestHelper jwtTestHelper;
 
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this); // Initialize mocks
-
-        byte[] sampleImageBytes = "sample image content".getBytes(StandardCharsets.UTF_8);
-        sampleBase64Image = "data:image/jpeg;base64,/9j/" + Base64.getEncoder().encodeToString(sampleImageBytes);
-//        if (s3StorageService instanceof S3StorageServiceImpl s3StorageServiceImpl) {
-//            s3StorageServiceImpl.setS3Service(s3StorageService);
-//        }
+    void setUpS3Client() {
+        when(s3Client.putObject(any(PutObjectRequest.class), any(RequestBody.class)))
+                .thenReturn(PutObjectResponse.builder()
+                        .eTag(UUID.randomUUID().toString())
+                        .build());
     }
 
     @Test
-    void givenBase64Image_whenUploadFileUseCaseIsExecuted() throws Exception {
-        // Arrange
-        FileUploadInfo fileUploadInfo = new FileUploadInfo(sampleBase64Image);
-        String expectedFileKey = "mocked-image-key.jpeg";
+    void givenAuthenticated_whenUploadFile() {
+        final FileUploadRequest request = getTestDataLoader(FILE_FOLDER).loadAsObject(VALID_IMAGE_FILE, FileUploadRequest.class);
 
-        String expectedFileUrl = "http://mock-s3-url/bucket-name/mocked-image.jpeg";
-        URL mockUrl = new URL(expectedFileUrl);
-        when(s3Client.putObject(Mockito.anyString(), Mockito.anyString(), Mockito.any(ByteArrayInputStream.class), Mockito.any(ObjectMetadata.class)))
-                .thenReturn(null);
+        final String customerToken = jwtTestHelper.generateToken(AccountTestConstant.CUSTOMER_EMAIL);
+        final WebTestClient.ResponseSpec response = requestBuilder()
+                .path(APIConstant.FILES_PATH)
+                .authorizationHeader(customerToken)
+                .method(RequestBuilder.Method.POST)
+                .body(request)
+                .send();
 
-        when(s3Client.generatePresignedUrl(Mockito.any())).thenReturn(mockUrl);
-
-        // Act
-        Either<FileInfo, ErrorCode> fileUploadResult = s3StorageService.uploadFile(fileUploadInfo);
-
-        // Assert
-        thenFileIsUploadedAndURLIsReturned(fileUploadResult, expectedFileUrl);
+        thenResponseIsOk(response);
+        thenFileURLIsReturned(response);
     }
 
-    private static void thenFileIsUploadedAndURLIsReturned(Either<FileInfo, ErrorCode> fileUploadResult, String expectedFileUrl) {
-        assertThat(fileUploadResult.isLeft()).isTrue();
-        assertThat(fileUploadResult.getLeft().url()).isEqualTo(expectedFileUrl);
+    private void thenFileURLIsReturned(WebTestClient.ResponseSpec response) {
+        final FileUploadResponse responseBody = response.expectBody(FileUploadResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(responseBody).isNotNull();
+        assertThat(responseBody.getType()).isEqualTo(AbstractResponse.Type.DATA);
+
+        final FileData fileData = responseBody.getData();
+        assertThat(fileData).isNotNull();
+        assertThat(fileData.url()).isNotBlank();
     }
 }

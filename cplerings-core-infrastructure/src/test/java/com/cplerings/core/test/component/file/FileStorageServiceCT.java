@@ -2,60 +2,40 @@ package com.cplerings.core.test.component.file;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.cplerings.core.application.shared.service.storage.FileUploadInfo;
-import com.cplerings.core.application.shared.service.storage.FileInfo;
-import com.cplerings.core.application.shared.service.storage.FileStorageService;
+import com.cplerings.core.application.shared.errorcode.ErrorCode;
+import com.cplerings.core.application.shared.service.file.FileInfo;
+import com.cplerings.core.application.shared.service.file.FileStorageService;
+import com.cplerings.core.application.shared.service.file.FileUploadInfo;
+import com.cplerings.core.common.either.Either;
 import com.cplerings.core.test.shared.AbstractCT;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.testcontainers.containers.localstack.LocalStackContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.amazonaws.services.s3.AmazonS3;
+class FileStorageServiceCT extends AbstractCT {
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
+    private static final String FILE_FOLDER = "data/integration/file";
+    private static final String VALID_IMAGE_FILE = "/valid-jpeg.json";
 
-@Testcontainers
-public class FileStorageServiceCT extends AbstractCT {
-
-    @Container
-    private static final LocalStackContainer localstack = new LocalStackContainer()
-            .withServices(LocalStackContainer.Service.S3);
-    @Autowired
-    private AmazonS3 s3Client;
     @Autowired
     private FileStorageService fileStorageService;
-    @Value("${application.bucket.name}")
-    private String bucketName;
-    private String sampleBase64Image;
-
-    @BeforeEach
-    void setUp() {
-        s3Client.createBucket(bucketName);
-
-        // Sample base64 string for an image file
-        byte[] sampleImageBytes = "sample image content".getBytes(StandardCharsets.UTF_8);
-        sampleBase64Image = "data:image/jpeg;base64,/9j/" + Base64.getEncoder().encodeToString(sampleImageBytes);
-    }
 
     @Test
-    void givenBase64Image_whenUploadFile_thenFileIsUploadedAndUrlIsReturned() {
-        // Arrange
-        FileUploadInfo fileUploadInfo = new FileUploadInfo(sampleBase64Image);
-        thenFileIsUploadedAndUrlIsReturned(fileUploadInfo);
+    void givenFileStorageService_whenUploadFile() {
+        final FileUploadInfo fileUploadInfo = getTestDataLoader(FILE_FOLDER).loadAsObject(VALID_IMAGE_FILE, FileUploadInfo.class);
+        fileUploadInfo.setType(FileUploadInfo.Type.DYNAMIC);
+        final Either<FileInfo, ErrorCode> fileUploadResult = fileStorageService.uploadFile(fileUploadInfo);
+
+        thenFileUploadIsSuccessful(fileUploadResult);
+        thenFileInfoContainsFileURL(fileUploadResult.getLeft());
     }
 
-    private void thenFileIsUploadedAndUrlIsReturned(FileUploadInfo fileUploadInfo) {
-        // Act
-        FileInfo fileInfo = fileStorageService.uploadFile(fileUploadInfo);
+    private void thenFileUploadIsSuccessful(Either<FileInfo, ErrorCode> fileUploadResult) {
+        assertThat(fileUploadResult.isLeft()).isTrue();
+    }
 
-        // Assert
-        assertThat(fileInfo.hasError()).isFalse();
-        assertThat(fileInfo.url()).contains(bucketName);
+    private void thenFileInfoContainsFileURL(FileInfo fileInfo) {
+        assertThat(fileInfo).isNotNull();
+        assertThat(fileInfo.url()).isNotBlank();
     }
 }

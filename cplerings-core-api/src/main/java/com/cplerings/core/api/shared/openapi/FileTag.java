@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Tag(
         name = "File",
-        description = "APIs for Uploading file"
+        description = "APIs for files"
 )
 public @interface FileTag {
 }

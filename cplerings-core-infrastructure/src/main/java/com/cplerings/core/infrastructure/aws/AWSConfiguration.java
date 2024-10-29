@@ -1,8 +1,11 @@
-package com.cplerings.core.infrastructure.amazon;
+package com.cplerings.core.infrastructure.aws;
+
+import com.cplerings.core.common.profile.ProfileConstant;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
@@ -11,18 +14,19 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
 @Configuration
-public class AmazonConfiguration {
+public class AWSConfiguration {
 
-    @Value("${cloud.aws.credentials.access-key}")
+    @Value("${cplerings.aws.access-key}")
     private String accessKey;
 
-    @Value("${cloud.aws.credentials.secret-key}")
+    @Value("${cplerings.aws.secret-key}")
     private String secretKey;
 
-    @Value("${cloud.aws.region.static}")
+    @Value("${cplerings.aws.region}")
     private String region;
 
     @Bean
+    @Profile("!" + ProfileConstant.TEST)
     public S3Client s3Client() {
         final AwsCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
         return S3Client.builder()

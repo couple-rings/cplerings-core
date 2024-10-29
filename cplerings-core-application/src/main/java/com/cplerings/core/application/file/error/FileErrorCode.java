@@ -9,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum FileErrorCode implements ErrorCode {
 
-    FILE_INPUT_REQUIRED("002", "file.error.invalidInput", ErrorCode.Type.VALIDATION),
-    FAULT_IN_UPLOADING_PHASE("003", "file.error.faultInUploadingPhase", ErrorCode.Type.VALIDATION),
     INVALID_FILE_FORMAT("004", "file.error.invalidFileFormat", ErrorCode.Type.VALIDATION),
     INVALID_MAGIC_BYTES("005", "file.error.invalidMagicBytes", ErrorCode.Type.VALIDATION),
     FILE_EXCEED_MAX_ALLOWED_SIZE("006", "file.error.fileExceedMaxAllowedSize", ErrorCode.Type.VALIDATION),

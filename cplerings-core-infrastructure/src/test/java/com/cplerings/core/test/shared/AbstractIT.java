@@ -184,7 +184,8 @@ public abstract class AbstractIT {
 
         public WebTestClient.ResponseSpec send() {
             Objects.requireNonNull(path);
-            final WebTestClient webTestClient = WebTestClient.bindToServer()
+            final WebTestClient webTestClient = WebTestClient
+                    .bindToServer()
                     .baseUrl(String.format(BASE_URL, port, apiPath))
                     .responseTimeout(RESPONSE_TIMEOUT)
                     .build();

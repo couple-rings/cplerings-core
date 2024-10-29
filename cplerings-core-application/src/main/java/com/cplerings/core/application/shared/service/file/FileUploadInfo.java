@@ -1,4 +1,4 @@
-package com.cplerings.core.application.shared.service.storage;
+package com.cplerings.core.application.shared.service.file;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,11 +13,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class FileUploadInfo {
 
+    private String fileBase64;
+    private Type type;
     public enum Type {
 
         STATIC, DYNAMIC
     }
-
-    private String fileBase64;
-    private Type type;
 }

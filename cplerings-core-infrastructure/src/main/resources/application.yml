@@ -86,8 +86,10 @@ cplerings:
     region: ${CPLERINGS_AWS_REGION}
     s3:
       bucket-name: ${CPLERINGS_AWS_S3_BUCKET_NAME}
-      max-file-upload-size: ${CPLERINGS_MAX_FILE_UPLOAD_SIZE}
+      max-file-upload-size: ${CPLERINGS_AWS_S3_MAX_FILE_UPLOAD_SIZE}
       file-path-format: https://${cplerings.aws.s3.bucket-name}.s3.${cplerings.aws.region}.amazonaws.com/%s
+    access-key: ${CPLERINGS_AWS_ACCESS_KEY}
+    secret-key: ${CPLERINGS_AWS_SECRET_KEY}
 
 springdoc:
   api-docs:

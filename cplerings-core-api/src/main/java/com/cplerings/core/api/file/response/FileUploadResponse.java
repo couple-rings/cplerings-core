@@ -16,8 +16,7 @@ public class FileUploadResponse extends AbstractDataResponse<FileData> {
         return new Builder();
     }
 
-    public static final class Builder
-            extends AbstractDataResponseBuilder<Builder, FileUploadResponse, FileData> {
+    public static final class Builder extends AbstractDataResponseBuilder<Builder, FileUploadResponse, FileData> {
 
         @Override
         protected FileUploadResponse getResponseInstance() {

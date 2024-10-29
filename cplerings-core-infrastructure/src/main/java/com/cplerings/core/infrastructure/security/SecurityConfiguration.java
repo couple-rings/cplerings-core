@@ -143,8 +143,8 @@ public class SecurityConfiguration {
     }
 
     private void handleFileUploadAPI(HttpSecurity localHttp) throws Exception {
-        localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.UPLOAD_PATH))
-                .permitAll());
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.FILES_PATH))
+                .authenticated());
     }
 
     private String resolvePath(String path) {

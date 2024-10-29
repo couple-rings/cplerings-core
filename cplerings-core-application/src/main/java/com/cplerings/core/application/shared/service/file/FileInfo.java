@@ -1,4 +1,4 @@
-package com.cplerings.core.application.shared.service.storage;
+package com.cplerings.core.application.shared.service.file;
 
 import lombok.Builder;
 
