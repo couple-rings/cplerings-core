@@ -57,4 +57,9 @@ public final class APIConstant {
     public static final String DESIGN_COUPLE_PATH = DESIGN_PATH + "/couple";
     public static final String DESIGN_SESSION_PATH = DESIGN_PATH + "/sessions";
     public static final String CREATE_DESIGN_SESSION_PATH = DESIGN_SESSION_PATH + "/create";
+
+    /*
+       Uploading path
+    */
+    public static final String FILES_PATH = "/files";
 }

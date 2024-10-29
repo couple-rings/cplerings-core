@@ -100,6 +100,22 @@ class ViewAccountUseCaseIT extends AbstractIT {
         thenResponseHasSpouseStatusTrue(response);
     }
 
+    private void thenResponseHasSpouseStatusTrue(WebTestClient.ResponseSpec response) {
+        final AccountResponse responseBody = response.expectBody(AccountResponse.class)
+                .returnResult()
+                .getResponseBody();
+        assertThat(responseBody)
+                .isNotNull();
+        assertThat(responseBody.getType())
+                .isEqualTo(AbstractResponse.Type.DATA);
+        assertThat(responseBody.getData())
+                .isNotNull()
+                .isExactlyInstanceOf(AccountData.class);
+
+        final AccountData account = responseBody.getData();
+        assertThat(account.hasSpouse()).isTrue();
+    }
+
     @Test
     void givenAdmin_whenViewCustomerProfileWithSpouseNotRegistered() {
         final String adminToken = jwtTestHelper.generateToken(AccountTestConstant.ADMIN_EMAIL);
@@ -117,6 +133,22 @@ class ViewAccountUseCaseIT extends AbstractIT {
         thenResponseHasSpouseStatusFalse(response);
     }
 
+    private void thenResponseHasSpouseStatusFalse(WebTestClient.ResponseSpec response) {
+        final AccountResponse responseBody = response.expectBody(AccountResponse.class)
+                .returnResult()
+                .getResponseBody();
+        assertThat(responseBody)
+                .isNotNull();
+        assertThat(responseBody.getType())
+                .isEqualTo(AbstractResponse.Type.DATA);
+        assertThat(responseBody.getData())
+                .isNotNull()
+                .isExactlyInstanceOf(AccountData.class);
+
+        final AccountData account = responseBody.getData();
+        assertThat(account.hasSpouse()).isFalse();
+    }
+
     @Test
     void givenAdmin_whenViewNotCustomerProfile() {
         final String adminToken = jwtTestHelper.generateToken(AccountTestConstant.ADMIN_EMAIL);
@@ -132,37 +164,5 @@ class ViewAccountUseCaseIT extends AbstractIT {
 
         thenResponseIsOk(response);
         thenResponseHasSpouseStatusFalse(response);
-    }
-
-    private void thenResponseHasSpouseStatusTrue(WebTestClient.ResponseSpec response) {
-        final AccountResponse responseBody = response.expectBody(AccountResponse.class)
-                .returnResult()
-                .getResponseBody();
-        assertThat(responseBody)
-                .isNotNull();
-        assertThat(responseBody.getType())
-                .isEqualTo(AbstractResponse.Type.DATA);
-        assertThat(responseBody.getData())
-                .isNotNull()
-                .isExactlyInstanceOf(AccountData.class);
-
-        final AccountData account = responseBody.getData();
-        assertThat(account.hasSpouse()).isTrue();
-    }
-
-    private void thenResponseHasSpouseStatusFalse(WebTestClient.ResponseSpec response) {
-        final AccountResponse responseBody = response.expectBody(AccountResponse.class)
-                .returnResult()
-                .getResponseBody();
-        assertThat(responseBody)
-                .isNotNull();
-        assertThat(responseBody.getType())
-                .isEqualTo(AbstractResponse.Type.DATA);
-        assertThat(responseBody.getData())
-                .isNotNull()
-                .isExactlyInstanceOf(AccountData.class);
-
-        final AccountData account = responseBody.getData();
-        assertThat(account.hasSpouse()).isFalse();
     }
 }

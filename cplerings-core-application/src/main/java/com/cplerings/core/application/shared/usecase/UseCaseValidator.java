@@ -22,7 +22,7 @@ public final class UseCaseValidator {
     }
 
     public void validateAndStopExecution(boolean validCase, ErrorCode errorCode) {
-        Objects.requireNonNull(errorCode);
+        Objects.requireNonNull(errorCode, "Error code must not be null");
         if (validCase) {
             return;
         }
