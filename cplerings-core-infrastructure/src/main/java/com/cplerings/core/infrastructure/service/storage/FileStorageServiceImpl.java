@@ -1,36 +1,41 @@
 package com.cplerings.core.infrastructure.service.storage;
 
+import static com.cplerings.core.application.file.error.FileErrorCode.EMPTY_FILE;
+import static com.cplerings.core.application.file.error.FileErrorCode.FILE_EXCEED_MAX_ALLOWED_SIZE;
+import static com.cplerings.core.application.file.error.FileErrorCode.FILE_UPLOAD_FAILED;
+import static com.cplerings.core.application.file.error.FileErrorCode.INVALID_FILE_FORMAT;
+import static com.cplerings.core.application.file.error.FileErrorCode.INVALID_MAGIC_BYTES;
+
+import com.cplerings.core.application.shared.errorcode.ErrorCode;
 import com.cplerings.core.application.shared.service.storage.FileInfo;
 import com.cplerings.core.application.shared.service.storage.FileStorageService;
 import com.cplerings.core.application.shared.service.storage.FileUploadInfo;
+import com.cplerings.core.common.either.Either;
+import com.cplerings.core.common.file.FileType;
+import com.cplerings.core.common.temporal.TemporalUtils;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.amazonaws.HttpMethod;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
-import com.amazonaws.util.IOUtils;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.Base64;
-import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FileStorageServiceImpl implements FileStorageService {
 
+    private static final String S3_FILE_PATH_FORMAT = "https://cplerings-bucket.s3.ap-southeast-1.amazonaws.com/static/static_design-metal-spec-admire-3_1729022484708.jpg";
     private static final String JPEG_MAGIC_BYTES_1 = "/9j/";
     private static final String JPEG_MAGIC_BYTES_2 = "/9k/";
     private static final String PNG_MAGIC_BYTES = "iVBORw0KGgoAAAANSUhEUgAA";
@@ -43,79 +48,93 @@ public class FileStorageServiceImpl implements FileStorageService {
             "data:application/pdf;base64", ".pdf"
     );
 
-    private final AmazonS3 s3Client;
+    private final S3Client s3Client;
+
     @Value("${application.bucket.name}")
     private String bucketName;
-    private FileStorageService fileStorageService;
+
+    @Value("${cplerings.aws.s3.max-file-upload-size}")
+    private int maxFileUploadSizeInMB;
+
+    @Value("${cplerings.aws.s3.file-path-format}")
+    private String awsFilePathFormat;
 
     @Override
-    public FileInfo uploadFile(FileUploadInfo file) {
-        final String[] base64ImageParts = file.getFileBase64().split(",");
-        if (base64ImageParts.length != 2 || !MIMES.containsKey(base64ImageParts[0])) {
-            return new FileInfo(null, true);
+    public Either<FileInfo, ErrorCode> uploadFile(FileUploadInfo fileUploadInfo) {
+        final String[] base64FileParts = fileUploadInfo.getFileBase64().split(",");
+        if (base64FileParts.length != 2) {
+            return Either.right(INVALID_FILE_FORMAT);
+        }
+        if (StringUtils.isBlank(base64FileParts[1])) {
+            return Either.right(EMPTY_FILE);
         }
 
-        final String contentType = base64ImageParts[0].substring(5, base64ImageParts[0].indexOf(";"));
-        final String imageExtension = MIMES.get(base64ImageParts[0]);
-        final byte[] imageBytes = Base64.getDecoder().decode(base64ImageParts[1]);
-        if (!checkIfImageHasCorrectMagicBytes(base64ImageParts[1], imageExtension))
-            return new FileInfo(null, true);
-
-        final String imageId = UUID.randomUUID().toString();
-        final String imageKey = imageId + imageExtension;
-
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(imageBytes.length);
-        metadata.setContentType(contentType);
-
-        s3Client.putObject(new PutObjectRequest(bucketName, imageKey, new ByteArrayInputStream(imageBytes), metadata));
-
-        GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, imageKey)
-                .withMethod(HttpMethod.GET)
-                .withExpiration(new Date(System.currentTimeMillis() + 7L * 24 * 3600 * 1000)); // available 7 days
-
-        String fileUrl = s3Client.generatePresignedUrl(request).toString();
-        return new FileInfo(fileUrl, false);
-    }
-
-    private boolean checkIfImageHasCorrectMagicBytes(String base64Image, String imageExtension) {
-        if (StringUtils.equals(".jpg", imageExtension) || StringUtils.equals(".jpeg", imageExtension)) {
-            if (base64Image.startsWith(JPEG_MAGIC_BYTES_1) || base64Image.startsWith(JPEG_MAGIC_BYTES_2)) {
-                return true;
-            }
-            return false;
+        final String base64ContentType = base64FileParts[0].substring(5, base64FileParts[0].indexOf(";"));
+        final FileType fileType = FileType.getFileTypeByBase64Extension(base64ContentType);
+        if (fileType == null) {
+            return Either.right(INVALID_FILE_FORMAT);
         }
-        if (StringUtils.equals(".png", imageExtension)) {
-            if (base64Image.startsWith(PNG_MAGIC_BYTES)) {
-                return true;
-            }
-            return false;
+        if (fileHasIncorrectMagicBytes(base64FileParts[1], fileType)) {
+            return Either.right(INVALID_MAGIC_BYTES);
         }
 
-        if (StringUtils.equals(".pdf", imageExtension)) {
-            if (base64Image.startsWith(PDF_MAGIC_BYTES)) {
-                return true;
-            }
-            return false;
-        }
-
-        return false;
-    }
-
-    public byte[] downloadFile(String fileName) {
-        S3Object s3Object = s3Client.getObject(bucketName, fileName);
-        S3ObjectInputStream inputStream = s3Object.getObjectContent();
+        final byte[] fileBytes;
         try {
-            byte[] content = IOUtils.toByteArray(inputStream);
-            return content;
-        } catch (IOException e) {
-            e.printStackTrace();
+            fileBytes = Base64.getDecoder().decode(base64FileParts[1]);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return Either.right(INVALID_FILE_FORMAT);
         }
-        return null;
+        if (fileExceedAllowedSize(fileBytes)) {
+            return Either.right(FILE_EXCEED_MAX_ALLOWED_SIZE);
+        }
+
+        try {
+            final String filePath = prepareFilePath(fileUploadInfo, fileType);
+            final PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(filePath)
+                    .contentType(fileType.getContentType())
+                    .build();
+
+            final PutObjectResponse putObjectResponse = s3Client.putObject(putObjectRequest, RequestBody.fromBytes(fileBytes));
+            if (StringUtils.isBlank(putObjectResponse.eTag())) {
+                return Either.right(FILE_UPLOAD_FAILED);
+            }
+            return Either.left(FileInfo.builder()
+                    .url(constructFileURL(filePath))
+                    .build());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return Either.right(ErrorCode.System.ERROR);
+        }
     }
 
-    @Autowired
-    public void setS3Service(FileStorageService fileStorageService) {
-        this.fileStorageService = fileStorageService;
+    private boolean fileExceedAllowedSize(byte[] fileBytes) {
+        return (fileBytes.length > (maxFileUploadSizeInMB * 1024 * 1024));
+    }
+
+    private boolean fileHasIncorrectMagicBytes(String base64File, FileType fileType) {
+        final String magicBytes = fileType.getMagicBytesInBase64();
+        return StringUtils.startsWith(base64File, magicBytes);
+    }
+
+    private String prepareFilePath(FileUploadInfo fileUploadInfo, FileType fileType) {
+        final StringBuilder builder = new StringBuilder();
+        switch (fileUploadInfo.getType()) {
+            case STATIC -> builder.append("static/static_");
+            case DYNAMIC -> builder.append("dynamic/dynamic_");
+            default -> throw new IllegalStateException("Unexpected value: " + fileUploadInfo.getType());
+        }
+        builder.append(UUID.randomUUID());
+        builder.append('_');
+        builder.append(TemporalUtils.getCurrentInstantUTC().toEpochMilli());
+        builder.append('.');
+        builder.append(fileType.getExtension());
+        return builder.toString();
+    }
+
+    private String constructFileURL(String filePath) {
+        return String.format(awsFilePathFormat, filePath);
     }
 }

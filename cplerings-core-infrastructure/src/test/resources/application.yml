@@ -59,16 +59,9 @@ cplerings:
     expiration-duration: 5
     secret-key: 5YPVF53LDH7BDOPKWA1AIGCN0RIDW697
     url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-
-cloud:
   aws:
-    credentials:
-      access-key: test
-      secret-key: test
-    region:
-      static: us-east-1
-    stack:
-      auto: false
-application:
-  bucket:
-    name: upload-cplerings-test
+    region: ${CPLERINGS_AWS_REGION}
+    s3:
+      bucket-name: ${CPLERINGS_AWS_S3_BUCKET_NAME}
+      max-file-upload-size: ${CPLERINGS_MAX_FILE_UPLOAD_SIZE}
+      file-path-format: https://${cplerings.aws.s3.bucket-name}.s3.${cplerings.aws.region}.amazonaws.com/%s

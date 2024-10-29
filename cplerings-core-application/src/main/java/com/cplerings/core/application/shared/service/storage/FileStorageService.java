@@ -1,6 +1,9 @@
 package com.cplerings.core.application.shared.service.storage;
 
+import com.cplerings.core.application.shared.errorcode.ErrorCode;
+import com.cplerings.core.common.either.Either;
+
 public interface FileStorageService {
 
-    FileInfo uploadFile(FileUploadInfo file);
+    Either<FileInfo, ErrorCode> uploadFile(FileUploadInfo file);
 }

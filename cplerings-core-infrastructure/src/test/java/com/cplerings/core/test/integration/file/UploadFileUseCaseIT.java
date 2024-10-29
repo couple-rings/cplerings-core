@@ -3,8 +3,10 @@ package com.cplerings.core.test.integration.file;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import com.cplerings.core.application.shared.service.storage.FileUploadInfo;
+import com.cplerings.core.application.shared.errorcode.ErrorCode;
 import com.cplerings.core.application.shared.service.storage.FileInfo;
+import com.cplerings.core.application.shared.service.storage.FileUploadInfo;
+import com.cplerings.core.common.either.Either;
 import com.cplerings.core.infrastructure.service.storage.FileStorageServiceImpl;
 import com.cplerings.core.test.shared.AbstractIT;
 
@@ -17,6 +19,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import software.amazon.awssdk.services.s3.S3Client;
 
 import java.io.ByteArrayInputStream;
 import java.net.URL;
@@ -26,7 +29,7 @@ import java.util.Base64;
 public class UploadFileUseCaseIT extends AbstractIT {
 
     @Mock
-    private AmazonS3 s3Client;
+    private S3Client s3Client;
 
     @InjectMocks
     private FileStorageServiceImpl s3StorageService;
@@ -45,7 +48,7 @@ public class UploadFileUseCaseIT extends AbstractIT {
     }
 
     @Test
-    void givenBase64Image_whenUploadFileUseCaseIsExecuted_thenFileIsUploadedAndUrlIsReturned() throws Exception {
+    void givenBase64Image_whenUploadFileUseCaseIsExecuted() throws Exception {
         // Arrange
         FileUploadInfo fileUploadInfo = new FileUploadInfo(sampleBase64Image);
         String expectedFileKey = "mocked-image-key.jpeg";
@@ -58,10 +61,14 @@ public class UploadFileUseCaseIT extends AbstractIT {
         when(s3Client.generatePresignedUrl(Mockito.any())).thenReturn(mockUrl);
 
         // Act
-        FileInfo fileInfo = s3StorageService.uploadFile(fileUploadInfo);
+        Either<FileInfo, ErrorCode> fileUploadResult = s3StorageService.uploadFile(fileUploadInfo);
 
         // Assert
-        assertThat(fileInfo.hasError()).isFalse();
-        assertThat(fileInfo.url()).isEqualTo(expectedFileUrl);
+        thenFileIsUploadedAndURLIsReturned(fileUploadResult, expectedFileUrl);
+    }
+
+    private static void thenFileIsUploadedAndURLIsReturned(Either<FileInfo, ErrorCode> fileUploadResult, String expectedFileUrl) {
+        assertThat(fileUploadResult.isLeft()).isTrue();
+        assertThat(fileUploadResult.getLeft().url()).isEqualTo(expectedFileUrl);
     }
 }

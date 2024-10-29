@@ -13,5 +13,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class FileUploadInfo {
 
+    public enum Type {
+
+        STATIC, DYNAMIC
+    }
+
     private String fileBase64;
+    private Type type;
 }
