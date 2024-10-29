@@ -1,21 +1,18 @@
 package com.cplerings.core.application.design.implementation;
 
-import static com.cplerings.core.application.account.error.AccountErrorCode.EMAIL_REQUIRED;
-import static com.cplerings.core.application.account.error.AccountErrorCode.INVALID_EMAIL_FORMAT;
-import static com.cplerings.core.application.account.error.AccountErrorCode.VERIFICATION_CODE_REQUIRED;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.cplerings.core.application.account.input.VerifyCustomerInput;
 import com.cplerings.core.application.design.CreateDesignVersionUseCase;
 import com.cplerings.core.application.design.datasource.CreateDesignVersionDataSource;
+import com.cplerings.core.application.design.error.CreateDesignVersionErrorCode;
 import com.cplerings.core.application.design.input.CreateDesignVersionInput;
+import com.cplerings.core.application.design.mapper.ACreateDesignVersionMapper;
 import com.cplerings.core.application.design.output.CreateDesignVersionOutput;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
-import com.cplerings.core.common.input.InputValidator;
+import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.DesignVersion;
+import com.cplerings.core.domain.file.Document;
+import com.cplerings.core.domain.file.Image;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,23 +21,39 @@ import lombok.RequiredArgsConstructor;
 public class CreateDesignVersionUseCaseImpl extends AbstractUseCase<CreateDesignVersionInput, CreateDesignVersionOutput>
         implements CreateDesignVersionUseCase {
 
-    private CreateDesignVersionDataSource createDesignVersionDataSource;
+    private final CreateDesignVersionDataSource createDesignVersionDataSource;
+    private final ACreateDesignVersionMapper aCreateDesignVersionMapper;
 
     @Override
     protected void validateInput(UseCaseValidator validator, CreateDesignVersionInput input) {
         super.validateInput(validator, input);
-//        validator.validate(input.designFile() != null, DESIGN_FILE_REQUIRED);
-//        validator.validate(input.previewImage() != null, IMAGE_REQUIRED);
-//        validator.validate(input.versionNumber() > 0, INVALID_VERSION_NUMBER);
+        validator.validate(input.designFile() != null, CreateDesignVersionErrorCode.DESIGN_FILE_REQUIRED);
+        validator.validate(input.previewImage() != null, CreateDesignVersionErrorCode.IMAGE_REQUIRED);
+        validator.validate(input.versionNumber() > 0, CreateDesignVersionErrorCode.VERSION_NUMBER_WRONG_POSITIVE_NUMBER);
+        validator.validate(input.designId() > 0, CreateDesignVersionErrorCode.DESIGN_ID_WRONG_POSITIVE_NUMBER);
     }
 
     @Override
     protected CreateDesignVersionOutput internalExecute(UseCaseValidator validator, CreateDesignVersionInput input) {
+        Design design = createDesignVersionDataSource.getDesignByID(input.designId())
+                .orElse(null);
+        validator.validateAndStopExecution(design != null, CreateDesignVersionErrorCode.INVALID_DESIGN_ID);
+        Document document = Document.builder().url(input.designFile()).build();
+        Image image = Image.builder().url(input.previewImage()).build();
 
-//        DesignVersion designVersion = DesignVersion.builder()
-//                .designFile(input.designFile())
-//                .
-//                .build();
-        return null;
+        createDesignVersionDataSource.saveDocument(document);
+        createDesignVersionDataSource.saveImage(image);
+
+        DesignVersion designVersion = DesignVersion.builder()
+                .designFile(document)
+                .image(image)
+                .design(design)
+                .versionNumber(input.versionNumber())
+                .versionNumber(input.versionNumber())
+                .isAccepted(false)
+                .isOld(false)
+                .build();
+        DesignVersion designVersionCreated = createDesignVersionDataSource.save(designVersion);
+        return aCreateDesignVersionMapper.toOutput(designVersionCreated);
     }
 }

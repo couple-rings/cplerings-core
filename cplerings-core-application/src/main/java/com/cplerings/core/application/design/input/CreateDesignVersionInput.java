@@ -1,4 +1,4 @@
 package com.cplerings.core.application.design.input;
 
-public record CreateDesignVersionInput(int versionNumber, String previewImage, String designFile) {
+public record CreateDesignVersionInput(long designId, int versionNumber, String previewImage, String designFile) {
 }
