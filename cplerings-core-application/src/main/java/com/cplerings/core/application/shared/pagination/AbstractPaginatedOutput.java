@@ -86,7 +86,6 @@ public abstract class AbstractPaginatedOutput<T> implements Pageable {
         protected abstract P getOutputInstance();
 
         private void calculatePagination() {
-            Objects.requireNonNull(items, "Data is required");
             this.totalPages = Math.ceilDiv((int) count, pageSize);
         }
     }
