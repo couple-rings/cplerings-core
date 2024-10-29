@@ -92,23 +92,26 @@ public class SharedCoupleDesignDataSourceImpl extends AbstractDataSource
                 return query;
             } else {
                 // Min = 0, max is defined
-                booleanExpressionBuilder.and(Q_DESIGN.metalWeight.weight
+                booleanExpressionBuilder.and((Q_DESIGN.metalWeight.weight
                         .multiply(3.75).multiply(getMinMetalPriceQuery(Q_DESIGN.id))
-                        .add(getMinDiamondPriceQuery(Q_DESIGN.id))
+                        .add(getMinDiamondPriceQuery(Q_DESIGN.id)))
+                        .multiply(1.3)
                         .loe(input.getMaxPrice()));
             }
         } else {
             if (NumberUtils.isLessThanOrEqual(input.getMaxPrice(), BigDecimal.ZERO)) {
                 // Max = infinity, min is defined
-                booleanExpressionBuilder.and(Q_DESIGN.metalWeight.weight
+                booleanExpressionBuilder.and((Q_DESIGN.metalWeight.weight
                         .multiply(3.75).multiply(getMinMetalPriceQuery(Q_DESIGN.id))
-                        .add(getMinDiamondPriceQuery(Q_DESIGN.id))
+                        .add(getMinDiamondPriceQuery(Q_DESIGN.id)))
+                        .multiply(1.3)
                         .goe(input.getMinPrice()));
             } else {
                 // Between min and max
-                booleanExpressionBuilder.and(Q_DESIGN.metalWeight.weight
+                booleanExpressionBuilder.and((Q_DESIGN.metalWeight.weight
                         .multiply(3.75).multiply(getMinMetalPriceQuery(Q_DESIGN.id))
-                        .add(getMinDiamondPriceQuery(Q_DESIGN.id))
+                        .add(getMinDiamondPriceQuery(Q_DESIGN.id)))
+                        .multiply(1.3)
                         .between(input.getMinPrice(), input.getMaxPrice()));
             }
         }

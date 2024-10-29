@@ -20,7 +20,7 @@ class ViewCoupleDesignUseCaseIT extends AbstractIT {
     void givenAnyone_whenViewCoupleDesign() {
         ViewDesignCouplesRequest request = ViewDesignCouplesRequest.builder()
                 .minPrice(BigDecimal.valueOf(1))
-                .maxPrice(BigDecimal.valueOf(15000000L))
+                .maxPrice(BigDecimal.valueOf(150000000L))
                 .collectionId(1L)
                 .metalSpecificationId(1L)
                 .build();
