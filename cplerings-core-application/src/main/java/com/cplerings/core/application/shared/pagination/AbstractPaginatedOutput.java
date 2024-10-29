@@ -18,7 +18,7 @@ public abstract class AbstractPaginatedOutput<T> implements Pageable {
 
     protected int page;
     protected int pageSize = PaginationConstant.DEFAULT_PAGE_SIZE;
-    protected int count;
+    protected long count;
     protected int totalPages;
     protected Collection<T> items;
 
@@ -31,7 +31,8 @@ public abstract class AbstractPaginatedOutput<T> implements Pageable {
         @Getter(AccessLevel.PUBLIC)
         private int pageSize = PaginationConstant.DEFAULT_PAGE_SIZE;
 
-        private int totalCount;
+        @Getter(AccessLevel.PUBLIC)
+        private long count;
 
         @Getter(AccessLevel.PUBLIC)
         private int totalPages;
@@ -55,11 +56,11 @@ public abstract class AbstractPaginatedOutput<T> implements Pageable {
             return self();
         }
 
-        public final S totalCount(int totalCount) {
-            if (totalCount < 0) {
+        public final S count(int count) {
+            if (count < 0) {
                 throw new IllegalArgumentException("Total count cannot be negative");
             }
-            this.totalCount = totalCount;
+            this.count = count;
             return self();
         }
 
@@ -76,6 +77,7 @@ public abstract class AbstractPaginatedOutput<T> implements Pageable {
             output.setPage(page);
             output.setPageSize(pageSize);
             output.setCount(items.size());
+            calculatePagination();
             output.setTotalPages(totalPages);
             output.setItems(items);
             return output;
@@ -85,7 +87,7 @@ public abstract class AbstractPaginatedOutput<T> implements Pageable {
 
         private void calculatePagination() {
             Objects.requireNonNull(items, "Data is required");
-            this.totalPages = Math.ceilDiv(totalCount, pageSize);
+            this.totalPages = Math.ceilDiv((int) count, pageSize);
         }
     }
 }
