@@ -93,7 +93,7 @@ public class SharedCoupleDesignDataSourceImpl extends AbstractDataSource
             } else {
                 // Min = 0, max is defined
                 booleanExpressionBuilder.and((Q_DESIGN.metalWeight.weight
-                        .multiply(3.75).multiply(2).multiply(getMinMetalPriceQuery(Q_DESIGN.id))
+                        .multiply(3.75).multiply(getMinMetalPriceQuery(Q_DESIGN.id))
                         .add(getMinDiamondPriceQuery(Q_DESIGN.id)))
                         .multiply(1.3)
                         .loe(input.getMaxPrice()));
@@ -102,14 +102,14 @@ public class SharedCoupleDesignDataSourceImpl extends AbstractDataSource
             if (NumberUtils.isLessThanOrEqual(input.getMaxPrice(), BigDecimal.ZERO)) {
                 // Max = infinity, min is defined
                 booleanExpressionBuilder.and((Q_DESIGN.metalWeight.weight
-                        .multiply(3.75).multiply(2).multiply(getMinMetalPriceQuery(Q_DESIGN.id))
+                        .multiply(3.75).multiply(getMinMetalPriceQuery(Q_DESIGN.id))
                         .add(getMinDiamondPriceQuery(Q_DESIGN.id)))
                         .multiply(1.3)
                         .goe(input.getMinPrice()));
             } else {
                 // Between min and max
                 booleanExpressionBuilder.and((Q_DESIGN.metalWeight.weight
-                        .multiply(3.75).multiply(2).multiply(getMinMetalPriceQuery(Q_DESIGN.id))
+                        .multiply(3.75).multiply(getMinMetalPriceQuery(Q_DESIGN.id))
                         .add(getMinDiamondPriceQuery(Q_DESIGN.id)))
                         .multiply(1.3)
                         .between(input.getMinPrice(), input.getMaxPrice()));
