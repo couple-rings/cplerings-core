@@ -1,10 +1,15 @@
 package com.cplerings.core.infrastructure.datasource.design;
 
+import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.design.datasource.CheckRemainingDesignSessionDataSource;
 import com.cplerings.core.application.design.datasource.CreateDesignSessionDataSource;
 import com.cplerings.core.application.design.datasource.CreateDesignVersionDataSource;
 import com.cplerings.core.application.design.datasource.ProcessDesignSessionPaymentDataSource;
 import com.cplerings.core.application.design.datasource.ViewDesignVersionDataSource;
+import com.cplerings.core.application.design.datasource.ViewDesignVersionsDataSource;
+import com.cplerings.core.application.design.datasource.result.DesignVersions;
+import com.cplerings.core.application.design.input.ViewDesignVersionsInput;
+import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.account.Role;
@@ -37,7 +42,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SharedDesignDataSource extends AbstractDataSource
         implements CreateDesignSessionDataSource, ProcessDesignSessionPaymentDataSource, CheckRemainingDesignSessionDataSource,
-        CreateDesignVersionDataSource, ViewDesignVersionDataSource {
+        CreateDesignVersionDataSource, ViewDesignVersionDataSource, ViewDesignVersionsDataSource {
 
     private static final QDesign Q_DESIGN = QDesign.design;
     private static final QDesignVersion Q_DESIGN_VERSION = QDesignVersion.designVersion;
@@ -130,5 +135,20 @@ public class SharedDesignDataSource extends AbstractDataSource
                 .from(Q_DESIGN_VERSION)
                 .where(Q_DESIGN_VERSION.id.eq(designVersionId))
                 .fetchOne());
+    }
+
+    @Override
+    public Optional<Account> findAccountByEmail(String email) {
+        return accountRepository.findByEmail(email);
+    }
+
+    @Override
+    public DesignVersions findDesignVersionsByCustomerId(Long customerId, ViewDesignVersionsInput input) {
+        var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
+//        BlazeJPAQuery<DesignVersion> query = createQuery().select(Q_DESIGN_VERSION)
+//                .from(Q_DESIGN)
+//                .where(Q_DESIGN.id.eq(customerId))
+//        long count = query.distinct().fetchCount();
+        return null;
     }
 }

@@ -35,7 +35,7 @@ public class ViewDesignVersionsUseCaseImpl extends AbstractUseCase<ViewDesignVer
         final Optional<Account> accountOptional = viewDesignVerionsDataSource.findAccountByEmail(currentUser.email());
         validator.validateAndStopExecution(accountOptional.isPresent(), ACCOUNT_WITH_EMAIL_NOT_FOUND);
         final Account account = accountOptional.get();
-        DesignVersions designVersions = viewDesignVerionsDataSource.findDesignVersionsByCustomerId(account.getId());
+        DesignVersions designVersions = viewDesignVerionsDataSource.findDesignVersionsByCustomerId(account.getId(), input);
         return aViewDesignVersionsMapper.toOutput(designVersions);
     }
 }
