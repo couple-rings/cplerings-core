@@ -36,7 +36,7 @@ public class DesignVersion extends AbstractEntity {
     @Id
     @GeneratedValue(generator = DESIGN_VERSION_SEQUENCE, strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = DESIGN_VERSION_SEQUENCE, allocationSize = DatabaseConstant.SEQ_ALLOCATION_SIZE)
-    @Column(name = "design_session_id")
+    @Column(name = "design_version_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

@@ -10,7 +10,7 @@ import com.cplerings.core.domain.file.Image;
 public interface CreateDesignVersionDataSource {
 
     DesignVersion save(DesignVersion designVersion);
-    void saveDocument(Document document);
-    void saveImage(Image image);
+    Document saveDocument(Document document);
+    Image saveImage(Image image);
     Optional<Design> getDesignByID(long designID);
 }

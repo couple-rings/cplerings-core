@@ -2,7 +2,7 @@ CREATE SEQUENCE IF NOT EXISTS design_version_seq START WITH 1 INCREMENT BY 10;
 
 CREATE TABLE tbl_design_version
 (
-    design_session_id BIGINT                      NOT NULL,
+    design_version_id BIGINT                      NOT NULL,
     created_at        TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     create_by         VARCHAR(255)                NOT NULL,
     modified_at       TIMESTAMP WITHOUT TIME ZONE,
@@ -15,7 +15,7 @@ CREATE TABLE tbl_design_version
     version_number    INTEGER                     NOT NULL,
     is_accepted       BOOLEAN                     NOT NULL,
     is_old            BOOLEAN                     NOT NULL,
-    CONSTRAINT pk_tbl_design_version PRIMARY KEY (design_session_id)
+    CONSTRAINT pk_tbl_design_version PRIMARY KEY (design_version_id)
 );
 
 ALTER TABLE tbl_design_version

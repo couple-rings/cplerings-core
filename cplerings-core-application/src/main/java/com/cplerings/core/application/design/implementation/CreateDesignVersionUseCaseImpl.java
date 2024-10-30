@@ -41,14 +41,13 @@ public class CreateDesignVersionUseCaseImpl extends AbstractUseCase<CreateDesign
         Document document = Document.builder().url(input.designFile()).build();
         Image image = Image.builder().url(input.previewImage()).build();
 
-        createDesignVersionDataSource.saveDocument(document);
-        createDesignVersionDataSource.saveImage(image);
+        var documentCreated = createDesignVersionDataSource.saveDocument(document);
+        var imageCreated = createDesignVersionDataSource.saveImage(image);
 
         DesignVersion designVersion = DesignVersion.builder()
-                .designFile(document)
-                .image(image)
+                .designFile(documentCreated)
+                .image(imageCreated)
                 .design(design)
-                .versionNumber(input.versionNumber())
                 .versionNumber(input.versionNumber())
                 .isAccepted(false)
                 .isOld(false)

@@ -101,4 +101,7 @@ public class Design extends AbstractEntity {
 
     @OneToMany
     private Set<DesignVersion> designVersions;
+
+    @OneToMany(mappedBy = "design", fetch = FetchType.LAZY)
+    private Set<DesignDiamondSpecification> designDiamondSpecifications;
 }

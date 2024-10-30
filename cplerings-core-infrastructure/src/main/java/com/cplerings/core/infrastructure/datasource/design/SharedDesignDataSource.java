@@ -90,15 +90,15 @@ public class SharedDesignDataSource extends AbstractDataSource
     }
 
     @Override
-    public void saveDocument(Document document) {
+    public Document saveDocument(Document document) {
         updateAuditor(document);
-        documentRepository.save(document);
+        return documentRepository.save(document);
     }
 
     @Override
-    public void saveImage(Image image) {
+    public Image saveImage(Image image) {
         updateAuditor(image);
-        imageRepository.save(image);
+        return imageRepository.save(image);
     }
 
     @Override
