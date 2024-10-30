@@ -150,7 +150,7 @@ public class SecurityConfiguration {
 
     private void handleCustomRequestAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.CUSTOM_SINGLE_REQUEST_PATH))
-                        .hasAnyAuthority(RoleConstant.ROLE_STAFF));
+                .hasAnyAuthority(RoleConstant.ROLE_STAFF));
     }
 
     private String resolvePath(String path) {

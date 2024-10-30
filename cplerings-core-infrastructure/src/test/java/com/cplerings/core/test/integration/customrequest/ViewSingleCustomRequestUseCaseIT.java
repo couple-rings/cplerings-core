@@ -2,12 +2,6 @@ package com.cplerings.core.test.integration.customrequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.Instant;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.reactive.server.WebTestClient;
-
 import com.cplerings.core.api.customrequest.data.CustomRequest;
 import com.cplerings.core.api.customrequest.request.ViewCustomRequestRequest;
 import com.cplerings.core.api.customrequest.response.ViewCustomRequestResponse;
@@ -19,6 +13,12 @@ import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.WebTestClient;
+
+import java.time.Instant;
 
 class ViewSingleCustomRequestUseCaseIT extends AbstractIT {
 

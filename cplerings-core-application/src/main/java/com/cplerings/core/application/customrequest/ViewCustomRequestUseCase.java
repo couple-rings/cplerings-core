@@ -5,4 +5,5 @@ import com.cplerings.core.application.customrequest.output.ViewCustomRequestOutp
 import com.cplerings.core.application.shared.usecase.UseCase;
 
 public interface ViewCustomRequestUseCase extends UseCase<ViewCustomRequestInput, ViewCustomRequestOutput> {
+
 }
