@@ -88,7 +88,7 @@ class PaginationOutputTest {
             return DummyPaginatedOutput.builder()
                     .page(data.getPage())
                     .pageSize(data.getPageSize())
-                    .totalCount(data.getTotalCount())
+                    .count(data.getTotalCount())
                     .items(data.getData())
                     .build();
         } catch (Exception e) {
@@ -123,9 +123,9 @@ class PaginationOutputTest {
                 .isThrownBy(() -> DummyPaginatedOutput.builder()
                         .page(data.getPage())
                         .pageSize(data.getPageSize())
-                        .totalCount(data.getTotalCount())
+                        .count(data.getTotalCount())
                         .items(data.getData())
-                        .totalCount(data.getTotalCount())
+                        .count(data.getTotalCount())
                         .build());
     }
 }

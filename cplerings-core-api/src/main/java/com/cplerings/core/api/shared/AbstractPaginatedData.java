@@ -19,7 +19,7 @@ public abstract class AbstractPaginatedData<T> implements Pageable {
     private int page;
     private int pageSize;
     private int totalPages;
-    private int count;
+    private long count;
     private Collection<T> items;
 
     @Getter(AccessLevel.PROTECTED)
@@ -30,7 +30,7 @@ public abstract class AbstractPaginatedData<T> implements Pageable {
         private int page;
         private int pageSize;
         private int totalPages;
-        private int count;
+        private long count;
         private Collection<T> items;
 
         public final S items(Collection<T> items) {
@@ -56,7 +56,7 @@ public abstract class AbstractPaginatedData<T> implements Pageable {
             return self();
         }
 
-        public final S count(int count) {
+        public final S count(long count) {
             if (count < 0) {
                 throw new IllegalArgumentException("Total count cannot be negative");
             }
@@ -64,10 +64,17 @@ public abstract class AbstractPaginatedData<T> implements Pageable {
             return self();
         }
 
+        public final S totalPages(int totalPages) {
+            if (totalPages < 0) {
+                throw new IllegalArgumentException("Total pages cannot be negative");
+            }
+            this.totalPages = totalPages;
+            return self();
+        }
+
         @Override
         public D build() {
             final D dataInstance = getDataInstance();
-            calculatePagination();
             dataInstance.setPage(page);
             dataInstance.setPageSize(pageSize);
             dataInstance.setTotalPages(totalPages);
@@ -77,10 +84,5 @@ public abstract class AbstractPaginatedData<T> implements Pageable {
         }
 
         protected abstract D getDataInstance();
-
-        private void calculatePagination() {
-            Objects.requireNonNull(items, "Data is required");
-            this.totalPages = Math.ceilDiv(count, pageSize);
-        }
     }
 }

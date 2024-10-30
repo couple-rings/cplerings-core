@@ -8,5 +8,5 @@ public interface Pageable {
 
     int getTotalPages();
 
-    int getCount();
+    long getCount();
 }
