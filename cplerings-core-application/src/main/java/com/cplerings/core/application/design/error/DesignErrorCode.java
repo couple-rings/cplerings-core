@@ -22,6 +22,15 @@ public enum DesignErrorCode implements ErrorCode {
     INVALID_ACCOUNT_ID("013", "design.error.invalidAccountId", Type.BUSINESS),
     ACCOUNT_WITH_ID_NOT_FOUND("014", "design.error.accountWithIdNotFound", Type.BUSINESS),
     ACCOUNT_NOT_ACTIVE("015", "design.error.accountNotActive", Type.BUSINESS),
+    BLUEPRINT_REQUIRED("016", "design.custom.error.blueprintIsRequired", Type.VALIDATION),
+    METAL_WEIGHT_REQUIRED("017", "design.custom.error.metalWeightIsRequired", Type.VALIDATION),
+    DESIGN_VERSION_ID_WRONG_POSITIVE_NUMBER("018", "design.custom.error.designVersionIdIsRequired", Type.VALIDATION),
+    SIDE_DIAMOND_AMOUNT_WRONG_POSITIVE_NUMBER("019", "design.custom.error.sideDiamondAmountMustBePositive", Type.VALIDATION),
+    CUSTOMER_ID_WRONG_POSITIVE_NUMBER("020", "design.custom.error.customerIdMustBePositive", Type.VALIDATION),
+    SPOUSE_ID_WRONG_POSITIVE_NUMBER("021", "design.custom.error.spouseIdMustBePositive", Type.VALIDATION),
+    INVALID_CUSTOMER_ID("021", "design.custom.error.invalidCustomerId", Type.BUSINESS),
+    INVALID_SPOUSE_ID("021", "design.custom.error.invalidSpouseId", Type.BUSINESS),
+    INVALID_DESIGN_VERSION_ID("021", "design.custom.error.invalidDesignVersionId", Type.BUSINESS),
     ;
 
     private final String code;

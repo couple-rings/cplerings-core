@@ -2,6 +2,7 @@ package com.cplerings.core.application.design.implementation;
 
 import com.cplerings.core.application.design.CreateCustomDesignUseCase;
 import com.cplerings.core.application.design.datasource.CreateCustomDesignDataSource;
+import com.cplerings.core.application.design.error.DesignErrorCode;
 import com.cplerings.core.application.design.input.CreateCustomDesignInput;
 import com.cplerings.core.application.design.mapper.ACreateCustomDesignMapper;
 import com.cplerings.core.application.design.output.CreateCustomDesignOutput;
@@ -25,25 +26,25 @@ public class CreateCustomDesignImpl extends AbstractUseCase<CreateCustomDesignIn
     @Override
     protected void validateInput(UseCaseValidator validator, CreateCustomDesignInput input) {
         super.validateInput(validator, input);
-        validator.validateAndStopExecution(input.blueprint() != null, BLUEPRINT_REQUIRED);
-        validator.validateAndStopExecution(input.metalWeight() != null, METAL_WEIGHT_REQUIRED);
-        validator.validateAndStopExecution(input.designVersionId() > 0, DESIGN_VERSION_ID_WRONG_POSITIVE_NUMBER);
-        validator.validateAndStopExecution(input.sideDiamondAmount() > 0, SIDE_DIAMOND_AMOUNT_WRONG_POSITIVE_NUMBER);
-        validator.validateAndStopExecution(input.customerId() > 0, CUSTOMER_ID_WRONG_POSITIVE_NUMBER);
-        validator.validateAndStopExecution(input.spouseId() > 0, SPOUSE_ID_WRONG_POSITIVE_NUMBER);
+        validator.validateAndStopExecution(input.blueprint() != null, DesignErrorCode.BLUEPRINT_REQUIRED);
+        validator.validateAndStopExecution(input.metalWeight() != null, DesignErrorCode.METAL_WEIGHT_REQUIRED);
+        validator.validateAndStopExecution(input.designVersionId() > 0, DesignErrorCode.DESIGN_VERSION_ID_WRONG_POSITIVE_NUMBER);
+        validator.validateAndStopExecution(input.sideDiamondAmount() > 0, DesignErrorCode.SIDE_DIAMOND_AMOUNT_WRONG_POSITIVE_NUMBER);
+        validator.validateAndStopExecution(input.customerId() > 0, DesignErrorCode.CUSTOMER_ID_WRONG_POSITIVE_NUMBER);
+        validator.validateAndStopExecution(input.spouseId() > 0, DesignErrorCode.SPOUSE_ID_WRONG_POSITIVE_NUMBER);
     }
 
     @Override
     protected CreateCustomDesignOutput internalExecute(UseCaseValidator validator, CreateCustomDesignInput input) {
         Account customer = createCustomDesignDataSource.getCustomerById(input.customerId())
                 .orElse(null);
-        validator.validateAndStopExecution(customer != null, INVALID_CUSTOMER_ID);
+        validator.validateAndStopExecution(customer != null, DesignErrorCode.INVALID_CUSTOMER_ID);
         Spouse spouse = createCustomDesignDataSource.getSpouseById(input.spouseId())
                 .orElse(null);
-        validator.validateAndStopExecution(customer != null, INVALID_SPOUSE_ID);
+        validator.validateAndStopExecution(customer != null, DesignErrorCode.INVALID_SPOUSE_ID);
         DesignVersion designVersion = createCustomDesignDataSource.getDesignVersionById(input.designVersionId())
                 .orElse(null);
-        validator.validateAndStopExecution(customer != null, INVALID_DESIGN_VERSION_ID);
+        validator.validateAndStopExecution(customer != null, DesignErrorCode.INVALID_DESIGN_VERSION_ID);
         CustomDesign customDesign = CustomDesign.builder()
                 .designVersion(designVersion)
                 .sideDiamondsCount(input.sideDiamondAmount())
