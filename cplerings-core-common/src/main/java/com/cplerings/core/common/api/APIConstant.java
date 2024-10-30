@@ -62,4 +62,10 @@ public final class APIConstant {
        Uploading path
     */
     public static final String FILES_PATH = "/files";
+
+    /*
+        Custom requests' paths
+     */
+    public static final String CUSTOM_REQUEST_PATH = "/custom_requests";
+    public static final String CUSTOM_SINGLE_REQUEST_PATH = CUSTOM_REQUEST_PATH + "/{customRequestId}";
 }

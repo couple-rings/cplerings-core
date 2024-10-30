@@ -20,8 +20,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+
+import java.util.Set;
 
 @Getter
 @Setter
@@ -50,4 +53,7 @@ public class CustomRequest extends AbstractEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customer_id")
     private Account customer;
+
+    @OneToMany(mappedBy = "customRequest", fetch = FetchType.LAZY)
+    private Set<DesignCustomRequest> designCustomRequests;
 }

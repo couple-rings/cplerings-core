@@ -59,6 +59,7 @@ public class SecurityConfiguration {
         handlePaymentAPI(localHttp);
         handleDesignAPI(localHttp);
         handleFileUploadAPI(localHttp);
+        handleCustomRequestAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
                 .denyAll());
         return localHttp.build();
@@ -145,6 +146,11 @@ public class SecurityConfiguration {
     private void handleFileUploadAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.FILES_PATH))
                 .authenticated());
+    }
+
+    private void handleCustomRequestAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.CUSTOM_SINGLE_REQUEST_PATH))
+                .hasAnyAuthority(RoleConstant.ROLE_STAFF));
     }
 
     private String resolvePath(String path) {

@@ -15,6 +15,7 @@ public class FileUploadInfo {
 
     private String fileBase64;
     private Type type;
+
     public enum Type {
 
         STATIC, DYNAMIC
