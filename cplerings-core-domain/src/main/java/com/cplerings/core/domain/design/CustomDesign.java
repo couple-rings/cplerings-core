@@ -1,5 +1,7 @@
 package com.cplerings.core.domain.design;
 
+import java.util.Set;
+
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.shared.AbstractEntity;
@@ -18,6 +20,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -47,6 +50,9 @@ public class CustomDesign extends AbstractEntity {
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "design_version_id")
     private DesignVersion designVersion;
+
+    @OneToMany(mappedBy = "customDesign", fetch = FetchType.LAZY)
+    private Set<CustomDesignDiamondSpecification> customDesignDiamondSpecifications;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "spouse_id")
