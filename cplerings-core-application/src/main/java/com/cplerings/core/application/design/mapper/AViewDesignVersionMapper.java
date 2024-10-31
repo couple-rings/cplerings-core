@@ -7,6 +7,7 @@ import com.cplerings.core.application.shared.mapper.DesignSizeMapper;
 import com.cplerings.core.application.shared.mapper.MoneyMapper;
 import com.cplerings.core.application.shared.mapper.WeightMapper;
 import com.cplerings.core.common.mapper.SpringMapperConfiguration;
+import com.cplerings.core.domain.design.DesignVersion;
 
 @Mapper(
         config = SpringMapperConfiguration.class,
