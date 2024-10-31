@@ -11,6 +11,7 @@ import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.design.CustomDesign;
+import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.shared.valueobject.Weight;
 import com.cplerings.core.domain.spouse.Spouse;
 
@@ -41,10 +42,16 @@ public class CreateCustomDesignImpl extends AbstractUseCase<CreateCustomDesignIn
         validator.validateAndStopExecution(customer != null, DesignErrorCode.INVALID_CUSTOMER_ID);
         Spouse spouse = createCustomDesignDataSource.getSpouseById(input.spouseId())
                 .orElse(null);
-        validator.validateAndStopExecution(customer != null, DesignErrorCode.INVALID_SPOUSE_ID);
+        validator.validateAndStopExecution(spouse != null, DesignErrorCode.INVALID_SPOUSE_ID);
         DesignVersion designVersion = createCustomDesignDataSource.getDesignVersionById(input.designVersionId())
                 .orElse(null);
-        validator.validateAndStopExecution(customer != null, DesignErrorCode.INVALID_DESIGN_VERSION_ID);
+        validator.validateAndStopExecution(designVersion != null, DesignErrorCode.INVALID_DESIGN_VERSION_ID);
+        CustomDesign customDesignFindBySpouse = createCustomDesignDataSource.getCustomDesignBySpouseId(spouse.getId())
+                .orElse(null);
+        validator.validateAndStopExecution(customDesignFindBySpouse == null, DesignErrorCode.SPOUSE_HAS_BEEN_LINKED_WITH_CUSTOM_DESIGN);
+        CustomDesign customDesignFindByDesignVersion = createCustomDesignDataSource.getCustomDesignByDesignVersionId(designVersion.getId())
+                .orElse(null);
+        validator.validateAndStopExecution(customDesignFindByDesignVersion == null, DesignErrorCode.DESIGN_VERSION_HAS_BEEN_LINKED_WITH_CUSTOM_DESIGN);
         CustomDesign customDesign = CustomDesign.builder()
                 .designVersion(designVersion)
                 .sideDiamondsCount(input.sideDiamondAmount())

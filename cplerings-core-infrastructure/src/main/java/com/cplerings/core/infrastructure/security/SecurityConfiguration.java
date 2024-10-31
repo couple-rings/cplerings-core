@@ -142,7 +142,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.DESIGN_SESSION_PATH))
                         .hasAuthority(RoleConstant.ROLE_CUSTOMER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.DESIGN_VERSION_PATH))
-                        .hasAuthority(RoleConstant.ROLE_STAFF));
+                        .hasAuthority(RoleConstant.ROLE_STAFF))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.CREATE_CUSTOM_DESIGN_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_STAFF));
     }
 
     private void handleFileUploadAPI(HttpSecurity localHttp) throws Exception {

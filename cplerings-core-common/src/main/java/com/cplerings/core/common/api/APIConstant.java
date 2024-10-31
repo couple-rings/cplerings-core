@@ -58,7 +58,8 @@ public final class APIConstant {
     public static final String DESIGN_SESSION_PATH = DESIGN_PATH + "/sessions";
     public static final String CREATE_DESIGN_SESSION_PATH = DESIGN_SESSION_PATH + "/create";
     public static final String DESIGN_VERSION_PATH = DESIGN_PATH + "/versions";
-    public static final String CREATE_CUSTOM_DESIGN_PATH = DESIGN_SESSION_PATH + "/create/custom";
+    public static final String CUSTOM_DESIGN_PATH = DESIGN_PATH + "/customs";
+    public static final String CREATE_CUSTOM_DESIGN_PATH = CUSTOM_DESIGN_PATH;
 
     /*
        Uploading path
