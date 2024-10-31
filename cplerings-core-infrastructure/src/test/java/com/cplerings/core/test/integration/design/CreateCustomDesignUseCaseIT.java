@@ -52,6 +52,8 @@ class CreateCustomDesignUseCaseIT extends AbstractIT {
     @Autowired
     private ImageRepository imageRepository;
 
+    private Spouse spouseCreated;
+
     @BeforeEach
     public void start() {
         Spouse spouse = Spouse.builder()
@@ -65,7 +67,7 @@ class CreateCustomDesignUseCaseIT extends AbstractIT {
                 .coupleId(UUID.randomUUID())
                 .modifiedBy("CP")
                 .build();
-        spouseRepository.saveAndFlush(spouse);
+        spouseCreated =spouseRepository.saveAndFlush(spouse);
 
         DesignVersion designVersion = DesignVersion.builder()
                 .designFile(documentRepository.findById(1L).get())
@@ -87,10 +89,10 @@ class CreateCustomDesignUseCaseIT extends AbstractIT {
         final String token = jwtTestHelper.generateToken(AccountTestConstant.STAFF_EMAIL);
 
         CreateCustomDesignRequest request = CreateCustomDesignRequest.builder()
-                .customerId(1)
-                .designVersionId(1)
+                .customerId(1L)
+                .designVersionId(1L)
                 .blueprint("test")
-                .spouseId(1)
+                .spouseId(spouseCreated.getId())
                 .metalWeight(BigDecimal.valueOf(0.5))
                 .sideDiamondAmount(2)
                 .build();
