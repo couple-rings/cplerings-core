@@ -51,6 +51,7 @@ class CreateCustomDesignUseCaseIT extends AbstractIT {
     void givenStaff_whenCreateCustomDesignUseCase() {
         final String token = jwtTestHelper.generateToken(AccountTestConstant.STAFF_EMAIL);
 
+
         Spouse spouse = Spouse.builder()
                 .createdAt(Instant.now())
                 .createdBy("CP")
