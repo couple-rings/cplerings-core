@@ -2,6 +2,7 @@ package com.cplerings.core.domain.design;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
+
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.jewelry.JewelryCategory;
 import com.cplerings.core.domain.shared.AbstractEntity;
@@ -97,4 +98,7 @@ public class Design extends AbstractEntity {
 
     @OneToMany(mappedBy = "design", fetch = FetchType.LAZY)
     private Set<DesignCustomRequest> designCustomRequests;
+
+    @OneToMany
+    private Set<DesignVersion> designVersions;
 }
