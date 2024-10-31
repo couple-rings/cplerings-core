@@ -56,19 +56,6 @@ class CreateCustomDesignUseCaseIT extends AbstractIT {
 
     @BeforeEach
     public void start() {
-        Spouse spouse = Spouse.builder()
-                .createdAt(Instant.now())
-                .createdBy("CP")
-                .state(State.ACTIVE)
-                .citizenId("07428328")
-                .dateOfBirth(Instant.now())
-                .fullName("test")
-                .modifiedAt(Instant.now())
-                .coupleId(UUID.randomUUID())
-                .modifiedBy("CP")
-                .build();
-        spouseCreated = spouseRepository.saveAndFlush(spouse);
-
         DesignVersion designVersion = DesignVersion.builder()
                 .designFile(documentRepository.findById(1L).get())
                 .image(imageRepository.findById(1L).get())
@@ -87,6 +74,18 @@ class CreateCustomDesignUseCaseIT extends AbstractIT {
     @Test
     void givenStaff_whenCreateCustomDesignUseCase() {
         final String token = jwtTestHelper.generateToken(AccountTestConstant.STAFF_EMAIL);
+        Spouse spouse = Spouse.builder()
+                .createdAt(Instant.now())
+                .createdBy("CP")
+                .state(State.ACTIVE)
+                .citizenId("07428328")
+                .dateOfBirth(Instant.now())
+                .fullName("test")
+                .modifiedAt(Instant.now())
+                .coupleId(UUID.randomUUID())
+                .modifiedBy("CP")
+                .build();
+        spouseCreated = spouseRepository.saveAndFlush(spouse);
 
         CreateCustomDesignRequest request = CreateCustomDesignRequest.builder()
                 .customerId(1)
