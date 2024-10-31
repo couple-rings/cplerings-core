@@ -6,8 +6,11 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
+import org.apache.commons.lang3.tuple.Pair;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.cplerings.core.api.design.data.CustomDesign;
@@ -23,9 +26,11 @@ import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
 import com.cplerings.core.infrastructure.repository.DocumentRepository;
 import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.infrastructure.repository.SpouseRepository;
+import com.cplerings.core.infrastructure.service.email.EmailServiceImpl;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
+import com.icegreen.greenmail.util.GreenMail;
 
 class CreateCustomDesignUseCaseIT extends AbstractIT {
 
@@ -47,11 +52,10 @@ class CreateCustomDesignUseCaseIT extends AbstractIT {
     @Autowired
     private ImageRepository imageRepository;
 
-    @Test
-    void givenStaff_whenCreateCustomDesignUseCase() {
-        final String token = jwtTestHelper.generateToken(AccountTestConstant.STAFF_EMAIL);
+    private Spouse spouseCreated;
 
-
+    @BeforeEach
+    public void start() {
         Spouse spouse = Spouse.builder()
                 .createdAt(Instant.now())
                 .createdBy("CP")
@@ -63,7 +67,7 @@ class CreateCustomDesignUseCaseIT extends AbstractIT {
                 .coupleId(UUID.randomUUID())
                 .modifiedBy("CP")
                 .build();
-        spouseRepository.saveAndFlush(spouse);
+        spouseCreated = spouseRepository.saveAndFlush(spouse);
 
         DesignVersion designVersion = DesignVersion.builder()
                 .designFile(documentRepository.findById(1L).get())
@@ -78,11 +82,17 @@ class CreateCustomDesignUseCaseIT extends AbstractIT {
                 .modifiedBy("CP")
                 .build();
         designVersionRepository.saveAndFlush(designVersion);
+    }
+
+    @Test
+    void givenStaff_whenCreateCustomDesignUseCase() {
+        final String token = jwtTestHelper.generateToken(AccountTestConstant.STAFF_EMAIL);
+
         CreateCustomDesignRequest request = CreateCustomDesignRequest.builder()
                 .customerId(1)
                 .designVersionId(1)
                 .blueprint("test")
-                .spouseId(1)
+                .spouseId(spouseCreated.getId())
                 .metalWeight(BigDecimal.valueOf(0.5))
                 .sideDiamondAmount(2)
                 .build();
