@@ -160,7 +160,7 @@ public class SecurityConfiguration {
 
     private void handleCraftingRequestAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.CRAFTING_REQUEST_PATH))
-                .permitAll());
+                .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER));
     }
 
     private String resolvePath(String path) {

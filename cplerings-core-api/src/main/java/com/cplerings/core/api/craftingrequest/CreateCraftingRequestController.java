@@ -52,7 +52,6 @@ public class CreateCraftingRequestController extends AbstractController<CreateCr
         return handleRequest(request);
     }
 
-
     @Override
     protected APIMapper<CreateCraftingRequestInput, CreateCraftingRequestOutput, CraftingRequest, CreateCraftingRequestRequest, CreateCraftingRequestResponse> getMapper() {
         return apiCreateCraftingRequestMapper;
