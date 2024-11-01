@@ -36,6 +36,7 @@ import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @DataSource
@@ -145,10 +146,16 @@ public class SharedDesignDataSource extends AbstractDataSource
     @Override
     public DesignVersions findDesignVersionsByCustomerId(Long customerId, ViewDesignVersionsInput input) {
         var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
-//        BlazeJPAQuery<DesignVersion> query = createQuery().select(Q_DESIGN_VERSION)
-//                .from(Q_DESIGN)
-//                .where(Q_DESIGN.id.eq(customerId))
-//        long count = query.distinct().fetchCount();
-        return null;
+        BlazeJPAQuery<DesignVersion> query = createQuery()
+                .select(Q_DESIGN_VERSION)
+                .from(Q_DESIGN_VERSION);
+        long count = query.distinct().fetchCount();
+        List<DesignVersion> designVersions = query.limit(input.getPageSize()).offset(offset).fetch();
+        return DesignVersions.builder()
+                .designVerions(designVersions)
+                .count(count)
+                .page(input.getPage())
+                .pageSize(input.getPageSize())
+                .build();
     }
 }

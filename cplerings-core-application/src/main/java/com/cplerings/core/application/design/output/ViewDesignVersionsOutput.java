@@ -1,5 +1,6 @@
 package com.cplerings.core.application.design.output;
 
+import com.cplerings.core.application.shared.entity.design.ADesignVersion;
 import com.cplerings.core.application.shared.pagination.AbstractPaginatedOutput;
 
 public class ViewDesignVersionsOutput extends AbstractPaginatedOutput<ADesignVersion>{

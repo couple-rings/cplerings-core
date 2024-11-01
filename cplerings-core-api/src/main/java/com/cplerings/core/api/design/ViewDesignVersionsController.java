@@ -4,13 +4,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cplerings.core.api.design.data.DesignVersionsData;
+import com.cplerings.core.api.design.mapper.APIViewDesignVersionsMapper;
 import com.cplerings.core.api.design.request.ViewDesignCouplesRequest;
 import com.cplerings.core.api.design.request.ViewDesignVersionsRequest;
 import com.cplerings.core.api.design.response.ViewCoupleDesignResponse;
 import com.cplerings.core.api.design.response.ViewDesignVersionsResponse;
 import com.cplerings.core.api.shared.AbstractController;
+import com.cplerings.core.api.shared.AbstractPaginatedController;
+import com.cplerings.core.api.shared.mapper.APIMapper;
 import com.cplerings.core.api.shared.openapi.DesignTag;
 import com.cplerings.core.api.shared.openapi.ErrorAPIResponse;
+import com.cplerings.core.application.design.ViewDesignVersionsUseCase;
+import com.cplerings.core.application.design.input.ViewDesignVersionsInput;
+import com.cplerings.core.application.design.output.ViewDesignVersionsOutput;
+import com.cplerings.core.application.shared.usecase.UseCase;
 import com.cplerings.core.common.api.APIConstant;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,9 +29,12 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-public class ViewDesignVersionsController extends AbstractController<> {
+public class ViewDesignVersionsController extends AbstractPaginatedController<ViewDesignVersionsInput, ViewDesignVersionsOutput, DesignVersionsData, ViewDesignVersionsRequest, ViewDesignVersionsResponse> {
 
-    @GetMapping(APIConstant.)
+    private final APIViewDesignVersionsMapper apiViewDesignVersionsMapper;
+    private final ViewDesignVersionsUseCase viewDesignVersionsUseCase;
+
+    @GetMapping(APIConstant.DESIGN_VERSION_PATH)
     @DesignTag
     @Operation(summary = "View design versions")
     @ApiResponse(
@@ -37,5 +48,15 @@ public class ViewDesignVersionsController extends AbstractController<> {
     @ErrorAPIResponse
     public ResponseEntity<Object> viewDesign(ViewDesignVersionsRequest request) {
         return handleRequest(request);
+    }
+
+    @Override
+    protected UseCase<ViewDesignVersionsInput, ViewDesignVersionsOutput> getUseCase() {
+        return viewDesignVersionsUseCase;
+    }
+
+    @Override
+    protected APIMapper<ViewDesignVersionsInput, ViewDesignVersionsOutput, DesignVersionsData, ViewDesignVersionsRequest, ViewDesignVersionsResponse> getMapper() {
+        return apiViewDesignVersionsMapper;
     }
 }

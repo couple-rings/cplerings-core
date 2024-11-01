@@ -25,17 +25,17 @@ import lombok.RequiredArgsConstructor;
 public class ViewDesignVersionsUseCaseImpl extends AbstractUseCase<ViewDesignVersionsInput, ViewDesignVersionsOutput> implements ViewDesignVersionsUseCase {
 
     private final AViewDesignVersionsMapper aViewDesignVersionsMapper;
-    private final ViewDesignVersionsDataSource viewDesignVerionsDataSource;
+    private final ViewDesignVersionsDataSource viewDesignVersionsDataSource;
     private final SecurityService securityService;
 
     @Override
     protected ViewDesignVersionsOutput internalExecute(UseCaseValidator validator, ViewDesignVersionsInput input) {
         final CurrentUser currentUser = securityService.getCurrentUser();
         validator.validateAndStopExecution(currentUser.authenticated(), UNAUTHENTICATED);
-        final Optional<Account> accountOptional = viewDesignVerionsDataSource.findAccountByEmail(currentUser.email());
+        final Optional<Account> accountOptional = viewDesignVersionsDataSource.findAccountByEmail(currentUser.email());
         validator.validateAndStopExecution(accountOptional.isPresent(), ACCOUNT_WITH_EMAIL_NOT_FOUND);
         final Account account = accountOptional.get();
-        DesignVersions designVersions = viewDesignVerionsDataSource.findDesignVersionsByCustomerId(account.getId(), input);
+        DesignVersions designVersions = viewDesignVersionsDataSource.findDesignVersionsByCustomerId(account.getId(), input);
         return aViewDesignVersionsMapper.toOutput(designVersions);
     }
 }

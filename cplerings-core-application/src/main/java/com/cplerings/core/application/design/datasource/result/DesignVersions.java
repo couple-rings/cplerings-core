@@ -2,7 +2,7 @@ package com.cplerings.core.application.design.datasource.result;
 
 import java.util.List;
 
-import com.cplerings.core.domain.design.DesignCouple;
+import com.cplerings.core.domain.design.DesignVersion;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +15,7 @@ import lombok.Setter;
 @Builder
 public class DesignVersions {
 
-    private List<DesignVerion> designVerions;
+    private List<DesignVersion> designVerions;
     private long count;
     private int page;
     private int pageSize;
