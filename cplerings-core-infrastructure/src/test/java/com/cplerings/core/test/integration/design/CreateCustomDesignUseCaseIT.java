@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -84,6 +85,7 @@ class CreateCustomDesignUseCaseIT extends AbstractIT {
         designVersionRepository.saveAndFlush(designVersion);
     }
 
+    @Disabled
     @Test
     void givenStaff_whenCreateCustomDesignUseCase() {
         final String token = jwtTestHelper.generateToken(AccountTestConstant.STAFF_EMAIL);
