@@ -3,7 +3,12 @@ package com.cplerings.core.infrastructure.datasource.design;
 import java.util.List;
 import java.util.Optional;
 
+import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.design.datasource.CreateCustomDesignDataSource;
+import com.cplerings.core.application.design.datasource.ViewCustomDesignsDataSource;
+import com.cplerings.core.application.design.datasource.result.CustomDesigns;
+import com.cplerings.core.application.design.input.ViewCustomDesignsInput;
+import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.design.CustomDesign;
@@ -31,7 +36,7 @@ import lombok.RequiredArgsConstructor;
 
 @DataSource
 @RequiredArgsConstructor
-public class SharedCustomDesignDataSource extends AbstractDataSource implements CreateCustomDesignDataSource {
+public class SharedCustomDesignDataSource extends AbstractDataSource implements CreateCustomDesignDataSource, ViewCustomDesignsDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QSpouse Q_SPOUSE = QSpouse.spouse;
@@ -130,5 +135,31 @@ public class SharedCustomDesignDataSource extends AbstractDataSource implements 
     public List<CustomDesignDiamondSpecification> saveDiamondSpec(List<CustomDesignDiamondSpecification> customDesignDiamondSpecifications) {
         customDesignDiamondSpecifications.forEach(this::updateAuditor);
         return customDesignDiamondSpecificationRepository.saveAll(customDesignDiamondSpecifications);
+    }
+
+    @Override
+    public CustomDesigns getCustomDesigns(Long customerId, ViewCustomDesignsInput input) {
+        var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
+        BlazeJPAQuery<CustomDesign> query = createQuery()
+                .select(Q_CUSTOM_DESIGN)
+                .from(Q_CUSTOM_DESIGN)
+                .where(Q_CUSTOM_DESIGN.account.id.eq(customerId));
+        long count = query.distinct().fetchCount();
+        List<CustomDesign> customDesigns = query.limit(input.getPageSize()).offset(offset).fetch();
+        return CustomDesigns.builder()
+                .customDesigns(customDesigns)
+                .count(count)
+                .page(input.getPage())
+                .pageSize(input.getPageSize())
+                .build();
+    }
+
+    @Override
+    public Optional<Account> findAccountByEmail( String email) {
+        return Optional.ofNullable(createQuery().select(Q_ACCOUNT)
+                .from(Q_ACCOUNT)
+                .where(Q_ACCOUNT.email.eq(email)
+                        .and(Q_ACCOUNT.state.eq(State.ACTIVE)))
+                .fetchOne());
     }
 }
