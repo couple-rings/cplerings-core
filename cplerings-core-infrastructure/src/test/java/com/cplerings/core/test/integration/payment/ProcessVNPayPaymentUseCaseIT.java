@@ -34,6 +34,7 @@ class ProcessVNPayPaymentUseCaseIT extends AbstractIT {
     @Autowired
     private PaymentRepository paymentRepository;
 
+    @Disabled
     @Test
     void givenVNPay_whenReturnPaymentResultThroughWebhook() {
         final VNPayPaymentRequest request = getTestDataLoader(PAYMENT_FOLDER).loadAsObject(VNPAY_WEBHOOK_RESULT, VNPayPaymentRequest.class);

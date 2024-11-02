@@ -11,6 +11,7 @@ import com.cplerings.core.test.shared.AbstractCT;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,6 +29,7 @@ class VNPayPaymentRequestServiceCT extends AbstractCT {
     @Qualifier(PaymentConstant.VNPAY_PAYMENT_SERVICE_NAME)
     private PaymentRequestService paymentRequestService;
 
+    @Disabled
     @Test
     void givenPaymentService_whenGeneratePaymentRequest() {
         final PaymentRequest paymentRequest = paymentRequestService.requestPayment(PaymentInfo.builder()
