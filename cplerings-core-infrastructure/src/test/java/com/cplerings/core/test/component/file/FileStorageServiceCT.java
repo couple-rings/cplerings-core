@@ -7,12 +7,12 @@ import com.cplerings.core.application.shared.service.file.FileInfo;
 import com.cplerings.core.application.shared.service.file.FileStorageService;
 import com.cplerings.core.application.shared.service.file.FileUploadInfo;
 import com.cplerings.core.common.either.Either;
-import com.cplerings.core.test.shared.AbstractCT;
+import com.cplerings.core.test.shared.spouse.AbstractAWSCT;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class FileStorageServiceCT extends AbstractCT {
+class FileStorageServiceCT extends AbstractAWSCT {
 
     private static final String FILE_FOLDER = "data/integration/file";
     private static final String VALID_IMAGE_FILE = "/valid-jpeg.json";

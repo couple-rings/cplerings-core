@@ -1,5 +1,6 @@
 package com.cplerings.core.test.shared.datasource;
 
+import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.payment.PaymentReceiver;
@@ -17,4 +18,6 @@ public interface TestDataSource {
     Spouse save(Spouse spouse);
 
     SpouseAccount save(SpouseAccount spouseAccount);
+
+    DesignVersion save(DesignVersion designVersion);
 }

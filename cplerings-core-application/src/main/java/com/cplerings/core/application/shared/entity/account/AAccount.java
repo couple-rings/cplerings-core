@@ -1,7 +1,5 @@
 package com.cplerings.core.application.shared.entity.account;
 
-import java.io.Serializable;
-
 import com.cplerings.core.domain.account.Role;
 
 import lombok.AllArgsConstructor;
@@ -9,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.io.Serializable;
 
 @Getter
 @Setter

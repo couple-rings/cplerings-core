@@ -1,4 +1,4 @@
-package com.cplerings.core.test.component.file;
+package com.cplerings.core.test.shared;
 
 import com.cplerings.core.common.profile.ProfileConstant;
 

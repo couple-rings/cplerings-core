@@ -67,3 +67,13 @@ cplerings:
       file-path-format: http://localhost:4566/${cplerings.aws.s3.bucket-name}.s3.${cplerings.aws.region}.amazonaws.com/%s
     access-key: test
     secret-key: test
+logging:
+  level:
+    org:
+      hibernate:
+        id:
+          enhanced:
+            SequenceStyleGenerator: trace
+        persister:
+          entity:
+            AbstractEntityPersister: trace

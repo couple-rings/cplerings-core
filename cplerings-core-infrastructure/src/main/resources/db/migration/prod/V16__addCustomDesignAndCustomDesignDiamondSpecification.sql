@@ -4,32 +4,32 @@ CREATE SEQUENCE IF NOT EXISTS custom_design_sequence START WITH 1 INCREMENT BY 1
 
 CREATE TABLE tbl_custom_design
 (
-    custom_design_id    BIGINT         NOT NULL,
+    custom_design_id    BIGINT                      NOT NULL,
     created_at          TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    create_by           VARCHAR(255)   NOT NULL,
+    create_by           VARCHAR(255)                NOT NULL,
     modified_at         TIMESTAMP WITHOUT TIME ZONE,
     modified_by         VARCHAR(255),
-    state               VARCHAR(12)    NOT NULL,
-    opt_version         INTEGER        NOT NULL,
-    design_version_id   BIGINT         NOT NULL,
-    spouse_id           BIGINT         NOT NULL,
-    customer_id         BIGINT         NOT NULL,
-    side_diamonds_count INTEGER        NOT NULL,
-    metal_weight        DECIMAL(10, 2) NOT NULL,
+    state               VARCHAR(12)                 NOT NULL,
+    opt_version         INTEGER                     NOT NULL,
+    design_version_id   BIGINT                      NOT NULL,
+    spouse_id           BIGINT                      NOT NULL,
+    customer_id         BIGINT                      NOT NULL,
+    side_diamonds_count INTEGER                     NOT NULL,
+    metal_weight        DECIMAL(10, 2)              NOT NULL,
     CONSTRAINT pk_tbl_custom_design PRIMARY KEY (custom_design_id)
 );
 
 CREATE TABLE tbl_custom_design_diamond_specification
 (
-    custom_design_diamond_specification_id BIGINT       NOT NULL,
+    custom_design_diamond_specification_id BIGINT                      NOT NULL,
     created_at                             TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    create_by                              VARCHAR(255) NOT NULL,
+    create_by                              VARCHAR(255)                NOT NULL,
     modified_at                            TIMESTAMP WITHOUT TIME ZONE,
     modified_by                            VARCHAR(255),
-    state                                  VARCHAR(12)  NOT NULL,
-    opt_version                            INTEGER      NOT NULL,
-    custom_design_id                       BIGINT       NOT NULL,
-    diamond_specification_id               BIGINT       NOT NULL,
+    state                                  VARCHAR(12)                 NOT NULL,
+    opt_version                            INTEGER                     NOT NULL,
+    custom_design_id                       BIGINT                      NOT NULL,
+    diamond_specification_id               BIGINT                      NOT NULL,
     CONSTRAINT pk_tbl_custom_design_diamond_specification PRIMARY KEY (custom_design_diamond_specification_id)
 );
 
