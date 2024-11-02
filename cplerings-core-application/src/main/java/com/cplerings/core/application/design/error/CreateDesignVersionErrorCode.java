@@ -16,6 +16,8 @@ public enum CreateDesignVersionErrorCode implements ErrorCode {
     INVALID_DESIGN_ID("006", "design.version.error.invalidDesignId", ErrorCode.Type.BUSINESS),
     CUSTOMER_ID_WRONG_POSITIVE_NUMBER("007", "design.version.error.invalidPositiveCustomerId", Type.VALIDATION),
     INVALID_CUSTOMER_ID("008", "design.version.error.invalidCustomerId", Type.BUSINESS),
+    CUSTOM_DESIGN_ID_WRONG_POSITIVE_NUMBER("007", "design.version.error.customDesignIdWrongPositiveInteger", Type.VALIDATION),
+    INVALID_CUSTOM_DESIGN_ID("008", "design.version.error.invalidCustomDesignId", ErrorCode.Type.BUSINESS),
     ;
 
     private final String code;
