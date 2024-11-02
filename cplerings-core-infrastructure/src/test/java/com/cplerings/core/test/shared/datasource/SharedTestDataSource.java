@@ -1,5 +1,6 @@
 package com.cplerings.core.test.shared.datasource;
 
+import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.payment.PaymentReceiver;
@@ -7,6 +8,7 @@ import com.cplerings.core.domain.spouse.Spouse;
 import com.cplerings.core.domain.spouse.SpouseAccount;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.repository.DesignSessionRepository;
+import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
 import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
 import com.cplerings.core.infrastructure.repository.PaymentRepository;
 import com.cplerings.core.infrastructure.repository.SpouseAccountRepository;
@@ -25,6 +27,7 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private final DesignSessionRepository designSessionRepository;
     private final SpouseRepository spouseRepository;
     private final SpouseAccountRepository spouseAccountRepository;
+    private final DesignVersionRepository designVersionRepository;
 
     @Override
     public Payment save(Payment payment) {
@@ -47,12 +50,18 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     @Override
     public Spouse save(Spouse spouse) {
         updateAuditor(spouse);
-        return spouseRepository.save(spouse);
+        return spouseRepository.saveAndFlush(spouse);
     }
 
     @Override
     public SpouseAccount save(SpouseAccount spouseAccount) {
         updateAuditor(spouseAccount);
         return spouseAccountRepository.save(spouseAccount);
+    }
+
+    @Override
+    public DesignVersion save(DesignVersion designVersion) {
+        updateAuditor(designVersion);
+        return designVersionRepository.save(designVersion);
     }
 }

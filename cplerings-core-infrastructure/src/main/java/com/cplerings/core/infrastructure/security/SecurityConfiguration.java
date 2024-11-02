@@ -60,6 +60,7 @@ public class SecurityConfiguration {
         handleDesignAPI(localHttp);
         handleFileUploadAPI(localHttp);
         handleCustomRequestAPI(localHttp);
+        handleCraftingRequestAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
                 .denyAll());
         return localHttp.build();
@@ -142,7 +143,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.DESIGN_SESSION_PATH))
                         .hasAuthority(RoleConstant.ROLE_CUSTOMER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.DESIGN_VERSION_PATH))
-                        .hasAuthority(RoleConstant.ROLE_STAFF));
+                        .hasAuthority(RoleConstant.ROLE_STAFF))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.CREATE_CUSTOM_DESIGN_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_STAFF));
     }
 
     private void handleFileUploadAPI(HttpSecurity localHttp) throws Exception {
@@ -153,6 +156,11 @@ public class SecurityConfiguration {
     private void handleCustomRequestAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.CUSTOM_SINGLE_REQUEST_PATH))
                 .hasAnyAuthority(RoleConstant.ROLE_STAFF));
+    }
+
+    private void handleCraftingRequestAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.CRAFTING_REQUEST_PATH))
+                .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER));
     }
 
     private String resolvePath(String path) {

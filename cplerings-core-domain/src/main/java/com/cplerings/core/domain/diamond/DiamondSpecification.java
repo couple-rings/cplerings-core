@@ -1,6 +1,7 @@
 package com.cplerings.core.domain.diamond;
 
 import com.cplerings.core.common.database.DatabaseConstant;
+import com.cplerings.core.domain.design.CustomDesignDiamondSpecification;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.valueobject.Money;
 import com.cplerings.core.domain.shared.valueobject.Weight;
@@ -71,4 +72,7 @@ public class DiamondSpecification extends AbstractEntity {
 
     @OneToMany(mappedBy = "diamondSpecification", fetch = FetchType.LAZY)
     private Set<Diamond> diamonds;
+
+    @OneToMany(mappedBy = "diamondSpecification", fetch = FetchType.LAZY)
+    private Set<CustomDesignDiamondSpecification> customDesignDiamondSpecifications;
 }
