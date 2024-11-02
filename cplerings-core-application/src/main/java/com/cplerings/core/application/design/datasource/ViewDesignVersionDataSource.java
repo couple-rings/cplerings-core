@@ -6,5 +6,5 @@ import com.cplerings.core.domain.design.DesignVersion;
 
 public interface ViewDesignVersionDataSource {
 
-    Optional<DesignVersion> getDesignVersionByUd(long designVersionId);
+    Optional<DesignVersion> getDesignVersionById(long designVersionId);
 }

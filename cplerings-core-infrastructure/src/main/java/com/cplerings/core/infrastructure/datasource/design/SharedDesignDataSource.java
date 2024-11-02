@@ -113,7 +113,7 @@ public class SharedDesignDataSource extends AbstractDataSource
     }
 
     @Override
-    public Optional<DesignVersion> getDesignVersionByUd(long designVersionId) {
+    public Optional<DesignVersion> getDesignVersionById(long designVersionId) {
         return Optional.ofNullable(createQuery().select(Q_DESIGN_VERSION)
                 .from(Q_DESIGN_VERSION)
                 .where(Q_DESIGN_VERSION.id.eq(designVersionId))
