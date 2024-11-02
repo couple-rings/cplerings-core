@@ -2,10 +2,15 @@ package com.cplerings.core.domain.design.crafting;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.account.Account;
-import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.diamond.DiamondSpecification;
 import com.cplerings.core.domain.metal.MetalSpecification;
 import com.cplerings.core.domain.shared.AbstractEntity;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,11 +24,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter

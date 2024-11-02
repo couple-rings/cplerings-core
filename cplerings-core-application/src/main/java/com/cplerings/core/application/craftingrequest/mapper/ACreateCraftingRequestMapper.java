@@ -1,13 +1,13 @@
 package com.cplerings.core.application.craftingrequest.mapper;
 
-import org.mapstruct.Mapper;
-
 import com.cplerings.core.application.craftingrequest.output.CreateCraftingRequestOutput;
 import com.cplerings.core.application.shared.mapper.DesignSizeMapper;
 import com.cplerings.core.application.shared.mapper.MoneyMapper;
 import com.cplerings.core.application.shared.mapper.WeightMapper;
 import com.cplerings.core.common.mapper.SpringMapperConfiguration;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
+
+import org.mapstruct.Mapper;
 
 @Mapper(
         config = SpringMapperConfiguration.class,
@@ -19,5 +19,5 @@ import com.cplerings.core.domain.design.crafting.CraftingRequest;
 )
 public interface ACreateCraftingRequestMapper {
 
-        CreateCraftingRequestOutput toOutput(CraftingRequest craftingRequest);
+    CreateCraftingRequestOutput toOutput(CraftingRequest craftingRequest);
 }

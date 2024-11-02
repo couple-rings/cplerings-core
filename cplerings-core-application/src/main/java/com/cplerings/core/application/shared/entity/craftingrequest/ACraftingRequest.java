@@ -1,7 +1,5 @@
 package com.cplerings.core.application.shared.entity.craftingrequest;
 
-import java.io.Serializable;
-
 import com.cplerings.core.application.shared.entity.account.AAccount;
 import com.cplerings.core.application.shared.entity.design.ADiamondSpecification;
 import com.cplerings.core.application.shared.entity.design.AMetalSpecification;
@@ -12,6 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.io.Serializable;
 
 @Getter
 @Setter

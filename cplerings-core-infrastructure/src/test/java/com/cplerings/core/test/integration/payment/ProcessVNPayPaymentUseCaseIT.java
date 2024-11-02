@@ -11,7 +11,6 @@ import com.cplerings.core.domain.payment.PaymentStatus;
 import com.cplerings.core.domain.payment.PaymentType;
 import com.cplerings.core.domain.payment.transaction.VNPayTransaction;
 import com.cplerings.core.domain.shared.valueobject.Money;
-import com.cplerings.core.infrastructure.repository.PaymentRepository;
 import com.cplerings.core.test.shared.AbstractIT;
 
 import org.junit.jupiter.api.Disabled;
@@ -31,10 +30,6 @@ class ProcessVNPayPaymentUseCaseIT extends AbstractIT {
     @Autowired
     private ProcessVNPayPaymentDataSource processVNPayPaymentDataSource;
 
-    @Autowired
-    private PaymentRepository paymentRepository;
-
-    @Disabled
     @Test
     void givenVNPay_whenReturnPaymentResultThroughWebhook() {
         final VNPayPaymentRequest request = getTestDataLoader(PAYMENT_FOLDER).loadAsObject(VNPAY_WEBHOOK_RESULT, VNPayPaymentRequest.class);

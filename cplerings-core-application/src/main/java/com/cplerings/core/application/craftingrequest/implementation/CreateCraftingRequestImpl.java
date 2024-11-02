@@ -29,23 +29,23 @@ public class CreateCraftingRequestImpl extends AbstractUseCase<CreateCraftingReq
     @Override
     protected void validateInput(UseCaseValidator validator, CreateCraftingRequestInput input) {
         super.validateInput(validator, input);
-        if(input.customerId() != null) {
+        if (input.customerId() != null) {
             validator.validateAndStopExecution(input.customerId() > 0, CraftingRequestErrorCode.CUSTOMER_ID_WRONG_POSITIVE_INTEGER);
         }
 
-        if(input.customDesignId() != null) {
+        if (input.customDesignId() != null) {
             validator.validateAndStopExecution(input.customDesignId() > 0, CraftingRequestErrorCode.CUSTOM_DESIGN_ID_WRONG_POSITIVE_INTEGER);
         }
 
-        if(input.diamondSpecId() != null) {
+        if (input.diamondSpecId() != null) {
             validator.validateAndStopExecution(input.diamondSpecId() > 0, CraftingRequestErrorCode.DIAMOND_SPECIFICATION_ID_WRONG_POSITIVE_INTEGER);
         }
 
-        if(input.metalSpecId() != null) {
+        if (input.metalSpecId() != null) {
             validator.validateAndStopExecution(input.metalSpecId() > 0, CraftingRequestErrorCode.METAL_SPECIFICATION_ID_WRONG_POSITIVE_INTEGER);
         }
 
-        if(input.fingerSize() != null) {
+        if (input.fingerSize() != null) {
             validator.validateAndStopExecution(input.fingerSize() > 0, CraftingRequestErrorCode.FINGER_SIZE_WRONG_POSITIVE_INTEGER);
         }
 

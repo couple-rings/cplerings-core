@@ -2,15 +2,6 @@ package com.cplerings.core.test.integration.craftingrequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.UUID;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.reactive.server.WebTestClient;
-
 import com.cplerings.core.api.craftingrequest.data.CraftingRequest;
 import com.cplerings.core.api.craftingrequest.request.CreateCraftingRequestRequest;
 import com.cplerings.core.api.craftingrequest.response.CreateCraftingRequestResponse;
@@ -32,7 +23,16 @@ import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
 
-public class CreateCraftingRequestIT extends AbstractIT{
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.WebTestClient;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.UUID;
+
+public class CreateCraftingRequestIT extends AbstractIT {
 
     @Autowired
     private JWTTestHelper jwtTestHelper;
@@ -75,7 +75,7 @@ public class CreateCraftingRequestIT extends AbstractIT{
                 .coupleId(UUID.randomUUID())
                 .modifiedBy("CP")
                 .build();
-        spouseCreated =spouseRepository.saveAndFlush(spouse);
+        spouseCreated = spouseRepository.saveAndFlush(spouse);
 
         DesignVersion designVersion = DesignVersion.builder()
                 .designFile(documentRepository.findById(1L).get())

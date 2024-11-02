@@ -1,10 +1,5 @@
 package com.cplerings.core.api.craftingrequest;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.cplerings.core.api.craftingrequest.data.CraftingRequest;
 import com.cplerings.core.api.craftingrequest.mapper.APICreateCraftingRequestMapper;
 import com.cplerings.core.api.craftingrequest.request.CreateCraftingRequestRequest;
@@ -19,11 +14,17 @@ import com.cplerings.core.application.craftingrequest.output.CreateCraftingReque
 import com.cplerings.core.application.shared.usecase.UseCase;
 import com.cplerings.core.common.api.APIConstant;
 
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
@@ -36,6 +37,12 @@ public class CreateCraftingRequestController extends AbstractController<CreateCr
     protected UseCase<CreateCraftingRequestInput, CreateCraftingRequestOutput> getUseCase() {
         return createCraftingRequestUseCase;
     }
+
+    @Override
+    protected APIMapper<CreateCraftingRequestInput, CreateCraftingRequestOutput, CraftingRequest, CreateCraftingRequestRequest, CreateCraftingRequestResponse> getMapper() {
+        return apiCreateCraftingRequestMapper;
+    }
+
     @PostMapping(APIConstant.CRAFTING_REQUEST_PATH)
     @CraftingRequestTag
     @Operation(summary = "Create crafting request")
@@ -50,10 +57,5 @@ public class CreateCraftingRequestController extends AbstractController<CreateCr
     @ErrorAPIResponse
     public ResponseEntity<Object> create(@RequestBody CreateCraftingRequestRequest request) {
         return handleRequest(request);
-    }
-
-    @Override
-    protected APIMapper<CreateCraftingRequestInput, CreateCraftingRequestOutput, CraftingRequest, CreateCraftingRequestRequest, CreateCraftingRequestResponse> getMapper() {
-        return apiCreateCraftingRequestMapper;
     }
 }

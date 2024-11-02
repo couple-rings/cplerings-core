@@ -1,8 +1,6 @@
 package com.cplerings.core.api.craftingrequest.response;
 
 import com.cplerings.core.api.craftingrequest.data.CraftingRequest;
-import com.cplerings.core.api.customrequest.data.CustomRequest;
-import com.cplerings.core.api.customrequest.response.ViewCustomRequestResponse;
 import com.cplerings.core.api.shared.AbstractDataResponse;
 
 import lombok.Getter;
