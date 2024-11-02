@@ -9,6 +9,7 @@ import com.cplerings.core.application.design.datasource.ViewCustomDesignsDataSou
 import com.cplerings.core.application.design.datasource.result.CustomDesigns;
 import com.cplerings.core.application.design.input.ViewCustomDesignsInput;
 import com.cplerings.core.common.pagination.PaginationUtils;
+import com.cplerings.core.application.design.datasource.ViewCustomDesignDataSource;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.design.CustomDesign;
@@ -36,7 +37,7 @@ import lombok.RequiredArgsConstructor;
 
 @DataSource
 @RequiredArgsConstructor
-public class SharedCustomDesignDataSource extends AbstractDataSource implements CreateCustomDesignDataSource, ViewCustomDesignsDataSource {
+public class SharedCustomDesignDataSource extends AbstractDataSource implements CreateCustomDesignDataSource, ViewCustomDesignsDataSource, ViewCustomDesignDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QSpouse Q_SPOUSE = QSpouse.spouse;
@@ -162,6 +163,15 @@ public class SharedCustomDesignDataSource extends AbstractDataSource implements 
                 .from(Q_ACCOUNT)
                 .where(Q_ACCOUNT.email.eq(email)
                         .and(Q_ACCOUNT.state.eq(State.ACTIVE)))
+                .fetchOne());
+    }
+
+    @Override
+    public Optional<CustomDesign> getCustomDesignByCustomDesignId(Long customDesignId) {
+        return Optional.ofNullable(createQuery().select(Q_CUSTOM_DESIGN)
+                .from(Q_CUSTOM_DESIGN)
+                .where(Q_CUSTOM_DESIGN.id.eq(customDesignId)
+                        .and(Q_CUSTOM_DESIGN.state.eq(State.ACTIVE)))
                 .fetchOne());
     }
 }
