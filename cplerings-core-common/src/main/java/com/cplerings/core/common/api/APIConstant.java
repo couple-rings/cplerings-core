@@ -60,6 +60,7 @@ public final class APIConstant {
     public static final String DESIGN_VERSION_PATH = DESIGN_PATH + "/versions";
     public static final String CUSTOM_DESIGN_PATH = DESIGN_PATH + "/customs";
     public static final String CREATE_CUSTOM_DESIGN_PATH = CUSTOM_DESIGN_PATH;
+    public static final String VIEW_SINGLE_DESIGN_VERSION_PATH = DESIGN_VERSION_PATH + "/{designVersionId}";
 
     /*
        Uploading path

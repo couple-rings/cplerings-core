@@ -4,10 +4,12 @@ import com.cplerings.core.application.design.datasource.CheckRemainingDesignSess
 import com.cplerings.core.application.design.datasource.CreateDesignSessionDataSource;
 import com.cplerings.core.application.design.datasource.CreateDesignVersionDataSource;
 import com.cplerings.core.application.design.datasource.ProcessDesignSessionPaymentDataSource;
+import com.cplerings.core.application.design.datasource.ViewDesignVersionDataSource;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.QDesign;
+import com.cplerings.core.domain.design.QDesignVersion;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.design.session.DesignSessionStatus;
@@ -33,9 +35,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SharedDesignDataSource extends AbstractDataSource
         implements CreateDesignSessionDataSource, ProcessDesignSessionPaymentDataSource, CheckRemainingDesignSessionDataSource,
-        CreateDesignVersionDataSource {
+        CreateDesignVersionDataSource, ViewDesignVersionDataSource {
 
     private static final QDesign Q_DESIGN = QDesign.design;
+    private static final QDesignVersion Q_DESIGN_VERSION = QDesignVersion.designVersion;
 
     private final DesignSessionRepository designSessionRepository;
     private final AccountRepository accountRepository;
@@ -106,6 +109,14 @@ public class SharedDesignDataSource extends AbstractDataSource
         return Optional.ofNullable(createQuery().select(Q_DESIGN)
                 .from(Q_DESIGN)
                 .where(Q_DESIGN.id.eq(designID))
+                .fetchOne());
+    }
+
+    @Override
+    public Optional<DesignVersion> getDesignVersionById(long designVersionId) {
+        return Optional.ofNullable(createQuery().select(Q_DESIGN_VERSION)
+                .from(Q_DESIGN_VERSION)
+                .where(Q_DESIGN_VERSION.id.eq(designVersionId))
                 .fetchOne());
     }
 }
