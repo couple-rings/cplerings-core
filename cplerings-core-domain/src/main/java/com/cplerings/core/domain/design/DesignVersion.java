@@ -58,11 +58,11 @@ public class DesignVersion extends AbstractEntity {
     private Document designFile;
 
     @Column(name = "version_number", nullable = false)
-    private int versionNumber;
+    private Integer versionNumber;
 
     @Column(name = "is_accepted", nullable = false)
-    private boolean isAccepted;
+    private Boolean isAccepted;
 
     @Column(name = "is_old", nullable = false)
-    private boolean isOld;
+    private Boolean isOld;
 }
