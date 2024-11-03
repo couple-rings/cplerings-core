@@ -10,6 +10,7 @@ CREATE TABLE tbl_design_version
     state             VARCHAR(12)                 NOT NULL,
     opt_version       INTEGER                     NOT NULL,
     design_id         BIGINT                      NOT NULL,
+    customer_id       BIGINT                      NOT NULL,
     image_id          BIGINT                      NOT NULL,
     design_file_id    BIGINT                      NOT NULL,
     version_number    INTEGER                     NOT NULL,
@@ -25,7 +26,13 @@ ALTER TABLE tbl_design_version
     ADD CONSTRAINT uc_tbl_design_version_image UNIQUE (image_id);
 
 ALTER TABLE tbl_design_version
+    ADD CONSTRAINT FK_TBL_DESIGN_VERSION_ON_CUSTOMER FOREIGN KEY (customer_id) REFERENCES tbl_account (account_id);
+
+ALTER TABLE tbl_design_version
     ADD CONSTRAINT FK_TBL_DESIGN_VERSION_ON_DESIGN FOREIGN KEY (design_id) REFERENCES tbl_design (design_id);
 
 ALTER TABLE tbl_design_version
     ADD CONSTRAINT FK_TBL_DESIGN_VERSION_ON_DESIGN_FILE FOREIGN KEY (design_file_id) REFERENCES tbl_document (document_id);
+
+ALTER TABLE tbl_design_version
+    ADD CONSTRAINT FK_TBL_DESIGN_VERSION_ON_IMAGE FOREIGN KEY (image_id) REFERENCES tbl_image (image_id);

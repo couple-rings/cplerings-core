@@ -25,7 +25,8 @@ class CreateDesignVersionUseCaseIT extends AbstractIT {
         final String token = jwtTestHelper.generateToken(AccountTestConstant.STAFF_EMAIL);
 
         CreateDesignVersionRequest request = CreateDesignVersionRequest.builder()
-                .designId(1)
+                .customerId(1L)
+                .designId(1L)
                 .designFile("test")
                 .versionNumber(3)
                 .previewImage("test")

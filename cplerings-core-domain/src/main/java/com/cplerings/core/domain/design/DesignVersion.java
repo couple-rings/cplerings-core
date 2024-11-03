@@ -1,6 +1,7 @@
 package com.cplerings.core.domain.design;
 
 import com.cplerings.core.common.database.DatabaseConstant;
+import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.shared.AbstractEntity;
@@ -43,6 +44,10 @@ public class DesignVersion extends AbstractEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "design_id")
     private Design design;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "customer_id")
+    private Account customer;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "image_id")

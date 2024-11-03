@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 public enum ViewDesignVersionErrorCode implements ErrorCode {
 
     DESIGN_VERSION_ID_WRONG_POSITIVE_NUMBER("002", "design.version.error.designVersionIdInvalidPositiveInteger", Type.VALIDATION),
-    INVALID_DESIGN_VERSION_ID("003", "design.version.error.designVersionIdInvalidPositiveInteger", Type.VALIDATION),
+    INVALID_DESIGN_VERSION_ID("003", "design.version.error.designVersionIdIsNotReal", Type.BUSINESS),
     ;
 
     private final String code;
