@@ -6,3 +6,6 @@ ALTER TABLE tbl_design_version
 
 ALTER TABLE tbl_design_version
     ADD CONSTRAINT FK_TBL_DESIGN_VERSION_ON_CUSTOMER FOREIGN KEY (customer_id) REFERENCES tbl_account (account_id);
+
+ALTER TABLE tbl_design_version
+    ADD CONSTRAINT FK_TBL_DESIGN_VERSION_ON_IMAGE FOREIGN KEY (image_id) REFERENCES tbl_image (image_id);

@@ -29,6 +29,3 @@ ALTER TABLE tbl_design_version
 
 ALTER TABLE tbl_design_version
     ADD CONSTRAINT FK_TBL_DESIGN_VERSION_ON_DESIGN_FILE FOREIGN KEY (design_file_id) REFERENCES tbl_document (document_id);
-
-ALTER TABLE tbl_design_version
-    ADD CONSTRAINT FK_TBL_DESIGN_VERSION_ON_IMAGE FOREIGN KEY (image_id) REFERENCES tbl_image (image_id);
