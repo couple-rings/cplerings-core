@@ -4,6 +4,7 @@ import com.cplerings.core.application.design.datasource.CheckRemainingDesignSess
 import com.cplerings.core.application.design.datasource.CreateDesignSessionDataSource;
 import com.cplerings.core.application.design.datasource.CreateDesignVersionDataSource;
 import com.cplerings.core.application.design.datasource.ProcessDesignSessionPaymentDataSource;
+import com.cplerings.core.application.design.datasource.UpdateDesignVersionStatusDataSource;
 import com.cplerings.core.application.design.datasource.ViewDesignVersionDataSource;
 import com.cplerings.core.application.design.datasource.ViewDesignVersionsDataSource;
 import com.cplerings.core.application.design.datasource.result.DesignVersions;
@@ -22,6 +23,7 @@ import com.cplerings.core.domain.design.session.DesignSessionStatus;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.payment.PaymentReceiver;
+import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
@@ -31,7 +33,12 @@ import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
 import com.cplerings.core.infrastructure.repository.DocumentRepository;
 import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
+import com.querydsl.jpa.impl.JPAUpdateClause;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.PersistenceUnit;
 import lombok.RequiredArgsConstructor;
 
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
@@ -44,7 +51,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SharedDesignDataSource extends AbstractDataSource
         implements CreateDesignSessionDataSource, ProcessDesignSessionPaymentDataSource, CheckRemainingDesignSessionDataSource,
-        CreateDesignVersionDataSource, ViewDesignVersionDataSource, ViewDesignVersionsDataSource {
+        CreateDesignVersionDataSource, ViewDesignVersionDataSource, ViewDesignVersionsDataSource, UpdateDesignVersionStatusDataSource {
 
     private static final QDesign Q_DESIGN = QDesign.design;
     private static final QDesignVersion Q_DESIGN_VERSION = QDesignVersion.designVersion;
@@ -57,6 +64,9 @@ public class SharedDesignDataSource extends AbstractDataSource
     private final DesignVersionRepository designVersionRepository;
     private final DocumentRepository documentRepository;
     private final ImageRepository imageRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public Optional<Account> getAccountByEmail(String email) {
@@ -184,5 +194,11 @@ public class SharedDesignDataSource extends AbstractDataSource
                 .page(input.getPage())
                 .pageSize(input.getPageSize())
                 .build();
+    }
+
+    @Override
+    public DesignVersion acceptDesignVersion(DesignVersion designVersion) {
+        updateAuditor(designVersion);
+        return designVersionRepository.save(designVersion);
     }
 }
