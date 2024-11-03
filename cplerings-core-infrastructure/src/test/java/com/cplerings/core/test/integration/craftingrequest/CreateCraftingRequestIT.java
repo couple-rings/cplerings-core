@@ -79,6 +79,7 @@ public class CreateCraftingRequestIT extends AbstractIT {
 
         DesignVersion designVersion = DesignVersion.builder()
                 .designFile(documentRepository.findById(1L).get())
+                .customer(accountRepository.getReferenceById(1L))
                 .image(imageRepository.findById(1L).get())
                 .design(designRepository.findById(1L).get())
                 .versionNumber(3)

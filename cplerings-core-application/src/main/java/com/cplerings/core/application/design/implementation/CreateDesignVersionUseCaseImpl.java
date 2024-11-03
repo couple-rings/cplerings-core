@@ -9,6 +9,7 @@ import com.cplerings.core.application.design.output.CreateDesignVersionOutput;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
+import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.file.Document;
@@ -31,6 +32,7 @@ public class CreateDesignVersionUseCaseImpl extends AbstractUseCase<CreateDesign
         validator.validate(input.previewImage() != null, CreateDesignVersionErrorCode.IMAGE_REQUIRED);
         validator.validate(input.versionNumber() > 0, CreateDesignVersionErrorCode.VERSION_NUMBER_WRONG_POSITIVE_NUMBER);
         validator.validate(input.designId() > 0, CreateDesignVersionErrorCode.DESIGN_ID_WRONG_POSITIVE_NUMBER);
+        validator.validate(input.customerId() > 0, CreateDesignVersionErrorCode.DESIGN_ID_WRONG_POSITIVE_NUMBER);
     }
 
     @Override
@@ -38,6 +40,9 @@ public class CreateDesignVersionUseCaseImpl extends AbstractUseCase<CreateDesign
         Design design = createDesignVersionDataSource.getDesignByID(input.designId())
                 .orElse(null);
         validator.validateAndStopExecution(design != null, CreateDesignVersionErrorCode.INVALID_DESIGN_ID);
+        Account customer = createDesignVersionDataSource.getCustomerById(input.customerId())
+                .orElse(null);
+        validator.validateAndStopExecution(customer != null, CreateDesignVersionErrorCode.INVALID_CUSTOMER_ID);
         Document document = Document.builder().url(input.designFile()).build();
         Image image = Image.builder().url(input.previewImage()).build();
 
@@ -46,6 +51,7 @@ public class CreateDesignVersionUseCaseImpl extends AbstractUseCase<CreateDesign
 
         DesignVersion designVersion = DesignVersion.builder()
                 .designFile(documentCreated)
+                .customer(customer)
                 .image(imageCreated)
                 .design(design)
                 .versionNumber(input.versionNumber())
