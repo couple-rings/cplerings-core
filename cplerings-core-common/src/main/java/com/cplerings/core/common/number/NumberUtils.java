@@ -28,4 +28,11 @@ public final class NumberUtils {
         }
         return number.compareTo(BigDecimal.ZERO) >= 0;
     }
+
+    public static boolean isPositive(Long number) {
+        if (number == null) {
+            return false;
+        }
+        return (number > 0);
+    }
 }

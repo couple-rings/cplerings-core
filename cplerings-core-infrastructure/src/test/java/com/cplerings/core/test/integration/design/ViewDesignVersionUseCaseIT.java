@@ -2,13 +2,6 @@ package com.cplerings.core.test.integration.design;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.reactive.server.WebTestClient;
-
-import com.cplerings.core.api.design.data.CustomDesignData;
-import com.cplerings.core.api.design.request.ViewDesignVersionRequest;
-import com.cplerings.core.api.design.response.CreateCustomDesignResponse;
 import com.cplerings.core.api.design.response.ViewDesignVersionResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.common.api.APIConstant;
@@ -20,6 +13,10 @@ import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 public class ViewDesignVersionUseCaseIT extends AbstractIT {
 

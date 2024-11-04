@@ -8,9 +8,9 @@ import com.cplerings.core.api.shared.AbstractController;
 import com.cplerings.core.api.shared.mapper.APIMapper;
 import com.cplerings.core.api.shared.openapi.CustomRequestTag;
 import com.cplerings.core.api.shared.openapi.ErrorAPIResponse;
-import com.cplerings.core.application.customrequest.ViewCustomRequestUseCase;
-import com.cplerings.core.application.customrequest.input.ViewCustomRequestInput;
-import com.cplerings.core.application.customrequest.output.ViewCustomRequestOutput;
+import com.cplerings.core.application.design.ViewCustomRequestUseCase;
+import com.cplerings.core.application.design.input.ViewCustomRequestInput;
+import com.cplerings.core.application.design.output.ViewCustomRequestOutput;
 import com.cplerings.core.application.shared.usecase.UseCase;
 import com.cplerings.core.common.api.APIConstant;
 

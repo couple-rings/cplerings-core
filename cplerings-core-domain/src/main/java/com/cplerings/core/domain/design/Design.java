@@ -77,6 +77,10 @@ public class Design extends AbstractEntity {
     @Column(name = "side_diamonds_count", nullable = false)
     private Integer sideDiamondsCount;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
+    private DesignStatus status;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "design_collection_id")
     private DesignCollection designCollection;

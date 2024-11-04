@@ -7,16 +7,20 @@ import com.cplerings.core.application.shared.entity.design.ADesignDiamondSpecifi
 import com.cplerings.core.application.shared.entity.design.ADesignMetalSpecification;
 import com.cplerings.core.application.shared.entity.design.ADiamondSpecification;
 import com.cplerings.core.application.shared.entity.design.AMetalSpecification;
+import com.cplerings.core.application.shared.entity.design.request.ACustomRequest;
 import com.cplerings.core.common.mapper.SpringMapperConfiguration;
 import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.DesignCollection;
 import com.cplerings.core.domain.design.DesignCouple;
 import com.cplerings.core.domain.design.DesignDiamondSpecification;
 import com.cplerings.core.domain.design.DesignMetalSpecification;
+import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.request.DesignCustomRequest;
 import com.cplerings.core.domain.diamond.DiamondSpecification;
 import com.cplerings.core.domain.metal.MetalSpecification;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(
         config = SpringMapperConfiguration.class,
@@ -27,6 +31,7 @@ import org.mapstruct.Mapper;
                 MoneyMapper.class,
                 DesignSizeMapper.class,
                 WeightMapper.class,
+                AAccountMapper.class
         }
 )
 public interface ADesignMapper {
@@ -44,4 +49,14 @@ public interface ADesignMapper {
     AMetalSpecification toMetalSpecification(MetalSpecification metalSpecification);
 
     ADiamondSpecification toDiamondSpecification(DiamondSpecification diamondSpecification);
+
+    @Mapping(target = "designs", source = "designCustomRequests")
+    ACustomRequest toCustomRequest(CustomRequest customRequest);
+
+    default ADesign toDesign(DesignCustomRequest designCustomRequest) {
+        if (designCustomRequest == null) {
+            return null;
+        }
+        return toDesign(designCustomRequest.getDesign());
+    }
 }
