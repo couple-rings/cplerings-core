@@ -1,8 +1,8 @@
 package com.cplerings.core.application.design.datasource;
 
-import java.util.Optional;
-
 import com.cplerings.core.domain.design.DesignVersion;
+
+import java.util.Optional;
 
 public interface ViewDesignVersionDataSource {
 

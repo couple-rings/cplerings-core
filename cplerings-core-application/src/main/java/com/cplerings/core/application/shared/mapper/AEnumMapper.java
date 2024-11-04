@@ -5,8 +5,10 @@ import com.cplerings.core.application.shared.entity.design.ADiamondClarity;
 import com.cplerings.core.application.shared.entity.design.ADiamondColor;
 import com.cplerings.core.application.shared.entity.design.ADiamondShape;
 import com.cplerings.core.application.shared.entity.design.AMetalColor;
+import com.cplerings.core.application.shared.entity.design.request.ACustomRequestStatus;
 import com.cplerings.core.common.mapper.SpringMapperConfiguration;
 import com.cplerings.core.domain.design.DesignCharacteristic;
+import com.cplerings.core.domain.design.request.CustomRequestStatus;
 import com.cplerings.core.domain.diamond.DiamondClarity;
 import com.cplerings.core.domain.diamond.DiamondColor;
 import com.cplerings.core.domain.diamond.DiamondShape;
@@ -26,4 +28,6 @@ public interface AEnumMapper {
     ADiamondShape toDiamondShape(DiamondShape diamondShape);
 
     AMetalColor toMetalColor(MetalColor metalColor);
+
+    ACustomRequestStatus toCustomRequestStatus(CustomRequestStatus customRequestStatus);
 }

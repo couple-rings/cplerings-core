@@ -13,7 +13,6 @@ import com.cplerings.core.domain.payment.transaction.VNPayTransaction;
 import com.cplerings.core.domain.shared.valueobject.Money;
 import com.cplerings.core.test.shared.AbstractIT;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -21,7 +20,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-@Disabled("Request verification failed due to unknown reason")
 class ProcessVNPayPaymentUseCaseIT extends AbstractIT {
 
     private static final String PAYMENT_FOLDER = "data/integration/payment";

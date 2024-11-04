@@ -8,7 +8,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -25,7 +25,7 @@ public class ADesign implements Serializable {
     private ADesignCharacteristic characteristic;
     private Integer size;
     private Integer sideDiamondsCount;
-    private Set<ADesignMetalSpecification> designMetalSpecifications;
-    private Set<ADesignDiamondSpecification> designDiamondSpecifications;
+    private Collection<ADesignMetalSpecification> designMetalSpecifications;
+    private Collection<ADesignDiamondSpecification> designDiamondSpecifications;
     private ADesignCollection designCollection;
 }

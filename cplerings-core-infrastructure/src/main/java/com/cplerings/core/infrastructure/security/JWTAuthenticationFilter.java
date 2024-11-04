@@ -7,6 +7,7 @@ import com.cplerings.core.application.shared.entity.account.ARole;
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
 import com.cplerings.core.common.either.Either;
 import com.cplerings.core.common.security.RoleConstant;
+import com.cplerings.core.infrastructure.security.mapper.SecurityMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -37,6 +38,7 @@ public final class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     private final AuthenticateUserUseCase authenticateUserUseCase;
     private final SecurityHelper securityHelper;
+    private final SecurityMapper securityMapper;
 
     @Override
     protected void doFilterInternal(@Nonnull HttpServletRequest request,
@@ -59,7 +61,7 @@ public final class JWTAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void authenticateUserWithToken(AuthenticatedAccountOutput account) {
-        final UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(account.getEmail(),
+        final UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(securityMapper.toCurrentUser(account, true),
                 null, mapAccountRole(account.getRole()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }

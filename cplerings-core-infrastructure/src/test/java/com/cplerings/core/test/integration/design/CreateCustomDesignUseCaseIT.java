@@ -20,14 +20,12 @@ import com.cplerings.core.test.shared.helper.JWTTestHelper;
 import com.cplerings.core.test.shared.spouse.SpouseTestHelper;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.math.BigDecimal;
 
-@Disabled("Test fail when verify due to spouse_seq not being called")
 class CreateCustomDesignUseCaseIT extends AbstractIT {
 
     @Autowired

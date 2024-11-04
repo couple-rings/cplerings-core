@@ -1,4 +1,4 @@
-package com.cplerings.core.application.customrequest.datasource;
+package com.cplerings.core.application.design.datasource;
 
 import com.cplerings.core.domain.design.request.CustomRequest;
 
