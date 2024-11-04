@@ -22,7 +22,7 @@ import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
 
-class ViewDesignVersionsIT extends AbstractIT {
+class ViewDesignVersionsUseCaseIT extends AbstractIT {
 
     @Autowired
     private JWTTestHelper jwtTestHelper;
