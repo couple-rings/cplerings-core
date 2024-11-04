@@ -15,7 +15,7 @@ import lombok.Setter;
 @Builder
 public class DesignVersions {
 
-    private List<DesignVersion> designVerions;
+    private List<DesignVersion> designVersions;
     private long count;
     private int page;
     private int pageSize;

@@ -1,6 +1,7 @@
 package com.cplerings.core.application.design.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import com.cplerings.core.application.design.datasource.result.DesignVersions;
 import com.cplerings.core.application.design.output.ViewDesignVersionsOutput;
@@ -19,5 +20,6 @@ import com.cplerings.core.common.mapper.SpringMapperConfiguration;
 )
 public interface AViewDesignVersionsMapper {
 
+    @Mapping(target = "items", source = "designVersions")
     ViewDesignVersionsOutput toOutput(DesignVersions designVersions);
 }

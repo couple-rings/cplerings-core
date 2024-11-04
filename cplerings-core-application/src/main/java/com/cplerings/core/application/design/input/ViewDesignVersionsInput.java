@@ -8,6 +8,5 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 public class ViewDesignVersionsInput extends AbstractPaginatedInput {
 }

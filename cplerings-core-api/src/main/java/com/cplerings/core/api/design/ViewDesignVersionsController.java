@@ -6,11 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cplerings.core.api.design.data.DesignVersionsData;
 import com.cplerings.core.api.design.mapper.APIViewDesignVersionsMapper;
-import com.cplerings.core.api.design.request.ViewDesignCouplesRequest;
 import com.cplerings.core.api.design.request.ViewDesignVersionsRequest;
-import com.cplerings.core.api.design.response.ViewCoupleDesignResponse;
 import com.cplerings.core.api.design.response.ViewDesignVersionsResponse;
-import com.cplerings.core.api.shared.AbstractController;
 import com.cplerings.core.api.shared.AbstractPaginatedController;
 import com.cplerings.core.api.shared.mapper.APIMapper;
 import com.cplerings.core.api.shared.openapi.DesignTag;

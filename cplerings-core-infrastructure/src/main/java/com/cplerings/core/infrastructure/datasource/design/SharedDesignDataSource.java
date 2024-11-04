@@ -148,11 +148,12 @@ public class SharedDesignDataSource extends AbstractDataSource
         var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
         BlazeJPAQuery<DesignVersion> query = createQuery()
                 .select(Q_DESIGN_VERSION)
-                .from(Q_DESIGN_VERSION);
+                .from(Q_DESIGN_VERSION)
+                .where(Q_DESIGN_VERSION.customer.id.eq(customerId));
         long count = query.distinct().fetchCount();
         List<DesignVersion> designVersions = query.limit(input.getPageSize()).offset(offset).fetch();
         return DesignVersions.builder()
-                .designVerions(designVersions)
+                .designVersions(designVersions)
                 .count(count)
                 .page(input.getPage())
                 .pageSize(input.getPageSize())
