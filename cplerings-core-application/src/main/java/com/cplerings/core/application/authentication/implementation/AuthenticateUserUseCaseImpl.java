@@ -1,5 +1,6 @@
 package com.cplerings.core.application.authentication.implementation;
 
+import static com.cplerings.core.application.authentication.error.AuthenticationErrorCode.ACCOUNT_NOT_ACTIVE;
 import static com.cplerings.core.application.authentication.error.AuthenticationErrorCode.ACCOUNT_WITH_EMAIL_NOT_FOUND;
 import static com.cplerings.core.application.authentication.error.AuthenticationErrorCode.INVALID_TOKEN;
 import static com.cplerings.core.application.authentication.error.AuthenticationErrorCode.NO_TOKEN;
@@ -17,6 +18,7 @@ import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.AccountStatus;
 
 import lombok.RequiredArgsConstructor;
 
@@ -54,6 +56,7 @@ public class AuthenticateUserUseCaseImpl extends AbstractUseCase<JWTInput, Authe
         }
         final Optional<Account> authenticatedAccount = dataSource.getAuthenticatedAccount(result.getSubject());
         validator.validateAndStopExecution(authenticatedAccount.isPresent(), ACCOUNT_WITH_EMAIL_NOT_FOUND);
+        validator.validateAndStopExecution(authenticatedAccount.get().getStatus() == AccountStatus.ACTIVE, ACCOUNT_NOT_ACTIVE);
         return mapper.toOutput(authenticatedAccount.get());
     }
 }

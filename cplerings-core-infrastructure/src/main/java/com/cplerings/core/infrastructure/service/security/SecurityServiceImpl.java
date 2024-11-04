@@ -18,11 +18,21 @@ public class SecurityServiceImpl implements SecurityService {
     public CurrentUser getCurrentUser() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
-            return new CurrentUser(StringUtils.EMPTY, false);
+            return CurrentUser.builder()
+                    .id(0L)
+                    .email(StringUtils.EMPTY)
+                    .role(null)
+                    .authenticated(false)
+                    .build();
         }
-        if (authentication.getPrincipal() instanceof String principal) {
-            return new CurrentUser(principal, true);
+        if (authentication.getPrincipal() instanceof CurrentUser principal) {
+            return principal;
         }
-        return new CurrentUser(StringUtils.EMPTY, false);
+        return CurrentUser.builder()
+                .id(0L)
+                .email(StringUtils.EMPTY)
+                .role(null)
+                .authenticated(false)
+                .build();
     }
 }

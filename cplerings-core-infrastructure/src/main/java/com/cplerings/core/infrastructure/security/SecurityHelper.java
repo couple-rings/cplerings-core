@@ -2,10 +2,12 @@ package com.cplerings.core.infrastructure.security;
 
 import com.cplerings.core.api.shared.ErrorCodesResponse;
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
+import com.cplerings.core.application.shared.service.security.CurrentUser;
 import com.cplerings.core.domain.shared.Auditor;
 import com.cplerings.core.infrastructure.annotation.Helper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,6 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
+@Slf4j
 @Helper
 @RequiredArgsConstructor
 public class SecurityHelper {
@@ -44,9 +47,10 @@ public class SecurityHelper {
             return Optional.empty();
         }
         final Object principal = authentication.getPrincipal();
-        if (principal instanceof String email) {
-            return Optional.of(() -> email);
+        if (principal instanceof CurrentUser currentUser) {
+            return Optional.of(currentUser::email);
         } else {
+            log.warn("Unknown principal: {}", principal);
             return Optional.empty();
         }
     }

@@ -20,6 +20,7 @@ public enum AuthenticationErrorCode implements ErrorCode {
     INVALID_ACCOUNT_FROM_TOKEN("010", "authentication.error.invalidAccountFromToken", Type.VALIDATION),
     ACCOUNT_DISABLED("011", "authentication.error.disabled", Type.BUSINESS),
     ACCOUNT_NOT_VERIFIED("012", "authentication.error.notVerified", Type.BUSINESS),
+    ACCOUNT_NOT_ACTIVE("013", "authentication.error.notActive", Type.BUSINESS),
     ;
 
     private final String code;

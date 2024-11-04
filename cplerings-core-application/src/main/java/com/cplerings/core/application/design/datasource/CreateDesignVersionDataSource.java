@@ -17,5 +17,6 @@ public interface CreateDesignVersionDataSource {
     Image saveImage(Image image);
 
     Optional<Design> getDesignByID(long designID);
+
     Optional<Account> getCustomerById(long customerId);
 }

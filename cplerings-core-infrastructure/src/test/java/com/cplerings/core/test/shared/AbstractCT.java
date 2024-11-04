@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -22,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
         CTConfiguration.class,
         AWSTestConfiguration.class
 })
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @ActiveProfiles(ProfileConstant.TEST)
 public abstract class AbstractCT {
 
@@ -33,7 +35,6 @@ public abstract class AbstractCT {
 
     @BeforeEach
     protected final void populateDatabase() {
-        flyway.clean();
         flyway.migrate();
     }
 

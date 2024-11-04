@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.util.UriBuilder;
@@ -47,6 +48,7 @@ import java.util.TreeMap;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @Import(ITConfiguration.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @ActiveProfiles(ProfileConstant.TEST)
 public abstract class AbstractIT {
 
@@ -79,7 +81,6 @@ public abstract class AbstractIT {
 
     @BeforeEach
     protected final void populateDatabase() {
-        flyway.clean();
         flyway.migrate();
     }
 

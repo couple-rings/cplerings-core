@@ -30,9 +30,9 @@ public class ViewDesignVersionUseCaseImpl extends AbstractUseCase<ViewDesignVers
 
     @Override
     protected ViewDesignVersionOutput internalExecute(UseCaseValidator validator, ViewDesignVersionInput input) {
-        DesignVersion designVerion = viewDesignVersionDataSource.getDesignVersionById(input.designVersionId())
+        DesignVersion designVersion = viewDesignVersionDataSource.getDesignVersionById(input.designVersionId())
                 .orElse(null);
-        validator.validateAndStopExecution(designVerion != null, ViewDesignVersionErrorCode.INVALID_DESIGN_VERSION_ID);
-        return aViewDesignVersionMapper.toOutput(designVerion);
+        validator.validateAndStopExecution(designVersion != null, ViewDesignVersionErrorCode.INVALID_DESIGN_VERSION_ID);
+        return aViewDesignVersionMapper.toOutput(designVersion);
     }
 }

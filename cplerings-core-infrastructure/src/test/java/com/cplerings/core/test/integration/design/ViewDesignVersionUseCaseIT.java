@@ -8,6 +8,7 @@ import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.infrastructure.repository.DesignRepository;
+import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
 import com.cplerings.core.infrastructure.repository.DocumentRepository;
 import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.test.shared.AbstractIT;
@@ -15,12 +16,13 @@ import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
 
-import org.junit.jupiter.api.Disabled;
+import lombok.extern.slf4j.Slf4j;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-@Disabled
+@Slf4j
 public class ViewDesignVersionUseCaseIT extends AbstractIT {
 
     @Autowired
@@ -41,8 +43,11 @@ public class ViewDesignVersionUseCaseIT extends AbstractIT {
     @Autowired
     private TestDataSource testDataSource;
 
+    @Autowired
+    private DesignVersionRepository designVersionRepository;
+
     @Test
-    void givenCustomer_whenViewADesignVersionUseCase() {
+    void givenCustomer_whenViewDesignVersionUseCase() {
         final String token = jwtTestHelper.generateToken(AccountTestConstant.CUSTOMER_EMAIL);
 
         DesignVersion designVersion = DesignVersion.builder()
@@ -55,6 +60,10 @@ public class ViewDesignVersionUseCaseIT extends AbstractIT {
                 .isOld(false)
                 .build();
         testDataSource.save(designVersion);
+        log.info(designVersionRepository.findAll().stream()
+                .map(DesignVersion::getId)
+                .toList()
+                .toString());
 
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(APIConstant.VIEW_SINGLE_DESIGN_VERSION_PATH.replace("{designVersionId}", Long.toString(1)))

@@ -102,6 +102,6 @@ public class Design extends AbstractEntity {
     @OneToMany(mappedBy = "design", fetch = FetchType.LAZY)
     private Set<DesignCustomRequest> designCustomRequests;
 
-    @OneToMany
+    @OneToMany(mappedBy = "design", fetch = FetchType.LAZY)
     private Set<DesignVersion> designVersions;
 }
