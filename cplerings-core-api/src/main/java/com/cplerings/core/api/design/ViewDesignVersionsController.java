@@ -31,7 +31,7 @@ public class ViewDesignVersionsController extends AbstractPaginatedController<Vi
     private final APIViewDesignVersionsMapper apiViewDesignVersionsMapper;
     private final ViewDesignVersionsUseCase viewDesignVersionsUseCase;
 
-    @GetMapping(APIConstant.DESIGN_VERSION_PATH)
+    @GetMapping(APIConstant.VIEW_CURRENT_DESIGN_VERSIONS_PATH)
     @DesignTag
     @Operation(summary = "View design versions")
     @ApiResponse(
