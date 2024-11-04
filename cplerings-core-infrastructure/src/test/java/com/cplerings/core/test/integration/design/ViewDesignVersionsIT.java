@@ -59,9 +59,10 @@ class ViewDesignVersionsIT extends AbstractIT {
     @Test
     void givenCustomer_whenViewDesignVersions() {
         final String token = jwtTestHelper.generateToken(AccountTestConstant.CUSTOMER_EMAIL);
-        ViewDesignVersionsRequest request = new ViewDesignVersionsRequest();
-        request.setPage(0);
-        request.setPageSize(1);
+        ViewDesignVersionsRequest request = ViewDesignVersionsRequest.builder()
+                .page(0)
+                .pageSize(1)
+                .build();
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(APIConstant.DESIGN_VERSION_PATH)
                 .authorizationHeader(token)
