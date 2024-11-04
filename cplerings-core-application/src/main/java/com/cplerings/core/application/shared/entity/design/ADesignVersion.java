@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
+import com.cplerings.core.application.shared.entity.account.AAccount;
+
 @Getter
 @Setter
 @Builder
@@ -16,6 +18,7 @@ import java.io.Serializable;
 public class ADesignVersion implements Serializable {
 
     private Long id;
+    private AAccount customer;
     private ADesign design;
     private AImage image;
     private ADocument designFile;

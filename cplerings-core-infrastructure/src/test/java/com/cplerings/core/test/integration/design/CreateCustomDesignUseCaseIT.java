@@ -9,6 +9,7 @@ import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.spouse.Spouse;
+import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.infrastructure.repository.DesignRepository;
 import com.cplerings.core.infrastructure.repository.DocumentRepository;
 import com.cplerings.core.infrastructure.repository.ImageRepository;
@@ -42,6 +43,9 @@ class CreateCustomDesignUseCaseIT extends AbstractIT {
     private ImageRepository imageRepository;
 
     @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
     private TestDataSource testDataSource;
 
     @Autowired
@@ -51,6 +55,7 @@ class CreateCustomDesignUseCaseIT extends AbstractIT {
     public void start() {
         DesignVersion designVersion = DesignVersion.builder()
                 .designFile(documentRepository.getReferenceById(1L))
+                .customer(accountRepository.getReferenceById(1L))
                 .image(imageRepository.getReferenceById(1L))
                 .design(designRepository.getReferenceById(1L))
                 .versionNumber(3)

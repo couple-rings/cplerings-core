@@ -6,6 +6,8 @@ import com.cplerings.core.application.design.datasource.CreateDesignVersionDataS
 import com.cplerings.core.application.design.datasource.ProcessDesignSessionPaymentDataSource;
 import com.cplerings.core.application.design.datasource.ViewDesignVersionDataSource;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.QAccount;
+import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.QDesign;
@@ -39,6 +41,7 @@ public class SharedDesignDataSource extends AbstractDataSource
 
     private static final QDesign Q_DESIGN = QDesign.design;
     private static final QDesignVersion Q_DESIGN_VERSION = QDesignVersion.designVersion;
+    private static final QAccount Q_ACCOUNT = QAccount.account;
 
     private final DesignSessionRepository designSessionRepository;
     private final AccountRepository accountRepository;
@@ -109,6 +112,15 @@ public class SharedDesignDataSource extends AbstractDataSource
         return Optional.ofNullable(createQuery().select(Q_DESIGN)
                 .from(Q_DESIGN)
                 .where(Q_DESIGN.id.eq(designID))
+                .fetchOne());
+    }
+
+    @Override
+    public Optional<Account> getCustomerById(long customerId) {
+        return Optional.ofNullable(createQuery().select(Q_ACCOUNT)
+                .from(Q_ACCOUNT)
+                .where(Q_ACCOUNT.id.eq(customerId)
+                        .and(Q_ACCOUNT.role.eq(Role.CUSTOMER)))
                 .fetchOne());
     }
 
