@@ -68,6 +68,7 @@ public class CreateCraftingRequestImpl extends AbstractUseCase<CreateCraftingReq
         CraftingRequest craftingRequest = CraftingRequest.builder()
                 .craftingRequestStatus(CraftingRequestStatus.PENDING)
                 .diamondSpecification(diamondSpecification)
+                .customDesign(customDesign)
                 .engraving(input.engraving() != null ? input.engraving() : null)
                 .fingerSize(input.fingerSize())
                 .metalSpecification(metalSpecification)
