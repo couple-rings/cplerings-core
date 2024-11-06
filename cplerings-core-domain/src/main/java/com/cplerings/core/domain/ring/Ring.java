@@ -3,6 +3,7 @@ package com.cplerings.core.domain.ring;
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.file.Document;
+import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.spouse.Spouse;
 
@@ -49,7 +50,7 @@ public class Ring extends AbstractEntity {
     private Instant purchaseDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
+    @Column(name = "status", length = 20, nullable = false)
     private RingStatus status;
 
     @Column(name = "maintenance_expired_date", nullable = false)
@@ -62,6 +63,10 @@ public class Ring extends AbstractEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "branch_id")
     private Branch branch;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "custom_order_id")
+    private CustomOrder customOrder;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "spouse_id")

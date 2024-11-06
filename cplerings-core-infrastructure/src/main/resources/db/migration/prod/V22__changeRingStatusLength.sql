@@ -1,0 +1,2 @@
+ALTER TABLE tbl_ring
+    ALTER COLUMN status TYPE VARCHAR(20) USING (status::VARCHAR(20));

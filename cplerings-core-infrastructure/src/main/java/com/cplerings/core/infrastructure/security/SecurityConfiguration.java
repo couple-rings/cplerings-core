@@ -168,7 +168,9 @@ public class SecurityConfiguration {
 
     private void handleCraftingRequestAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.CRAFTING_REQUEST_PATH))
-                .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF));
+                .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF))
+        .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.PUT, resolvePath(APIConstant.ACCEPT_CRAFTING_REQUEST_PATH))
+                .permitAll());
     }
 
     private String resolvePath(String path) {

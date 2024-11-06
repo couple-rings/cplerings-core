@@ -78,4 +78,5 @@ public final class APIConstant {
         Crafting request
      */
     public static final String CRAFTING_REQUEST_PATH = "/crafting-requests";
+    public static final String ACCEPT_CRAFTING_REQUEST_PATH = CRAFTING_REQUEST_PATH;
 }
