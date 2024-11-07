@@ -28,7 +28,6 @@ import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingStatus;
 import com.cplerings.core.domain.shared.valueobject.Money;
-import com.cplerings.core.domain.spouse.Spouse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +57,6 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
 
     @Override
     protected AcceptCraftingRequestOutput internalExecute(UseCaseValidator validator, AcceptCraftingRequestInput input) {
-        Spouse spouse = acceptCraftingRequestDataSource.getSpouse(1L);
         CraftingRequest firstCraftingRequest = acceptCraftingRequestDataSource.getCraftingRequestById(input.firstCraftingRequestId())
                 .orElse(null);
         validator.validateAndStopExecution(firstCraftingRequest != null, AcceptCraftingRequestErrorCode.INVALID_CRAFTING_REQUEST_ID);
@@ -78,14 +76,12 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
             craftingRequests.add(secondCraftingRequest);
             List<CraftingRequest> craftingRequestUpdated = acceptCraftingRequestDataSource.saveCraftingRequests(craftingRequests);
             List<Ring> rings = new ArrayList<>();
-            List<Ring> ringsTest = acceptCraftingRequestDataSource.getRings();
-            Ring existingRing = acceptCraftingRequestDataSource.getRing(spouse.getId());
             Ring firstRing = Ring.builder()
                     .branch(branch)
                     .status(RingStatus.NOT_AVAILABLE)
                     .spouse(firstCraftingRequest.getCustomDesign().getSpouse())
                     .purchaseDate(Instant.now())
-                    .maintenanceDocument(acceptCraftingRequestDataSource.getMaintenanceDocument(1L))
+                    .maintenanceDocument(acceptCraftingRequestDataSource.getMaintenanceDocument())
                     .maintenanceExpiredDate(Instant.now().plus(730, ChronoUnit.DAYS))
                     .build();
             rings.add(firstRing);
@@ -94,7 +90,7 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                     .status(RingStatus.NOT_AVAILABLE)
                     .spouse(secondCraftingRequest.getCustomDesign().getSpouse())
                     .purchaseDate(Instant.now())
-                    .maintenanceDocument(acceptCraftingRequestDataSource.getMaintenanceDocument(11L))
+                    .maintenanceDocument(acceptCraftingRequestDataSource.getMaintenanceDocument())
                     .maintenanceExpiredDate(Instant.now().plus(730, ChronoUnit.DAYS))
                     .build();
             rings.add(secondRing);
@@ -136,9 +132,9 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
             craftingStages.add(firstStage);
             craftingStages.add(secondStage);
             craftingStages.add(thirdStage);
-//            acceptCraftingRequestDataSource.saveStages(craftingStages);
-//            rings.forEach(ring -> ring.setCustomOrder(customOrderCreated));
-            acceptCraftingRequestDataSource.saveRings(rings);
+            acceptCraftingRequestDataSource.saveStages(craftingStages);
+            acceptCraftingRequestDataSource.updateRingWithCustomOrder(ringsCreated.get(0).getId(), customOrderCreated);
+            acceptCraftingRequestDataSource.updateRingWithCustomOrder(ringsCreated.get(1).getId(), customOrderCreated);
             return aAcceptCraftingRequestMapper.toOutput(customOrderCreated, craftingRequestUpdated.get(0), craftingRequestUpdated.get(1));
         } else if (input.status() == ACraftingRequestStatus.REJECTED) {
             firstCraftingRequest.setComment(input.firstCommentCrafting());
@@ -149,7 +145,7 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
             List<CraftingRequest> craftingRequestUpdated = acceptCraftingRequestDataSource.saveCraftingRequests(craftingRequests);
             return aAcceptCraftingRequestMapper.toOutput(null, craftingRequestUpdated.get(0), craftingRequestUpdated.get(0));
         } else {
-            validator.validateAndStopExecution(input.status() != ACraftingRequestStatus.ACCEPTED || input.status() != ACraftingRequestStatus.REJECTED, AcceptCraftingRequestErrorCode.WRONG_STATUS);
+            validator.validateAndStopExecution(input.status() == ACraftingRequestStatus.ACCEPTED || input.status() == ACraftingRequestStatus.REJECTED, AcceptCraftingRequestErrorCode.WRONG_STATUS);
             return null;
         }
     }

@@ -44,7 +44,7 @@ public class AcceptCraftingRequestController extends AbstractController<AcceptCr
 
     @PutMapping(APIConstant.ACCEPT_CRAFTING_REQUEST_PATH)
     @CraftingRequestTag
-    @Operation(summary = "Update crafting request")
+    @Operation(summary = "Accept or reject crafting request")
     @ApiResponse(
             description = "Custom order and crafting request information",
             responseCode = "200",

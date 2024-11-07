@@ -1,5 +1,8 @@
 package com.cplerings.core.infrastructure.datasource.craftingreuqest;
 
+import java.util.List;
+import java.util.Optional;
+
 import com.cplerings.core.application.craftingrequest.datasource.AcceptCraftingRequestDataSource;
 import com.cplerings.core.application.craftingrequest.datasource.CreateCraftingRequestDataSource;
 import com.cplerings.core.domain.account.Account;
@@ -25,7 +28,6 @@ import com.cplerings.core.domain.ring.QRing;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.domain.spouse.QSpouse;
-import com.cplerings.core.domain.spouse.Spouse;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.ContractRepository;
@@ -33,11 +35,11 @@ import com.cplerings.core.infrastructure.repository.CraftingRequestRepository;
 import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
+import com.querydsl.jpa.impl.JPAUpdateClause;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
-import java.util.Optional;
 
 @DataSource
 @RequiredArgsConstructor
@@ -55,6 +57,9 @@ public class SharedCraftingRequestDataSource extends AbstractDataSource implemen
     private static final QRing Q_RING = QRing.ring;
 
     private static final String SIDE_DIAMOND_PRICE = "DEFE";
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     private final CraftingRequestRepository craftingRequestRepository;
     private final RingRepository ringRepository;
@@ -129,10 +134,10 @@ public class SharedCraftingRequestDataSource extends AbstractDataSource implemen
     }
 
     @Override
-    public Document getMaintenanceDocument(Long id) {
+    public Document getMaintenanceDocument() {
         return createQuery().select(Q_DOCUMENT)
                 .from(Q_DOCUMENT)
-                .where(Q_DOCUMENT.id.eq(id)).fetchOne();
+                .where(Q_DOCUMENT.id.eq(1L)).fetchOne();
     }
 
     @Override
@@ -180,25 +185,10 @@ public class SharedCraftingRequestDataSource extends AbstractDataSource implemen
     }
 
     @Override
-    public List<Ring> getRings() {
-        return createQuery().select(Q_RING)
-                .from(Q_RING)
-                .fetch();
-    }
-
-    @Override
-    public Spouse getSpouse(Long id) {
-        return createQuery().select(Q_SPOUSE)
-                .from(Q_SPOUSE)
-                .where(Q_SPOUSE.id.eq(id))
-                .fetchOne();
-    }
-
-    @Override
-    public Ring getRing(Long spouseId) {
-        return createQuery().select(Q_RING)
-                .from(Q_RING)
-                .where(Q_RING.spouse.id.eq(spouseId))
-                .fetchOne();
+    public void updateRingWithCustomOrder(Long ringId, CustomOrder customOrder) {
+         new JPAUpdateClause(entityManager, Q_RING)
+                .where(Q_RING.id.eq(ringId))
+                .set(Q_RING.customOrder, customOrder)
+                .execute();
     }
 }

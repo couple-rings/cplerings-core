@@ -18,14 +18,12 @@ public interface AcceptCraftingRequestDataSource {
 
     Optional<CraftingRequest> getCraftingRequestById(Long craftingRequestId);
     List<Ring> saveRings(List<Ring> rings);
-    Document getMaintenanceDocument(Long id);
+    Document getMaintenanceDocument();
     Contract saveContract(Contract contract);
     CustomOrder saveCustomOrder(CustomOrder customOrder);
     List<CraftingRequest> saveCraftingRequests(List<CraftingRequest> craftingRequests);
     Optional<Branch> getBranchById(Long branchId);
     Configuration getConfigurationForSideDiamond();
     void saveStages(List<CraftingStage> craftingStages);
-    List<Ring> getRings();
-    Spouse getSpouse(Long id);
-    Ring getRing(Long id);
+    void updateRingWithCustomOrder(Long ringId, CustomOrder customOrder);
 }
