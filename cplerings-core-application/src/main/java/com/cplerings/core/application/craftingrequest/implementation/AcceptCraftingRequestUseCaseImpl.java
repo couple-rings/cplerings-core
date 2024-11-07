@@ -71,6 +71,10 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
             validator.validateAndStopExecution(branch != null, AcceptCraftingRequestErrorCode.INVALID_BRANCH_ID);
             firstCraftingRequest.setCraftingRequestStatus(CraftingRequestStatus.ACCEPTED);
             secondCraftingRequest.setCraftingRequestStatus(CraftingRequestStatus.ACCEPTED);
+            if (input.firstCommentCrafting() != null)
+                firstCraftingRequest.setComment(input.firstCommentCrafting());
+            if (input.secondCommentCrafting() != null)
+                secondCraftingRequest.setComment(input.secondCommentCrafting());
             List<CraftingRequest> craftingRequests = new ArrayList<>();
             craftingRequests.add(firstCraftingRequest);
             craftingRequests.add(secondCraftingRequest);
