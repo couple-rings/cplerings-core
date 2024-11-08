@@ -6,5 +6,5 @@ import com.cplerings.core.domain.shared.valueobject.Money;
 
 public interface CalculationTotalPrice {
 
-    BigDecimal calculationTotalPrice(Money firstMetalPrice, Money secondMetalPrice, Money firstDiamondSpecPrice, Money secondDiamondSpecPrice, BigDecimal firstMetalWight, BigDecimal secondMetalWeight, int firstSideDiamondCount, int secondSideDiamondCount, double sideDiamondPrice);
+    Money calculationTotalPrice(Money metalPrice, Money diamondSpecPrice, BigDecimal metalWeight, int sideDiamondCount, double sideDiamondPrice);
 }

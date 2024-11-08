@@ -104,17 +104,16 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
             Contract contractCreated = acceptCraftingRequestDataSource.saveContract(contract);
             Configuration configuration = acceptCraftingRequestDataSource.getConfigurationForSideDiamond();
             Double sideDiamondPrice = Double.parseDouble(configuration.getValue());
-            BigDecimal totalPrice = calculateTotalPrice.calculationTotalPrice(firstCraftingRequest.getMetalSpecification().getPricePerUnit(), secondCraftingRequest.getMetalSpecification().getPricePerUnit(),
-                    firstCraftingRequest.getDiamondSpecification().getPrice(), secondCraftingRequest.getDiamondSpecification().getPrice(),
-                    firstCraftingRequest.getCustomDesign().getMetalWeight().getWeightValue(), secondCraftingRequest.getCustomDesign().getMetalWeight().getWeightValue(),
-                    firstCraftingRequest.getCustomDesign().getSideDiamondsCount(), secondCraftingRequest.getCustomDesign().getSideDiamondsCount(), sideDiamondPrice);
+            Money firstRingPrice = calculateTotalPrice.calculationTotalPrice(firstCraftingRequest.getMetalSpecification().getPricePerUnit(), firstCraftingRequest.getDiamondSpecification().getPrice(), firstCraftingRequest.getCustomDesign().getMetalWeight().getWeightValue(), firstCraftingRequest.getCustomDesign().getSideDiamondsCount(), sideDiamondPrice);
+            Money secondRingPrice = calculateTotalPrice.calculationTotalPrice(secondCraftingRequest.getMetalSpecification().getPricePerUnit(), secondCraftingRequest.getDiamondSpecification().getPrice(), secondCraftingRequest.getCustomDesign().getMetalWeight().getWeightValue(), secondCraftingRequest.getCustomDesign().getSideDiamondsCount(), sideDiamondPrice);
+            Money totalPrice = Money.create(firstRingPrice.getAmount().add(secondRingPrice.getAmount()));
             CustomOrder customOrder = CustomOrder.builder()
                     .customer(firstCraftingRequest.getCustomer())
                     .firstRing(ringsCreated.get(0))
                     .secondRing(ringsCreated.get(1))
                     .contract(contractCreated)
                     .status(CustomOrderStatus.PENDING)
-                    .totalPrice(Money.create(totalPrice))
+                    .totalPrice(totalPrice)
                     .build();
             CustomOrder customOrderCreated = acceptCraftingRequestDataSource.saveCustomOrder(customOrder);
             CraftingStage firstStage = CraftingStage.builder()
