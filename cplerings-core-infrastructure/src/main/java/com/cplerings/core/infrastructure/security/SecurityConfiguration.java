@@ -162,6 +162,8 @@ public class SecurityConfiguration {
     private void handleCustomRequestAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VIEW_CUSTOM_REQUESTS_PATH))
                         .permitAll())
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.PUT, resolvePath(APIConstant.DETERMINE_CUSTOM_REQUEST_PATH))
+                        .permitAll())
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.CUSTOM_SINGLE_REQUEST_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_STAFF))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.CUSTOM_REQUEST_PATH))

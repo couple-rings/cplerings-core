@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.design.datasource.CreateCustomRequestDataSource;
+import com.cplerings.core.application.design.datasource.DetermineCustomRequestDataSource;
 import com.cplerings.core.application.design.datasource.ViewCustomRequestDataSource;
 import com.cplerings.core.application.design.datasource.ViewCustomRequestsDataSource;
 import com.cplerings.core.application.design.datasource.result.CustomRequests;
@@ -33,7 +34,11 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @DataSource
+<<<<<<< HEAD
 public class SharedCustomRequestDataSource extends AbstractDataSource implements ViewCustomRequestDataSource, CreateCustomRequestDataSource, ViewCustomRequestsDataSource {
+=======
+public class SharedCustomRequestDataSource extends AbstractDataSource implements ViewCustomRequestDataSource, CreateCustomRequestDataSource, DetermineCustomRequestDataSource {
+>>>>>>> 8f77d5c (Add function determine custom request  and the IT)
 
     private static final QCustomRequest Q_CUSTOM_REQUEST = QCustomRequest.customRequest;
     private static final QDesign Q_DESIGN = QDesign.design;
@@ -84,6 +89,7 @@ public class SharedCustomRequestDataSource extends AbstractDataSource implements
     }
 
     @Override
+<<<<<<< HEAD
     public CustomRequests getCustomRequests(ViewCustomRequestsInput input) {
         var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
         BlazeJPAQuery<CustomRequest> query = createQuery()
@@ -115,3 +121,18 @@ public class SharedCustomRequestDataSource extends AbstractDataSource implements
                 .build();
     }
 }
+=======
+    public Optional<CustomRequest> getCraftingRequestById(Long id) {
+        return Optional.ofNullable(createQuery().select(Q_CUSTOM_REQUEST)
+                .from(Q_CUSTOM_REQUEST)
+                .where(Q_CUSTOM_REQUEST.id.eq(id))
+                .fetchOne());
+    }
+
+    @Override
+    public CustomRequest updateCraftingRequest(CustomRequest customRequest) {
+        updateAuditor(customRequest);
+        return customRequestRepository.save(customRequest);
+    }
+}
+>>>>>>> 8f77d5c (Add function determine custom request  and the IT)
