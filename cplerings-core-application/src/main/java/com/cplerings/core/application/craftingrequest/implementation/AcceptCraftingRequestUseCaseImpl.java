@@ -13,6 +13,7 @@ import com.cplerings.core.application.craftingrequest.input.AcceptCraftingReques
 import com.cplerings.core.application.craftingrequest.mapper.AAcceptCraftingRequestMapper;
 import com.cplerings.core.application.craftingrequest.output.AcceptCraftingRequestOutput;
 import com.cplerings.core.application.shared.entity.craftingrequest.ACraftingRequestStatus;
+import com.cplerings.core.application.shared.service.price.CalculationTotalPrice;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
@@ -39,18 +40,17 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
 
     private final AAcceptCraftingRequestMapper aAcceptCraftingRequestMapper;
     private final AcceptCraftingRequestDataSource acceptCraftingRequestDataSource;
+    private final CalculationTotalPrice calculateTotalPrice;
 
     @Override
     protected void validateInput(UseCaseValidator validator, AcceptCraftingRequestInput input) {
         super.validateInput(validator, input);
-        if (input != null) {
-            validator.validateAndStopExecution(input.firstCraftingRequestId() > 0, AcceptCraftingRequestErrorCode.CRAFTING_REQUEST_ID_WRONG_POSITIVE_INTEGER);
-            validator.validateAndStopExecution(input.secondCraftingRequestId() > 0, AcceptCraftingRequestErrorCode.CRAFTING_REQUEST_ID_WRONG_POSITIVE_INTEGER);
-            validator.validateAndStopExecution(input.status() != null, AcceptCraftingRequestErrorCode.STATUS_REQUIRED);
-            if (input.status().equals(ACraftingRequestStatus.REJECTED)) {
-                validator.validateAndStopExecution(input.firstCommentCrafting() != null, AcceptCraftingRequestErrorCode.COMMENT_REQUIRED);
-                validator.validateAndStopExecution(input.secondCommentCrafting() != null, AcceptCraftingRequestErrorCode.COMMENT_REQUIRED);
-            }
+        validator.validateAndStopExecution(input.firstCraftingRequestId() > 0, AcceptCraftingRequestErrorCode.CRAFTING_REQUEST_ID_WRONG_POSITIVE_INTEGER);
+        validator.validateAndStopExecution(input.secondCraftingRequestId() > 0, AcceptCraftingRequestErrorCode.CRAFTING_REQUEST_ID_WRONG_POSITIVE_INTEGER);
+        validator.validateAndStopExecution(input.status() != null, AcceptCraftingRequestErrorCode.STATUS_REQUIRED);
+        if (input.status() == ACraftingRequestStatus.REJECTED) {
+            validator.validateAndStopExecution(input.firstCommentCrafting() != null, AcceptCraftingRequestErrorCode.COMMENT_REQUIRED);
+            validator.validateAndStopExecution(input.secondCommentCrafting() != null, AcceptCraftingRequestErrorCode.COMMENT_REQUIRED);
             validator.validateAndStopExecution(input.branchId() != null, AcceptCraftingRequestErrorCode.BRANCH_ID_REQUIRED);
         }
     }
@@ -82,7 +82,7 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
             List<Ring> rings = new ArrayList<>();
             Ring firstRing = Ring.builder()
                     .branch(branch)
-                    .status(RingStatus.NOT_AVAILABLE)
+                    .status(RingStatus.NOT_AVAIL)
                     .spouse(firstCraftingRequest.getCustomDesign().getSpouse())
                     .purchaseDate(Instant.now())
                     .maintenanceDocument(acceptCraftingRequestDataSource.getMaintenanceDocument())
@@ -91,7 +91,7 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
             rings.add(firstRing);
             Ring secondRing = Ring.builder()
                     .branch(branch)
-                    .status(RingStatus.NOT_AVAILABLE)
+                    .status(RingStatus.NOT_AVAIL)
                     .spouse(secondCraftingRequest.getCustomDesign().getSpouse())
                     .purchaseDate(Instant.now())
                     .maintenanceDocument(acceptCraftingRequestDataSource.getMaintenanceDocument())
@@ -104,7 +104,7 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
             Contract contractCreated = acceptCraftingRequestDataSource.saveContract(contract);
             Configuration configuration = acceptCraftingRequestDataSource.getConfigurationForSideDiamond();
             Double sideDiamondPrice = Double.parseDouble(configuration.getValue());
-            BigDecimal totalPrice = calculateTotalPrice(firstCraftingRequest, secondCraftingRequest, sideDiamondPrice);
+            BigDecimal totalPrice = calculateTotalPrice.calculationTotalPrice(firstCraftingRequest, secondCraftingRequest, sideDiamondPrice);
             CustomOrder customOrder = CustomOrder.builder()
                     .customer(firstCraftingRequest.getCustomer())
                     .firstRing(ringsCreated.get(0))
@@ -140,7 +140,8 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
             acceptCraftingRequestDataSource.updateRingWithCustomOrder(ringsCreated.get(0).getId(), customOrderCreated);
             acceptCraftingRequestDataSource.updateRingWithCustomOrder(ringsCreated.get(1).getId(), customOrderCreated);
             return aAcceptCraftingRequestMapper.toOutput(customOrderCreated, craftingRequestUpdated.get(0), craftingRequestUpdated.get(1));
-        } else if (input.status() == ACraftingRequestStatus.REJECTED) {
+        }
+        if (input.status() == ACraftingRequestStatus.REJECTED) {
             firstCraftingRequest.setComment(input.firstCommentCrafting());
             secondCraftingRequest.setComment(input.secondCommentCrafting());
             List<CraftingRequest> craftingRequests = new ArrayList<>();
@@ -148,29 +149,8 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
             craftingRequests.add(secondCraftingRequest);
             List<CraftingRequest> craftingRequestUpdated = acceptCraftingRequestDataSource.saveCraftingRequests(craftingRequests);
             return aAcceptCraftingRequestMapper.toOutput(null, craftingRequestUpdated.get(0), craftingRequestUpdated.get(0));
-        } else {
-            validator.validateAndStopExecution(input.status() == ACraftingRequestStatus.ACCEPTED || input.status() == ACraftingRequestStatus.REJECTED, AcceptCraftingRequestErrorCode.WRONG_STATUS);
-            return null;
         }
-    }
-
-    private BigDecimal calculateTotalPrice(CraftingRequest firstCraftingRequest, CraftingRequest secondCraftingRequest, Double sideDiamondPrice) {
-        BigDecimal firstRingPrice = (firstCraftingRequest.getMetalSpecification().getPricePerUnit()
-                .getAmount()
-                .multiply(BigDecimal.valueOf(3.75))
-                .multiply(firstCraftingRequest.getCustomDesign().getMetalWeight().getWeightValue())
-                .add(firstCraftingRequest.getDiamondSpecification().getPrice().getAmount())
-                .add(BigDecimal.valueOf(firstCraftingRequest.getCustomDesign().getSideDiamondsCount())
-                        .multiply(BigDecimal.valueOf(sideDiamondPrice))))
-                .multiply(BigDecimal.valueOf(1.3));
-        BigDecimal secondRingPrice = (secondCraftingRequest.getMetalSpecification().getPricePerUnit()
-                .getAmount()
-                .multiply(BigDecimal.valueOf(3.75))
-                .multiply(secondCraftingRequest.getCustomDesign().getMetalWeight().getWeightValue())
-                .add(secondCraftingRequest.getDiamondSpecification().getPrice().getAmount())
-                .add(BigDecimal.valueOf(secondCraftingRequest.getCustomDesign().getSideDiamondsCount())
-                        .multiply(BigDecimal.valueOf(sideDiamondPrice))))
-                .multiply(BigDecimal.valueOf(1.3));
-        return firstRingPrice.add(secondRingPrice);
+        validator.validateAndStopExecution(input.status() == ACraftingRequestStatus.ACCEPTED || input.status() == ACraftingRequestStatus.REJECTED, AcceptCraftingRequestErrorCode.WRONG_STATUS);
+        return null;
     }
 }

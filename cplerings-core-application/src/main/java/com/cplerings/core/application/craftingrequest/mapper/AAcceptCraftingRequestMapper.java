@@ -17,7 +17,8 @@ import com.cplerings.core.domain.order.CustomOrder;
                 DesignSizeMapper.class,
                 MoneyMapper.class
         }
-)public interface AAcceptCraftingRequestMapper {
+)
+public interface AAcceptCraftingRequestMapper {
 
     AcceptCraftingRequestOutput toOutput(CustomOrder customOrder, CraftingRequest firstCraftingRequest, CraftingRequest secondCraftingRequest);
 }

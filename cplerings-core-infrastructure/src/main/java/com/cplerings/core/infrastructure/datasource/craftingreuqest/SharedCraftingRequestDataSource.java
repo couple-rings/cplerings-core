@@ -127,9 +127,7 @@ public class SharedCraftingRequestDataSource extends AbstractDataSource implemen
 
     @Override
     public List<Ring> saveRings(List<Ring> rings) {
-        for (var ring : rings) {
-            updateAuditor(ring);
-        }
+        rings.forEach(this::updateAuditor);
         return ringRepository.saveAll(rings);
     }
 
@@ -154,9 +152,7 @@ public class SharedCraftingRequestDataSource extends AbstractDataSource implemen
 
     @Override
     public List<CraftingRequest> saveCraftingRequests(List<CraftingRequest> craftingRequests) {
-        for (var craftingrequest : craftingRequests) {
-            updateAuditor(craftingrequest);
-        }
+        craftingRequests.forEach(this::updateAuditor);
         return craftingRequestRepository.saveAll(craftingRequests);
     }
 
@@ -178,9 +174,7 @@ public class SharedCraftingRequestDataSource extends AbstractDataSource implemen
 
     @Override
     public void saveStages(List<CraftingStage> craftingStages) {
-        for (var craftingStage : craftingStages) {
-            updateAuditor(craftingStage);
-        }
+        craftingStages.forEach(this::updateAuditor);
         craftingStageRepository.saveAll(craftingStages);
     }
 

@@ -50,7 +50,7 @@ public class Ring extends AbstractEntity {
     private Instant purchaseDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = 20, nullable = false)
+    @Column(name = "status", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
     private RingStatus status;
 
     @Column(name = "maintenance_expired_date", nullable = false)

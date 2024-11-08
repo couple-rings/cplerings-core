@@ -2,7 +2,7 @@ package com.cplerings.core.domain.ring;
 
 public enum RingStatus {
 
-    NOT_AVAILABLE,
+    NOT_AVAIL,
     AVAILABLE,
     REFUNDED,
     RESOLD

@@ -39,7 +39,8 @@ public abstract class AbstractUseCase<I, O> implements UseCase<I, O> {
             log.error(e.getMessage(), e);
             session.rollback();
             return Either.right(ErrorCodes.SYSTEM_ERROR);
-        } finally {log.info("Done UseCase {}", getClass().getSimpleName());
+        } finally {
+            log.info("Done UseCase {}", getClass().getSimpleName());
         }
     }
 
