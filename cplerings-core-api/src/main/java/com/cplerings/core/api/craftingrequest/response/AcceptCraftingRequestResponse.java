@@ -4,10 +4,12 @@ import com.cplerings.core.api.craftingrequest.data.CustomOrderCraftingRequestDat
 import com.cplerings.core.api.shared.AbstractDataResponse;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class AcceptCraftingRequestResponse extends AbstractDataResponse<CustomOrderCraftingRequestData> {
 
     public static Builder builder() {

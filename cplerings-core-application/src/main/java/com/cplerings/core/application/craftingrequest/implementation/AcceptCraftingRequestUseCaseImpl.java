@@ -104,7 +104,10 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
             Contract contractCreated = acceptCraftingRequestDataSource.saveContract(contract);
             Configuration configuration = acceptCraftingRequestDataSource.getConfigurationForSideDiamond();
             Double sideDiamondPrice = Double.parseDouble(configuration.getValue());
-            BigDecimal totalPrice = calculateTotalPrice.calculationTotalPrice(firstCraftingRequest, secondCraftingRequest, sideDiamondPrice);
+            BigDecimal totalPrice = calculateTotalPrice.calculationTotalPrice(firstCraftingRequest.getMetalSpecification().getPricePerUnit(), secondCraftingRequest.getMetalSpecification().getPricePerUnit(),
+                    firstCraftingRequest.getDiamondSpecification().getPrice(), secondCraftingRequest.getDiamondSpecification().getPrice(),
+                    firstCraftingRequest.getCustomDesign().getMetalWeight().getWeightValue(), secondCraftingRequest.getCustomDesign().getMetalWeight().getWeightValue(),
+                    firstCraftingRequest.getCustomDesign().getSideDiamondsCount(), secondCraftingRequest.getCustomDesign().getSideDiamondsCount(), sideDiamondPrice);
             CustomOrder customOrder = CustomOrder.builder()
                     .customer(firstCraftingRequest.getCustomer())
                     .firstRing(ringsCreated.get(0))
