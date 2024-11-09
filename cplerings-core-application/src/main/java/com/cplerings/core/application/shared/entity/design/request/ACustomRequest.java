@@ -1,5 +1,8 @@
 package com.cplerings.core.application.shared.entity.design.request;
 
+import java.io.Serializable;
+import java.util.Set;
+
 import com.cplerings.core.application.shared.entity.account.AAccount;
 import com.cplerings.core.application.shared.entity.design.ADesign;
 
@@ -9,19 +12,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ACustomRequest {
+public class ACustomRequest implements Serializable {
 
     private Long id;
     private String comment;
     private ACustomRequestStatus status;
     private AAccount customer;
-    private Collection<ADesign> designs = new ArrayList<>();
+    private Set<ADesign> designs;
 }
