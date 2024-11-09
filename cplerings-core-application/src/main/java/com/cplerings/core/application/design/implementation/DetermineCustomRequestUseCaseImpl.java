@@ -10,6 +10,8 @@ import com.cplerings.core.application.shared.entity.design.request.ACustomReques
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
+import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.CustomRequestStatus;
 
@@ -28,7 +30,7 @@ public class DetermineCustomRequestUseCaseImpl extends AbstractUseCase<Determine
         validator.validateAndStopExecution(input.customRequestId() != null, DetermineCustomRequestErrorCode.CUSTOM_REQUEST_ID_REQUIRED);
         validator.validateAndStopExecution(input.customRequestId() > 0, DetermineCustomRequestErrorCode.CUSTOM_REQUEST_ID_WRONG_POSITIVE_INTEGER);
         validator.validateAndStopExecution(input.customRequestStatus() == ACustomRequestStatus.APPROVED || input.customRequestStatus() == ACustomRequestStatus.REJECTED, DetermineCustomRequestErrorCode.WRONG_STATUS);
-        validator.validateAndStopExecution(input.comment() != null, DetermineCustomRequestErrorCode.COMMENT_REQUIRED);
+        validator.validateAndStopExecution(input.staffId() != null, DetermineCustomRequestErrorCode.STAFF_ID_REQUIRED);
     }
 
     @Override
@@ -37,7 +39,10 @@ public class DetermineCustomRequestUseCaseImpl extends AbstractUseCase<Determine
                 .orElse(null);
         validator.validateAndStopExecution(customRequest != null, DetermineCustomRequestErrorCode.INVALID_CUSTOM_REQUEST_ID);
         validator.validateAndStopExecution(customRequest.getStatus() == CustomRequestStatus.PENDING, DetermineCustomRequestErrorCode.INVALID_CUSTOM_REQUEST_STATUS);
-        customRequest.setComment(input.comment());
+        Account staff = determineCustomRequestDataSource.getStaff(input.staffId())
+                .orElse(null);
+        validator.validateAndStopExecution(staff != null && staff.getRole() == Role.STAFF, DetermineCustomRequestErrorCode.INVALID_STAFF_ID);
+        customRequest.setStaff(staff);
         if (input.customRequestStatus() == ACustomRequestStatus.APPROVED) {
             customRequest.setStatus(CustomRequestStatus.APPROVED);
         }

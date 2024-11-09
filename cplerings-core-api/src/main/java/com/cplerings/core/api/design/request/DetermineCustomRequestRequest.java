@@ -5,5 +5,5 @@ import com.cplerings.core.application.shared.entity.design.request.ACustomReques
 import lombok.Builder;
 
 @Builder
-public record DetermineCustomRequestRequest(Long customRequestId, ACustomRequestStatus customRequestStatus, String comment) {
+public record DetermineCustomRequestRequest(Long customRequestId, ACustomRequestStatus customRequestStatus, Long staffId) {
 }

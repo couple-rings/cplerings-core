@@ -54,7 +54,7 @@ public class DetermineCustomRequestController extends AbstractController<Determi
         DetermineCustomRequestRequest request = DetermineCustomRequestRequest.builder()
                 .customRequestId(customRequestId)
                 .customRequestStatus(determineCustomRequestRequestData.getCustomRequestStatus())
-                .comment(determineCustomRequestRequestData.getComment())
+                .staffId(determineCustomRequestRequestData.getStaffId())
                 .build();
         return handleRequest(request);
     }

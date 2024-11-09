@@ -46,7 +46,7 @@ public class DetermineCustomRequestUseCaseIT extends AbstractIT {
                 .build();
         testDataSource.save(customRequest);
         final DetermineCustomRequestRequestData request = DetermineCustomRequestRequestData.builder()
-                .comment("test")
+                .staffId(21L)
                 .customRequestStatus(ACustomRequestStatus.APPROVED)
                 .build();
         final WebTestClient.ResponseSpec response = requestBuilder()

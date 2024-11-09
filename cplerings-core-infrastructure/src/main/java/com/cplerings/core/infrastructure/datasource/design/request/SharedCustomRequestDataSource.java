@@ -14,6 +14,7 @@ import com.cplerings.core.application.design.datasource.result.CustomRequests;
 import com.cplerings.core.application.design.input.ViewCustomRequestsInput;
 import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.DesignStatus;
 import com.cplerings.core.domain.design.QDesign;
@@ -34,15 +35,12 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @DataSource
-<<<<<<< HEAD
-public class SharedCustomRequestDataSource extends AbstractDataSource implements ViewCustomRequestDataSource, CreateCustomRequestDataSource, ViewCustomRequestsDataSource {
-=======
-public class SharedCustomRequestDataSource extends AbstractDataSource implements ViewCustomRequestDataSource, CreateCustomRequestDataSource, DetermineCustomRequestDataSource {
->>>>>>> 8f77d5c (Add function determine custom request  and the IT)
+public class SharedCustomRequestDataSource extends AbstractDataSource implements ViewCustomRequestDataSource, CreateCustomRequestDataSource, ViewCustomRequestsDataSource, DetermineCustomRequestDataSource {
 
     private static final QCustomRequest Q_CUSTOM_REQUEST = QCustomRequest.customRequest;
     private static final QDesign Q_DESIGN = QDesign.design;
     private static final QDesignCustomRequest Q_DESIGN_CUSTOM_REQUEST = QDesignCustomRequest.designCustomRequest;
+    private static final QAccount Q_ACCOUNT = QAccount.account;
 
     private final DesignRepository designRepository;
     private final AccountRepository accountRepository;
@@ -89,7 +87,6 @@ public class SharedCustomRequestDataSource extends AbstractDataSource implements
     }
 
     @Override
-<<<<<<< HEAD
     public CustomRequests getCustomRequests(ViewCustomRequestsInput input) {
         var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
         BlazeJPAQuery<CustomRequest> query = createQuery()
@@ -120,8 +117,8 @@ public class SharedCustomRequestDataSource extends AbstractDataSource implements
                 .pageSize(input.getPageSize())
                 .build();
     }
-}
-=======
+
+    @Override
     public Optional<CustomRequest> getCraftingRequestById(Long id) {
         return Optional.ofNullable(createQuery().select(Q_CUSTOM_REQUEST)
                 .from(Q_CUSTOM_REQUEST)
@@ -134,5 +131,12 @@ public class SharedCustomRequestDataSource extends AbstractDataSource implements
         updateAuditor(customRequest);
         return customRequestRepository.save(customRequest);
     }
+
+    @Override
+    public Optional<Account> getStaff(Long staffId) {
+        return Optional.ofNullable(createQuery().select(Q_ACCOUNT)
+                .from(Q_ACCOUNT)
+                .where(Q_ACCOUNT.id.eq(staffId))
+                .fetchOne());
+    }
 }
->>>>>>> 8f77d5c (Add function determine custom request  and the IT)

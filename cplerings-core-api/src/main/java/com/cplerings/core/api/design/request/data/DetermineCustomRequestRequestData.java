@@ -16,5 +16,5 @@ import lombok.Setter;
 public class DetermineCustomRequestRequestData {
 
     private ACustomRequestStatus customRequestStatus;
-    private String comment;
+    private Long staffId;
 }
