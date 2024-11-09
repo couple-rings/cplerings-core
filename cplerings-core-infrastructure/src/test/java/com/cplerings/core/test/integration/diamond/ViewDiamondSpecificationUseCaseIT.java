@@ -1,0 +1,49 @@
+package com.cplerings.core.test.integration.diamond;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.test.web.reactive.server.WebTestClient;
+
+import com.cplerings.core.api.diamond.data.DiamondSpecification;
+import com.cplerings.core.api.diamond.request.ViewDiamondSpecificationRequest;
+import com.cplerings.core.api.diamond.response.ViewDiamondSpecificationResponse;
+import com.cplerings.core.api.shared.AbstractResponse;
+import com.cplerings.core.common.api.APIConstant;
+import com.cplerings.core.test.shared.AbstractIT;
+
+class ViewDiamondSpecificationUseCaseIT extends AbstractIT {
+
+    @Test
+    void givenAnyone_whenViewDiamondSpecifications() {
+        ViewDiamondSpecificationRequest request = ViewDiamondSpecificationRequest.builder()
+                .page(0)
+                .pageSize(1)
+                .build();
+        final WebTestClient.ResponseSpec response = requestBuilder()
+                .path(APIConstant.DIAMOND_SPECIFICATION_PATH)
+                .method(RequestBuilder.Method.GET)
+                .query(request)
+                .send();
+        thenResponseIsOk(response);
+        thenResponseReturnDiamondSpecifications(response);
+    }
+
+    private void thenResponseReturnDiamondSpecifications(WebTestClient.ResponseSpec response) {
+        final ViewDiamondSpecificationResponse responseBody = response.expectBody(ViewDiamondSpecificationResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(responseBody)
+                .isNotNull();
+        assertThat(responseBody.getType())
+                .isEqualTo(AbstractResponse.Type.PAGINATED_DATA);
+
+        final DiamondSpecification diamondSpecification = responseBody.getData();
+        assertThat(diamondSpecification).isNotNull();
+        assertThat(diamondSpecification.getPage()).isZero();
+        assertThat(diamondSpecification.getPageSize()).isEqualTo(1);
+        assertThat(diamondSpecification.getItems()).hasSize(1);
+        assertThat(diamondSpecification.getTotalPages()).isEqualTo(9);
+    }
+}
