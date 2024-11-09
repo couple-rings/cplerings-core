@@ -8,7 +8,6 @@ import com.cplerings.core.domain.design.request.CustomRequest;
 public interface DetermineCustomRequestDataSource {
 
     Optional<CustomRequest> getCraftingRequestById(Long id);
-
     CustomRequest updateCraftingRequest(CustomRequest customRequest);
     Optional<Account> getStaff(Long staffId);
 }
