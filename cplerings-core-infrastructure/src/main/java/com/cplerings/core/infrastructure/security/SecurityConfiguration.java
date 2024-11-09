@@ -61,6 +61,7 @@ public class SecurityConfiguration {
         handleFileUploadAPI(localHttp);
         handleCustomRequestAPI(localHttp);
         handleCraftingRequestAPI(localHttp);
+        handleDiamondSpecificationAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
                 .denyAll());
         return localHttp.build();
@@ -175,6 +176,11 @@ public class SecurityConfiguration {
                         .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.PUT, resolvePath(APIConstant.ACCEPT_CRAFTING_REQUEST_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_STAFF));
+    }
+
+    private void handleDiamondSpecificationAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.DIAMOND_SPECIFICATION_PATH))
+                        .authenticated());
     }
 
     private String resolvePath(String path) {
