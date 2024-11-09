@@ -148,8 +148,32 @@ public class SharedDesignDataSource extends AbstractDataSource
         var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
         BlazeJPAQuery<DesignVersion> query = createQuery()
                 .select(Q_DESIGN_VERSION)
-                .from(Q_DESIGN_VERSION)
-                .where(Q_DESIGN_VERSION.customer.id.eq(customerId));
+                .from(Q_DESIGN_VERSION);
+        if (input.getDesignId() != null) {
+            query = query.where(Q_DESIGN_VERSION.customer.id.eq(customerId)
+                    .and(Q_DESIGN_VERSION.design.id.eq(input.getDesignId())));
+        } else {
+            query = query.where(Q_DESIGN_VERSION.customer.id.eq(customerId));
+        }
+        long count = query.distinct().fetchCount();
+        List<DesignVersion> designVersions = query.limit(input.getPageSize()).offset(offset).fetch();
+        return DesignVersions.builder()
+                .designVersions(designVersions)
+                .count(count)
+                .page(input.getPage())
+                .pageSize(input.getPageSize())
+                .build();
+    }
+
+    @Override
+    public DesignVersions findDesignVersions(ViewDesignVersionsInput input) {
+        var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
+        BlazeJPAQuery<DesignVersion> query = createQuery()
+                .select(Q_DESIGN_VERSION)
+                .from(Q_DESIGN_VERSION);
+        if (input.getDesignId() != null) {
+            query = query.where(Q_DESIGN_VERSION.design.id.eq(input.getDesignId()));
+        }
         long count = query.distinct().fetchCount();
         List<DesignVersion> designVersions = query.limit(input.getPageSize()).offset(offset).fetch();
         return DesignVersions.builder()
