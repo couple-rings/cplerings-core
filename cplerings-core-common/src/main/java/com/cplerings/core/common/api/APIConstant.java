@@ -86,4 +86,9 @@ public final class APIConstant {
        Diamond specification
     */
     public static final String DIAMOND_SPECIFICATION_PATH = "/diamond-specifications";
+
+    /*
+       Metal specification
+    */
+    public static final String METAL_SPECIFICATION_PATH = "/metal-specifications";
 }

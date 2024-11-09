@@ -62,6 +62,7 @@ public class SecurityConfiguration {
         handleCustomRequestAPI(localHttp);
         handleCraftingRequestAPI(localHttp);
         handleDiamondSpecificationAPI(localHttp);
+        handleMetalSpecificationAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
                 .denyAll());
         return localHttp.build();
@@ -181,6 +182,11 @@ public class SecurityConfiguration {
     private void handleDiamondSpecificationAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.DIAMOND_SPECIFICATION_PATH))
                         .authenticated());
+    }
+
+    private void handleMetalSpecificationAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.METAL_SPECIFICATION_PATH))
+                .authenticated());
     }
 
     private String resolvePath(String path) {
