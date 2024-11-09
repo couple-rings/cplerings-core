@@ -35,7 +35,6 @@ public class DetermineCustomRequestUseCaseIT extends AbstractIT {
 
     @Test
     void givenStaff_whenDetermineCustomRequest() {
-
         String token = jwtTestHelper.generateToken("staff@cplerings.com");
         CustomRequest customRequest = CustomRequest.builder()
                 .id(1L)
