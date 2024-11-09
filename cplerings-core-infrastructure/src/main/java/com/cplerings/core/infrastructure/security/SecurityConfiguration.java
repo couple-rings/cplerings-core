@@ -180,7 +180,7 @@ public class SecurityConfiguration {
 
     private void handleDiamondSpecificationAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.DIAMOND_SPECIFICATION_PATH))
-                        .permitAll());
+                        .authenticated());
     }
 
     private String resolvePath(String path) {

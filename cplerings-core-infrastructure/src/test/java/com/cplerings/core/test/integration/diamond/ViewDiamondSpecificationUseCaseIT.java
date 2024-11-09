@@ -3,6 +3,7 @@ package com.cplerings.core.test.integration.diamond;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.cplerings.core.api.diamond.data.DiamondSpecification;
@@ -11,11 +12,17 @@ import com.cplerings.core.api.diamond.response.ViewDiamondSpecificationResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.test.shared.AbstractIT;
+import com.cplerings.core.test.shared.account.AccountTestConstant;
+import com.cplerings.core.test.shared.helper.JWTTestHelper;
 
 class ViewDiamondSpecificationUseCaseIT extends AbstractIT {
 
+    @Autowired
+    private JWTTestHelper jwtTestHelper;
+
     @Test
     void givenAnyone_whenViewDiamondSpecifications() {
+        final String token = jwtTestHelper.generateToken(AccountTestConstant.STAFF_EMAIL);
         ViewDiamondSpecificationRequest request = ViewDiamondSpecificationRequest.builder()
                 .page(0)
                 .pageSize(1)
@@ -23,6 +30,7 @@ class ViewDiamondSpecificationUseCaseIT extends AbstractIT {
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(APIConstant.DIAMOND_SPECIFICATION_PATH)
                 .method(RequestBuilder.Method.GET)
+                .authorizationHeader(token)
                 .query(request)
                 .send();
         thenResponseIsOk(response);
