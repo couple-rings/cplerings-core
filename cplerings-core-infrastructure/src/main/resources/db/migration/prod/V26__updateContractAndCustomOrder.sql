@@ -16,9 +16,6 @@ ALTER TABLE tbl_branch
 ALTER TABLE tbl_contract
     ADD CONSTRAINT uc_tbl_contract_signature UNIQUE (signature);
 
-ALTER TABLE tbl_ring
-    ADD CONSTRAINT uc_tbl_ring_maintenance_document UNIQUE (maintenance_document_id);
-
 ALTER TABLE tbl_custom_order
     DROP COLUMN amount;
 
