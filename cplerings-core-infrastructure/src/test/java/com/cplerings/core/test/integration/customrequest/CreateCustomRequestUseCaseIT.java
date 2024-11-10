@@ -57,6 +57,47 @@ class CreateCustomRequestUseCaseIT extends AbstractIT {
                 .orElse(null);
         assertThat(customer).isNotNull();
 
+        final CreateCustomRequestRequest request = CreateCustomRequestRequest.builder()
+                .customerId(customer.getId())
+                .designIds(Set.of(1L, 11L))
+                .build();
+
+        final String token = jwtTestHelper.generateToken(AccountTestConstant.STAFF_EMAIL);
+        final WebTestClient.ResponseSpec response = requestBuilder()
+                .path(APIConstant.CUSTOM_REQUEST_PATH)
+                .method(RequestBuilder.Method.POST)
+                .authorizationHeader(token)
+                .body(request)
+                .send();
+
+        thenResponseIsOk(response);
+        thenResponseBodyContainsNewlyCreatedCustomRequest(response);
+    }
+
+    @Test
+    void givenCustomer_whenCreateCustomRequest() {
+        final CreateCustomRequestRequest request = CreateCustomRequestRequest.builder()
+                .designIds(Set.of(1L, 11L))
+                .build();
+
+        final String token = jwtTestHelper.generateToken(AccountTestConstant.CUSTOMER_EMAIL);
+        final WebTestClient.ResponseSpec response = requestBuilder()
+                .path(APIConstant.CUSTOM_REQUEST_PATH)
+                .method(RequestBuilder.Method.POST)
+                .authorizationHeader(token)
+                .body(request)
+                .send();
+
+        thenResponseIsOk(response);
+        thenResponseBodyContainsNewlyCreatedCustomRequest(response);
+    }
+
+    @Test
+    void givenStaff_whenCreateCustomRequestWithOldDesignVersions() {
+        final Account customer = accountRepository.findByEmail(AccountTestConstant.CUSTOMER_EMAIL)
+                .orElse(null);
+        assertThat(customer).isNotNull();
+
         DesignVersion firstOldDesignVersion = DesignVersion.builder()
                 .customer(customer)
                 .design(designRepository.getReferenceById(1L))
@@ -72,8 +113,8 @@ class CreateCustomRequestUseCaseIT extends AbstractIT {
                 .customer(customer)
                 .design(designRepository.getReferenceById(11L))
                 .isOld(false)
-                .designFile(documentRepository.getReferenceById(1L))
-                .image(imageRepository.getReferenceById(1L))
+                .designFile(documentRepository.getReferenceById(11L))
+                .image(imageRepository.getReferenceById(11L))
                 .isAccepted(false)
                 .versionNumber(2)
                 .build();
@@ -95,24 +136,6 @@ class CreateCustomRequestUseCaseIT extends AbstractIT {
         thenResponseIsOk(response);
         thenResponseBodyContainsNewlyCreatedCustomRequest(response);
         thenPreviousDesignVersionsAreUpdatedAsOld(List.of(firstOldDesignVersion.getId(), secondOldDesignVersion.getId()));
-    }
-
-    @Test
-    void givenCustomer_whenCreateCustomRequest() {
-        final CreateCustomRequestRequest request = CreateCustomRequestRequest.builder()
-                .designIds(Set.of(1L, 11L))
-                .build();
-
-        final String token = jwtTestHelper.generateToken(AccountTestConstant.CUSTOMER_EMAIL);
-        final WebTestClient.ResponseSpec response = requestBuilder()
-                .path(APIConstant.CUSTOM_REQUEST_PATH)
-                .method(RequestBuilder.Method.POST)
-                .authorizationHeader(token)
-                .body(request)
-                .send();
-
-        thenResponseIsOk(response);
-        thenResponseBodyContainsNewlyCreatedCustomRequest(response);
     }
 
     private void thenResponseBodyContainsNewlyCreatedCustomRequest(WebTestClient.ResponseSpec response) {
