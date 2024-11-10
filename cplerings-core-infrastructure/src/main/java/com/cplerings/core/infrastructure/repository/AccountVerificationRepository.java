@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface AccountVerificationRepository extends JpaRepository<AccountVerification, Long> {
 
     Optional<AccountVerification> findByAccountEmail(String email);
+
+    Optional<AccountVerification> findFirstByAccountEmailOrderByIdDesc(String email);
 }

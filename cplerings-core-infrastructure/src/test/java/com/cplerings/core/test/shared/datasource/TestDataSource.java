@@ -1,5 +1,7 @@
 package com.cplerings.core.test.shared.datasource;
 
+import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.AccountVerification;
 import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
@@ -41,4 +43,8 @@ public interface TestDataSource {
     CustomRequest save(CustomRequest customRequest);
 
     DesignCustomRequest save(DesignCustomRequest designCustomRequest);
+
+    Account save(Account account);
+
+    AccountVerification save(AccountVerification accountVerification);
 }

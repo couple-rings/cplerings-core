@@ -22,6 +22,7 @@ import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.DesignStatus;
+import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.CustomRequestStatus;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
@@ -82,7 +83,14 @@ public class CreateCustomRequestUseCaseImpl extends AbstractUseCase<CreateCustom
         }
         designCustomRequests = dataSource.saveDesignCustomRequests(designCustomRequests);
         customRequest.setDesignCustomRequests(new HashSet<>(designCustomRequests));
+        setDesignVersionsOfPreviousSessionToOld(customer.getId(), input.getDesignIds());
         return mapper.toOutput(customRequest);
+    }
+
+    private void setDesignVersionsOfPreviousSessionToOld(Long customerId, Collection<Long> designIds) {
+        final Collection<DesignVersion> oldDesignVersions = dataSource.getAllDesignVersionsOfPreviousDesignSessions(customerId, designIds);
+        oldDesignVersions.forEach(designVersion -> designVersion.setIsOld(true));
+        dataSource.saveAll(oldDesignVersions);
     }
 
     private Account getAccount(CreateCustomRequestInput input) {

@@ -1,5 +1,7 @@
 package com.cplerings.core.test.shared.datasource;
 
+import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.AccountVerification;
 import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
@@ -14,6 +16,8 @@ import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.spouse.Spouse;
 import com.cplerings.core.domain.spouse.SpouseAccount;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
+import com.cplerings.core.infrastructure.repository.AccountRepository;
+import com.cplerings.core.infrastructure.repository.AccountVerificationRepository;
 import com.cplerings.core.infrastructure.repository.BranchRepository;
 import com.cplerings.core.infrastructure.repository.ContractRepository;
 import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
@@ -49,6 +53,8 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private final CraftingStageRepository craftingStageRepository;
     private final CustomRequestRepository customRequestRepository;
     private final DesignCustomRequestRepository designCustomRequestRepository;
+    private final AccountRepository accountRepository;
+    private final AccountVerificationRepository accountVerificationRepository;
 
     @Override
     public Payment save(Payment payment) {
@@ -96,6 +102,18 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     public DesignCustomRequest save(DesignCustomRequest designCustomRequest) {
         updateAuditor(designCustomRequest);
         return designCustomRequestRepository.save(designCustomRequest);
+    }
+
+    @Override
+    public Account save(Account account) {
+        updateAuditor(account);
+        return accountRepository.save(account);
+    }
+
+    @Override
+    public AccountVerification save(AccountVerification accountVerification) {
+        updateAuditor(accountVerification);
+        return accountVerificationRepository.save(accountVerification);
     }
 
     @Override

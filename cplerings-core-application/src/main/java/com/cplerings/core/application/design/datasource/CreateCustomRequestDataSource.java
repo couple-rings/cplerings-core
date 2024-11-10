@@ -2,6 +2,7 @@ package com.cplerings.core.application.design.datasource;
 
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.design.Design;
+import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
 
@@ -19,4 +20,8 @@ public interface CreateCustomRequestDataSource {
     CustomRequest save(CustomRequest customRequest);
 
     Collection<DesignCustomRequest> saveDesignCustomRequests(Collection<DesignCustomRequest> designCustomRequests);
+
+    Collection<DesignVersion> getAllDesignVersionsOfPreviousDesignSessions(Long id, Collection<Long> designIds);
+
+    Collection<DesignVersion> saveAll(Collection<DesignVersion> oldDesignVersions);
 }
