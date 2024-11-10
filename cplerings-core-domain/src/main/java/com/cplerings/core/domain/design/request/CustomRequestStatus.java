@@ -2,5 +2,5 @@ package com.cplerings.core.domain.design.request;
 
 public enum CustomRequestStatus {
 
-    PENDING, APPROVED, REJECTED
+    PENDING, APPROVED, REJECTED, COMPLETED
 }
