@@ -117,6 +117,7 @@ public class SharedDesignDataSource extends AbstractDataSource
     public Optional<Design> getDesignByID(long designID) {
         return Optional.ofNullable(createQuery().select(Q_DESIGN)
                 .from(Q_DESIGN)
+                        .leftJoin(Q_DESIGN.designVersions, Q_DESIGN_VERSION).fetchJoin()
                 .where(Q_DESIGN.id.eq(designID))
                 .fetchOne());
     }
