@@ -11,4 +11,5 @@ public interface ViewDesignVersionsDataSource {
     Optional<Account> findAccountByEmail(String email);
 
     DesignVersions findDesignVersionsByCustomerId(Long customerId, ViewDesignVersionsInput input);
+    DesignVersions findDesignVersions(ViewDesignVersionsInput input);
 }

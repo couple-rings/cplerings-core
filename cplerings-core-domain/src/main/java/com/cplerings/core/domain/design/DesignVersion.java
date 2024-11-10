@@ -6,6 +6,7 @@ import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.shared.AbstractEntity;
 
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,7 +31,13 @@ import jakarta.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_design_version")
+@Table(
+        name = "tbl_design_version",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uc_tbl_design_version_design_id_version_number",
+                columnNames = {"design_id", "version_number"}
+        )
+)
 public class DesignVersion extends AbstractEntity {
 
     private static final String DESIGN_VERSION_SEQUENCE = "design_version_seq";

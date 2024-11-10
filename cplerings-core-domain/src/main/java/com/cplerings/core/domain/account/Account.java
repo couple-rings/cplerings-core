@@ -2,6 +2,7 @@ package com.cplerings.core.domain.account;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.blog.Blog;
+import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.Auditor;
@@ -85,6 +86,9 @@ public class Account extends AbstractEntity implements Auditor {
 
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
     private Set<AccountPasswordReset> passwordResets;
+
+    @OneToMany(mappedBy = "staff", fetch = FetchType.LAZY)
+    private Set<CustomRequest> customRequests;
 
     @Override
     public String getAuditorName() {

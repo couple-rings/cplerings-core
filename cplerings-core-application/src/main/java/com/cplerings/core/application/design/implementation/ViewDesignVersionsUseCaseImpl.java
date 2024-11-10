@@ -15,6 +15,7 @@ import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.Role;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,6 +36,10 @@ public class ViewDesignVersionsUseCaseImpl extends AbstractUseCase<ViewDesignVer
         final Optional<Account> accountOptional = viewDesignVersionsDataSource.findAccountByEmail(currentUser.email());
         validator.validateAndStopExecution(accountOptional.isPresent(), ACCOUNT_WITH_EMAIL_NOT_FOUND);
         final Account account = accountOptional.get();
+        if (account.getRole() == Role.STAFF) {
+            DesignVersions designVersions = viewDesignVersionsDataSource.findDesignVersions(input);
+            return aViewDesignVersionsMapper.toOutput(designVersions);
+        }
         DesignVersions designVersions = viewDesignVersionsDataSource.findDesignVersionsByCustomerId(account.getId(), input);
         return aViewDesignVersionsMapper.toOutput(designVersions);
     }

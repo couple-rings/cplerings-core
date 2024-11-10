@@ -62,6 +62,8 @@ public class SecurityConfiguration {
         handleCustomRequestAPI(localHttp);
         handleCraftingRequestAPI(localHttp);
         handleCraftingStageAPI(localHttp);
+        handleDiamondSpecificationAPI(localHttp);
+        handleMetalSpecificationAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
                 .denyAll());
         return localHttp.build();
@@ -150,7 +152,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.CREATE_CUSTOM_DESIGN_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_STAFF))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.DESIGN_VERSION_PATH))
-                        .hasAuthority(RoleConstant.ROLE_CUSTOMER))
+                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VIEW_CURRENT_DESIGN_VERSIONS_PATH))
                         .hasAuthority(RoleConstant.ROLE_CUSTOMER));
     }
@@ -161,7 +163,11 @@ public class SecurityConfiguration {
     }
 
     private void handleCustomRequestAPI(HttpSecurity localHttp) throws Exception {
-        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.CUSTOM_SINGLE_REQUEST_PATH))
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VIEW_CUSTOM_REQUESTS_PATH))
+                        .permitAll())
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.PUT, resolvePath(APIConstant.DETERMINE_CUSTOM_REQUEST_PATH))
+                        .permitAll())
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.CUSTOM_SINGLE_REQUEST_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_STAFF))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.CUSTOM_REQUEST_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF));
@@ -177,6 +183,16 @@ public class SecurityConfiguration {
     private void handleCraftingStageAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.DEPOSIT_CRAFTING_STAGE_PATH))
                 .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF));
+    }
+
+    private void handleDiamondSpecificationAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.DIAMOND_SPECIFICATION_PATH))
+                        .authenticated());
+    }
+
+    private void handleMetalSpecificationAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.METAL_SPECIFICATION_PATH))
+                .authenticated());
     }
 
     private String resolvePath(String path) {

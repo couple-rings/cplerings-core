@@ -4,6 +4,7 @@ import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.design.DesignVersion;
+import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.payment.Payment;
@@ -16,6 +17,7 @@ import com.cplerings.core.infrastructure.repository.BranchRepository;
 import com.cplerings.core.infrastructure.repository.ContractRepository;
 import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
+import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
 import com.cplerings.core.infrastructure.repository.DesignSessionRepository;
 import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
 import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
@@ -43,6 +45,7 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private final RingRepository ringRepository;
     private final CustomOrderRepository customOrderRepository;
     private final CraftingStageRepository craftingStageRepository;
+    private final CustomRequestRepository customRequestRepository;
 
     @Override
     public Payment save(Payment payment) {
@@ -78,6 +81,12 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     public DesignVersion save(DesignVersion designVersion) {
         updateAuditor(designVersion);
         return designVersionRepository.save(designVersion);
+    }
+
+    @Override
+    public CustomRequest save(CustomRequest customRequest) {
+        updateAuditor(customRequest);
+        return customRequestRepository.save(customRequest);
     }
 
     @Override

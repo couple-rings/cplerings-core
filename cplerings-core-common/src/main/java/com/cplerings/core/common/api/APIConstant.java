@@ -73,6 +73,8 @@ public final class APIConstant {
      */
     public static final String CUSTOM_REQUEST_PATH = "/custom-requests";
     public static final String CUSTOM_SINGLE_REQUEST_PATH = CUSTOM_REQUEST_PATH + "/{customRequestId}";
+    public static final String VIEW_CUSTOM_REQUESTS_PATH = CUSTOM_REQUEST_PATH;
+    public static final String DETERMINE_CUSTOM_REQUEST_PATH = CUSTOM_REQUEST_PATH + "/determination/{customRequestId}";
 
     /*
         Crafting request
@@ -85,4 +87,14 @@ public final class APIConstant {
      */
     public static final String CRAFTING_STAGE_PATH = "/crafting-stages";
     public static final String DEPOSIT_CRAFTING_STAGE_PATH = CRAFTING_STAGE_PATH + "/deposit";
+
+    /*
+       Diamond specification
+    */
+    public static final String DIAMOND_SPECIFICATION_PATH = "/diamond-specifications";
+
+    /*
+       Metal specification
+    */
+    public static final String METAL_SPECIFICATION_PATH = "/metal-specifications";
 }
