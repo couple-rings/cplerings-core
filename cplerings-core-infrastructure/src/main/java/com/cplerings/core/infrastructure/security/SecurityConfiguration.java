@@ -61,6 +61,7 @@ public class SecurityConfiguration {
         handleFileUploadAPI(localHttp);
         handleCustomRequestAPI(localHttp);
         handleCraftingRequestAPI(localHttp);
+        handleCraftingStageAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
                 .denyAll());
         return localHttp.build();
@@ -171,6 +172,11 @@ public class SecurityConfiguration {
                         .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.PUT, resolvePath(APIConstant.ACCEPT_CRAFTING_REQUEST_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_STAFF));
+    }
+
+    private void handleCraftingStageAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.DEPOSIT_CRAFTING_STAGE_PATH))
+                .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF));
     }
 
     private String resolvePath(String path) {

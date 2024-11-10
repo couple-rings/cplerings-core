@@ -35,4 +35,18 @@ public final class NumberUtils {
         }
         return (number > 0);
     }
+
+    public static boolean isLessThan(Long numberToBeCompared, Long numberToCompareAgainst) {
+        if (numberToBeCompared == null || numberToCompareAgainst == null) {
+            return false;
+        }
+        return (numberToBeCompared < numberToCompareAgainst);
+    }
+
+    public static boolean isLessThan(Integer numberToBeCompared, Integer numberToCompareAgainst) {
+        if (numberToBeCompared == null || numberToCompareAgainst == null) {
+            return false;
+        }
+        return (numberToBeCompared < numberToCompareAgainst);
+    }
 }

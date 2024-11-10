@@ -1,16 +1,26 @@
 package com.cplerings.core.test.shared.datasource;
 
+import com.cplerings.core.domain.branch.Branch;
+import com.cplerings.core.domain.contract.Contract;
+import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.session.DesignSession;
+import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.payment.PaymentReceiver;
+import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.spouse.Spouse;
 import com.cplerings.core.domain.spouse.SpouseAccount;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
+import com.cplerings.core.infrastructure.repository.BranchRepository;
+import com.cplerings.core.infrastructure.repository.ContractRepository;
+import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
+import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.cplerings.core.infrastructure.repository.DesignSessionRepository;
 import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
 import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
 import com.cplerings.core.infrastructure.repository.PaymentRepository;
+import com.cplerings.core.infrastructure.repository.RingRepository;
 import com.cplerings.core.infrastructure.repository.SpouseAccountRepository;
 import com.cplerings.core.infrastructure.repository.SpouseRepository;
 
@@ -28,6 +38,11 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private final SpouseRepository spouseRepository;
     private final SpouseAccountRepository spouseAccountRepository;
     private final DesignVersionRepository designVersionRepository;
+    private final ContractRepository contractRepository;
+    private final BranchRepository branchRepository;
+    private final RingRepository ringRepository;
+    private final CustomOrderRepository customOrderRepository;
+    private final CraftingStageRepository craftingStageRepository;
 
     @Override
     public Payment save(Payment payment) {
@@ -63,5 +78,35 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     public DesignVersion save(DesignVersion designVersion) {
         updateAuditor(designVersion);
         return designVersionRepository.save(designVersion);
+    }
+
+    @Override
+    public Contract save(Contract contract) {
+        updateAuditor(contract);
+        return contractRepository.save(contract);
+    }
+
+    @Override
+    public Branch save(Branch branch) {
+        updateAuditor(branch);
+        return branchRepository.save(branch);
+    }
+
+    @Override
+    public Ring save(Ring ring) {
+        updateAuditor(ring);
+        return ringRepository.save(ring);
+    }
+
+    @Override
+    public CustomOrder save(CustomOrder customOrder) {
+        updateAuditor(customOrder);
+        return customOrderRepository.save(customOrder);
+    }
+
+    @Override
+    public CraftingStage save(CraftingStage craftingStage) {
+        updateAuditor(craftingStage);
+        return craftingStageRepository.save(craftingStage);
     }
 }

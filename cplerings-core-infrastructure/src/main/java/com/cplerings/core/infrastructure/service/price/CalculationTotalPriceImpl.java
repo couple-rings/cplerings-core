@@ -1,11 +1,11 @@
 package com.cplerings.core.infrastructure.service.price;
 
-import java.math.BigDecimal;
+import com.cplerings.core.application.shared.service.price.CalculationTotalPrice;
+import com.cplerings.core.domain.shared.valueobject.Money;
 
 import org.springframework.stereotype.Service;
 
-import com.cplerings.core.application.shared.service.price.CalculationTotalPrice;
-import com.cplerings.core.domain.shared.valueobject.Money;
+import java.math.BigDecimal;
 
 @Service
 public class CalculationTotalPriceImpl implements CalculationTotalPrice {

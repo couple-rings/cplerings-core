@@ -66,13 +66,13 @@ class CreateCustomDesignUseCaseIT extends AbstractIT {
     @Test
     void givenStaff_whenCreateCustomDesignUseCase() {
         final String token = jwtTestHelper.generateToken(AccountTestConstant.STAFF_EMAIL);
-        final Spouse spouse = spouseTestHelper.createSpouseFromCustomerEmail(AccountTestConstant.CUSTOMER_EMAIL);
+        final Spouse[] spouses = spouseTestHelper.createSpouseFromCustomerEmail(AccountTestConstant.CUSTOMER_EMAIL);
 
         CreateCustomDesignRequest request = CreateCustomDesignRequest.builder()
                 .customerId(1L)
                 .designVersionId(1L)
                 .blueprint("test")
-                .spouseId(spouse.getId())
+                .spouseId(spouses[0].getId())
                 .metalWeight(BigDecimal.valueOf(0.5))
                 .sideDiamondAmount(2)
                 .build();

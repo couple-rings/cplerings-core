@@ -1,9 +1,6 @@
 package com.cplerings.core.application.shared.ring;
 
-import java.io.Serializable;
-import java.time.Instant;
-
-import com.cplerings.core.application.shared.entity.design.ADocument;
+import com.cplerings.core.application.shared.entity.file.ADocument;
 import com.cplerings.core.application.shared.entity.spouse.ASpouse;
 import com.cplerings.core.domain.ring.RingStatus;
 
@@ -12,6 +9,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.io.Serializable;
+import java.time.Instant;
 
 @Getter
 @Setter

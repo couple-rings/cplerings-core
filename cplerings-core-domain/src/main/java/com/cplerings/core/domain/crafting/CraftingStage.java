@@ -1,11 +1,14 @@
 package com.cplerings.core.domain.crafting;
 
-import java.time.Instant;
-
 import com.cplerings.core.common.database.DatabaseConstant;
-import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.shared.AbstractEntity;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,11 +22,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -50,12 +50,12 @@ public class CraftingStage extends AbstractEntity {
     private String name;
 
     @Column(name = "progress", nullable = false)
-    private int progress;
+    private Integer progress;
 
     @Column(name = "completion_date")
     private Instant completionDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "crafting_stage_status")
-    private CraftingStageStatus craftingStageStatus;
+    private CraftingStageStatus status;
 }

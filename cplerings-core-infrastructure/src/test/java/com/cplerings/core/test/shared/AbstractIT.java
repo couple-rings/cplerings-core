@@ -3,7 +3,9 @@ package com.cplerings.core.test.shared;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cplerings.core.api.shared.AbstractResponse;
+import com.cplerings.core.api.shared.ErrorCodesResponse;
 import com.cplerings.core.api.shared.NoResponse;
+import com.cplerings.core.application.shared.errorcode.ErrorCode;
 import com.cplerings.core.common.profile.ProfileConstant;
 import com.cplerings.core.infrastructure.CplringsCoreApplication;
 
@@ -105,6 +107,21 @@ public abstract class AbstractIT {
 
     protected final void thenResponseIsServerError(WebTestClient.ResponseSpec response) {
         response.expectStatus().is5xxServerError();
+    }
+
+    protected final void thenResponseIsBadRequestWithErrorCode(WebTestClient.ResponseSpec response, ErrorCode errorCode) {
+        response.expectStatus().isBadRequest();
+        final ErrorCodesResponse responseBody = response.expectBody(ErrorCodesResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(responseBody)
+                .isNotNull();
+        assertThat(responseBody.getType())
+                .isEqualTo(AbstractResponse.Type.ERROR);
+        assertThat(responseBody.getErrors())
+                .isNotEmpty()
+                .anyMatch(errorCodeResponse -> StringUtils.equals(errorCodeResponse.getCode(), errorCode.getCode()));
     }
 
     protected final void thenNoResponseIsReturned(WebTestClient.ResponseSpec response) {

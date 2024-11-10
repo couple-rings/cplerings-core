@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ViewDesignVersionsOutput extends AbstractPaginatedOutput<ADesignVersion>{
+public class ViewDesignVersionsOutput extends AbstractPaginatedOutput<ADesignVersion> {
 
     public static Builder builder() {
         return new Builder();

@@ -1,6 +1,7 @@
 package com.cplerings.core.domain.branch;
 
 import com.cplerings.core.common.database.DatabaseConstant;
+import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.shared.AbstractEntity;
 
@@ -16,7 +17,9 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -48,8 +51,9 @@ public class Branch extends AbstractEntity {
     @Column(name = "phone", nullable = false)
     private String phone;
 
-    @Column(name = "cover_image", nullable = false)
-    private String coverImage;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cover_image")
+    private Image coverImage;
 
     @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY)
     private Set<BranchStaff> staffs;

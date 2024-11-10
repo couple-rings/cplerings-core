@@ -1,6 +1,8 @@
 package com.cplerings.core.application.shared.entity.design;
 
 import com.cplerings.core.application.shared.entity.account.AAccount;
+import com.cplerings.core.application.shared.entity.file.ADocument;
+import com.cplerings.core.application.shared.entity.file.AImage;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

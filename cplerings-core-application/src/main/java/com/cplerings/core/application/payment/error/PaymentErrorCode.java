@@ -17,6 +17,9 @@ public enum PaymentErrorCode implements ErrorCode {
     PAYMENT_RECEIVER_NOT_FOUND("007", "payment.error.paymentReceiverNotFound", Type.BUSINESS),
     UNHANDLED_PAYMENT_RECEIVER("008", "payment.error.unhandledPaymentReceiver", Type.BUSINESS),
     PAYMENT_RECEIVER_HANDLER_FAILED("009", "payment.error.paymentReceiverHandlerFailed", Type.BUSINESS),
+    PAYMENT_RECEIVER_REQUIRED("010", "payment.error.paymentReceiverRequired", Type.VALIDATION),
+    INVALID_PAYMENT_RECEIVER_TYPE("011", "payment.error.invalidPaymentReceiverType", Type.VALIDATION),
+    INVALID_PAYMENT_RECEIVER_ID("012", "payment.error.invalidPaymentReceiverId", Type.VALIDATION),
     ;
 
     private final String code;

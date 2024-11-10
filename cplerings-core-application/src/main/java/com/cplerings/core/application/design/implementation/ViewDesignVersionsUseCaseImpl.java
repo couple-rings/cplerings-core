@@ -3,8 +3,6 @@ package com.cplerings.core.application.design.implementation;
 import static com.cplerings.core.application.account.error.AccountErrorCode.ACCOUNT_WITH_EMAIL_NOT_FOUND;
 import static com.cplerings.core.application.account.error.AccountErrorCode.UNAUTHENTICATED;
 
-import java.util.Optional;
-
 import com.cplerings.core.application.design.ViewDesignVersionsUseCase;
 import com.cplerings.core.application.design.datasource.ViewDesignVersionsDataSource;
 import com.cplerings.core.application.design.datasource.result.DesignVersions;
@@ -19,6 +17,8 @@ import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.domain.account.Account;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @UseCaseImplementation
