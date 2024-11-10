@@ -1,10 +1,15 @@
 package com.cplerings.core.infrastructure.datasource.design;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.design.datasource.CheckRemainingDesignSessionDataSource;
 import com.cplerings.core.application.design.datasource.CreateDesignSessionDataSource;
 import com.cplerings.core.application.design.datasource.CreateDesignVersionDataSource;
+import com.cplerings.core.application.design.datasource.DetermineDesignVersionDataSource;
 import com.cplerings.core.application.design.datasource.ProcessDesignSessionPaymentDataSource;
-import com.cplerings.core.application.design.datasource.UpdateDesignVersionStatusDataSource;
 import com.cplerings.core.application.design.datasource.ViewDesignVersionDataSource;
 import com.cplerings.core.application.design.datasource.ViewDesignVersionsDataSource;
 import com.cplerings.core.application.design.datasource.result.DesignVersions;
@@ -18,12 +23,13 @@ import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.QDesign;
 import com.cplerings.core.domain.design.QDesignVersion;
 import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.request.QCustomRequest;
+import com.cplerings.core.domain.design.request.QDesignCustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.design.session.DesignSessionStatus;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.payment.PaymentReceiver;
-import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
@@ -33,29 +39,22 @@ import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
 import com.cplerings.core.infrastructure.repository.DocumentRepository;
 import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
-import com.querydsl.jpa.impl.JPAUpdateClause;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.PersistenceUnit;
 import lombok.RequiredArgsConstructor;
-
-import com.blazebit.persistence.querydsl.BlazeJPAQuery;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 
 @DataSource
 @RequiredArgsConstructor
 public class SharedDesignDataSource extends AbstractDataSource
         implements CreateDesignSessionDataSource, ProcessDesignSessionPaymentDataSource, CheckRemainingDesignSessionDataSource,
-        CreateDesignVersionDataSource, ViewDesignVersionDataSource, ViewDesignVersionsDataSource, UpdateDesignVersionStatusDataSource {
+        CreateDesignVersionDataSource, ViewDesignVersionDataSource, ViewDesignVersionsDataSource, DetermineDesignVersionDataSource {
 
     private static final QDesign Q_DESIGN = QDesign.design;
     private static final QDesignVersion Q_DESIGN_VERSION = QDesignVersion.designVersion;
     private static final QAccount Q_ACCOUNT = QAccount.account;
+    private static final QCustomRequest Q_CUSTOM_REQUEST = QCustomRequest.customRequest;
+    private static final QDesignCustomRequest Q_DESIGN_CUSTOM_REQUEST = QDesignCustomRequest.designCustomRequest;
 
     private final DesignSessionRepository designSessionRepository;
     private final AccountRepository accountRepository;
@@ -146,8 +145,17 @@ public class SharedDesignDataSource extends AbstractDataSource
     public Optional<DesignVersion> getDesignVersionById(long designVersionId) {
         return Optional.ofNullable(createQuery().select(Q_DESIGN_VERSION)
                 .from(Q_DESIGN_VERSION)
+                .leftJoin(Q_DESIGN_VERSION.design, Q_DESIGN).fetchJoin()
+                .leftJoin(Q_DESIGN.designCustomRequests, Q_DESIGN_CUSTOM_REQUEST).fetchJoin()
+                .leftJoin(Q_DESIGN_CUSTOM_REQUEST.customRequest, Q_CUSTOM_REQUEST).fetchJoin()
                 .where(Q_DESIGN_VERSION.id.eq(designVersionId))
                 .fetchOne());
+    }
+
+    @Override
+    public void updateCustomRequest(CustomRequest customRequest) {
+        updateAuditor(customRequest);
+        customRequestRepository.save(customRequest);
     }
 
     @Override
