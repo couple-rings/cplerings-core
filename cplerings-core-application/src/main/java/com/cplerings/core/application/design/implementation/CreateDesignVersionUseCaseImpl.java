@@ -30,7 +30,6 @@ public class CreateDesignVersionUseCaseImpl extends AbstractUseCase<CreateDesign
         super.validateInput(validator, input);
         validator.validate(input.designFile() != null, CreateDesignVersionErrorCode.DESIGN_FILE_REQUIRED);
         validator.validate(input.previewImage() != null, CreateDesignVersionErrorCode.IMAGE_REQUIRED);
-        validator.validate(input.versionNumber() > 0, CreateDesignVersionErrorCode.VERSION_NUMBER_WRONG_POSITIVE_NUMBER);
         validator.validate(input.designId() > 0, CreateDesignVersionErrorCode.DESIGN_ID_WRONG_POSITIVE_NUMBER);
         validator.validate(input.customerId() > 0, CreateDesignVersionErrorCode.DESIGN_ID_WRONG_POSITIVE_NUMBER);
     }
@@ -48,13 +47,15 @@ public class CreateDesignVersionUseCaseImpl extends AbstractUseCase<CreateDesign
 
         var documentCreated = createDesignVersionDataSource.saveDocument(document);
         var imageCreated = createDesignVersionDataSource.saveImage(image);
-
+        int versionNumber = 1;
+        if (design.getDesignVersions() != null && design.getDesignVersions().size() > 0)
+            versionNumber = design.getDesignVersions().size() + 1;
         DesignVersion designVersion = DesignVersion.builder()
                 .designFile(documentCreated)
                 .customer(customer)
                 .image(imageCreated)
                 .design(design)
-                .versionNumber(input.versionNumber())
+                .versionNumber(versionNumber)
                 .isAccepted(false)
                 .isOld(false)
                 .build();
