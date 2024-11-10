@@ -20,6 +20,7 @@ import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountStatus;
 import com.cplerings.core.domain.account.AccountVerification;
 import com.cplerings.core.domain.account.VerificationCodeStatus;
+import com.cplerings.core.domain.shared.State;
 
 import lombok.RequiredArgsConstructor;
 
@@ -62,6 +63,9 @@ public class AccountVerificationServiceImpl implements AccountVerificationServic
             return Either.right(ErrorCodes.create(AccountVerificationServiceErrorCode.ACCOUNT_NOT_IN_VERIFYING_STATUS));
         }
         final AccountVerification accountVerification = verificationInfo.verification();
+        if (accountVerification.getState() != State.ACTIVE) {
+            return Either.right(ErrorCodes.create(AccountVerificationServiceErrorCode.ACCOUNT_VERIFICATION_CODE_IS_INACTIVE));
+        }
         if (accountVerification.getStatus() != VerificationCodeStatus.PENDING) {
             return Either.right(ErrorCodes.create(AccountVerificationServiceErrorCode.ACCOUNT_VERIFICATION_CODE_IS_USED));
         }

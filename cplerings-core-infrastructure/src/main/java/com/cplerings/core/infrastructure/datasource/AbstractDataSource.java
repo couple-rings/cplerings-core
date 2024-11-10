@@ -25,16 +25,17 @@ import java.util.Optional;
 public abstract class AbstractDataSource {
 
     @PersistenceContext
-    protected EntityManager em;
+    protected EntityManager entityManager;
 
     protected CriteriaBuilderFactory cbf;
+
     protected SecurityHelper securityHelper;
 
     @Value("${spring.application.name}")
     private String systemName;
 
     protected final <T> BlazeJPAQuery<T> createQuery() {
-        return new BlazeJPAQuery<>(em, cbf);
+        return new BlazeJPAQuery<>(entityManager, cbf);
     }
 
     protected final <T extends AbstractEntity> void updateAuditor(T entity) {

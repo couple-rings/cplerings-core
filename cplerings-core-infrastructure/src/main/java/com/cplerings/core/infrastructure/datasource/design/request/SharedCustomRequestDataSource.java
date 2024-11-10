@@ -11,7 +11,9 @@ import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.DesignStatus;
+import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.QDesign;
+import com.cplerings.core.domain.design.QDesignVersion;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.CustomRequestStatus;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
@@ -23,6 +25,7 @@ import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
 import com.cplerings.core.infrastructure.repository.DesignCustomRequestRepository;
 import com.cplerings.core.infrastructure.repository.DesignRepository;
+import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,11 +45,13 @@ public class SharedCustomRequestDataSource extends AbstractDataSource implements
     private static final QDesign Q_DESIGN = QDesign.design;
     private static final QDesignCustomRequest Q_DESIGN_CUSTOM_REQUEST = QDesignCustomRequest.designCustomRequest;
     private static final QAccount Q_ACCOUNT = QAccount.account;
+    private static final QDesignVersion Q_DESIGN_VERSION = QDesignVersion.designVersion;
 
     private final DesignRepository designRepository;
     private final AccountRepository accountRepository;
     private final CustomRequestRepository customRequestRepository;
     private final DesignCustomRequestRepository designCustomRequestRepository;
+    private final DesignVersionRepository designVersionRepository;
 
     @Override
     public Optional<CustomRequest> getCustomRequestById(Long customRequestId) {
@@ -85,6 +90,21 @@ public class SharedCustomRequestDataSource extends AbstractDataSource implements
     public Collection<DesignCustomRequest> saveDesignCustomRequests(Collection<DesignCustomRequest> designCustomRequests) {
         designCustomRequests.forEach(this::updateAuditor);
         return designCustomRequestRepository.saveAll(designCustomRequests);
+    }
+
+    @Override
+    public Collection<DesignVersion> getAllDesignVersionsOfPreviousDesignSessions(Long customerId, Collection<Long> designIds) {
+        return new HashSet<>(createQuery().select(Q_DESIGN_VERSION)
+                .from(Q_DESIGN_VERSION)
+                .where(Q_DESIGN_VERSION.customer.id.eq(customerId)
+                        .and(Q_DESIGN_VERSION.design.id.in(designIds)))
+                .fetch());
+    }
+
+    @Override
+    public Collection<DesignVersion> saveAll(Collection<DesignVersion> oldDesignVersions) {
+        oldDesignVersions.forEach(this::updateAuditor);
+        return designVersionRepository.saveAll(oldDesignVersions);
     }
 
     @Override

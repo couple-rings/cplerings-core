@@ -14,6 +14,7 @@ public enum AccountVerificationServiceErrorCode implements ErrorCode {
     ACCOUNT_VERIFICATION_CODE_IS_EXPIRED("SV-004-003", "accountVerificationService.error.accountVerificationCodeIsExpired", Type.BUSINESS),
     ACCOUNT_VERIFICATION_CODE_IS_USED("SV-004-004", "accountVerificationService.error.accountVerificationCodeIsUsed", Type.BUSINESS),
     INVALID_VERIFICATION_CODE("SV-004-005", "accountVerificationService.error.invalidVerificationCode", Type.BUSINESS),
+    ACCOUNT_VERIFICATION_CODE_IS_INACTIVE("SV-004-006", "accountVerificationService.error.accountVerificationCodeIsInactive", Type.BUSINESS),
     ;
 
     private final String code;

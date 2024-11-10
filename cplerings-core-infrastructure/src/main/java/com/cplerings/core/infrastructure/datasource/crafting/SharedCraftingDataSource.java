@@ -41,9 +41,6 @@ import com.cplerings.core.infrastructure.repository.RingRepository;
 
 import lombok.RequiredArgsConstructor;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -67,9 +64,6 @@ public class SharedCraftingDataSource extends AbstractDataSource
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
 
     private static final String SIDE_DIAMOND_PRICE = "DEFE";
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     private final CraftingRequestRepository craftingRequestRepository;
     private final RingRepository ringRepository;

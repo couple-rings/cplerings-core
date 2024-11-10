@@ -13,11 +13,13 @@ import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountStatus;
 import com.cplerings.core.domain.account.AccountVerification;
 import com.cplerings.core.domain.account.Role;
+import com.cplerings.core.domain.account.VerificationCodeStatus;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.infrastructure.repository.AccountVerificationRepository;
 import com.cplerings.core.infrastructure.service.email.EmailServiceImpl;
 import com.cplerings.core.test.shared.AbstractIT;
+import com.cplerings.core.test.shared.datasource.TestDataSource;
 import com.cplerings.core.test.shared.helper.EmailHelper;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -46,6 +48,9 @@ class ResendCustomerVerificationCodeUseCaseIT extends AbstractIT {
     @Autowired
     private AccountVerificationRepository accountVerificationRepository;
 
+    @Autowired
+    private TestDataSource testDataSource;
+
     private GreenMail greenMail;
 
     @BeforeEach
@@ -59,15 +64,13 @@ class ResendCustomerVerificationCodeUseCaseIT extends AbstractIT {
         Account account = Account.builder()
                 .email(EmailHelper.TEST_EMAIL)
                 .status(AccountStatus.VERIFYING)
-                .createdBy("test")
-                .modifiedBy("test")
                 .password("test")
                 .phone("test")
                 .state(State.ACTIVE)
                 .username("test")
                 .role(Role.CUSTOMER)
                 .build();
-        accountRepository.save(account);
+        testDataSource.save(account);
     }
 
     @AfterEach
@@ -81,6 +84,15 @@ class ResendCustomerVerificationCodeUseCaseIT extends AbstractIT {
                 .email(EmailHelper.TEST_EMAIL)
                 .build();
 
+        final Account testAccount = accountRepository.findByEmail(EmailHelper.TEST_EMAIL).orElse(null);
+        assertThat(testAccount).isNotNull();
+        AccountVerification oldAccountVerification = AccountVerification.builder()
+                .code("123456")
+                .status(VerificationCodeStatus.PENDING)
+                .account(testAccount)
+                .build();
+        oldAccountVerification = testDataSource.save(oldAccountVerification);
+
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(APIConstant.RESEND_CUSTOMER_VERIFICATION_CODE_PATH)
                 .method(RequestBuilder.Method.POST)
@@ -91,6 +103,7 @@ class ResendCustomerVerificationCodeUseCaseIT extends AbstractIT {
         thenResponseIsOk(response);
         thenResponseContainsRegistrationEmail(response);
         thenExistsEmailWithVerificationCode();
+        thenOldVerificationsAreDisabled(oldAccountVerification.getId());
     }
 
     private void thenResponseContainsRegistrationEmail(WebTestClient.ResponseSpec response) {
@@ -114,13 +127,21 @@ class ResendCustomerVerificationCodeUseCaseIT extends AbstractIT {
         assertThat(email.getSubject()).isEqualTo(LocaleUtils.translateLocale("accountVerificationService.text.subject"),
                 EmailHelper.TEST_EMAIL);
 
-        final AccountVerification accountVerification = accountVerificationRepository.findByAccountEmail(EmailHelper.TEST_EMAIL)
+        final AccountVerification accountVerification = accountVerificationRepository.findFirstByAccountEmailOrderByIdDesc(EmailHelper.TEST_EMAIL)
                 .orElse(null);
         assertThat(accountVerification).isNotNull();
+        assertThat(accountVerification.getStatus()).isEqualTo(VerificationCodeStatus.PENDING);
+        assertThat(accountVerification.getState()).isEqualTo(State.ACTIVE);
 
         final Object body = email.getContent();
         assertThat(body).isInstanceOf(String.class);
         final String verificationCode = (String) body;
         assertThat(verificationCode).contains(accountVerification.getCode());
+    }
+
+    private void thenOldVerificationsAreDisabled(Long accountVerificationId) {
+        final AccountVerification accountVerification = accountVerificationRepository.findById(accountVerificationId).orElse(null);
+        assertThat(accountVerification).isNotNull();
+        assertThat(accountVerification.getState()).isEqualTo(State.INACTIVE);
     }
 }

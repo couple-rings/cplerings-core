@@ -2,19 +2,18 @@ package com.cplerings.core.infrastructure.datasource.service.verification;
 
 import com.cplerings.core.application.account.datasource.ResendCustomerVerificationCodeDataSource;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.AccountVerification;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.account.QAccountVerification;
+import com.cplerings.core.domain.account.VerificationCodeStatus;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
+import com.cplerings.core.infrastructure.repository.AccountVerificationRepository;
 
 import lombok.RequiredArgsConstructor;
 
-import com.querydsl.jpa.impl.JPAUpdateClause;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-
+import java.util.Collection;
 import java.util.Optional;
 
 @DataSource
@@ -24,8 +23,7 @@ public class ResendCustomerVerificationCodeDataSourceImpl extends AbstractDataSo
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QAccountVerification Q_ACCOUNT_VERIFICATION = QAccountVerification.accountVerification;
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    private final AccountVerificationRepository accountVerificationRepository;
 
     @Override
     public Optional<Account> getAccountByEmail(String email) {
@@ -38,9 +36,15 @@ public class ResendCustomerVerificationCodeDataSourceImpl extends AbstractDataSo
 
     @Override
     public void disableAllPreviousCodes(Long accountId) {
-        new JPAUpdateClause(entityManager, Q_ACCOUNT_VERIFICATION)
-                .set(Q_ACCOUNT_VERIFICATION.state, State.INACTIVE)
-                .where(Q_ACCOUNT_VERIFICATION.account.id.eq(accountId))
-                .execute();
+        final Collection<AccountVerification> oldAccountVerifications = createQuery().select(Q_ACCOUNT_VERIFICATION)
+                .from(Q_ACCOUNT_VERIFICATION)
+                .where(Q_ACCOUNT_VERIFICATION.account.id.eq(accountId)
+                        .and(Q_ACCOUNT_VERIFICATION.status.eq(VerificationCodeStatus.PENDING)))
+                .fetch();
+        oldAccountVerifications.forEach(accountVerification -> {
+            accountVerification.setState(State.INACTIVE);
+            updateAuditor(accountVerification);
+        });
+        accountVerificationRepository.saveAll(oldAccountVerifications);
     }
 }
