@@ -15,8 +15,7 @@ public enum DetermineCustomRequestErrorCode implements ErrorCode {
     WRONG_STATUS("005", "determine.customrequest.error.invalidStatus", Type.VALIDATION),
     INVALID_CUSTOM_REQUEST_ID("006", "determine.customrequest.error.invalidCustomRequestId", Type.BUSINESS),
     INVALID_CUSTOM_REQUEST_STATUS("007", "determine.customrequest.error.wrongStatusForDetermination", Type.BUSINESS),
-    INVALID_STAFF_ID("008", "determine.customrequest.error.invalidStaffId", Type.BUSINESS)
-    ;
+    INVALID_STAFF_ID("008", "determine.customrequest.error.invalidStaffId", Type.BUSINESS);
 
     private final String code;
     private final String descriptionLocale;

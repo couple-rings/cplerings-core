@@ -1,13 +1,13 @@
 package com.cplerings.core.application.design.datasource.result;
 
-import java.util.List;
-
 import com.cplerings.core.domain.design.request.CustomRequest;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
