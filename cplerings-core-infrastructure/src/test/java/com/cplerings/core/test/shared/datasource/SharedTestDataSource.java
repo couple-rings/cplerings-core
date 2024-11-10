@@ -7,6 +7,7 @@ import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.request.DesignCustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.payment.Payment;
@@ -22,6 +23,7 @@ import com.cplerings.core.infrastructure.repository.ContractRepository;
 import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
+import com.cplerings.core.infrastructure.repository.DesignCustomRequestRepository;
 import com.cplerings.core.infrastructure.repository.DesignSessionRepository;
 import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
 import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
@@ -50,6 +52,7 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private final CustomOrderRepository customOrderRepository;
     private final CraftingStageRepository craftingStageRepository;
     private final CustomRequestRepository customRequestRepository;
+    private final DesignCustomRequestRepository designCustomRequestRepository;
     private final AccountRepository accountRepository;
     private final AccountVerificationRepository accountVerificationRepository;
 
@@ -93,6 +96,12 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     public CustomRequest save(CustomRequest customRequest) {
         updateAuditor(customRequest);
         return customRequestRepository.save(customRequest);
+    }
+
+    @Override
+    public DesignCustomRequest save(DesignCustomRequest designCustomRequest) {
+        updateAuditor(designCustomRequest);
+        return designCustomRequestRepository.save(designCustomRequest);
     }
 
     @Override

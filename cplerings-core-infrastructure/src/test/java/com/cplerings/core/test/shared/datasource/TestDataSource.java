@@ -7,6 +7,7 @@ import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.request.DesignCustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.payment.Payment;
@@ -40,6 +41,8 @@ public interface TestDataSource {
     CraftingStage save(CraftingStage craftingStage);
 
     CustomRequest save(CustomRequest customRequest);
+
+    DesignCustomRequest save(DesignCustomRequest designCustomRequest);
 
     Account save(Account account);
 
