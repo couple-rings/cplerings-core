@@ -1,6 +1,7 @@
 package com.cplerings.core.domain.crafting;
 
 import com.cplerings.core.common.database.DatabaseConstant;
+import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.shared.AbstractEntity;
 
@@ -20,6 +21,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -54,6 +56,10 @@ public class CraftingStage extends AbstractEntity {
 
     @Column(name = "completion_date")
     private Instant completionDate;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "image")
+    private Image image;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "crafting_stage_status")

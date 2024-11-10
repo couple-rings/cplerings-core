@@ -184,7 +184,9 @@ public class SecurityConfiguration {
 
     private void handleCraftingStageAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.DEPOSIT_CRAFTING_STAGE_PATH))
-                .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF));
+                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.COMPLETE_CRAFTING_STAGE_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_STAFF, RoleConstant.ROLE_JEWELER));
     }
 
     private void handleDiamondSpecificationAPI(HttpSecurity localHttp) throws Exception {
