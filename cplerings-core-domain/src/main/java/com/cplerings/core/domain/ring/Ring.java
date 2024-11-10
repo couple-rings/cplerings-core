@@ -46,27 +46,29 @@ public class Ring extends AbstractEntity {
     @Column(name = "ring_id")
     private Long id;
 
-    @Column(name = "purchase_date", nullable = false)
+    @Column(name = "purchase_date")
     private Instant purchaseDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
     private RingStatus status;
 
-    @Column(name = "maintenance_expired_date", nullable = false)
+    @Column(name = "maintenance_expired_date")
     private Instant maintenanceExpiredDate;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "maintenance_document_id", nullable = false)
+    @JoinColumn(name = "maintenance_document_id")
     private Document maintenanceDocument;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "branch_id")
     private Branch branch;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "custom_order_id")
-    private CustomOrder customOrder;
+    @OneToOne(mappedBy = "firstRing")
+    private CustomOrder customOrderAsFirst;
+
+    @OneToOne(mappedBy = "secondRing")
+    private CustomOrder customOrderAsSecond;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "spouse_id")

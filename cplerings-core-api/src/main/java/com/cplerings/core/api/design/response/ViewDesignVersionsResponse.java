@@ -2,7 +2,6 @@ package com.cplerings.core.api.design.response;
 
 import com.cplerings.core.api.design.data.DesignVersionsData;
 import com.cplerings.core.api.shared.AbstractPaginatedResponse;
-import com.cplerings.core.application.design.datasource.result.DesignVersions;
 
 import lombok.Getter;
 import lombok.Setter;

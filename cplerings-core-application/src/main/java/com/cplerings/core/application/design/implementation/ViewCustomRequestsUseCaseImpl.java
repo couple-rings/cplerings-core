@@ -43,7 +43,7 @@ public class ViewCustomRequestsUseCaseImpl extends AbstractUseCase<ViewCustomReq
     protected ViewCustomRequestsOutput internalExecute(UseCaseValidator validator, ViewCustomRequestsInput input) {
         if (input.getCustomerId() != null) {
             Account customer = viewCustomRequestsDataSource.getCustomerById(input.getCustomerId())
-                            .orElse(null);
+                    .orElse(null);
             validator.validate(customer != null, ViewCustomRequestsErrorCode.INVALID_CUSTOMER_ID);
         }
 

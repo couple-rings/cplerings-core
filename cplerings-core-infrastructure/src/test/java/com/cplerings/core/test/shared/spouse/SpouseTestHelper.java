@@ -20,25 +20,33 @@ public class SpouseTestHelper {
     private final AccountRepository accountRepository;
     private final TestDataSource testDataSource;
 
-    public Spouse createSpouseFromCustomerEmail(String email) {
+    public Spouse[] createSpouseFromCustomerEmail(String email) {
         final Account customer = accountRepository.findByEmail(email)
                 .orElse(null);
         if (customer == null) {
             throw new RuntimeException("Customer not found");
         }
-        Spouse spouse = Spouse.builder()
+        final UUID spouseId = UUID.randomUUID();
+        Spouse mainSpouse = Spouse.builder()
                 .citizenId(SpouseTestConstant.PRIMARY_SPOUSE_CITIZEN_ID)
-                .coupleId(UUID.randomUUID())
+                .coupleId(spouseId)
                 .dateOfBirth(TemporalUtils.getCurrentInstantUTC())
                 .fullName("John Doe")
                 .build();
-        spouse = testDataSource.save(spouse);
+        mainSpouse = testDataSource.save(mainSpouse);
         SpouseAccount spouseAccount = SpouseAccount.builder()
                 .customer(customer)
-                .spouse(spouse)
+                .spouse(mainSpouse)
                 .build();
-        spouse.setSpouseAccount(spouseAccount);
+        mainSpouse.setSpouseAccount(spouseAccount);
         testDataSource.save(spouseAccount);
-        return spouse;
+        Spouse secondSpouse = Spouse.builder()
+                .citizenId(SpouseTestConstant.SECONDARY_SPOUSE_CITIZEN_ID)
+                .coupleId(spouseId)
+                .dateOfBirth(TemporalUtils.getCurrentInstantUTC())
+                .fullName("Jane Doe")
+                .build();
+        secondSpouse = testDataSource.save(secondSpouse);
+        return new Spouse[] { mainSpouse, secondSpouse };
     }
 }

@@ -1,11 +1,5 @@
 package com.cplerings.core.application.design.mapper;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-
 import com.cplerings.core.application.design.datasource.result.CustomRequests;
 import com.cplerings.core.application.design.output.ViewCustomRequestsOutput;
 import com.cplerings.core.application.shared.entity.design.ADesign;
@@ -17,6 +11,12 @@ import com.cplerings.core.common.mapper.SpringMapperConfiguration;
 import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
+
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Mapper(config = SpringMapperConfiguration.class,
         uses = {

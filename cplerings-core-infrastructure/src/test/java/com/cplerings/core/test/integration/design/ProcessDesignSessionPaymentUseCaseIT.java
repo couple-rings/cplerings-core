@@ -17,7 +17,6 @@ import com.cplerings.core.domain.payment.PaymentStatus;
 import com.cplerings.core.domain.payment.PaymentType;
 import com.cplerings.core.domain.shared.valueobject.Money;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
-import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
 import com.cplerings.core.infrastructure.repository.DesignSessionRepository;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.TestDataLoader;
@@ -51,9 +50,6 @@ class ProcessDesignSessionPaymentUseCaseIT extends AbstractIT {
 
     @Autowired
     private DesignSessionRepository designSessionRepository;
-
-    @Autowired
-    private CustomRequestRepository customRequestRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -101,15 +97,10 @@ class ProcessDesignSessionPaymentUseCaseIT extends AbstractIT {
 
         thenResponseIsOk(response);
         thenDesignSessionsAreCreated();
-        thenCustomRequestIsCreated();
     }
 
     private void thenDesignSessionsAreCreated() {
         final Collection<DesignSession> designSessions = designSessionRepository.findAllByCustomerEmail(AccountTestConstant.CUSTOMER_EMAIL);
         assertThat(designSessions).hasSize(3);
-    }
-
-    private void thenCustomRequestIsCreated() {
-        assertThat(customRequestRepository.existsByCustomerEmail(AccountTestConstant.CUSTOMER_EMAIL)).isTrue();
     }
 }

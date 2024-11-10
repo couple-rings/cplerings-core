@@ -61,6 +61,7 @@ public class SecurityConfiguration {
         handleFileUploadAPI(localHttp);
         handleCustomRequestAPI(localHttp);
         handleCraftingRequestAPI(localHttp);
+        handleCraftingStageAPI(localHttp);
         handleDiamondSpecificationAPI(localHttp);
         handleMetalSpecificationAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
@@ -179,9 +180,14 @@ public class SecurityConfiguration {
                         .hasAnyAuthority(RoleConstant.ROLE_STAFF));
     }
 
+    private void handleCraftingStageAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.DEPOSIT_CRAFTING_STAGE_PATH))
+                .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF));
+    }
+
     private void handleDiamondSpecificationAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.DIAMOND_SPECIFICATION_PATH))
-                        .authenticated());
+                .authenticated());
     }
 
     private void handleMetalSpecificationAPI(HttpSecurity localHttp) throws Exception {

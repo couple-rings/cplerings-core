@@ -36,6 +36,12 @@ public final class Money {
         return Money.create(current.divide(sanitizedDivisor, RoundingMode.HALF_EVEN));
     }
 
+    public Money multiply(BigDecimal product) {
+        final BigDecimal current = this.amount;
+        final BigDecimal sanitizedDivisor = sanitizeMoney(product);
+        return Money.create(current.multiply(sanitizedDivisor));
+    }
+
     public static Money create(BigDecimal amount) {
         return new Money(sanitizeMoney(amount));
     }

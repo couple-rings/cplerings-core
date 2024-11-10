@@ -1,9 +1,5 @@
 package com.cplerings.core.api.design;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.cplerings.core.api.design.data.DesignVersionsData;
 import com.cplerings.core.api.design.mapper.APIViewDesignVersionsMapper;
 import com.cplerings.core.api.design.request.ViewDesignVersionsRequest;
@@ -18,11 +14,16 @@ import com.cplerings.core.application.design.output.ViewDesignVersionsOutput;
 import com.cplerings.core.application.shared.usecase.UseCase;
 import com.cplerings.core.common.api.APIConstant;
 
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController

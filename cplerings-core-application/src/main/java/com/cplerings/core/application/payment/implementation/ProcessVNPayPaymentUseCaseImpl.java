@@ -7,6 +7,7 @@ import static com.cplerings.core.application.payment.error.PaymentErrorCode.RESU
 import static com.cplerings.core.application.payment.error.PaymentErrorCode.SECURE_HASH_REQUIRED;
 import static com.cplerings.core.application.payment.error.PaymentErrorCode.TERMINAL_CODE_REQUIRED;
 
+import com.cplerings.core.application.crafting.ProcessCraftingStageDepositUseCase;
 import com.cplerings.core.application.design.ProcessDesignSessionPaymentUseCase;
 import com.cplerings.core.application.payment.ProcessVNPayPaymentUseCase;
 import com.cplerings.core.application.payment.datasource.ProcessVNPayPaymentDataSource;
@@ -43,6 +44,7 @@ public class ProcessVNPayPaymentUseCaseImpl extends AbstractUseCase<VNPayPayment
     private final ProcessVNPayPaymentDataSource processVNPayPaymentDataSource;
     private final APaymentStatusMapper aPaymentStatusMapper;
     private final ProcessDesignSessionPaymentUseCase processDesignSessionPaymentUseCase;
+    private final ProcessCraftingStageDepositUseCase processCraftingStageDepositUseCase;
 
     @Override
     protected void validateInput(UseCaseValidator validator, VNPayPaymentInput input) {
@@ -103,6 +105,10 @@ public class ProcessVNPayPaymentUseCaseImpl extends AbstractUseCase<VNPayPayment
         switch (paymentReceiver.getReceiverType()) {
             case DESIGN_FEE -> {
                 final Either<NoOutput, ErrorCodes> result = processDesignSessionPaymentUseCase.execute(input);
+                validator.validateAndStopExecution(result.isLeft(), PAYMENT_RECEIVER_HANDLER_FAILED);
+            }
+            case CRAFT_STAGE -> {
+                final Either<NoOutput, ErrorCodes> result = processCraftingStageDepositUseCase.execute(input);
                 validator.validateAndStopExecution(result.isLeft(), PAYMENT_RECEIVER_HANDLER_FAILED);
             }
             default -> validator.validateAndStopExecution(false, PAYMENT_WITH_ID_NOT_FOUND);

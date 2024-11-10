@@ -26,6 +26,26 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         return getConfiguration(ConfigurationKey.DEFE.getKey(), Money.class);
     }
 
+    @Override
+    public Money getSideDiamondPrice() {
+        return getConfiguration(ConfigurationKey.SDPR.getKey(), Money.class);
+    }
+
+    @Override
+    public Integer getCraftingStageProgress1() {
+        return getConfiguration(ConfigurationKey.CSP1.getKey(), Integer.class);
+    }
+
+    @Override
+    public Integer getCraftingStageProgress2() {
+        return getConfiguration(ConfigurationKey.CSP2.getKey(), Integer.class);
+    }
+
+    @Override
+    public Integer getCraftingStageProgress3() {
+        return getConfiguration(ConfigurationKey.CSP3.getKey(), Integer.class);
+    }
+
     private <T> T getConfiguration(String key, Class<T> clazz) {
         if (StringUtils.isEmpty(key) || clazz == null) {
             throw new IllegalArgumentException("key or clazz is null");
@@ -45,6 +65,9 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         }
         if (Objects.equals(clazz, Money.class)) {
             return (T) Money.create(BigDecimal.valueOf(Double.parseDouble(value)));
+        }
+        if (Objects.equals(clazz, Integer.class)) {
+            return (T) Integer.valueOf(Integer.parseInt(value));
         }
         throw new IllegalArgumentException("Unsupported type: " + clazz);
     }

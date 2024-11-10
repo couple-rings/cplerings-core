@@ -1,7 +1,5 @@
 package com.cplerings.core.domain.order;
 
-import java.util.Set;
-
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.contract.Contract;
@@ -10,7 +8,15 @@ import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -24,11 +30,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+
+import java.util.Set;
 
 @Getter
 @Setter
@@ -70,7 +73,8 @@ public class CustomOrder extends AbstractEntity {
     @OneToMany(mappedBy = "customOrder", fetch = FetchType.LAZY)
     private Set<CraftingStage> craftingStages;
 
-    @Column(name = "total_price")
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "total_price", precision = 12, scale = 3, nullable = false))
     private Money totalPrice;
 
     @Enumerated(EnumType.STRING)

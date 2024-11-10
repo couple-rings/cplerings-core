@@ -2,10 +2,6 @@ package com.cplerings.core.test.integration.metal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.reactive.server.WebTestClient;
-
 import com.cplerings.core.api.metal.data.MetalSpecification;
 import com.cplerings.core.api.metal.request.ViewMetalSpecificationRequest;
 import com.cplerings.core.api.metal.response.ViewMetalSpecificationResponse;
@@ -14,6 +10,10 @@ import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 public class ViewMetalSpecificationUseCaseIT extends AbstractIT {
 

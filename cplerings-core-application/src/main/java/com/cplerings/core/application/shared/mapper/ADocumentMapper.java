@@ -1,6 +1,6 @@
 package com.cplerings.core.application.shared.mapper;
 
-import com.cplerings.core.application.shared.entity.design.ADocument;
+import com.cplerings.core.application.shared.entity.file.ADocument;
 import com.cplerings.core.common.mapper.SpringMapperConfiguration;
 import com.cplerings.core.domain.file.Document;
 

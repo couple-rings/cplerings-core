@@ -1,10 +1,15 @@
 package com.cplerings.core.domain.contract;
 
-import java.time.Instant;
-
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.file.Document;
+import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.shared.AbstractEntity;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,11 +21,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -29,7 +31,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Entity
 @Table(name = "tbl_contract")
-public class Contract extends AbstractEntity{
+public class Contract extends AbstractEntity {
 
     private static final String CONTRACT_SEQUENCE = "contract_seq";
 
@@ -39,10 +41,11 @@ public class Contract extends AbstractEntity{
     @Column(name = "contract_id")
     private Long id;
 
-    @Column(name = "signature", nullable = true)
-    private String signature;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "signature")
+    private Image signature;
 
-    @Column(name = "signedDate", nullable = true)
+    @Column(name = "signed_date")
     private Instant signedDate;
 
     @OneToOne(fetch = FetchType.LAZY, optional = true)

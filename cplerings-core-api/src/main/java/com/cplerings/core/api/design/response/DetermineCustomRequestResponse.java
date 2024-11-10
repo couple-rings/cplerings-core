@@ -1,7 +1,6 @@
 package com.cplerings.core.api.design.response;
 
 import com.cplerings.core.api.design.data.CustomRequest;
-import com.cplerings.core.api.design.data.CustomRequestData;
 import com.cplerings.core.api.shared.AbstractDataResponse;
 
 import lombok.Getter;

@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Tag(
         name = "Crafting Request",
-        description = "APIs for crafting cequest"
+        description = "APIs for Crafting Request"
 )
 public @interface CraftingRequestTag {
 }

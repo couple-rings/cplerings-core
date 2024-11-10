@@ -1,11 +1,12 @@
 package com.cplerings.core.api.shared;
 
-import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import jakarta.validation.constraints.Min;
 
 @Getter
 @Setter

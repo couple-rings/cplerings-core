@@ -1,18 +1,11 @@
 package com.cplerings.core.api.diamond;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.cplerings.core.api.design.request.ViewCustomRequestsRequest;
-import com.cplerings.core.api.design.response.ViewCustomRequestsResponse;
 import com.cplerings.core.api.diamond.data.DiamondSpecification;
 import com.cplerings.core.api.diamond.mapper.APIViewDiamondSpecificationMapper;
 import com.cplerings.core.api.diamond.request.ViewDiamondSpecificationRequest;
 import com.cplerings.core.api.diamond.response.ViewDiamondSpecificationResponse;
 import com.cplerings.core.api.shared.AbstractController;
 import com.cplerings.core.api.shared.mapper.APIMapper;
-import com.cplerings.core.api.shared.openapi.CustomRequestTag;
 import com.cplerings.core.api.shared.openapi.DiamondSpecificationTag;
 import com.cplerings.core.api.shared.openapi.ErrorAPIResponse;
 import com.cplerings.core.application.diamond.ViewDiamondSpecificationUseCase;
@@ -21,11 +14,16 @@ import com.cplerings.core.application.diamond.output.ViewDiamondSpecificationOut
 import com.cplerings.core.application.shared.usecase.UseCase;
 import com.cplerings.core.common.api.APIConstant;
 
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
