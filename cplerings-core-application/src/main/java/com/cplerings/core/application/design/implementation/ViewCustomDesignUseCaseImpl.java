@@ -3,6 +3,7 @@ package com.cplerings.core.application.design.implementation;
 import com.cplerings.core.application.design.ViewCustomDesignUseCase;
 import com.cplerings.core.application.design.datasource.ViewCustomDesignDataSource;
 import com.cplerings.core.application.design.error.CreateDesignVersionErrorCode;
+import com.cplerings.core.application.design.error.ViewCustomDesignErrorCode;
 import com.cplerings.core.application.design.input.ViewCustomDesignInput;
 import com.cplerings.core.application.design.mapper.AViewCustomDesignMapper;
 import com.cplerings.core.application.design.output.ViewCustomDesignOutput;
@@ -23,8 +24,8 @@ public class ViewCustomDesignUseCaseImpl extends AbstractUseCase<ViewCustomDesig
     @Override
     protected void validateInput(UseCaseValidator validator, ViewCustomDesignInput input) {
         super.validateInput(validator, input);
-//        validator.validateAndStopExecution(input.customDesignId() != null, CUSTOM_DESIGN_ID_REQUIRED);
-//        validator.validateAndStopExecution(input.customDesignId() > 0, CUSTOM_DESIGN_ID_WRONG_POSITIVE_NUMBER);
+        validator.validateAndStopExecution(input.customDesignId() != null, ViewCustomDesignErrorCode.CUSTOM_DESIGN_ID_REQUIRED);
+        validator.validateAndStopExecution(input.customDesignId() > 0, ViewCustomDesignErrorCode.CUSTOM_DESIGN_ID_WRONG_POSITIVE_NUMBER);
     }
     @Override
     protected ViewCustomDesignOutput internalExecute(UseCaseValidator validator, ViewCustomDesignInput input) {
