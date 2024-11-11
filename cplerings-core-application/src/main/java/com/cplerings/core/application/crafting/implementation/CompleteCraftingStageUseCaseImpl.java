@@ -8,6 +8,8 @@ import static com.cplerings.core.application.crafting.error.CompleteCraftingStag
 import static com.cplerings.core.application.crafting.error.CompleteCraftingStageErrorCode.IMAGE_NOT_FOUND;
 import static com.cplerings.core.application.crafting.error.CompleteCraftingStageErrorCode.INVALID_CRAFTING_STAGE_ID;
 import static com.cplerings.core.application.crafting.error.CompleteCraftingStageErrorCode.INVALID_IMAGE_ID;
+import static com.cplerings.core.application.crafting.error.CompleteCraftingStageErrorCode.PREVIOUS_CRAFTING_STAGE_NOT_COMPLETED;
+import static com.cplerings.core.application.crafting.error.CompleteCraftingStageErrorCode.PREVIOUS_CRAFTING_STAGE_NOT_PAID;
 
 import com.cplerings.core.application.crafting.CompleteCraftingStageUseCase;
 import com.cplerings.core.application.crafting.datasource.CompleteCraftingStageDataSource;
@@ -54,6 +56,8 @@ public class CompleteCraftingStageUseCaseImpl extends AbstractUseCase<CompleteCr
         validator.validateAndStopExecution(craftingStage != null, CRAFTING_STAGE_NOT_FOUND);
         validator.validateAndStopExecution(craftingStage.getCompletionDate() == null, CRAFTING_STAGE_ALREADY_COMPLETED);
         validator.validateAndStopExecution(craftingStage.getStatus() == CraftingStageStatus.PAID, CRAFTING_STAGE_IS_NOT_PAID);
+        validator.validateAndStopExecution(previousCraftingStagesArePaid(craftingStage), PREVIOUS_CRAFTING_STAGE_NOT_PAID);
+        validator.validateAndStopExecution(previousCraftingStagesAreCompleted(craftingStage), PREVIOUS_CRAFTING_STAGE_NOT_COMPLETED);
         final Image image = dataSource.findImageById(input.imageId())
                 .orElse(null);
         validator.validateAndStopExecution(image != null, IMAGE_NOT_FOUND);
@@ -68,6 +72,20 @@ public class CompleteCraftingStageUseCaseImpl extends AbstractUseCase<CompleteCr
         return CompleteCraftingStageOutput.builder()
                 .craftingStage(craftingMapper.toCraftingStage(craftingStage))
                 .build();
+    }
+
+    private boolean previousCraftingStagesAreCompleted(CraftingStage craftingStage) {
+        return craftingStage.getCustomOrder().getCraftingStages()
+                .stream()
+                .filter(cs -> NumberUtils.isLessThan(cs.getId(), craftingStage.getId()))
+                .allMatch(cs -> cs.getCompletionDate() != null);
+    }
+
+    private boolean previousCraftingStagesArePaid(CraftingStage craftingStage) {
+        return craftingStage.getCustomOrder().getCraftingStages()
+                .stream()
+                .filter(cs -> NumberUtils.isLessThan(cs.getId(), craftingStage.getId()))
+                .allMatch(cs -> cs.getStatus() == CraftingStageStatus.PAID);
     }
 
     private boolean craftingStageIsFinalOne(CraftingStage craftingStage) {

@@ -8,6 +8,7 @@ import com.cplerings.core.api.file.data.FileData;
 import com.cplerings.core.api.file.request.FileUploadRequest;
 import com.cplerings.core.api.file.response.FileUploadResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
+import com.cplerings.core.application.shared.service.file.FileType;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
@@ -72,5 +73,7 @@ class UploadFileUseCaseIT extends AbstractIT {
         final FileData fileData = responseBody.getData();
         assertThat(fileData).isNotNull();
         assertThat(fileData.url()).isNotBlank();
+        assertThat(fileData.id()).isNotNull();
+        assertThat(fileData.type()).isEqualTo(FileType.IMAGE);
     }
 }

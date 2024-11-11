@@ -12,6 +12,8 @@ import com.cplerings.core.infrastructure.CplringsCoreApplication;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
@@ -144,8 +146,13 @@ public abstract class AbstractIT {
         private RequestBuilder() {
         }
 
-        public RequestBuilder<B> path(String path) {
-            this.path = path;
+        public RequestBuilder<B> path(String path, Object... params) {
+            if (ArrayUtils.isEmpty(params)) {
+                this.path = path;
+                return this;
+            }
+            final String formattedPath = RegExUtils.replacePattern(path, "\\{[-\\w]+\\}", "%s");
+            this.path = String.format(formattedPath, params);
             return this;
         }
 

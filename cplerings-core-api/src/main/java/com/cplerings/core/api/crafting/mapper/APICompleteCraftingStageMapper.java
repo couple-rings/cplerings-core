@@ -9,8 +9,12 @@ import com.cplerings.core.application.shared.entity.crafting.ACraftingStage;
 import com.cplerings.core.common.mapper.SpringMapperConfiguration;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(config = SpringMapperConfiguration.class)
 public interface APICompleteCraftingStageMapper extends APIMapper<CompleteCraftingStageInput, CompleteCraftingStageOutput, ACraftingStage, CompleteCraftingStageRequest, CompleteCraftingStageResponse> {
 
+    @Override
+    @Mapping(target = ".", source = "craftingStage")
+    ACraftingStage toData(CompleteCraftingStageOutput output);
 }
