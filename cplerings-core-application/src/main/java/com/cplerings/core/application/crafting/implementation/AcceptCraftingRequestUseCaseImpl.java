@@ -6,7 +6,7 @@ import com.cplerings.core.application.crafting.error.AcceptCraftingRequestErrorC
 import com.cplerings.core.application.crafting.input.AcceptCraftingRequestInput;
 import com.cplerings.core.application.crafting.mapper.AAcceptCraftingRequestMapper;
 import com.cplerings.core.application.crafting.output.AcceptCraftingRequestOutput;
-import com.cplerings.core.application.shared.entity.craftingrequest.ACraftingRequestStatus;
+import com.cplerings.core.application.shared.entity.crafting.ACraftingRequestStatus;
 import com.cplerings.core.application.shared.service.configuration.ConfigurationService;
 import com.cplerings.core.application.shared.service.price.CalculationTotalPrice;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;

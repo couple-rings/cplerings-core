@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public enum FileType {
+public enum FileMIMEType {
 
     JPG("/9j/", "image/jpeg", "jpeg"),
     PNG("iVBORw0KGgo=", "image/png", "png"),
@@ -19,7 +19,7 @@ public enum FileType {
     private final String contentType;
     private final String extension;
 
-    public static FileType getFileTypeByBase64Extension(String base64Extension) {
+    public static FileMIMEType getFileTypeByBase64Extension(String base64Extension) {
         if (StringUtils.isBlank(base64Extension)) {
             return null;
         }

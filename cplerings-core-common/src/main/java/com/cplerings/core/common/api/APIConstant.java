@@ -90,6 +90,7 @@ public final class APIConstant {
      */
     public static final String CRAFTING_STAGE_PATH = "/crafting-stages";
     public static final String DEPOSIT_CRAFTING_STAGE_PATH = CRAFTING_STAGE_PATH + "/deposit";
+    public static final String COMPLETE_CRAFTING_STAGE_PATH = CRAFTING_STAGE_PATH + "/{craftingStageId}/completion";
 
     /*
        Diamond specification

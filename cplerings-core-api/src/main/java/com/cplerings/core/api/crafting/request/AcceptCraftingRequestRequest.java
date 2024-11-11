@@ -1,6 +1,6 @@
 package com.cplerings.core.api.crafting.request;
 
-import com.cplerings.core.application.shared.entity.craftingrequest.ACraftingRequestStatus;
+import com.cplerings.core.application.shared.entity.crafting.ACraftingRequestStatus;
 
 import lombok.Builder;
 

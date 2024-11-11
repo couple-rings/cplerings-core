@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.cplerings.core.application.shared.errorcode.ErrorCode;
 import com.cplerings.core.application.shared.service.file.FileInfo;
 import com.cplerings.core.application.shared.service.file.FileStorageService;
+import com.cplerings.core.application.shared.service.file.FileType;
 import com.cplerings.core.application.shared.service.file.FileUploadInfo;
 import com.cplerings.core.common.either.Either;
 import com.cplerings.core.test.shared.spouse.AbstractAWSCT;
@@ -36,6 +37,8 @@ class FileStorageServiceCT extends AbstractAWSCT {
 
     private void thenFileInfoContainsFileURL(FileInfo fileInfo) {
         assertThat(fileInfo).isNotNull();
-        assertThat(fileInfo.url()).isNotBlank();
+        assertThat(fileInfo.getUrl()).isNotBlank();
+        assertThat(fileInfo.getId()).isNotNull();
+        assertThat(fileInfo.getType()).isEqualTo(FileType.IMAGE);
     }
 }

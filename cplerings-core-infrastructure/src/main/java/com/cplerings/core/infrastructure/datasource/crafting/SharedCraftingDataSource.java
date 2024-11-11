@@ -1,14 +1,13 @@
 package com.cplerings.core.infrastructure.datasource.crafting;
 
-import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.crafting.datasource.AcceptCraftingRequestDataSource;
+import com.cplerings.core.application.crafting.datasource.CompleteCraftingStageDataSource;
 import com.cplerings.core.application.crafting.datasource.CreateCraftingRequestDataSource;
 import com.cplerings.core.application.crafting.datasource.DepositCraftingStageDataSource;
 import com.cplerings.core.application.crafting.datasource.ProcessCraftingStageDepositDataSource;
 import com.cplerings.core.application.crafting.datasource.ViewCraftingRequestsDataSource;
 import com.cplerings.core.application.crafting.datasource.result.CraftingRequests;
 import com.cplerings.core.application.crafting.input.ViewCraftingRequestsInput;
-import com.cplerings.core.application.design.datasource.result.CustomRequests;
 import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
@@ -23,18 +22,15 @@ import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.QCustomDesign;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
 import com.cplerings.core.domain.design.crafting.QCraftingRequest;
-import com.cplerings.core.domain.design.request.CustomRequest;
-import com.cplerings.core.domain.design.request.CustomRequestStatus;
 import com.cplerings.core.domain.diamond.DiamondSpecification;
 import com.cplerings.core.domain.diamond.QDiamondSpecification;
 import com.cplerings.core.domain.file.Document;
+import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.file.QDocument;
 import com.cplerings.core.domain.metal.MetalSpecification;
 import com.cplerings.core.domain.metal.QMetalSpecification;
 import com.cplerings.core.domain.order.CustomOrder;
-import com.cplerings.core.domain.order.QCustomOrder;
 import com.cplerings.core.domain.payment.PaymentReceiver;
-import com.cplerings.core.domain.ring.QRing;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.domain.spouse.QSpouse;
@@ -44,11 +40,13 @@ import com.cplerings.core.infrastructure.repository.ContractRepository;
 import com.cplerings.core.infrastructure.repository.CraftingRequestRepository;
 import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
+import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
-import com.querydsl.core.types.dsl.BooleanExpression;
 
 import lombok.RequiredArgsConstructor;
+
+import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -57,7 +55,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SharedCraftingDataSource extends AbstractDataSource
         implements CreateCraftingRequestDataSource, AcceptCraftingRequestDataSource, DepositCraftingStageDataSource,
-        ProcessCraftingStageDepositDataSource, ViewCraftingRequestsDataSource {
+        ProcessCraftingStageDepositDataSource, ViewCraftingRequestsDataSource, CompleteCraftingStageDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QDiamondSpecification Q_DIAMOND_SPECIFICATION = QDiamondSpecification.diamondSpecification;
@@ -68,9 +66,7 @@ public class SharedCraftingDataSource extends AbstractDataSource
     private static final QDocument Q_DOCUMENT = QDocument.document;
     private static final QBranch Q_BRANCH = QBranch.branch;
     private static final QConfiguration Q_CONFIGURATION = QConfiguration.configuration;
-    private static final QRing Q_RING = QRing.ring;
     private static final QCraftingStage Q_CRAFTING_STAGE = QCraftingStage.craftingStage;
-    private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
 
     private static final String SIDE_DIAMOND_PRICE = "DEFE";
 
@@ -80,6 +76,7 @@ public class SharedCraftingDataSource extends AbstractDataSource
     private final CustomOrderRepository customOrderRepository;
     private final CraftingStageRepository craftingStageRepository;
     private final PaymentReceiverRepository paymentReceiverRepository;
+    private final ImageRepository imageRepository;
 
     @Override
     public Optional<Account> getAccountByCustomerId(Long customerId) {
@@ -200,6 +197,11 @@ public class SharedCraftingDataSource extends AbstractDataSource
                 .leftJoin(Q_CRAFTING_STAGE.customOrder.craftingStages).fetchJoin()
                 .where(Q_CRAFTING_STAGE.id.eq(craftingStageId))
                 .fetchFirst());
+    }
+
+    @Override
+    public Optional<Image> findImageById(Long imageId) {
+        return imageRepository.findById(imageId);
     }
 
     @Override

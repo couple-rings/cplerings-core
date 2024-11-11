@@ -9,10 +9,13 @@ import static com.cplerings.core.application.file.error.FileErrorCode.INVALID_MA
 import com.cplerings.core.application.shared.errorcode.ErrorCode;
 import com.cplerings.core.application.shared.service.file.FileInfo;
 import com.cplerings.core.application.shared.service.file.FileStorageService;
+import com.cplerings.core.application.shared.service.file.FileType;
 import com.cplerings.core.application.shared.service.file.FileUploadInfo;
 import com.cplerings.core.common.either.Either;
-import com.cplerings.core.common.file.FileType;
+import com.cplerings.core.common.file.FileMIMEType;
 import com.cplerings.core.common.temporal.TemporalUtils;
+import com.cplerings.core.domain.file.Document;
+import com.cplerings.core.domain.file.Image;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +38,7 @@ import java.util.UUID;
 public class AWSS3StorageServiceImpl implements FileStorageService {
 
     private final S3Client s3Client;
+    private final FileStorageDataSource dataSource;
 
     @Value("${cplerings.aws.s3.bucket-name}")
     private String bucketName;
@@ -56,11 +60,11 @@ public class AWSS3StorageServiceImpl implements FileStorageService {
         }
 
         final String base64ContentType = base64FileParts[0].substring(0, base64FileParts[0].indexOf(";"));
-        final FileType fileType = FileType.getFileTypeByBase64Extension(base64ContentType);
-        if (fileType == null) {
+        final FileMIMEType fileMIMEType = FileMIMEType.getFileTypeByBase64Extension(base64ContentType);
+        if (fileMIMEType == null) {
             return Either.right(INVALID_FILE_FORMAT);
         }
-        if (fileHasIncorrectMagicBytes(base64FileParts[1], fileType)) {
+        if (fileHasIncorrectMagicBytes(base64FileParts[1], fileMIMEType)) {
             return Either.right(INVALID_MAGIC_BYTES);
         }
 
@@ -76,19 +80,40 @@ public class AWSS3StorageServiceImpl implements FileStorageService {
         }
 
         try {
-            final String filePath = prepareFilePath(fileUploadInfo, fileType);
+            final String filePath = prepareFilePath(fileUploadInfo, fileMIMEType);
             final PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                     .bucket(bucketName)
                     .key(filePath)
-                    .contentType(fileType.getContentType())
+                    .contentType(fileMIMEType.getContentType())
                     .build();
 
             final PutObjectResponse putObjectResponse = s3Client.putObject(putObjectRequest, RequestBody.fromBytes(fileBytes));
             if (StringUtils.isBlank(putObjectResponse.eTag())) {
                 return Either.right(FILE_UPLOAD_FAILED);
             }
+            final String fileUrl = constructFileURL(filePath);
+            final FileType fileInfoType = extractFileInfoType(fileMIMEType);
+            final Long fileId = switch (fileInfoType) {
+                case IMAGE -> {
+                    Image image = Image.builder()
+                            .url(fileUrl)
+                            .build();
+                    image = dataSource.save(image);
+                    yield image.getId();
+                }
+
+                case DOCUMENT -> {
+                    Document document = Document.builder()
+                            .url(fileUrl)
+                            .build();
+                    document = dataSource.save(document);
+                    yield document.getId();
+                }
+            };
             return Either.left(FileInfo.builder()
-                    .url(constructFileURL(filePath))
+                    .id(fileId)
+                    .type(fileInfoType)
+                    .url(fileUrl)
                     .build());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -96,8 +121,15 @@ public class AWSS3StorageServiceImpl implements FileStorageService {
         }
     }
 
-    private boolean fileHasIncorrectMagicBytes(String base64File, FileType fileType) {
-        final String magicBytes = fileType.getMagicBytesInBase64();
+    private FileType extractFileInfoType(FileMIMEType fileMIMEType) {
+        return switch (fileMIMEType) {
+            case JPG, PNG -> FileType.IMAGE;
+            case PDF -> FileType.DOCUMENT;
+        };
+    }
+
+    private boolean fileHasIncorrectMagicBytes(String base64File, FileMIMEType fileMIMEType) {
+        final String magicBytes = fileMIMEType.getMagicBytesInBase64();
         return !StringUtils.startsWith(base64File, magicBytes);
     }
 
@@ -105,18 +137,18 @@ public class AWSS3StorageServiceImpl implements FileStorageService {
         return (fileBytes.length > (maxFileUploadSizeInMB * 1024 * 1024));
     }
 
-    private String prepareFilePath(FileUploadInfo fileUploadInfo, FileType fileType) {
+    private String prepareFilePath(FileUploadInfo fileUploadInfo, FileMIMEType fileMIMEType) {
         final StringBuilder builder = new StringBuilder();
         switch (fileUploadInfo.getType()) {
             case STATIC -> builder.append("static/static_");
             case DYNAMIC -> builder.append("dynamic/dynamic_");
-            default -> throw new IllegalStateException("Unexpected value: " + fileType.name());
+            default -> throw new IllegalStateException("Unexpected value: " + fileMIMEType.name());
         }
         builder.append(UUID.randomUUID());
         builder.append('_');
         builder.append(TemporalUtils.getCurrentInstantUTC().toEpochMilli());
         builder.append('.');
-        builder.append(fileType.getExtension());
+        builder.append(fileMIMEType.getExtension());
         return builder.toString();
     }
 

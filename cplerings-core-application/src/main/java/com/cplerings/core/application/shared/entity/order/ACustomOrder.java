@@ -2,7 +2,7 @@ package com.cplerings.core.application.shared.entity.order;
 
 import com.cplerings.core.application.shared.entity.account.AAccount;
 import com.cplerings.core.application.shared.entity.contract.AContract;
-import com.cplerings.core.application.shared.ring.ARing;
+import com.cplerings.core.application.shared.entity.ring.ARing;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
