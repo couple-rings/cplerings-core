@@ -25,6 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 class CreateCustomDesignUseCaseIT extends AbstractIT {
 
@@ -57,7 +59,7 @@ class CreateCustomDesignUseCaseIT extends AbstractIT {
                 .image(imageRepository.getReferenceById(1L))
                 .design(designRepository.getReferenceById(1L))
                 .versionNumber(3)
-                .isAccepted(false)
+                .isAccepted(true)
                 .isOld(false)
                 .build();
         testDataSource.save(designVersion);
@@ -71,10 +73,12 @@ class CreateCustomDesignUseCaseIT extends AbstractIT {
         CreateCustomDesignRequest request = CreateCustomDesignRequest.builder()
                 .customerId(1L)
                 .designVersionId(1L)
-                .blueprint("test")
+                .blueprintId(11L)
                 .spouseId(spouses[0].getId())
                 .metalWeight(BigDecimal.valueOf(0.5))
                 .sideDiamondAmount(2)
+                .diamondSpecIds(new ArrayList<>(Arrays.asList(1L, 11L)))
+                .metalSpecIds(new ArrayList<>(Arrays.asList(1L, 11L)))
                 .build();
 
         final WebTestClient.ResponseSpec response = requestBuilder()
@@ -101,5 +105,7 @@ class CreateCustomDesignUseCaseIT extends AbstractIT {
                 .isNotNull()
                 .isExactlyInstanceOf(CustomDesignData.class);
         assertThat(responseBody.getData().customDesign()).isNotNull();
+        assertThat(responseBody.getData().customDesign().getDiamondSpecifications()).isNotNull();
+        assertThat(responseBody.getData().customDesign().getMetalSpecifications()).isNotNull();
     }
 }

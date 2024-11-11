@@ -1,9 +1,15 @@
 package com.cplerings.core.domain.metal;
 
+import java.util.Set;
+
 import com.cplerings.core.common.database.DatabaseConstant;
+import com.cplerings.core.domain.design.CustomDesignDiamondSpecification;
+import com.cplerings.core.domain.design.CustomDesignMetalSpecification;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,4 +58,7 @@ public class MetalSpecification extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "color", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
     private MetalColor color;
+
+    @OneToMany(mappedBy = "metalSpecification", fetch = FetchType.LAZY)
+    private Set<CustomDesignMetalSpecification> customDesignMetalSpecifications;
 }
