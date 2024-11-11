@@ -2,6 +2,7 @@ package com.cplerings.core.application.shared.entity.design;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 
 import com.cplerings.core.application.shared.entity.account.AAccount;
@@ -30,4 +31,5 @@ public class ACustomDesign implements Serializable {
     private List<ADiamondSpecification> diamondSpecifications;
     private List<AMetalSpecification> metalSpecifications;
     private int sideDiamondsCount;
+    private Instant createdAt;
 }
