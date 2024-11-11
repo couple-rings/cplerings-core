@@ -5,7 +5,9 @@ import com.cplerings.core.domain.account.AccountVerification;
 import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
+import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.DesignVersion;
+import com.cplerings.core.domain.design.crafting.CraftingRequest;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
@@ -47,4 +49,8 @@ public interface TestDataSource {
     Account save(Account account);
 
     AccountVerification save(AccountVerification accountVerification);
+
+    CustomDesign save(CustomDesign customDesign);
+
+    CraftingRequest save(CraftingRequest craftingRequest);
 }
