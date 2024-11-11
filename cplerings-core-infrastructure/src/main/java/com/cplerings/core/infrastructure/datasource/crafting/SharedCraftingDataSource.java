@@ -1,9 +1,15 @@
 package com.cplerings.core.infrastructure.datasource.crafting;
 
+import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.crafting.datasource.AcceptCraftingRequestDataSource;
 import com.cplerings.core.application.crafting.datasource.CreateCraftingRequestDataSource;
 import com.cplerings.core.application.crafting.datasource.DepositCraftingStageDataSource;
 import com.cplerings.core.application.crafting.datasource.ProcessCraftingStageDepositDataSource;
+import com.cplerings.core.application.crafting.datasource.ViewCraftingRequestsDataSource;
+import com.cplerings.core.application.crafting.datasource.result.CraftingRequests;
+import com.cplerings.core.application.crafting.input.ViewCraftingRequestsInput;
+import com.cplerings.core.application.design.datasource.result.CustomRequests;
+import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.branch.Branch;
@@ -17,6 +23,8 @@ import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.QCustomDesign;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
 import com.cplerings.core.domain.design.crafting.QCraftingRequest;
+import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.request.CustomRequestStatus;
 import com.cplerings.core.domain.diamond.DiamondSpecification;
 import com.cplerings.core.domain.diamond.QDiamondSpecification;
 import com.cplerings.core.domain.file.Document;
@@ -38,6 +46,7 @@ import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
+import com.querydsl.core.types.dsl.BooleanExpression;
 
 import lombok.RequiredArgsConstructor;
 
@@ -48,7 +57,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SharedCraftingDataSource extends AbstractDataSource
         implements CreateCraftingRequestDataSource, AcceptCraftingRequestDataSource, DepositCraftingStageDataSource,
-        ProcessCraftingStageDepositDataSource {
+        ProcessCraftingStageDepositDataSource, ViewCraftingRequestsDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QDiamondSpecification Q_DIAMOND_SPECIFICATION = QDiamondSpecification.diamondSpecification;
@@ -214,5 +223,21 @@ public class SharedCraftingDataSource extends AbstractDataSource
     public CustomOrder save(CustomOrder customOrder) {
         updateAuditor(customOrder);
         return customOrderRepository.save(customOrder);
+    }
+
+    @Override
+    public CraftingRequests getCraftingrequests(ViewCraftingRequestsInput input) {
+        var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
+        BlazeJPAQuery<CraftingRequest> query = createQuery()
+                .select(Q_CRAFTING_REQUEST)
+                .from(Q_CRAFTING_REQUEST);
+        long count = query.distinct().fetchCount();
+        List<CraftingRequest> craftingRequests = query.limit(input.getPageSize()).offset(offset).fetch();
+        return CraftingRequests.builder()
+                .craftingRequests(craftingRequests)
+                .count(count)
+                .page(input.getPage())
+                .pageSize(input.getPageSize())
+                .build();
     }
 }

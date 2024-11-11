@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -29,4 +30,5 @@ public class ACraftingRequest implements Serializable {
     private Integer fingerSize;
     private String comment;
     private CraftingRequestStatus craftingRequestStatus;
+    private Instant createdAt;
 }
