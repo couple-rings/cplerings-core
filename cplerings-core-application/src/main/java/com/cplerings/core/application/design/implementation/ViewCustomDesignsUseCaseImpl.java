@@ -1,10 +1,7 @@
 package com.cplerings.core.application.design.implementation;
 
-import static com.cplerings.core.application.design.error.DesignErrorCode.INVALID_COLLECTION_ID;
-import static com.cplerings.core.application.design.error.DesignErrorCode.INVALID_METAL_SPECIFICATION_ID;
 import static com.cplerings.core.application.design.error.DesignErrorCode.INVALID_PAGE;
 import static com.cplerings.core.application.design.error.DesignErrorCode.INVALID_PAGE_SIZE;
-import static com.cplerings.core.application.design.error.DesignErrorCode.MIN_PRICE_LARGER_EQUAL_MAX_PRICE;
 
 import java.util.Optional;
 
@@ -21,6 +18,7 @@ import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.Role;
 
 import lombok.RequiredArgsConstructor;
 
@@ -46,6 +44,10 @@ public class ViewCustomDesignsUseCaseImpl extends AbstractUseCase<ViewCustomDesi
         final Optional<Account> accountOptional = viewCustomDesignsDataSource.findAccountByEmail(currentUser.email());
         validator.validateAndStopExecution(accountOptional.isPresent(), AccountErrorCode.ACCOUNT_WITH_EMAIL_NOT_FOUND);
         final Account account = accountOptional.get();
+        if (account.getRole() != Role.CUSTOMER) {
+            CustomDesigns designVersions = viewCustomDesignsDataSource.getCustomDesigns(null, input);
+            return aViewCustomDesignsMapper.toOutput(designVersions);
+        }
         CustomDesigns designVersions = viewCustomDesignsDataSource.getCustomDesigns(account.getId(), input);
         return aViewCustomDesignsMapper.toOutput(designVersions);
     }

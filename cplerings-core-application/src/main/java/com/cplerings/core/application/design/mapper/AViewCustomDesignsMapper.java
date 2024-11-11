@@ -1,6 +1,7 @@
 package com.cplerings.core.application.design.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import com.cplerings.core.application.design.datasource.result.CustomDesigns;
 import com.cplerings.core.application.design.output.ViewCustomDesignsOutput;
@@ -19,5 +20,6 @@ import com.cplerings.core.common.mapper.SpringMapperConfiguration;
 )
 public interface AViewCustomDesignsMapper {
 
+    @Mapping(target = "items", source = "customDesigns")
     ViewCustomDesignsOutput toOutput(CustomDesigns customDesigns);
 }

@@ -142,8 +142,10 @@ public class SharedCustomDesignDataSource extends AbstractDataSource implements 
         var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
         BlazeJPAQuery<CustomDesign> query = createQuery()
                 .select(Q_CUSTOM_DESIGN)
-                .from(Q_CUSTOM_DESIGN)
-                .where(Q_CUSTOM_DESIGN.account.id.eq(customerId));
+                .from(Q_CUSTOM_DESIGN);
+        if (customerId != null) {
+            query.where(Q_CUSTOM_DESIGN.id.eq(customerId));
+        }
         long count = query.distinct().fetchCount();
         List<CustomDesign> customDesigns = query.limit(input.getPageSize()).offset(offset).fetch();
         return CustomDesigns.builder()
