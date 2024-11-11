@@ -156,7 +156,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VIEW_CURRENT_DESIGN_VERSIONS_PATH))
                         .hasAuthority(RoleConstant.ROLE_CUSTOMER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.PUT, resolvePath(APIConstant.ACCEPT_SINGLE_DESIGN_VERSION_PATH))
-                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER));
+                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VIEW_CUSTOM_DESIGNS_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER));
     }
 
     private void handleFileUploadAPI(HttpSecurity localHttp) throws Exception {
@@ -179,7 +181,9 @@ public class SecurityConfiguration {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.CRAFTING_REQUEST_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.PUT, resolvePath(APIConstant.ACCEPT_CRAFTING_REQUEST_PATH))
-                        .hasAnyAuthority(RoleConstant.ROLE_STAFF));
+                        .hasAnyAuthority(RoleConstant.ROLE_STAFF))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VIEW_CRAFTING_REQUESTS_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_STAFF, RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_MANAGER));
     }
 
     private void handleCraftingStageAPI(HttpSecurity localHttp) throws Exception {

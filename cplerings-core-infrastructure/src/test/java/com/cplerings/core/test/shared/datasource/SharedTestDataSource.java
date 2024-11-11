@@ -1,11 +1,15 @@
 package com.cplerings.core.test.shared.datasource;
 
+import static com.cplerings.core.domain.design.QCustomDesign.customDesign;
+
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountVerification;
 import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
+import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.DesignVersion;
+import com.cplerings.core.domain.design.crafting.CraftingRequest;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
@@ -20,7 +24,9 @@ import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.infrastructure.repository.AccountVerificationRepository;
 import com.cplerings.core.infrastructure.repository.BranchRepository;
 import com.cplerings.core.infrastructure.repository.ContractRepository;
+import com.cplerings.core.infrastructure.repository.CraftingRequestRepository;
 import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
+import com.cplerings.core.infrastructure.repository.CustomDesignRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
 import com.cplerings.core.infrastructure.repository.DesignCustomRequestRepository;
@@ -55,6 +61,8 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private final DesignCustomRequestRepository designCustomRequestRepository;
     private final AccountRepository accountRepository;
     private final AccountVerificationRepository accountVerificationRepository;
+    private final CustomDesignRepository customDesignRepository;
+    private final CraftingRequestRepository craftingRequestRepository;
 
     @Override
     public Payment save(Payment payment) {
@@ -114,6 +122,18 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     public AccountVerification save(AccountVerification accountVerification) {
         updateAuditor(accountVerification);
         return accountVerificationRepository.save(accountVerification);
+    }
+
+    @Override
+    public CustomDesign save(CustomDesign customDesign) {
+        updateAuditor(customDesign);
+        return customDesignRepository.save(customDesign);
+    }
+
+    @Override
+    public CraftingRequest save(CraftingRequest craftingRequest) {
+        updateAuditor(craftingRequest);
+        return craftingRequestRepository.save(craftingRequest);
     }
 
     @Override
