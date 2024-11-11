@@ -106,6 +106,7 @@ public class CreateCraftingRequestIT extends AbstractIT {
                 .createdAt(Instant.now())
                 .modifiedAt(Instant.now())
                 .modifiedBy("Test")
+                .blueprint(documentRepository.getReferenceById(1L))
                 .build();
         customDesignRepository.save(customDesign);
 
