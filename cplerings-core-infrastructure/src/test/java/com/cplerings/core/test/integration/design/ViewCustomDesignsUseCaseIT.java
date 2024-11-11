@@ -8,6 +8,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.cplerings.core.api.crafting.request.ViewCraftingRequestsRequest;
 import com.cplerings.core.api.design.data.CustomDesigns;
+import com.cplerings.core.api.design.request.ViewCustomDesignsRequest;
 import com.cplerings.core.api.design.response.ViewCustomDesignsResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.common.api.APIConstant;
@@ -18,7 +19,7 @@ import com.cplerings.core.test.shared.datasource.TestDataSource;
 import com.cplerings.core.test.shared.design.CustomDesignTestHelper;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
 
-public class ViewCustomDesignsUseCaseIT extends AbstractIT {
+class ViewCustomDesignsUseCaseIT extends AbstractIT {
 
     @Autowired
     private JWTTestHelper jwtTestHelper;
@@ -34,7 +35,7 @@ public class ViewCustomDesignsUseCaseIT extends AbstractIT {
         CustomDesign customDesign = customDesignTestHelper.createCustomDesign();
         testDataSource.save(customDesign);
         String token = jwtTestHelper.generateToken(AccountTestConstant.CUSTOMER_EMAIL);
-        ViewCraftingRequestsRequest request = ViewCraftingRequestsRequest.builder()
+        ViewCustomDesignsRequest request = ViewCustomDesignsRequest.builder()
                 .page(0)
                 .pageSize(1)
                 .build();
