@@ -31,7 +31,7 @@ public class ViewCustomDesignUseCaseImpl extends AbstractUseCase<ViewCustomDesig
     protected ViewCustomDesignOutput internalExecute(UseCaseValidator validator, ViewCustomDesignInput input) {
         CustomDesign customDesign = viewCustomDesignDataSource.getCustomDesignByCustomDesignId(input.customDesignId())
                 .orElse(null);
-        validator.validateAndStopExecution(customDesign != null, CreateDesignVersionErrorCode.INVALID_CUSTOM_DESIGN_ID);
+        validator.validateAndStopExecution(customDesign != null, ViewCustomDesignErrorCode.INVALID_CUSTOM_DESIGN_ID);
         return aViewCustomDesignMapper.toOutput(customDesign);
     }
 }
