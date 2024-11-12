@@ -27,6 +27,7 @@ public class ViewCustomDesignUseCaseImpl extends AbstractUseCase<ViewCustomDesig
         validator.validateAndStopExecution(input.customDesignId() != null, ViewCustomDesignErrorCode.CUSTOM_DESIGN_ID_REQUIRED);
         validator.validateAndStopExecution(input.customDesignId() > 0, ViewCustomDesignErrorCode.CUSTOM_DESIGN_ID_WRONG_POSITIVE_NUMBER);
     }
+
     @Override
     protected ViewCustomDesignOutput internalExecute(UseCaseValidator validator, ViewCustomDesignInput input) {
         CustomDesign customDesign = viewCustomDesignDataSource.getCustomDesignByCustomDesignId(input.customDesignId())
