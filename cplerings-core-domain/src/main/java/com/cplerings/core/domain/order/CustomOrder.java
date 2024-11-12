@@ -73,6 +73,9 @@ public class CustomOrder extends AbstractEntity {
     @OneToMany(mappedBy = "customOrder", fetch = FetchType.LAZY)
     private Set<CraftingStage> craftingStages;
 
+    @OneToMany(mappedBy = "customOrder", fetch = FetchType.LAZY)
+    private Set<TransportationOrder> transportationOrders;
+
     @Embedded
     @AttributeOverride(name = "amount", column = @Column(name = "total_price", precision = 12, scale = 3, nullable = false))
     private Money totalPrice;

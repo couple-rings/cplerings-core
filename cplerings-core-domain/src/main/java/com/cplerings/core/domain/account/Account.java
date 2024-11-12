@@ -1,9 +1,11 @@
 package com.cplerings.core.domain.account;
 
 import com.cplerings.core.common.database.DatabaseConstant;
+import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.blog.Blog;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
+import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.Auditor;
 import com.cplerings.core.domain.spouse.SpouseAccount;
@@ -89,6 +91,12 @@ public class Account extends AbstractEntity implements Auditor {
 
     @OneToMany(mappedBy = "staff", fetch = FetchType.LAZY)
     private Set<CustomRequest> customRequests;
+
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
+    private Set<TransportationAddress> transportationAddresses;
+
+    @OneToMany(mappedBy = "transporter", fetch = FetchType.LAZY)
+    private Set<TransportationOrder> transportationOrders;
 
     @Override
     public String getAuditorName() {
