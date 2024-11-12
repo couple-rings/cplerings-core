@@ -15,7 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class DetermineContractRequestData {
 
-    private String signature;
+    private Long signatureId;
     private Instant signedDate;
     private Long documentId;
 }

@@ -60,7 +60,7 @@ public class DetermineContractController extends AbstractController<DetermineCon
         DetermineContractRequest request = DetermineContractRequest.builder()
                 .documentId(determineContractRequestData.getDocumentId())
                 .contractId(contractId)
-                .signature(determineContractRequestData.getSignature())
+                .signatureId(determineContractRequestData.getSignatureId())
                 .signedDate(determineContractRequestData.getSignedDate())
                 .build();
         return handleRequest(request);

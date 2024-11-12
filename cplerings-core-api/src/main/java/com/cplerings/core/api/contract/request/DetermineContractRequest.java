@@ -5,5 +5,5 @@ import java.time.Instant;
 import lombok.Builder;
 
 @Builder
-public record DetermineContractRequest(Long contractId, String signature, Instant signedDate, Long documentId) {
+public record DetermineContractRequest(Long contractId, Long signatureId, Instant signedDate, Long documentId) {
 }

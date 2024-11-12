@@ -6,7 +6,9 @@ import com.cplerings.core.application.contract.datasource.DetermineContractDataS
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.contract.QContract;
 import com.cplerings.core.domain.file.Document;
+import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.file.QDocument;
+import com.cplerings.core.domain.file.QImage;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.ContractRepository;
@@ -19,6 +21,7 @@ public class SharedContractDataSource extends AbstractDataSource implements Dete
 
     private static final QContract Q_CONTRACT = QContract.contract;
     private static final QDocument Q_DOCUMENT = QDocument.document;
+    private static final QImage Q_IMAGE = QImage.image;
 
     private final ContractRepository contractRepository;
 
@@ -41,6 +44,14 @@ public class SharedContractDataSource extends AbstractDataSource implements Dete
         return Optional.ofNullable(createQuery().select(Q_DOCUMENT)
                 .from(Q_DOCUMENT)
                 .where(Q_DOCUMENT.id.eq(documentId))
+                .fetchOne());
+    }
+
+    @Override
+    public Optional<Image> getImageById(Long imageId) {
+        return Optional.ofNullable(createQuery().select(Q_IMAGE)
+                .from(Q_IMAGE)
+                .where(Q_IMAGE.id.eq(imageId))
                 .fetchOne());
     }
 }

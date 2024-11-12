@@ -11,6 +11,7 @@ import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.file.Document;
+import com.cplerings.core.domain.file.Image;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +26,7 @@ public class DetermineContractUseCaseImpl extends AbstractUseCase<DetermineContr
     protected void validateInput(UseCaseValidator validator, DetermineContractInput input) {
         super.validateInput(validator, input);
         validator.validateAndStopExecution(input.documentId() != null, DetermineContractErrorCode.DOCUMENT_ID_REQUIRED);
-        validator.validateAndStopExecution(input.signature() != null, DetermineContractErrorCode.SIGNATURE_REQUIRED);
+        validator.validateAndStopExecution(input.signatureId() != null, DetermineContractErrorCode.SIGNATURE_REQUIRED);
         validator.validateAndStopExecution(input.signedDate() != null, DetermineContractErrorCode.SIGNED_DATE_REQUIRED);
         validator.validateAndStopExecution(input.documentId() > 0, DetermineContractErrorCode.DOCUMENT_ID_WRONG_POSITIVE_INTEGER);
         validator.validateAndStopExecution(input.contractId() > 0, DetermineContractErrorCode.CONTRACT_ID_WRONG_POSITIVE_INTEGER);
@@ -39,8 +40,11 @@ public class DetermineContractUseCaseImpl extends AbstractUseCase<DetermineContr
         Document document = determineContractDataSource.getDocumentById(input.documentId())
                 .orElse(null);
         validator.validateAndStopExecution(document != null, DetermineContractErrorCode.INVALID_DOCUMENT_ID);
+        Image signatureImage = determineContractDataSource.getImageById(input.signatureId())
+                        .orElse(null);
+        validator.validateAndStopExecution(signatureImage != null, DetermineContractErrorCode.INVALID_IMAGE_ID);
         contract.setDocument(document);
-        contract.setSignature(input.signature());
+        contract.setSignature(signatureImage);
         contract.setSignedDate(input.signedDate());
         return aDetermineContractMapper.toOutput(determineContractDataSource.save(contract));
     }
