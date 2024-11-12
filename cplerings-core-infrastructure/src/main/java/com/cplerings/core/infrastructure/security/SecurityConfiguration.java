@@ -205,7 +205,7 @@ public class SecurityConfiguration {
 
     private void handleMetalSpecificationAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.METAL_SPECIFICATION_PATH))
-                .authenticated());
+                .permitAll());
     }
 
     private void handleContractAPI(HttpSecurity localHttp) throws Exception {

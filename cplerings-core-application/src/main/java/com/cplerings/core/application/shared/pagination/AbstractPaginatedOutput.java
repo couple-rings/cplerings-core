@@ -76,7 +76,7 @@ public abstract class AbstractPaginatedOutput<T> implements Pageable {
             calculatePagination();
             output.setPage(page);
             output.setPageSize(pageSize);
-            output.setCount(items.size());
+            output.setCount(count);
             calculatePagination();
             output.setTotalPages(totalPages);
             output.setItems(items);
