@@ -105,7 +105,7 @@ class PaginationOutputTest {
         Assertions.assertThat(output.getPageSize())
                 .isEqualTo(data.getPageSize());
         Assertions.assertThat(output.getCount())
-                .isEqualTo(data.getData().size());
+                .isEqualTo(data.getTotalCount());
         Assertions.assertThat(output.getItems())
                 .containsExactly(data.getData().toArray(String[]::new));
         Assertions.assertThat(output.getTotalPages())
