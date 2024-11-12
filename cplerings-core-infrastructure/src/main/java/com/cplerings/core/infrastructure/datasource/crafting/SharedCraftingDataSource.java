@@ -5,6 +5,7 @@ import com.cplerings.core.application.crafting.datasource.CompleteCraftingStageD
 import com.cplerings.core.application.crafting.datasource.CreateCraftingRequestDataSource;
 import com.cplerings.core.application.crafting.datasource.DepositCraftingStageDataSource;
 import com.cplerings.core.application.crafting.datasource.ProcessCraftingStageDepositDataSource;
+import com.cplerings.core.application.crafting.datasource.ViewCraftingRequestDataSource;
 import com.cplerings.core.application.crafting.datasource.ViewCraftingRequestsDataSource;
 import com.cplerings.core.application.crafting.datasource.result.CraftingRequests;
 import com.cplerings.core.application.crafting.input.ViewCraftingRequestsInput;
@@ -55,7 +56,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SharedCraftingDataSource extends AbstractDataSource
         implements CreateCraftingRequestDataSource, AcceptCraftingRequestDataSource, DepositCraftingStageDataSource,
-        ProcessCraftingStageDepositDataSource, ViewCraftingRequestsDataSource, CompleteCraftingStageDataSource {
+        ProcessCraftingStageDepositDataSource, ViewCraftingRequestsDataSource, CompleteCraftingStageDataSource, ViewCraftingRequestDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QDiamondSpecification Q_DIAMOND_SPECIFICATION = QDiamondSpecification.diamondSpecification;
@@ -241,5 +242,13 @@ public class SharedCraftingDataSource extends AbstractDataSource
                 .page(input.getPage())
                 .pageSize(input.getPageSize())
                 .build();
+    }
+
+    @Override
+    public Optional<CraftingRequest> getCraftingRequest(Long craftingRequestId) {
+        return Optional.ofNullable(createQuery().select(Q_CRAFTING_REQUEST)
+                .from(Q_CRAFTING_REQUEST)
+                .where(Q_CRAFTING_REQUEST.id.eq(craftingRequestId))
+                .fetchOne());
     }
 }

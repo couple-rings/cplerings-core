@@ -192,7 +192,9 @@ public class SecurityConfiguration {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.DEPOSIT_CRAFTING_STAGE_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.COMPLETE_CRAFTING_STAGE_PATH))
-                        .hasAnyAuthority(RoleConstant.ROLE_STAFF, RoleConstant.ROLE_JEWELER));
+                        .hasAnyAuthority(RoleConstant.ROLE_STAFF, RoleConstant.ROLE_JEWELER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VIEW_CRAFTING_REQUEST_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_STAFF, RoleConstant.ROLE_CUSTOMER));
     }
 
     private void handleDiamondSpecificationAPI(HttpSecurity localHttp) throws Exception {
