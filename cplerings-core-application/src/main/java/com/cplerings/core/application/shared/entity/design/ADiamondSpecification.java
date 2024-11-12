@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -23,4 +24,5 @@ public class ADiamondSpecification implements Serializable {
     private ADiamondClarity clarity;
     private ADiamondShape shape;
     private BigDecimal price;
+    private Instant createdAt;
 }

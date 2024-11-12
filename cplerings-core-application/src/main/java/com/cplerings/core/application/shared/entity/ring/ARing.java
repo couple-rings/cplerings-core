@@ -26,4 +26,5 @@ public class ARing implements Serializable {
     private Instant maintenanceExpiredDate;
     private ADocument maintenanceDocument;
     private ASpouse spouse;
+    private Instant createdAt;
 }

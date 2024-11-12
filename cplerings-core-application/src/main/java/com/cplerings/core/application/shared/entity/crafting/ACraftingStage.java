@@ -1,6 +1,7 @@
 package com.cplerings.core.application.shared.entity.crafting;
 
 import com.cplerings.core.application.shared.entity.file.AImage;
+import com.cplerings.core.common.temporal.TemporalUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,4 +25,6 @@ public class ACraftingStage {
     private Instant completionDate;
     private AImage image;
     private ACraftingStageStatus status;
+    private Instant createdAt;
+
 }
