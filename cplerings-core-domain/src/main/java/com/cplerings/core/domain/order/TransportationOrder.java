@@ -4,7 +4,7 @@ import java.util.Set;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.account.Account;
-import com.cplerings.core.domain.order.status.TransportationStatus;
+import com.cplerings.core.domain.order.status.TransportationNote;
 import com.cplerings.core.domain.shared.AbstractEntity;
 
 import jakarta.persistence.Column;
@@ -65,5 +65,5 @@ public class TransportationOrder extends AbstractEntity {
     private Account transporter;
 
     @OneToMany(mappedBy = "transportationOrder", fetch = FetchType.LAZY)
-    private Set<TransportationStatus> transportationStatuses;
+    private Set<TransportationNote> transportationNotes;
 }

@@ -3,7 +3,6 @@ package com.cplerings.core.domain.order.status;
 import java.time.Instant;
 
 import com.cplerings.core.common.database.DatabaseConstant;
-import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.shared.AbstractEntity;
 
@@ -29,15 +28,15 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_transportation_status")
-public class TransportationStatus extends AbstractEntity {
+@Table(name = "tbl_transportation_note")
+public class TransportationNote extends AbstractEntity {
 
-    private static final String TRANSPORTATION_ORDER_STATUS_SEQUENCE = "transport_status_order_seq";
+    private static final String TRANSPORTATION_ORDER_NOTE_SEQUENCE = "transportation_note_seq";
 
     @Id
-    @GeneratedValue(generator = TRANSPORTATION_ORDER_STATUS_SEQUENCE, strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = TRANSPORTATION_ORDER_STATUS_SEQUENCE, allocationSize = DatabaseConstant.SEQ_ALLOCATION_SIZE)
-    @Column(name = "transportation_status_id")
+    @GeneratedValue(generator = TRANSPORTATION_ORDER_NOTE_SEQUENCE, strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = TRANSPORTATION_ORDER_NOTE_SEQUENCE, allocationSize = DatabaseConstant.SEQ_ALLOCATION_SIZE)
+    @Column(name = "transportation_note_id")
     private Long id;
 
     @Column(name = "date", nullable = false)
