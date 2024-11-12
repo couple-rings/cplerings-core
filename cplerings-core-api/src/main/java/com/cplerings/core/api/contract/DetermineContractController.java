@@ -13,7 +13,7 @@ import com.cplerings.core.api.contract.request.data.DetermineContractRequestData
 import com.cplerings.core.api.contract.response.DetermineContractResponse;
 import com.cplerings.core.api.shared.AbstractController;
 import com.cplerings.core.api.shared.mapper.APIMapper;
-import com.cplerings.core.api.shared.openapi.CraftingRequestTag;
+import com.cplerings.core.api.shared.openapi.ContractTag;
 import com.cplerings.core.api.shared.openapi.ErrorAPIResponse;
 import com.cplerings.core.application.contract.DetermineContractUseCase;
 import com.cplerings.core.application.contract.input.DetermineContractInput;
@@ -45,7 +45,7 @@ public class DetermineContractController extends AbstractController<DetermineCon
     }
 
     @PutMapping(APIConstant.SIGNING_CONTRACT_PATH)
-    @CraftingRequestTag
+    @ContractTag
     @Operation(summary = "Signing contract")
     @ApiResponse(
             description = "Contract information",

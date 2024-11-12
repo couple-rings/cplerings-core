@@ -4,10 +4,12 @@ import com.cplerings.core.api.contract.data.Contract;
 import com.cplerings.core.api.shared.AbstractDataResponse;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class DetermineContractResponse extends AbstractDataResponse<Contract> {
 
     public static Builder builder() {
