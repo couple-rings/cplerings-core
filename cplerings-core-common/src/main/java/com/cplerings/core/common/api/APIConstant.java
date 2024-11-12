@@ -103,4 +103,10 @@ public final class APIConstant {
        Metal specification
     */
     public static final String METAL_SPECIFICATION_PATH = "/metal-specifications";
+
+     /*
+        Contract
+     */
+     public static final String CONTRACT_PATH = "/contracts";
+     public static final String SIGNING_CONTRACT_PATH = CONTRACT_PATH + "{contractId}/signing";
 }
