@@ -27,8 +27,8 @@ class CreateDesignVersionUseCaseIT extends AbstractIT {
         CreateDesignVersionRequest request = CreateDesignVersionRequest.builder()
                 .customerId(1L)
                 .designId(1L)
-                .designFile("test")
-                .previewImage("test")
+                .designFileId(1L)
+                .previewImageId(11L)
                 .build();
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(APIConstant.DESIGN_VERSION_PATH)
