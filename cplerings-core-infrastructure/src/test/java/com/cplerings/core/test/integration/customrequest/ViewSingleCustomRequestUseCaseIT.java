@@ -2,6 +2,7 @@ package com.cplerings.core.test.integration.customrequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.cplerings.core.api.design.data.CustomRequest;
 import com.cplerings.core.api.design.data.CustomRequestData;
 import com.cplerings.core.api.design.request.ViewCustomRequestRequest;
 import com.cplerings.core.api.design.response.ViewCustomRequestResponse;
@@ -67,7 +68,7 @@ class ViewSingleCustomRequestUseCaseIT extends AbstractIT {
         assertThat(responseBody.getType())
                 .isEqualTo(AbstractResponse.Type.DATA);
 
-        final CustomRequestData customRequestData = responseBody.getData();
+        final CustomRequest customRequestData = responseBody.getData();
         assertThat(customRequestData).isNotNull();
     }
 }
