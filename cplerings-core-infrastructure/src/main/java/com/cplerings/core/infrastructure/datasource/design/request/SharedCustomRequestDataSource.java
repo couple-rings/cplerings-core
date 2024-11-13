@@ -57,6 +57,8 @@ public class SharedCustomRequestDataSource extends AbstractDataSource implements
     public Optional<CustomRequest> getCustomRequestById(Long customRequestId) {
         return Optional.ofNullable(createQuery().select(Q_CUSTOM_REQUEST)
                 .from(Q_CUSTOM_REQUEST)
+                .leftJoin(Q_CUSTOM_REQUEST.designCustomRequests, Q_DESIGN_CUSTOM_REQUEST).fetchJoin()
+                .leftJoin(Q_DESIGN_CUSTOM_REQUEST.design, Q_DESIGN).fetchJoin()
                 .where(Q_CUSTOM_REQUEST.id.eq(customRequestId))
                 .fetchOne());
     }

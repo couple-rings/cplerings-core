@@ -1,9 +1,10 @@
 package com.cplerings.core.application.design.output;
 
-import com.cplerings.core.application.shared.entity.design.ADesign;
+import com.cplerings.core.application.shared.entity.design.request.ACustomRequest;
 
-import java.util.Set;
+import lombok.Builder;
 
-public record ViewCustomRequestOutput(Long customRequestId, String comment, String status, Set<ADesign> designs) {
+@Builder
+public record ViewCustomRequestOutput(ACustomRequest customRequest) {
 
 }
