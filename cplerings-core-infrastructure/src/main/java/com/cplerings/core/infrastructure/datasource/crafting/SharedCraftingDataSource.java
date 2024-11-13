@@ -12,6 +12,7 @@ import com.cplerings.core.application.crafting.input.ViewCraftingRequestsInput;
 import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
+import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.branch.QBranch;
 import com.cplerings.core.domain.configuration.Configuration;
@@ -31,6 +32,7 @@ import com.cplerings.core.domain.file.QDocument;
 import com.cplerings.core.domain.metal.MetalSpecification;
 import com.cplerings.core.domain.metal.QMetalSpecification;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.shared.State;
@@ -44,6 +46,8 @@ import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
+import com.cplerings.core.infrastructure.repository.TransportationAddressRepository;
+import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -78,6 +82,8 @@ public class SharedCraftingDataSource extends AbstractDataSource
     private final CraftingStageRepository craftingStageRepository;
     private final PaymentReceiverRepository paymentReceiverRepository;
     private final ImageRepository imageRepository;
+    private final TransportationAddressRepository transportationAddressRepository;
+    private final TransportationOrderRepository transportationOrderRepository;
 
     @Override
     public Optional<Account> getAccountByCustomerId(Long customerId) {
@@ -212,6 +218,11 @@ public class SharedCraftingDataSource extends AbstractDataSource
     }
 
     @Override
+    public Optional<TransportationAddress> findTransportAddressById(Long transportAddressId) {
+        return transportationAddressRepository.findById(transportAddressId);
+    }
+
+    @Override
     public Optional<CraftingStage> findById(Long craftingStageId) {
         return findCraftingStageById(craftingStageId);
     }
@@ -226,6 +237,12 @@ public class SharedCraftingDataSource extends AbstractDataSource
     public CustomOrder save(CustomOrder customOrder) {
         updateAuditor(customOrder);
         return customOrderRepository.save(customOrder);
+    }
+
+    @Override
+    public TransportationOrder save(TransportationOrder transportationOrder) {
+        updateAuditor(transportationOrder);
+        return transportationOrderRepository.save(transportationOrder);
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.cplerings.core.api.payment.request.VNPayPaymentRequest;
 import com.cplerings.core.application.payment.input.VNPayPaymentInput;
 import com.cplerings.core.application.shared.service.payment.PaymentVerificationService;
 import com.cplerings.core.common.api.APIConstant;
+import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
@@ -26,6 +27,7 @@ import com.cplerings.core.domain.spouse.Spouse;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
+import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.TestDataLoader;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
@@ -68,11 +70,16 @@ class ProcessCraftingStageDepositUseCaseIT extends AbstractIT {
     @Autowired
     private CustomOrderRepository customOrderRepository;
 
+    @Autowired
+    private TransportationOrderRepository transportationOrderRepository;
+
     private VNPayPaymentRequest request;
 
     private CraftingStage firstCraftingStage;
 
     private CraftingStage secondCraftingStage;
+
+    private CustomOrder customOrder;
 
     private Payment payment;
 
@@ -129,17 +136,17 @@ class ProcessCraftingStageDepositUseCaseIT extends AbstractIT {
                 .firstRing(firstRing)
                 .secondRing(secondRing)
                 .build();
-        customOrder = testDataSource.save(customOrder);
+        this.customOrder = testDataSource.save(customOrder);
 
         CraftingStage firstCraftingStage = CraftingStage.builder()
-                .customOrder(customOrder)
+                .customOrder(this.customOrder)
                 .status(CraftingStageStatus.PENDING)
                 .name("Stage 1")
                 .progress(30)
                 .build();
         this.firstCraftingStage = testDataSource.save(firstCraftingStage);
         CraftingStage secondCraftingStage = CraftingStage.builder()
-                .customOrder(customOrder)
+                .customOrder(this.customOrder)
                 .status(CraftingStageStatus.PENDING)
                 .name("Stage 1")
                 .progress(100)
@@ -186,6 +193,43 @@ class ProcessCraftingStageDepositUseCaseIT extends AbstractIT {
         thenCraftingStageStatusIsPaid(secondCraftingStage.getId());
     }
 
+    @Test
+    void givenPayment_whenProcessFinalCraftingStageDepositWithTransportAddress() {
+        final PaymentReceiver paymentReceiver = PaymentReceiver.builder()
+                .payment(this.payment)
+                .receiverType(PaymentReceiverType.CRAFT_STAGE)
+                .receiverId(String.valueOf(secondCraftingStage.getId()))
+                .build();
+        testDataSource.save(paymentReceiver);
+
+        final CustomOrder localCustomOrder = customOrderRepository.findById(customOrder.getId())
+                .orElse(null);
+        assertThat(localCustomOrder).isNotNull();
+        TransportationAddress transportationAddress = TransportationAddress.builder()
+                .address("123 Hello")
+                .customer(accountRepository.findByEmail(AccountTestConstant.CUSTOMER_EMAIL).orElse(null))
+                .districtCode("01")
+                .district("District 1")
+                .wardCode("02")
+                .ward("Ward 1")
+                .receiverName("John Doe")
+                .receiverPhone("1234567890")
+                .build();
+        transportationAddress = testDataSource.save(transportationAddress);
+        localCustomOrder.setTransportationAddress(transportationAddress);
+        testDataSource.save(localCustomOrder);
+
+        final WebTestClient.ResponseSpec response = requestBuilder()
+                .path(APIConstant.VNPAY_PATH)
+                .method(RequestBuilder.Method.GET)
+                .query(request)
+                .send();
+
+        thenResponseIsOk(response);
+        thenCraftingStageStatusIsPaid(secondCraftingStage.getId());
+        thenTransportationOrderIsCreated(customOrder.getId());
+    }
+
     private void thenCustomOrderStatusIsWaiting(Long customOrderId) {
         final CustomOrder customOrder = customOrderRepository.findById(customOrderId)
                 .orElse(null);
@@ -199,5 +243,9 @@ class ProcessCraftingStageDepositUseCaseIT extends AbstractIT {
         assertThat(craftingStage).isNotNull();
         assertThat(craftingStage.getStatus()).isEqualTo(CraftingStageStatus.PAID);
         return craftingStage.getCustomOrder().getId();
+    }
+
+    private void thenTransportationOrderIsCreated(Long customOrderId) {
+        assertThat(transportationOrderRepository.existsByCustomOrderId(customOrderId)).isTrue();
     }
 }

@@ -2,6 +2,7 @@ package com.cplerings.core.domain.order;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.ring.Ring;
@@ -62,7 +63,7 @@ public class CustomOrder extends AbstractEntity {
     @JoinColumn(name = "customer_id")
     private Account customer;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "jeweler_id")
     private Account jeweler;
 
@@ -83,4 +84,8 @@ public class CustomOrder extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private CustomOrderStatus status;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transportation_address_id")
+    private TransportationAddress transportationAddress;
 }

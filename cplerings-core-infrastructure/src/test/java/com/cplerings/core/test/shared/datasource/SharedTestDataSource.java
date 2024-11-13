@@ -1,12 +1,12 @@
 package com.cplerings.core.test.shared.datasource;
 
-import static com.cplerings.core.domain.design.QCustomDesign.customDesign;
-
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountVerification;
+import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
+import com.cplerings.core.domain.crafting.QCraftingStage;
 import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
@@ -38,15 +38,20 @@ import com.cplerings.core.infrastructure.repository.PaymentRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
 import com.cplerings.core.infrastructure.repository.SpouseAccountRepository;
 import com.cplerings.core.infrastructure.repository.SpouseRepository;
+import com.cplerings.core.infrastructure.repository.TransportationAddressRepository;
 import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.boot.test.context.TestComponent;
 
+import java.util.Optional;
+
 @TestComponent
 @RequiredArgsConstructor
 public class SharedTestDataSource extends AbstractDataSource implements TestDataSource {
+
+    private static final QCraftingStage Q_CRAFTING_STAGE = QCraftingStage.craftingStage;
 
     private final PaymentRepository paymentRepository;
     private final PaymentReceiverRepository paymentReceiverRepository;
@@ -66,6 +71,7 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private final CustomDesignRepository customDesignRepository;
     private final CraftingRequestRepository craftingRequestRepository;
     private final TransportationOrderRepository transportationOrderRepository;
+    private final TransportationAddressRepository transportationAddressRepository;
 
     @Override
     public Payment save(Payment payment) {
@@ -143,6 +149,22 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     public TransportationOrder save(TransportationOrder transportationOrder) {
         updateAuditor(transportationOrder);
         return transportationOrderRepository.save(transportationOrder);
+    }
+
+    @Override
+    public TransportationAddress save(TransportationAddress transportationAddress) {
+        updateAuditor(transportationAddress);
+        return transportationAddressRepository.save(transportationAddress);
+    }
+
+    @Override
+    public Optional<CraftingStage> findCraftingStageById(Long craftingStageId) {
+        return Optional.ofNullable(createQuery().select(Q_CRAFTING_STAGE)
+                .from(Q_CRAFTING_STAGE)
+                .leftJoin(Q_CRAFTING_STAGE.customOrder).fetchJoin()
+                .leftJoin(Q_CRAFTING_STAGE.customOrder.transportationAddress).fetchJoin()
+                .where(Q_CRAFTING_STAGE.id.eq(craftingStageId))
+                .fetchOne());
     }
 
     @Override

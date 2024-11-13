@@ -8,6 +8,7 @@ import com.cplerings.core.api.crafting.request.DepositCraftingStageRequest;
 import com.cplerings.core.api.crafting.response.DepositCraftingStageResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.common.api.APIConstant;
+import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
@@ -19,6 +20,7 @@ import com.cplerings.core.domain.ring.RingStatus;
 import com.cplerings.core.domain.shared.valueobject.Money;
 import com.cplerings.core.domain.spouse.Spouse;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
+import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
@@ -45,6 +47,9 @@ public class DepositCraftingStageUseCaseIT extends AbstractIT {
 
     @Autowired
     private SpouseTestHelper spouseTestHelper;
+
+    @Autowired
+    private CraftingStageRepository craftingStageRepository;
 
     private CraftingStage firstCraftingStage;
 
@@ -117,6 +122,42 @@ public class DepositCraftingStageUseCaseIT extends AbstractIT {
     }
 
     @Test
+    void givenCustomer_whenDepositFinalCraftingStageWithTransportationAddress() {
+        final CraftingStage firstCraftingStagePaid = craftingStageRepository.findById(this.firstCraftingStage.getId())
+                .orElse(null);
+        assertThat(firstCraftingStagePaid).isNotNull();
+        firstCraftingStagePaid.setStatus(CraftingStageStatus.PAID);
+        testDataSource.save(firstCraftingStagePaid);
+
+        TransportationAddress transportationAddress = TransportationAddress.builder()
+                .address("123 Hello")
+                .customer(accountRepository.findByEmail(AccountTestConstant.CUSTOMER_EMAIL).orElse(null))
+                .districtCode("01")
+                .district("District 1")
+                .wardCode("02")
+                .ward("Ward 1")
+                .receiverName("John Doe")
+                .receiverPhone("1234567890")
+                .build();
+        transportationAddress = testDataSource.save(transportationAddress);
+
+        final String token = jwtTestHelper.generateToken(AccountTestConstant.CUSTOMER_EMAIL);
+        final WebTestClient.ResponseSpec response = requestBuilder()
+                .path(APIConstant.DEPOSIT_CRAFTING_STAGE_PATH)
+                .authorizationHeader(token)
+                .method(AbstractIT.RequestBuilder.Method.POST)
+                .body(DepositCraftingStageRequest.builder()
+                        .craftingStageId(secondCraftingStage.getId())
+                        .transportationAddressId(transportationAddress.getId())
+                        .build())
+                .send();
+
+        thenResponseIsOk(response);
+        thenPaymentLinkExists(response);
+        thenTransportationAddressIsAdded(secondCraftingStage.getId());
+    }
+
+    @Test
     void givenStaff_whenDepositSecondCraftingStageWithFirstStillPending() {
         final String token = jwtTestHelper.generateToken(AccountTestConstant.STAFF_EMAIL);
         final WebTestClient.ResponseSpec response = requestBuilder()
@@ -144,5 +185,14 @@ public class DepositCraftingStageUseCaseIT extends AbstractIT {
                 .isNotNull()
                 .isExactlyInstanceOf(CraftingStagePaymentLinkData.class);
         assertThat(responseBody.getData().paymentLink()).isNotBlank();
+    }
+
+    private void thenTransportationAddressIsAdded(Long craftingStageId) {
+        final CraftingStage craftingStage = testDataSource.findCraftingStageById(craftingStageId)
+                .orElse(null);
+        assertThat(craftingStage).isNotNull();
+        final CustomOrder customOrder = craftingStage.getCustomOrder();
+        assertThat(customOrder).isNotNull();
+        assertThat(customOrder.getTransportationAddress()).isNotNull();
     }
 }
