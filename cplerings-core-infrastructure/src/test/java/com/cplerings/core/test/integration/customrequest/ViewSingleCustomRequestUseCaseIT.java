@@ -7,6 +7,7 @@ import com.cplerings.core.api.design.data.CustomRequestData;
 import com.cplerings.core.api.design.request.ViewCustomRequestRequest;
 import com.cplerings.core.api.design.response.ViewCustomRequestResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
+import com.cplerings.core.application.shared.entity.design.request.ACustomRequest;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.design.request.CustomRequestStatus;
@@ -68,7 +69,7 @@ class ViewSingleCustomRequestUseCaseIT extends AbstractIT {
         assertThat(responseBody.getType())
                 .isEqualTo(AbstractResponse.Type.DATA);
 
-        final CustomRequest customRequestData = responseBody.getData();
+        final ACustomRequest customRequestData = responseBody.getData();
         assertThat(customRequestData).isNotNull();
     }
 }
