@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cplerings.core.api.shared.AbstractController;
 import com.cplerings.core.api.shared.mapper.APIMapper;
 import com.cplerings.core.api.shared.openapi.ErrorAPIResponse;
+import com.cplerings.core.api.shared.openapi.OrderTag;
 import com.cplerings.core.api.shared.openapi.PaymentTag;
 import com.cplerings.core.api.transport.data.TransportationOrder;
 import com.cplerings.core.api.transport.mapper.APIAssignTransportationOrderMapper;
@@ -45,7 +46,7 @@ public class AssignTransportOrderController extends AbstractController<AssignTra
     }
 
     @PostMapping(APIConstant.ASSIGN_TRANSPORTATION_ORDER_PATH)
-    @PaymentTag
+    @OrderTag
     @Operation(summary = "Assign order to transporter")
     @ApiResponse(
             description = "Transportation Order information",
