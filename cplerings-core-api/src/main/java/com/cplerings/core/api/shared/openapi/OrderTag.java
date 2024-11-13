@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Tag(
-        name = "Order Specification",
+        name = "Order",
         description = "APIs for Order"
 )
 public @interface OrderTag {
