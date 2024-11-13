@@ -109,4 +109,10 @@ public final class APIConstant {
      */
      public static final String CONTRACT_PATH = "/contracts";
      public static final String SIGNING_CONTRACT_PATH = CONTRACT_PATH + "{contractId}/signing";
+
+    /*
+       transport paths
+    */
+    public static final String TRANSPORTATION_ORDER_PATH = "/transportation-orders";
+    public static final String ASSIGN_TRANSPORTATION_ORDER_PATH = TRANSPORTATION_ORDER_PATH + "{transportationOrderId}/signing";
 }

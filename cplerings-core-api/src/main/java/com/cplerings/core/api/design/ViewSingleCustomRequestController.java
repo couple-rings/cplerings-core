@@ -1,5 +1,6 @@
 package com.cplerings.core.api.design;
 
+import com.cplerings.core.api.design.data.CustomRequest;
 import com.cplerings.core.api.design.data.CustomRequestData;
 import com.cplerings.core.api.design.mapper.APIViewCustomRequestMapper;
 import com.cplerings.core.api.design.request.ViewCustomRequestRequest;
@@ -11,6 +12,7 @@ import com.cplerings.core.api.shared.openapi.ErrorAPIResponse;
 import com.cplerings.core.application.design.ViewCustomRequestUseCase;
 import com.cplerings.core.application.design.input.ViewCustomRequestInput;
 import com.cplerings.core.application.design.output.ViewCustomRequestOutput;
+import com.cplerings.core.application.shared.entity.design.request.ACustomRequest;
 import com.cplerings.core.application.shared.usecase.UseCase;
 import com.cplerings.core.common.api.APIConstant;
 
@@ -29,7 +31,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RestController
 @RequiredArgsConstructor
-public class ViewSingleCustomRequestController extends AbstractController<ViewCustomRequestInput, ViewCustomRequestOutput, CustomRequestData, ViewCustomRequestRequest, ViewCustomRequestResponse> {
+public class ViewSingleCustomRequestController extends AbstractController<ViewCustomRequestInput, ViewCustomRequestOutput, ACustomRequest, ViewCustomRequestRequest, ViewCustomRequestResponse> {
 
     private final APIViewCustomRequestMapper apiViewCustomRequestMapper;
     private final ViewCustomRequestUseCase viewCustomRequestUseCase;
@@ -61,7 +63,7 @@ public class ViewSingleCustomRequestController extends AbstractController<ViewCu
     }
 
     @Override
-    protected APIMapper<ViewCustomRequestInput, ViewCustomRequestOutput, CustomRequestData, ViewCustomRequestRequest, ViewCustomRequestResponse> getMapper() {
+    protected APIMapper<ViewCustomRequestInput, ViewCustomRequestOutput, ACustomRequest, ViewCustomRequestRequest, ViewCustomRequestResponse> getMapper() {
         return apiViewCustomRequestMapper;
     }
 }
