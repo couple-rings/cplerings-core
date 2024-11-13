@@ -10,8 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class AssignTransportOrderResponse extends AbstractDataResponse<TransportationOrder
-        > {
+public class AssignTransportOrderResponse extends AbstractDataResponse<TransportationOrder> {
 
     public static Builder builder() {
         return new Builder();
