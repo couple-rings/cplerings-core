@@ -12,6 +12,7 @@ import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.ring.Ring;
@@ -53,4 +54,6 @@ public interface TestDataSource {
     CustomDesign save(CustomDesign customDesign);
 
     CraftingRequest save(CraftingRequest craftingRequest);
+
+    TransportationOrder save(TransportationOrder transportationOrder);
 }

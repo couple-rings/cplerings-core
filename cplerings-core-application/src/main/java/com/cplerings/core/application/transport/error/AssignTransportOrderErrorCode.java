@@ -17,6 +17,7 @@ public enum AssignTransportOrderErrorCode implements ErrorCode {
     INVALID_TRANSPORTATION_ORDER_ID("006", "assignTransportOrder.error.invalidTransportationOrderId", ErrorCode.Type.BUSINESS),
     INVALID_TRANSPORTATION_ORDER_STATUS_FOR_ASSIGNING("007", "assignTransportOrder.error.wrongTransportOrderStatus", ErrorCode.Type.BUSINESS),
     TRANSPORTATION_ORDER_HAS_BEEN_ASSIGNED("008", "assignTransportOrder.error.transportOrderHasBeenAssigned", ErrorCode.Type.BUSINESS),
+    NOT_A_TRANSPORTER("009", "assignTransportOrder.error.notATransporter", ErrorCode.Type.BUSINESS),
     ;
 
     private final String code;

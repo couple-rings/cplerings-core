@@ -9,7 +9,9 @@ import com.cplerings.core.application.transport.error.AssignTransportOrderErrorC
 import com.cplerings.core.application.transport.input.AssignTransportOrderInput;
 import com.cplerings.core.application.transport.mapper.AAssignTransportOrderMapper;
 import com.cplerings.core.application.transport.output.AssignTransportOrderOutput;
+import com.cplerings.core.common.security.RoleConstant;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
 
@@ -36,12 +38,14 @@ public class AssignTransportOrderUseCaseImpl extends AbstractUseCase<AssignTrans
         Account transporter = assignTransportOrderDataSource.getTransporterById(input.transporterId())
                 .orElse(null);
         validator.validateAndStopExecution(transporter != null, AssignTransportOrderErrorCode.INVALID_TRANSPORTER_ID);
+        validator.validateAndStopExecution(transporter.getRole() == Role.TRANSPORTER, AssignTransportOrderErrorCode.NOT_A_TRANSPORTER);
         TransportationOrder transportationOrder = assignTransportOrderDataSource.getTransportationOrderById(input.transportOrderId())
                 .orElse(null);
         validator.validateAndStopExecution(transportationOrder != null, AssignTransportOrderErrorCode.INVALID_TRANSPORTATION_ORDER_ID);
         validator.validateAndStopExecution(transportationOrder.getStatus() == TransportStatus.PENDING, AssignTransportOrderErrorCode.INVALID_TRANSPORTATION_ORDER_STATUS_FOR_ASSIGNING);
         validator.validateAndStopExecution(transportationOrder.getTransporter() == null, AssignTransportOrderErrorCode.TRANSPORTATION_ORDER_HAS_BEEN_ASSIGNED);
         transportationOrder.setStatus(TransportStatus.WAITING);
+        transportationOrder.setTransporter(transporter);
         TransportationOrder transportationOrderAssigned = assignTransportOrderDataSource.save(transportationOrder);
         return aAssignTransportOrderMapper.toOutput(transportationOrderAssigned);
     }
