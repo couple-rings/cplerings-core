@@ -1,5 +1,7 @@
 package com.cplerings.core.application.design.implementation;
 
+import static com.cplerings.core.application.design.error.CreateCustomDesignErrorCode.INVALID_DOCUMENT;
+
 import com.cplerings.core.application.design.CreateDesignVersionUseCase;
 import com.cplerings.core.application.design.datasource.CreateDesignVersionDataSource;
 import com.cplerings.core.application.design.error.CreateDesignVersionErrorCode;
@@ -28,8 +30,8 @@ public class CreateDesignVersionUseCaseImpl extends AbstractUseCase<CreateDesign
     @Override
     protected void validateInput(UseCaseValidator validator, CreateDesignVersionInput input) {
         super.validateInput(validator, input);
-        validator.validate(input.designFile() != null, CreateDesignVersionErrorCode.DESIGN_FILE_REQUIRED);
-        validator.validate(input.previewImage() != null, CreateDesignVersionErrorCode.IMAGE_REQUIRED);
+        validator.validate(input.designFileId() != null, CreateDesignVersionErrorCode.DESIGN_FILE_REQUIRED);
+        validator.validate(input.previewImageId() != null, CreateDesignVersionErrorCode.IMAGE_REQUIRED);
         validator.validate(input.designId() > 0, CreateDesignVersionErrorCode.DESIGN_ID_WRONG_POSITIVE_NUMBER);
         validator.validate(input.customerId() > 0, CreateDesignVersionErrorCode.DESIGN_ID_WRONG_POSITIVE_NUMBER);
     }
@@ -42,18 +44,20 @@ public class CreateDesignVersionUseCaseImpl extends AbstractUseCase<CreateDesign
         Account customer = createDesignVersionDataSource.getCustomerById(input.customerId())
                 .orElse(null);
         validator.validateAndStopExecution(customer != null, CreateDesignVersionErrorCode.INVALID_CUSTOMER_ID);
-        Document document = Document.builder().url(input.designFile()).build();
-        Image image = Image.builder().url(input.previewImage()).build();
 
-        var documentCreated = createDesignVersionDataSource.saveDocument(document);
-        var imageCreated = createDesignVersionDataSource.saveImage(image);
+        Document document = createDesignVersionDataSource.getDocumentById(input.designFileId())
+                .orElse(null);
+        validator.validateAndStopExecution(document != null, CreateDesignVersionErrorCode.INVALID_DOCUMENT);
+        Image image = createDesignVersionDataSource.getImageById(input.previewImageId())
+                .orElse(null);
+        validator.validateAndStopExecution(image != null, CreateDesignVersionErrorCode.INVALID_IMAGE);
         int versionNumber = 1;
         if (design.getDesignVersions() != null && design.getDesignVersions().size() > 0)
             versionNumber = design.getDesignVersions().size() + 1;
         DesignVersion designVersion = DesignVersion.builder()
-                .designFile(documentCreated)
+                .designFile(document)
                 .customer(customer)
-                .image(imageCreated)
+                .image(image)
                 .design(design)
                 .versionNumber(versionNumber)
                 .isAccepted(false)

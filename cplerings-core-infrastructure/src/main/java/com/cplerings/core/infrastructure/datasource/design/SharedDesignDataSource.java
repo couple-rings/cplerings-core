@@ -29,6 +29,8 @@ import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.design.session.DesignSessionStatus;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.file.Image;
+import com.cplerings.core.domain.file.QDocument;
+import com.cplerings.core.domain.file.QImage;
 import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
@@ -55,6 +57,8 @@ public class SharedDesignDataSource extends AbstractDataSource
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QCustomRequest Q_CUSTOM_REQUEST = QCustomRequest.customRequest;
     private static final QDesignCustomRequest Q_DESIGN_CUSTOM_REQUEST = QDesignCustomRequest.designCustomRequest;
+    private static final QDocument Q_DOCUMENT = QDocument.document;
+    private static final QImage  Q_IMAGE = QImage.image;
 
     private final DesignSessionRepository designSessionRepository;
     private final AccountRepository accountRepository;
@@ -124,7 +128,7 @@ public class SharedDesignDataSource extends AbstractDataSource
     }
 
     @Override
-    public Optional<Design> getDesignByID(long designID) {
+    public Optional<Design> getDesignByID(Long designID) {
         return Optional.ofNullable(createQuery().select(Q_DESIGN)
                 .from(Q_DESIGN)
                 .leftJoin(Q_DESIGN.designVersions, Q_DESIGN_VERSION).fetchJoin()
@@ -133,11 +137,27 @@ public class SharedDesignDataSource extends AbstractDataSource
     }
 
     @Override
-    public Optional<Account> getCustomerById(long customerId) {
+    public Optional<Account> getCustomerById(Long customerId) {
         return Optional.ofNullable(createQuery().select(Q_ACCOUNT)
                 .from(Q_ACCOUNT)
                 .where(Q_ACCOUNT.id.eq(customerId)
                         .and(Q_ACCOUNT.role.eq(Role.CUSTOMER)))
+                .fetchOne());
+    }
+
+    @Override
+    public Optional<Document> getDocumentById(Long documentId) {
+        return Optional.ofNullable(createQuery().select(Q_DOCUMENT)
+                .from(Q_DOCUMENT)
+                .where(Q_DOCUMENT.id.eq(documentId))
+                .fetchOne());
+    }
+
+    @Override
+    public Optional<Image> getImageById(Long imageId) {
+        return Optional.ofNullable(createQuery().select(Q_IMAGE)
+                .from(Q_IMAGE)
+                .where(Q_IMAGE.id.eq(imageId))
                 .fetchOne());
     }
 
