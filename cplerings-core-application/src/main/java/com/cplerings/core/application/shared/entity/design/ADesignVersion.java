@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -27,4 +28,5 @@ public class ADesignVersion implements Serializable {
     private Integer versionNumber;
     private Boolean isAccepted;
     private Boolean isOld;
+    private Instant createdAt;
 }

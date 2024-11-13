@@ -35,7 +35,6 @@ public abstract class AbstractPaginatedData<T> implements Pageable {
 
         public final S items(Collection<T> items) {
             Objects.requireNonNull(items, "Data must not be null");
-            this.count = items.size();
             this.items = items;
             return self();
         }

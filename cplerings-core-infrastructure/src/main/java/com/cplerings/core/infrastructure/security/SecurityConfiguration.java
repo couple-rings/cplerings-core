@@ -175,7 +175,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.PUT, resolvePath(APIConstant.DETERMINE_CUSTOM_REQUEST_PATH))
                         .permitAll())
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.CUSTOM_SINGLE_REQUEST_PATH))
-                        .hasAnyAuthority(RoleConstant.ROLE_STAFF))
+                        .hasAnyAuthority(RoleConstant.ROLE_STAFF, RoleConstant.ROLE_CUSTOMER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.CUSTOM_REQUEST_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF));
     }
@@ -205,7 +205,7 @@ public class SecurityConfiguration {
 
     private void handleMetalSpecificationAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.METAL_SPECIFICATION_PATH))
-                .authenticated());
+                .permitAll());
     }
 
     private void handleContractAPI(HttpSecurity localHttp) throws Exception {

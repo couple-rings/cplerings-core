@@ -23,4 +23,5 @@ public class AContract implements Serializable {
     private AImage signature;
     private Instant signedDate;
     private ADocument document;
+    private Instant createdAt;
 }

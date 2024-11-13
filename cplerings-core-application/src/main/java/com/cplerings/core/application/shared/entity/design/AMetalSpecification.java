@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -20,4 +21,5 @@ public class AMetalSpecification implements Serializable {
     private String name;
     private BigDecimal pricePerUnit;
     private AMetalColor color;
+    private Instant createdAt;
 }

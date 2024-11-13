@@ -1,16 +1,18 @@
 package com.cplerings.core.application.shared.entity.design;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.Collection;
+
 import com.cplerings.core.application.shared.entity.file.ADocument;
+import com.cplerings.core.domain.shared.State;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Collection;
 
 @Getter
 @Setter
@@ -30,4 +32,6 @@ public class ADesign implements Serializable {
     private Collection<ADesignMetalSpecification> designMetalSpecifications;
     private Collection<ADesignDiamondSpecification> designDiamondSpecifications;
     private ADesignCollection designCollection;
+    private Instant createdAt;
+    private State state;
 }

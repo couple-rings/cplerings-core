@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -23,4 +24,5 @@ public class AAccount implements Serializable {
     private String phone;
     private String avatar;
     private Role role;
+    private Instant createdAt;
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.UUID;
 
 @Getter
@@ -19,4 +20,5 @@ public class ASpouse implements Serializable {
     private Long id;
     private String citizenId;
     private UUID coupleId;
+    private Instant createdAt;
 }
