@@ -16,6 +16,8 @@ public enum DepositCraftingStageErrorCode implements ErrorCode {
     CRAFTING_STAGE_NOT_IN_PENDING("005", "depositCraftingStage.error.craftingStageNotInPending", Type.BUSINESS),
     CUSTOM_ORDER_STATUS_NOT_VALID("006", "depositCraftingStage.error.customOrderStatusNotValid", Type.BUSINESS),
     PREVIOUS_STAGE_NOT_PAID("007", "depositCraftingStage.error.previousStageNotPaid", Type.BUSINESS),
+    INVALID_TRANSPORT_ADDRESS_ID("009", "depositCraftingStage.error.invalidTransportAddressId", Type.BUSINESS),
+    TRANSPORT_ADDRESS_NOT_FOUND("010", "depositCraftingStage.error.transportAddressNotFound", Type.BUSINESS),
     ;
 
     private final String code;

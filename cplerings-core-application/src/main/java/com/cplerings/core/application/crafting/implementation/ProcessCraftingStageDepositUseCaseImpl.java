@@ -9,10 +9,13 @@ import com.cplerings.core.application.shared.output.NoOutput;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
+import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.crafting.CraftingStageStatus;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderStatus;
+import com.cplerings.core.domain.order.TransportStatus;
+import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.payment.PaymentReceiverType;
 
 import lombok.RequiredArgsConstructor;
@@ -61,6 +64,25 @@ public class ProcessCraftingStageDepositUseCaseImpl extends AbstractUseCase<Paym
             final CustomOrder customOrder = craftingStage.getCustomOrder();
             customOrder.setStatus(CustomOrderStatus.WAITING);
             dataSource.save(customOrder);
+            return NoOutput.INSTANCE;
+        }
+        final CraftingStage finalCraftingStage = craftingStages.stream()
+                .max(Comparator.comparing(CraftingStage::getProgress))
+                .orElse(null);
+        validator.validateAndStopExecution(finalCraftingStage != null, ProcessCraftingStageDepositErrorCode.NO_CRAFTING_STAGES_IN_CUSTOM_ORDER);
+        if (Objects.equals(finalCraftingStage.getId(), craftingStageId)) {
+            final CustomOrder customOrder = craftingStage.getCustomOrder();
+            final TransportationAddress transportationAddress = customOrder.getTransportationAddress();
+            if (transportationAddress != null) {
+                final TransportationOrder transportationOrder = TransportationOrder.builder()
+                        .customOrder(customOrder)
+                        .deliveryAddress(transportationAddress.getAddressAsString())
+                        .receiverName(transportationAddress.getReceiverName())
+                        .status(TransportStatus.PENDING)
+                        .receiverPhone(transportationAddress.getReceiverPhone())
+                        .build();
+                dataSource.save(transportationOrder);
+            }
         }
         return NoOutput.INSTANCE;
     }

@@ -30,7 +30,7 @@ public final class UseCaseValidator {
         clearAndThrowErrorCodes();
     }
 
-    public void clearAndThrowErrorCodes() {
+    public void clearAndThrowErrorCodes() throws ErrorCodeException {
         if (CollectionUtils.isNotEmpty(storedErrorCodes)) {
             final ErrorCodes errors = ErrorCodes.create(storedErrorCodes);
             storedErrorCodes.clear();
