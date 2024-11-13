@@ -80,6 +80,8 @@ jobs:
             sudo docker stop cplerings-core-dev || true
             sudo docker rm cplerings-core-dev || true
 
+            sudo docker system prune -f
+
             sudo docker run -d --name cplerings-core-dev -p 8080:8080 --env-file .env ${{ secrets.DOCKER_HUB_NAMESPACE }}/${{ secrets.DEV_DOCKER_HUB_REPOSITORY }}:latest
 
             rm .env
