@@ -2,6 +2,7 @@ package com.cplerings.core.application.design.mapper;
 
 import com.cplerings.core.application.design.output.ViewCustomRequestOutput;
 import com.cplerings.core.application.shared.entity.design.ADesign;
+import com.cplerings.core.application.shared.entity.design.request.ACustomRequest;
 import com.cplerings.core.application.shared.mapper.DesignSizeMapper;
 import com.cplerings.core.application.shared.mapper.MoneyMapper;
 import com.cplerings.core.application.shared.mapper.WeightMapper;
@@ -24,14 +25,17 @@ import java.util.stream.Collectors;
         })
 public interface AViewCustomRequestMapper {
 
-    @Mapping(target = "designs", source = "designCustomRequests")
     ViewCustomRequestOutput toOutput(CustomRequest customRequest);
+
+    @Mapping(target = "designs", expression = "java(mapDesigns(customRequest.getDesignCustomRequests()))")
+    ACustomRequest toACustomRequest(CustomRequest customRequest);
 
     default Set<ADesign> mapDesigns(Set<DesignCustomRequest> designCustomRequests) {
         return designCustomRequests.stream()
-                .map(designCustomRequest -> mapToADesign(designCustomRequest.getDesign()))
+                .map(DesignCustomRequest::getDesign)
+                .map(this::toADesign)
                 .collect(Collectors.toSet());
     }
 
-    ADesign mapToADesign(Design design);
+    ADesign toADesign(Design design);
 }
