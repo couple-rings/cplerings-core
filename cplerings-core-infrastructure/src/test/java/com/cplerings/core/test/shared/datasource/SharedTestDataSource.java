@@ -14,6 +14,7 @@ import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.ring.Ring;
@@ -37,6 +38,7 @@ import com.cplerings.core.infrastructure.repository.PaymentRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
 import com.cplerings.core.infrastructure.repository.SpouseAccountRepository;
 import com.cplerings.core.infrastructure.repository.SpouseRepository;
+import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -63,6 +65,7 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private final AccountVerificationRepository accountVerificationRepository;
     private final CustomDesignRepository customDesignRepository;
     private final CraftingRequestRepository craftingRequestRepository;
+    private final TransportationOrderRepository transportationOrderRepository;
 
     @Override
     public Payment save(Payment payment) {
@@ -134,6 +137,12 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     public CraftingRequest save(CraftingRequest craftingRequest) {
         updateAuditor(craftingRequest);
         return craftingRequestRepository.save(craftingRequest);
+    }
+
+    @Override
+    public TransportationOrder save(TransportationOrder transportationOrder) {
+        updateAuditor(transportationOrder);
+        return transportationOrderRepository.save(transportationOrder);
     }
 
     @Override
