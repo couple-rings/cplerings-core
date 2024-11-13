@@ -3,6 +3,7 @@ package com.cplerings.core.domain.account;
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.blog.Blog;
+import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.order.TransportationOrder;
@@ -10,6 +11,8 @@ import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.Auditor;
 import com.cplerings.core.domain.spouse.SpouseAccount;
 
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -97,6 +100,10 @@ public class Account extends AbstractEntity implements Auditor {
 
     @OneToMany(mappedBy = "transporter", fetch = FetchType.LAZY)
     private Set<TransportationOrder> transportationOrders;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
 
     @Override
     public String getAuditorName() {

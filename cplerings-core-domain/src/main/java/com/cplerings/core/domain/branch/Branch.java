@@ -1,6 +1,7 @@
 package com.cplerings.core.domain.branch;
 
 import com.cplerings.core.common.database.DatabaseConstant;
+import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.shared.AbstractEntity;
@@ -60,6 +61,9 @@ public class Branch extends AbstractEntity {
 
     @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY)
     private Set<BranchManager> managers;
+
+    @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY)
+    private Set<Account> transporters;
 
     @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY)
     private Set<Ring> rings;
