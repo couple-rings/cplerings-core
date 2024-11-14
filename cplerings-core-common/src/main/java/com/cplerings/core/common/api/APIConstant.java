@@ -117,4 +117,5 @@ public final class APIConstant {
     */
     public static final String TRANSPORTATION_ORDER_PATH = "/transportation-orders";
     public static final String ASSIGN_TRANSPORTATION_ORDER_PATH = TRANSPORTATION_ORDER_PATH + "/{transportationOrderId}/assigning";
+    public static final String UPDATE_TRANSPORTATION_ORDER_TO_ONGOING_PATH = TRANSPORTATION_ORDER_PATH + "/ongoing";
 }
