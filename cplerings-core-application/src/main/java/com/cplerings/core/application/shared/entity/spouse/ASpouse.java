@@ -18,7 +18,6 @@ import java.util.UUID;
 public class ASpouse implements Serializable {
 
     private Long id;
-    private String citizenId;
     private UUID coupleId;
     private Instant createdAt;
 }

@@ -133,8 +133,10 @@ public class SecurityConfiguration {
     }
 
     private void handleSpouseAPI(HttpSecurity localHttp) throws Exception {
-        localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.SPOUSES_PATH))
-                .authenticated());
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.SPOUSES_PATH))
+                        .authenticated())
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.SPOUSES_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_STAFF, RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_MANAGER));
     }
 
     private void handlePaymentAPI(HttpSecurity localHttp) throws Exception {
