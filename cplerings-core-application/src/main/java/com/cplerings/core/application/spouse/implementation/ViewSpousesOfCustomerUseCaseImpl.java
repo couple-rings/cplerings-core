@@ -38,7 +38,10 @@ public class ViewSpousesOfCustomerUseCaseImpl extends AbstractUseCase<ViewSpouse
                 .orElse(null);
         validator.validateAndStopExecution(customer != null, ViewSpousesOfCustomerErrorCode.INVALID_CUSTOMER_ID);
         validator.validateAndStopExecution(customer.getRole() == Role.CUSTOMER, ViewSpousesOfCustomerErrorCode.NOT_A_CUSTOMER);
-        List<Spouse> spouses = viewSpousesOfCustomerDataSource.getSpousesByCustomerId(input.customerId());
+        Spouse spouse = viewSpousesOfCustomerDataSource.getSpousesByCustomerId(input.customerId())
+                .orElse(null);
+        validator.validateAndStopExecution(spouse != null, ViewSpousesOfCustomerErrorCode.CUSTOMER_NOT_HAVE_ANY_SPOUSE);
+        List<Spouse> spouses = viewSpousesOfCustomerDataSource.getSpouseByCoupleId(spouse.getCoupleId());
         SpouseList spouseList = SpouseList.builder().spouses(spouses).build();
         return aViewSpousesOfCustomerMapper.toOutput(spouseList);
     }

@@ -1,5 +1,10 @@
 package com.cplerings.core.infrastructure.datasource.spouse;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import com.cplerings.core.application.spouse.datasource.CreateSpouseDataSource;
 import com.cplerings.core.application.spouse.datasource.ViewSpousesOfCustomerDataSource;
 import com.cplerings.core.domain.account.Account;
@@ -13,10 +18,6 @@ import com.cplerings.core.infrastructure.repository.SpouseAccountRepository;
 import com.cplerings.core.infrastructure.repository.SpouseRepository;
 
 import lombok.RequiredArgsConstructor;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 
 @DataSource
 @RequiredArgsConstructor
@@ -57,12 +58,13 @@ public class SharedSpouseDataSource extends AbstractDataSource
     }
 
     @Override
-    public List<Spouse> getSpousesByCustomerId(Long customerId) {
-        return createQuery()
+    public Optional<Spouse> getSpousesByCustomerId(Long customerId) {
+        return Optional.ofNullable(createQuery()
                 .select(Q_SPOUSE)
+                .distinct()
                 .from(Q_SPOUSE)
                 .where(Q_SPOUSE.spouseAccount.customer.id.eq(customerId))
-                .fetch();
+                .fetchOne());
     }
 
     @Override
@@ -72,5 +74,14 @@ public class SharedSpouseDataSource extends AbstractDataSource
                 .from(Q_ACCOUNT)
                 .where(Q_ACCOUNT.id.eq(customerId))
                 .fetchOne());
+    }
+
+    @Override
+    public List<Spouse> getSpouseByCoupleId(UUID coupleId) {
+        return createQuery()
+                .select(Q_SPOUSE)
+                .from(Q_SPOUSE)
+                .where(Q_SPOUSE.coupleId.eq(coupleId))
+                .fetch();
     }
 }

@@ -13,6 +13,7 @@ public enum ViewSpousesOfCustomerErrorCode implements ErrorCode {
     CUSTOMER_ID_WRONG_POSITIVE_NUMBER("003", "viewSpouseOfCustomer.error.customerIdWrongPositiveNumber", ErrorCode.Type.VALIDATION),
     INVALID_CUSTOMER_ID("004", "viewSpouseOfCustomer.error.invalidAccountId", ErrorCode.Type.BUSINESS),
     NOT_A_CUSTOMER("005", "viewSpouseOfCustomer.error.notACustomer", ErrorCode.Type.BUSINESS),
+    CUSTOMER_NOT_HAVE_ANY_SPOUSE("006", "viewSpouseOfCustomer.error.customerDoesNotHaveAnySpouse", ErrorCode.Type.BUSINESS),
     ;
 
     private final String code;
