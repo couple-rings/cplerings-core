@@ -37,6 +37,9 @@ public class UpdateTransportationOrdersToOngoingUseCaseImpl extends AbstractUseC
             validator.validateAndStopExecution(transportationOrder != null, UpdateTransportationOrdersToOngoingErrorCode.ONE_OF_THE_IDS_IS_INVALID);
             validator.validateAndStopExecution(transportationOrder.getStatus() == TransportStatus.WAITING, UpdateTransportationOrdersToOngoingErrorCode.ONE_OF_THE_TRANSPORTATIONS_IS_NOT_WAITING);
         }
+        transportationOrders.forEach(transportationOrder -> {
+            transportationOrder.setStatus(TransportStatus.ON_GOING);
+        });
         List<TransportationOrder> transportationOrdersUpdated = updateTransportationOrdersToOngoingDataSource.updateToOngoing(transportationOrders);
         TransportationOrderList transportationOrdersList = TransportationOrderList.builder().transportationOrders(transportationOrdersUpdated).build();
         return aUpdateTransportationOrdersToOngoingMapper.toOutput(transportationOrdersList);

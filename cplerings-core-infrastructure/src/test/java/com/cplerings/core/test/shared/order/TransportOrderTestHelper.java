@@ -30,4 +30,15 @@ public class TransportOrderTestHelper {
                 .build();
         return testDataSource.save(transportationOrder);
     }
+
+    public TransportationOrder createTransportOrderWithWaitingStatus() {
+        TransportationOrder transportationOrder = TransportationOrder.builder()
+                .customOrder(customOrderTestHelper.createCustomOrder())
+                .deliveryAddress("Test")
+                .receiverName("Test")
+                .receiverPhone("Test")
+                .status(TransportStatus.WAITING)
+                .build();
+        return testDataSource.save(transportationOrder);
+    }
 }
