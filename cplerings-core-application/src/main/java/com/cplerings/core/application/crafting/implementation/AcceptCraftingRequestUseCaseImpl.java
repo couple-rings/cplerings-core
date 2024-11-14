@@ -86,8 +86,6 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                     .status(RingStatus.NOT_AVAIL)
                     .spouse(firstCraftingRequest.getCustomDesign().getSpouse())
                     .purchaseDate(Instant.now())
-                    .maintenanceDocument(acceptCraftingRequestDataSource.getMaintenanceDocument())
-                    .maintenanceExpiredDate(Instant.now().plus(730, ChronoUnit.DAYS))
                     .build();
             rings.add(firstRing);
             Ring secondRing = Ring.builder()
@@ -95,8 +93,6 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                     .status(RingStatus.NOT_AVAIL)
                     .spouse(secondCraftingRequest.getCustomDesign().getSpouse())
                     .purchaseDate(Instant.now())
-                    .maintenanceDocument(acceptCraftingRequestDataSource.getMaintenanceDocument())
-                    .maintenanceExpiredDate(Instant.now().plus(730, ChronoUnit.DAYS))
                     .build();
             rings.add(secondRing);
             List<Ring> ringsCreated = acceptCraftingRequestDataSource.saveRings(rings);
