@@ -1,8 +1,10 @@
 package com.cplerings.core.infrastructure.datasource.transport;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.cplerings.core.application.transport.datasource.AssignTransportOrderDataSource;
+import com.cplerings.core.application.transport.datasource.UpdateTransportationOrdersToOngoingDataSource;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.order.QTransportationOrder;
@@ -16,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @DataSource
-public class SharedTransportOrderDataSource extends AbstractDataSource implements AssignTransportOrderDataSource {
+public class SharedTransportOrderDataSource extends AbstractDataSource implements AssignTransportOrderDataSource, UpdateTransportationOrdersToOngoingDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QTransportationOrder Q_TRANSPORTATION_ORDER = QTransportationOrder.transportationOrder;
@@ -46,5 +48,19 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
     public TransportationOrder save(TransportationOrder transportationOrder) {
         updateAuditor(transportationOrder);
         return transportationOrderRepository.save(transportationOrder);
+    }
+
+    @Override
+    public List<TransportationOrder> getTransportationOrders(List<Long> ids) {
+        return createQuery().select(Q_TRANSPORTATION_ORDER)
+                .from(Q_TRANSPORTATION_ORDER)
+                .where(Q_TRANSPORTATION_ORDER.id.in(ids))
+                .fetch();
+    }
+
+    @Override
+    public List<TransportationOrder> updateToOngoing(List<TransportationOrder> transportationOrders) {
+        transportationOrders.forEach(this::updateAuditor);
+        return transportationOrderRepository.saveAll(transportationOrders);
     }
 }

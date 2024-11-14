@@ -213,12 +213,14 @@ public class SecurityConfiguration {
 
     private void handleContractAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.PUT, resolvePath(APIConstant.SIGNING_CONTRACT_PATH))
-                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER));
+                .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER));
     }
 
     private void handleOrderAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.ASSIGN_TRANSPORTATION_ORDER_PATH))
-                .hasAnyAuthority(RoleConstant.ROLE_STAFF));
+                        .hasAnyAuthority(RoleConstant.ROLE_STAFF))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.PUT, resolvePath(APIConstant.UPDATE_TRANSPORTATION_ORDER_TO_ONGOING_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_TRANSPORTER));
     }
 
     private String resolvePath(String path) {
