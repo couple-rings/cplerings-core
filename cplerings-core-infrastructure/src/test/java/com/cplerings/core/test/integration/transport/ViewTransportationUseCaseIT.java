@@ -44,7 +44,7 @@ public class ViewTransportationUseCaseIT extends AbstractIT {
                 .transporterId(51L)
                 .build();
         final WebTestClient.ResponseSpec response = requestBuilder()
-                .path(APIConstant.VIEW_TRANSPORTATION_ORDERS)
+                .path(APIConstant.TRANSPORTATION_ORDER_PATH)
                 .method(AbstractIT.RequestBuilder.Method.GET)
                 .authorizationHeader(token)
                 .query(request)

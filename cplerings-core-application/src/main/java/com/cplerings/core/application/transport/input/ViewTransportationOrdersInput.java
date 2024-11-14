@@ -25,7 +25,7 @@ public class ViewTransportationOrdersInput extends AbstractPaginatedInput {
 
         private Long transporterId;
 
-        public Builder branchId(Long transporterId) {
+        public Builder transporterId(Long transporterId) {
             this.transporterId = transporterId;
             return self();
         }

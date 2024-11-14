@@ -41,7 +41,7 @@ public class ViewTransportationOrdersController extends AbstractController<ViewT
         return apiViewTransportationOrdersMapper;
     }
 
-    @GetMapping(APIConstant.VIEW_TRANSPORTATION_ORDERS)
+    @GetMapping(APIConstant.TRANSPORTATION_ORDER_PATH)
     @OrderTag
     @Operation(summary = "view transportation orders")
     @ApiResponse(
