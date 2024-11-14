@@ -31,6 +31,8 @@ public final class APIConstant {
     public static final String RESET_PASSWORD_PATH = CUSTOMER_PASSWORD_PATH + "/reset";
     public static final String ACCOUNT_PATH = ACCOUNTS_PATH + "/{id}";
     public static final String CURRENT_PROFILE_PATH = ACCOUNTS_PATH + "/profile/current";
+    public static final String TRANSPORTERS_PATH = ACCOUNTS_PATH + "/transporters";
+
 
     /*
         Authentication's paths
