@@ -3,7 +3,12 @@ package com.cplerings.core.test.shared.datasource;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountVerification;
 import com.cplerings.core.domain.address.TransportationAddress;
+
+import java.util.Optional;
+
+import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.branch.Branch;
+import com.cplerings.core.domain.branch.QBranch;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.crafting.QCraftingStage;
@@ -52,6 +57,8 @@ import java.util.Optional;
 public class SharedTestDataSource extends AbstractDataSource implements TestDataSource {
 
     private static final QCraftingStage Q_CRAFTING_STAGE = QCraftingStage.craftingStage;
+    private static final QAccount Q_ACCOUNT = QAccount.account;
+    private static final QBranch Q_BRANCH = QBranch.branch;
 
     private final PaymentRepository paymentRepository;
     private final PaymentReceiverRepository paymentReceiverRepository;
@@ -165,6 +172,16 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
                 .leftJoin(Q_CRAFTING_STAGE.customOrder.transportationAddress).fetchJoin()
                 .where(Q_CRAFTING_STAGE.id.eq(craftingStageId))
                 .fetchOne());
+    }
+
+    @Override
+    public Account getTransporterWithBranch(Long id) {
+        return createQuery()
+                .select(Q_ACCOUNT)
+                .from(Q_ACCOUNT)
+                .leftJoin(Q_ACCOUNT.branch, Q_BRANCH).fetchJoin()
+                .where(Q_ACCOUNT.id.eq(id))
+                .fetchOne();
     }
 
     @Override

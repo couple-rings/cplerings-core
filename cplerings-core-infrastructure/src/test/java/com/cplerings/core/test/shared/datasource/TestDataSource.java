@@ -63,4 +63,6 @@ public interface TestDataSource {
     TransportationAddress save(TransportationAddress transportationAddress);
 
     Optional<CraftingStage> findCraftingStageById(Long craftingStageId);
+
+    Account getTransporterWithBranch(Long id);
 }

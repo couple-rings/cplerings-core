@@ -101,7 +101,7 @@ public class Account extends AbstractEntity implements Auditor {
     @OneToMany(mappedBy = "transporter", fetch = FetchType.LAZY)
     private Set<TransportationOrder> transportationOrders;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "branch_id")
     private Branch branch;
 
