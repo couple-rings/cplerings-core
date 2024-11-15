@@ -8,6 +8,6 @@ import com.cplerings.core.domain.account.Account;
 
 public interface ViewCustomDesignsDataSource {
 
-    CustomDesigns getCustomDesigns(Long customerId, ViewCustomDesignsInput viewCustomDesignsInput);
+    CustomDesigns getCustomDesigns(ViewCustomDesignsInput viewCustomDesignsInput);
     Optional<Account> findAccountByEmail(String email);
 }
