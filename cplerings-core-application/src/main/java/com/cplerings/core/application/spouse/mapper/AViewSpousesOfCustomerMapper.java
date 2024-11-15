@@ -21,7 +21,6 @@ public interface AViewSpousesOfCustomerMapper {
                         .customerId(spouse.getSpouseAccount() != null && spouse.getSpouseAccount().getCustomer() != null
                                 ? spouse.getSpouseAccount().getCustomer().getId()
                                 : null)
-                        .isCustomer(spouse.getSpouseAccount() != null)
                         .coupleId(spouse.getCoupleId())
                         .createdAt(spouse.getCreatedAt())
                         .build())
