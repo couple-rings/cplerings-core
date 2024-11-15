@@ -224,7 +224,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.PUT, resolvePath(APIConstant.UPDATE_TRANSPORTATION_ORDER_TO_ONGOING_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_TRANSPORTER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.TRANSPORTATION_ORDER_PATH))
-                        .hasAnyAuthority(RoleConstant.ROLE_TRANSPORTER, RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER));
+                        .hasAnyAuthority(RoleConstant.ROLE_TRANSPORTER, RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.CUSTOM_ORDERS_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_JEWELER, RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER));
     }
 
     private String resolvePath(String path) {
