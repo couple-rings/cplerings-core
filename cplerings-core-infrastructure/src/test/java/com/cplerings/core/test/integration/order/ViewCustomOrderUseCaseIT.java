@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import com.cplerings.core.api.order.data.CustomOrderData;
 import com.cplerings.core.api.order.response.ViewCustomOrderResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.application.shared.entity.order.ACustomOrder;
@@ -46,7 +47,7 @@ class ViewCustomOrderUseCaseIT extends AbstractIT {
         assertThat(responseBody.getType())
                 .isEqualTo(AbstractResponse.Type.DATA);
 
-        final ACustomOrder customOrdersData = responseBody.getData();
+        final CustomOrderData customOrdersData = responseBody.getData();
         assertThat(customOrdersData).isNotNull();
     }
 }

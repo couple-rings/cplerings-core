@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cplerings.core.api.order.data.CustomOrderData;
 import com.cplerings.core.api.order.mapper.APIViewCustomOrderMapper;
 import com.cplerings.core.api.order.request.ViewCustomOrderRequest;
 import com.cplerings.core.api.order.request.ViewCustomOrdersRequest;
@@ -28,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-public class ViewCustomOrderController extends AbstractController<ViewCustomOrderInput, ViewCustomOrderOutput, ACustomOrder, ViewCustomOrderRequest, ViewCustomOrderResponse> {
+public class ViewCustomOrderController extends AbstractController<ViewCustomOrderInput, ViewCustomOrderOutput, CustomOrderData, ViewCustomOrderRequest, ViewCustomOrderResponse> {
 
     private final ViewCustomOrderUseCase viewCustomOrderUseCase;
     private final APIViewCustomOrderMapper apiViewCustomOrderMapper;
@@ -40,7 +41,7 @@ public class ViewCustomOrderController extends AbstractController<ViewCustomOrde
     }
 
     @Override
-    protected APIMapper<ViewCustomOrderInput, ViewCustomOrderOutput, ACustomOrder, ViewCustomOrderRequest, ViewCustomOrderResponse> getMapper() {
+    protected APIMapper<ViewCustomOrderInput, ViewCustomOrderOutput, CustomOrderData, ViewCustomOrderRequest, ViewCustomOrderResponse> getMapper() {
         return apiViewCustomOrderMapper;
     }
 

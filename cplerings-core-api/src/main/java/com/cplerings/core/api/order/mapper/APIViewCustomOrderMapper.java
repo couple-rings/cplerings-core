@@ -3,6 +3,7 @@ package com.cplerings.core.api.order.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import com.cplerings.core.api.order.data.CustomOrderData;
 import com.cplerings.core.api.order.request.ViewCustomOrderRequest;
 import com.cplerings.core.api.order.request.ViewCustomOrdersRequest;
 import com.cplerings.core.api.order.response.ViewCustomOrderResponse;
@@ -13,8 +14,5 @@ import com.cplerings.core.application.shared.entity.order.ACustomOrder;
 import com.cplerings.core.common.mapper.SpringMapperConfiguration;
 
 @Mapper(config = SpringMapperConfiguration.class)
-public interface APIViewCustomOrderMapper extends APIMapper<ViewCustomOrderInput, ViewCustomOrderOutput, ACustomOrder, ViewCustomOrderRequest, ViewCustomOrderResponse> {
-
-    @Mapping(target = ".", source = "customOrder")
-    ACustomOrder toData(ViewCustomOrderOutput output);
+public interface APIViewCustomOrderMapper extends APIMapper<ViewCustomOrderInput, ViewCustomOrderOutput, CustomOrderData, ViewCustomOrderRequest, ViewCustomOrderResponse> {
 }
