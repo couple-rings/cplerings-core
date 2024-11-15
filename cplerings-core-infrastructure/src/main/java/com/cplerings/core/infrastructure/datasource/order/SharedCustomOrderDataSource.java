@@ -1,8 +1,10 @@
 package com.cplerings.core.infrastructure.datasource.order;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
+import com.cplerings.core.application.order.datasource.ViewCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrdersDataSource;
 import com.cplerings.core.application.order.datasource.result.CustomOrders;
 import com.cplerings.core.application.order.input.ViewCustomOrdersInput;
@@ -18,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @DataSource
-public class SharedCustomOrderDataSource extends AbstractDataSource implements ViewCustomOrdersDataSource {
+public class SharedCustomOrderDataSource extends AbstractDataSource implements ViewCustomOrdersDataSource, ViewCustomOrderDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
 
@@ -60,5 +62,14 @@ public class SharedCustomOrderDataSource extends AbstractDataSource implements V
                 .page(input.getPage())
                 .pageSize(input.getPageSize())
                 .build();
+    }
+
+    @Override
+    public Optional<CustomOrder> getCustomOrder(Long customOrderId) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_CUSTOM_ORDER)
+                .from(Q_CUSTOM_ORDER)
+                .where(Q_CUSTOM_ORDER.id.eq(customOrderId))
+                .fetchOne());
     }
 }
