@@ -18,6 +18,7 @@ import com.cplerings.core.domain.design.CustomDesignMetalSpecification;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.QCustomDesign;
 import com.cplerings.core.domain.design.QDesignVersion;
+import com.cplerings.core.domain.design.request.CustomRequestStatus;
 import com.cplerings.core.domain.diamond.DiamondSpecification;
 import com.cplerings.core.domain.diamond.QDiamondSpecification;
 import com.cplerings.core.domain.file.Document;
@@ -32,6 +33,7 @@ import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.CustomDesignDiamondSpecificationRepository;
 import com.cplerings.core.infrastructure.repository.CustomDesignMetalSpecificationRepository;
 import com.cplerings.core.infrastructure.repository.CustomDesignRepository;
+import com.querydsl.core.types.dsl.BooleanExpression;
 
 import lombok.RequiredArgsConstructor;
 
@@ -139,14 +141,24 @@ public class SharedCustomDesignDataSource extends AbstractDataSource implements 
     }
 
     @Override
-    public CustomDesigns getCustomDesigns(Long customerId, ViewCustomDesignsInput input) {
+    public CustomDesigns getCustomDesigns(ViewCustomDesignsInput input) {
         var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
         BlazeJPAQuery<CustomDesign> query = createQuery()
                 .select(Q_CUSTOM_DESIGN)
                 .from(Q_CUSTOM_DESIGN);
-        if (customerId != null) {
-            query.where(Q_CUSTOM_DESIGN.id.eq(customerId));
+        final BooleanExpressionBuilder booleanExpressionBuilder = createBooleanExpressionBuilder();
+        if (input.getState() != null) {
+            switch (input.getState()) {
+                case ACTIVE -> booleanExpressionBuilder.and(Q_CUSTOM_DESIGN.state.eq(State.ACTIVE));
+                case INACTIVE -> booleanExpressionBuilder.and(Q_CUSTOM_DESIGN.state.eq(State.INACTIVE));
+            }
         }
+        if (input.getCustomerId() != null) {
+            booleanExpressionBuilder.and(Q_CUSTOM_DESIGN.account.id.eq(input.getCustomerId()));
+        }
+        final BooleanExpression predicate = booleanExpressionBuilder.build();
+        query.where(predicate);
+
         long count = query.distinct().fetchCount();
         List<CustomDesign> customDesigns = query.limit(input.getPageSize()).offset(offset).fetch();
         return CustomDesigns.builder()
