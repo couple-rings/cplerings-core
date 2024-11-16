@@ -4,6 +4,7 @@ import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.blog.Blog;
 import com.cplerings.core.domain.branch.Branch;
+import com.cplerings.core.domain.design.crafting.CraftingRequest;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.order.TransportationOrder;
@@ -104,6 +105,9 @@ public class Account extends AbstractEntity implements Auditor {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "branch_id")
     private Branch branch;
+
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
+    private Set<CraftingRequest> craftingRequests;
 
     @Override
     public String getAuditorName() {
