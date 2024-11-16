@@ -32,6 +32,7 @@ public final class APIConstant {
     public static final String ACCOUNT_PATH = ACCOUNTS_PATH + "/{id}";
     public static final String CURRENT_PROFILE_PATH = ACCOUNTS_PATH + "/profile/current";
     public static final String TRANSPORTERS_PATH = ACCOUNTS_PATH + "/transporters";
+    public static final String JEWELERS_PATH = ACCOUNTS_PATH + "/jewelers";
 
 
     /*
@@ -88,6 +89,7 @@ public final class APIConstant {
     public static final String ACCEPT_CRAFTING_REQUEST_PATH = CRAFTING_REQUEST_PATH + "/determination";
     public static final String VIEW_CRAFTING_REQUESTS_PATH = CRAFTING_REQUEST_PATH;
     public static final String VIEW_CRAFTING_REQUEST_PATH = VIEW_CRAFTING_REQUESTS_PATH + "{craftingRequestId}";
+    public static final String VIEW_CRAFTING_REQUEST_GROUPS_PATH = VIEW_CRAFTING_REQUESTS_PATH + "/groups";
 
     /*
         Crafting stage

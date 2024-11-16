@@ -2,6 +2,9 @@ package com.cplerings.core.infrastructure.datasource.account;
 
 import static com.querydsl.jpa.JPAExpressions.select;
 
+import java.util.List;
+import java.util.Optional;
+
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.account.datasource.RegisterCustomerDataSource;
 import com.cplerings.core.application.account.datasource.RequestResetPasswordDataSource;
@@ -9,10 +12,12 @@ import com.cplerings.core.application.account.datasource.ResetPasswordDataSource
 import com.cplerings.core.application.account.datasource.VerifyCustomerDataSource;
 import com.cplerings.core.application.account.datasource.ViewAccountDataSource;
 import com.cplerings.core.application.account.datasource.ViewCurrentProfileDataSource;
+import com.cplerings.core.application.account.datasource.ViewJewelersUseDataSource;
 import com.cplerings.core.application.account.datasource.ViewTransportersDataSource;
+import com.cplerings.core.application.account.datasource.result.Jewelers;
 import com.cplerings.core.application.account.datasource.result.Transporters;
+import com.cplerings.core.application.account.input.ViewJewelersInput;
 import com.cplerings.core.application.account.input.ViewTransportersInput;
-import com.cplerings.core.application.design.datasource.result.CustomDesigns;
 import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountPasswordReset;
@@ -21,7 +26,6 @@ import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.account.QAccountPasswordReset;
 import com.cplerings.core.domain.account.QAccountVerification;
 import com.cplerings.core.domain.account.Role;
-import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.AccountPasswordResetRepository;
@@ -31,14 +35,12 @@ import com.cplerings.core.infrastructure.repository.SpouseAccountRepository;
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-import java.util.Optional;
-
 @DataSource
 @RequiredArgsConstructor
 public class SharedAccountDataSource extends AbstractDataSource
         implements RegisterCustomerDataSource, VerifyCustomerDataSource, RequestResetPasswordDataSource,
-        ResetPasswordDataSource, ViewAccountDataSource, ViewCurrentProfileDataSource, ViewTransportersDataSource {
+        ResetPasswordDataSource, ViewAccountDataSource, ViewCurrentProfileDataSource, ViewTransportersDataSource,
+        ViewJewelersUseDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QAccountVerification Q_ACCOUNT_VERIFICATION = QAccountVerification.accountVerification;
@@ -149,6 +151,24 @@ public class SharedAccountDataSource extends AbstractDataSource
         List<Account> transporters = query.limit(input.getPageSize()).offset(offset).fetch();
         return Transporters.builder()
                 .transporters(transporters)
+                .count(count)
+                .page(input.getPage())
+                .pageSize(input.getPageSize())
+                .build();
+    }
+
+    @Override
+    public Jewelers getJewelers(ViewJewelersInput input) {
+        var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
+        BlazeJPAQuery<Account> query = createQuery()
+                .select(Q_ACCOUNT)
+                .from(Q_ACCOUNT)
+                .where(Q_ACCOUNT.branch.id.eq(input.getBranchId())
+                        .and(Q_ACCOUNT.role.eq(Role.JEWELER)));
+        long count = query.distinct().fetchCount();
+        List<Account> jewelers = query.limit(input.getPageSize()).offset(offset).fetch();
+        return Jewelers.builder()
+                .jewelers(jewelers)
                 .count(count)
                 .page(input.getPage())
                 .pageSize(input.getPageSize())

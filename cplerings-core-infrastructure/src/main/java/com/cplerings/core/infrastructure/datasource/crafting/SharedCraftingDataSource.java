@@ -7,11 +7,15 @@ import com.cplerings.core.application.crafting.datasource.DepositCraftingStageDa
 import com.cplerings.core.application.crafting.datasource.ProcessCraftingStageDepositDataSource;
 import com.cplerings.core.application.crafting.datasource.ViewCraftingRequestDataSource;
 import com.cplerings.core.application.crafting.datasource.ViewCraftingRequestsDataSource;
+import com.cplerings.core.application.crafting.datasource.ViewCraftingRequestsGroupsDataSource;
+import com.cplerings.core.application.crafting.datasource.result.CraftingRequestGroupsList;
 import com.cplerings.core.application.crafting.datasource.result.CraftingRequests;
+import com.cplerings.core.application.crafting.input.ViewCraftingRequestsGroupsInput;
 import com.cplerings.core.application.crafting.input.ViewCraftingRequestsInput;
 import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
+import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.branch.QBranch;
@@ -60,7 +64,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SharedCraftingDataSource extends AbstractDataSource
         implements CreateCraftingRequestDataSource, AcceptCraftingRequestDataSource, DepositCraftingStageDataSource,
-        ProcessCraftingStageDepositDataSource, ViewCraftingRequestsDataSource, CompleteCraftingStageDataSource, ViewCraftingRequestDataSource {
+        ProcessCraftingStageDepositDataSource, ViewCraftingRequestsDataSource, CompleteCraftingStageDataSource, ViewCraftingRequestDataSource,
+        ViewCraftingRequestsGroupsDataSource
+{
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QDiamondSpecification Q_DIAMOND_SPECIFICATION = QDiamondSpecification.diamondSpecification;
@@ -267,5 +273,23 @@ public class SharedCraftingDataSource extends AbstractDataSource
                 .from(Q_CRAFTING_REQUEST)
                 .where(Q_CRAFTING_REQUEST.id.eq(craftingRequestId))
                 .fetchOne());
+    }
+
+    @Override
+    public CraftingRequestGroupsList getAccountCraftingRequests(ViewCraftingRequestsGroupsInput input) {
+        var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
+        BlazeJPAQuery<Account> query = createQuery()
+                .select(Q_ACCOUNT)
+                .from(Q_ACCOUNT)
+                .rightJoin(Q_ACCOUNT.craftingRequests, Q_CRAFTING_REQUEST).fetchJoin()
+                .where(Q_ACCOUNT.role.eq(Role.CUSTOMER));
+        long count = query.distinct().fetchCount();
+        List<Account> accounts = query.limit(input.getPageSize()).offset(offset).fetch();
+        return CraftingRequestGroupsList.builder()
+                .customerCraftingRequests(accounts)
+                .count(count)
+                .page(input.getPage())
+                .pageSize(input.getPageSize())
+                .build();
     }
 }

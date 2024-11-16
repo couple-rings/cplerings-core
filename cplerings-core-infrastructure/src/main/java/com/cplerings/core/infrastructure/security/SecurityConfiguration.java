@@ -108,6 +108,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.CURRENT_PROFILE_PATH))
                         .authenticated())
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.TRANSPORTERS_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.JEWELERS_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER));
     }
 
@@ -191,6 +193,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.PUT, resolvePath(APIConstant.ACCEPT_CRAFTING_REQUEST_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_STAFF))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VIEW_CRAFTING_REQUESTS_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_STAFF, RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_MANAGER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VIEW_CRAFTING_REQUEST_GROUPS_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_STAFF, RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_MANAGER));
     }
 
