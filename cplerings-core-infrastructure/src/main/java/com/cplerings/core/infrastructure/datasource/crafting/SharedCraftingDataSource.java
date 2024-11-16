@@ -8,6 +8,7 @@ import com.cplerings.core.application.crafting.datasource.ProcessCraftingStageDe
 import com.cplerings.core.application.crafting.datasource.ViewCraftingRequestDataSource;
 import com.cplerings.core.application.crafting.datasource.ViewCraftingRequestsDataSource;
 import com.cplerings.core.application.crafting.datasource.ViewCraftingRequestsGroupsDataSource;
+import com.cplerings.core.application.crafting.datasource.ViewCraftingStagesDataSource;
 import com.cplerings.core.application.crafting.datasource.result.CraftingRequestGroupsList;
 import com.cplerings.core.application.crafting.datasource.result.CraftingRequests;
 import com.cplerings.core.application.crafting.input.ViewCraftingRequestsGroupsInput;
@@ -65,7 +66,7 @@ import java.util.Optional;
 public class SharedCraftingDataSource extends AbstractDataSource
         implements CreateCraftingRequestDataSource, AcceptCraftingRequestDataSource, DepositCraftingStageDataSource,
         ProcessCraftingStageDepositDataSource, ViewCraftingRequestsDataSource, CompleteCraftingStageDataSource, ViewCraftingRequestDataSource,
-        ViewCraftingRequestsGroupsDataSource {
+        ViewCraftingRequestsGroupsDataSource, ViewCraftingStagesDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QDiamondSpecification Q_DIAMOND_SPECIFICATION = QDiamondSpecification.diamondSpecification;
@@ -288,6 +289,26 @@ public class SharedCraftingDataSource extends AbstractDataSource
         List<Account> accounts = query.limit(input.getPageSize()).offset(offset).fetch();
         return CraftingRequestGroupsList.builder()
                 .customerCraftingRequests(accounts)
+                .count(count)
+                .page(input.getPage())
+                .pageSize(input.getPageSize())
+                .build();
+    }
+
+    @Override
+    public CraftingStages getCraftingStages(ViewCraftingStagesInput input) {
+        var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
+        BlazeJPAQuery<CraftingStage> query = createQuery()
+                .select(Q_CRAFTING_STAGE)
+                .from(Q_CRAFTING_STAGE);
+
+        if (input.getCustomOrderId() != null) {
+            query.where(Q_CRAFTING_STAGE.customOrder.id.eq(input.getCustomOrderId()));
+        }
+        long count = query.distinct().fetchCount();
+        List<CraftingStage> craftingStages = query.limit(input.getPageSize()).offset(offset).fetch();
+        return CraftingStages.builder()
+                .craftingStages(craftingStages)
                 .count(count)
                 .page(input.getPage())
                 .pageSize(input.getPageSize())
