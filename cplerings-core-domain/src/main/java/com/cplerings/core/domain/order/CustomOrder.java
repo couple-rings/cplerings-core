@@ -6,7 +6,7 @@ import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.ring.Ring;
-import com.cplerings.core.domain.shared.AbstractEntity;
+import com.cplerings.core.domain.shared.AbstractOrderEntity;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
 import lombok.AllArgsConstructor;
@@ -41,7 +41,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "tbl_custom_order")
-public class CustomOrder extends AbstractEntity {
+public class CustomOrder extends AbstractOrderEntity {
 
     private static final String CUSTOM_ORDER_SEQUENCE = "custom_order_seq";
 

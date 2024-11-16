@@ -2,11 +2,8 @@ package com.cplerings.core.test.shared.datasource;
 
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountVerification;
-import com.cplerings.core.domain.address.TransportationAddress;
-
-import java.util.Optional;
-
 import com.cplerings.core.domain.account.QAccount;
+import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.branch.QBranch;
 import com.cplerings.core.domain.contract.Contract;
@@ -45,6 +42,8 @@ import com.cplerings.core.infrastructure.repository.SpouseAccountRepository;
 import com.cplerings.core.infrastructure.repository.SpouseRepository;
 import com.cplerings.core.infrastructure.repository.TransportationAddressRepository;
 import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
+import com.cplerings.core.test.shared.entity.order.DummyOrder;
+import com.cplerings.core.test.shared.entity.order.DummyOrderRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -79,6 +78,7 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private final CraftingRequestRepository craftingRequestRepository;
     private final TransportationOrderRepository transportationOrderRepository;
     private final TransportationAddressRepository transportationAddressRepository;
+    private final DummyOrderRepository dummyOrderRepository;
 
     @Override
     public Payment save(Payment payment) {
@@ -182,6 +182,12 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
                 .leftJoin(Q_ACCOUNT.branch, Q_BRANCH).fetchJoin()
                 .where(Q_ACCOUNT.id.eq(id))
                 .fetchOne();
+    }
+
+    @Override
+    public DummyOrder save(DummyOrder dummyOrder) {
+        updateAuditor(dummyOrder);
+        return dummyOrderRepository.save(dummyOrder);
     }
 
     @Override

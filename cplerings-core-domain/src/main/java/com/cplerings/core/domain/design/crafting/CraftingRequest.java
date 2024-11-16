@@ -59,17 +59,17 @@ public class CraftingRequest extends AbstractEntity {
     @JoinColumn(name = "custom_design_id")
     private CustomDesign customDesign;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewer_id")
     private Account reviewer;
 
-    @Column(name = "engraving", nullable = true)
+    @Column(name = "engraving")
     private String engraving;
 
     @Column(name = "finger_size", nullable = false)
     private Integer fingerSize;
 
-    @Column(name = "comment", nullable = true)
+    @Column(name = "comment")
     private String comment;
 
     @Enumerated(EnumType.STRING)

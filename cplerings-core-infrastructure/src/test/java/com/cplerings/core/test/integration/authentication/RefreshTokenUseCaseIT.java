@@ -7,7 +7,7 @@ import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
-import com.cplerings.core.test.shared.hello.HelloController;
+import com.cplerings.core.test.shared.entity.hello.HelloController;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
 
 import org.assertj.core.api.Assertions;

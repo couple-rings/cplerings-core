@@ -3,9 +3,9 @@ package com.cplerings.core.test.integration.environment;
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
 import com.cplerings.core.common.either.Either;
 import com.cplerings.core.test.shared.AbstractIT;
-import com.cplerings.core.test.shared.hello.HelloRepository;
-import com.cplerings.core.test.shared.hello.TestFailedStepUseCase;
-import com.cplerings.core.test.shared.hello.TestFailedValidationUseCase;
+import com.cplerings.core.test.shared.entity.hello.HelloRepository;
+import com.cplerings.core.test.shared.entity.hello.TestFailedStepUseCase;
+import com.cplerings.core.test.shared.entity.hello.TestFailedValidationUseCase;
 
 import lombok.extern.slf4j.Slf4j;
 

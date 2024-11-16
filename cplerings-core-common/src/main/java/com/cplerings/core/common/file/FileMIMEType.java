@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 public enum FileMIMEType {
 
     JPG("/9j/", "image/jpeg", "jpeg"),
-    PNG("iVBORw0KGgo=", "image/png", "png"),
+    PNG("iVBORw0KGgo", "image/png", "png"),
     PDF("JVBER", "application/pdf", "pdf"),
     ;
 
