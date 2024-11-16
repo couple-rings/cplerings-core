@@ -1,8 +1,9 @@
 package com.cplerings.core.api.design.request;
 
+import com.cplerings.core.api.design.request.data.CreateDesignVersionRequestData;
+
 import lombok.Builder;
 
 @Builder
-public record CreateDesignVersionRequest(Long designId, Long customerId, Long previewImageId,
-                                         Long designFileId) {
+public record CreateDesignVersionRequest(CreateDesignVersionRequestData maleVersion, CreateDesignVersionRequestData femaleVersion) {
 }

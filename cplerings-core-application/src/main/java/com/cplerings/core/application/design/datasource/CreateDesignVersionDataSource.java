@@ -3,9 +3,11 @@ package com.cplerings.core.application.design.datasource;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.DesignVersion;
+import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.file.Image;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CreateDesignVersionDataSource {
@@ -23,4 +25,8 @@ public interface CreateDesignVersionDataSource {
     Optional<Document> getDocumentById(Long documentId);
 
     Optional<Image> getImageById(Long imageId);
+
+    List<DesignSession> getDesignSessionsByCustomerId(Long customerId);
+
+    void save(DesignSession designSession);
 }

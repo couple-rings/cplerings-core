@@ -1,5 +1,6 @@
 package com.cplerings.core.api.design;
 
+import com.cplerings.core.api.design.data.CreateDesignVersionData;
 import com.cplerings.core.api.design.data.DesignVersion;
 import com.cplerings.core.api.design.mapper.APICreateCustomDesignVersionMapper;
 import com.cplerings.core.api.design.request.CreateDesignVersionRequest;
@@ -28,7 +29,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RequiredArgsConstructor
 @RestController
-public class CreateDesignVersionController extends AbstractController<CreateDesignVersionInput, CreateDesignVersionOutput, DesignVersion, CreateDesignVersionRequest, CreateDesignVersionResponse> {
+public class CreateDesignVersionController extends AbstractController<CreateDesignVersionInput, CreateDesignVersionOutput, CreateDesignVersionData, CreateDesignVersionRequest, CreateDesignVersionResponse> {
 
     private final CreateDesignVersionUseCase createDesignVersionUseCase;
     private final APICreateCustomDesignVersionMapper apiCreateCustomDesignVersionMapper;
@@ -55,7 +56,7 @@ public class CreateDesignVersionController extends AbstractController<CreateDesi
     }
 
     @Override
-    protected APIMapper<CreateDesignVersionInput, CreateDesignVersionOutput, DesignVersion, CreateDesignVersionRequest, CreateDesignVersionResponse> getMapper() {
+    protected APIMapper<CreateDesignVersionInput, CreateDesignVersionOutput, CreateDesignVersionData, CreateDesignVersionRequest, CreateDesignVersionResponse> getMapper() {
         return apiCreateCustomDesignVersionMapper;
     }
 }

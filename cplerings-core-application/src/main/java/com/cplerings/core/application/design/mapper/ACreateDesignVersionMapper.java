@@ -19,5 +19,5 @@ import org.mapstruct.Mapper;
 )
 public interface ACreateDesignVersionMapper {
 
-    CreateDesignVersionOutput toOutput(DesignVersion designVersion);
+    CreateDesignVersionOutput toOutput(DesignVersion firstDesignVersion, DesignVersion secondDesignVersion);
 }

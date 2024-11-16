@@ -27,6 +27,7 @@ import com.cplerings.core.domain.design.request.QCustomRequest;
 import com.cplerings.core.domain.design.request.QDesignCustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.design.session.DesignSessionStatus;
+import com.cplerings.core.domain.design.session.QDesignSession;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.file.QDocument;
@@ -58,7 +59,8 @@ public class SharedDesignDataSource extends AbstractDataSource
     private static final QCustomRequest Q_CUSTOM_REQUEST = QCustomRequest.customRequest;
     private static final QDesignCustomRequest Q_DESIGN_CUSTOM_REQUEST = QDesignCustomRequest.designCustomRequest;
     private static final QDocument Q_DOCUMENT = QDocument.document;
-    private static final QImage  Q_IMAGE = QImage.image;
+    private static final QImage Q_IMAGE = QImage.image;
+    private static final QDesignSession Q_DESIGN_SESSION = QDesignSession.designSession;
 
     private final DesignSessionRepository designSessionRepository;
     private final AccountRepository accountRepository;
@@ -159,6 +161,22 @@ public class SharedDesignDataSource extends AbstractDataSource
                 .from(Q_IMAGE)
                 .where(Q_IMAGE.id.eq(imageId))
                 .fetchOne());
+    }
+
+    @Override
+    public List<DesignSession> getDesignSessionsByCustomerId(Long customerId) {
+        return createQuery()
+                .select(Q_DESIGN_SESSION)
+                .from(Q_DESIGN_SESSION)
+                .where(Q_DESIGN_SESSION.customer.id.eq(customerId)
+                        .and(Q_DESIGN_SESSION.status.eq(DesignSessionStatus.UNUSED)))
+                .fetch();
+    }
+
+    @Override
+    public void save(DesignSession designSession) {
+        updateAuditor(designSession);
+        designSessionRepository.save(designSession);
     }
 
     @Override
