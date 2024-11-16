@@ -2,16 +2,9 @@ package com.cplerings.core.test.integration.crafting;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.reactive.server.WebTestClient;
-
-import com.cplerings.core.api.crafting.data.CraftingRequestData;
 import com.cplerings.core.api.crafting.data.ViewCraftingRequestsGroupsData;
 import com.cplerings.core.api.crafting.request.ViewCraftingRequestsGroupsRequest;
-import com.cplerings.core.api.crafting.request.ViewCraftingRequestsRequest;
 import com.cplerings.core.api.crafting.response.ViewCraftingRequestsGroupsResponse;
-import com.cplerings.core.api.crafting.response.ViewCraftingRequestsResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.domain.design.CustomDesign;
@@ -24,7 +17,12 @@ import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
 import com.cplerings.core.test.shared.design.CustomDesignTestHelper;
+import com.cplerings.core.test.shared.helper.BranchTestHelper;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 class ViewCraftingRequestsGroupsUseCaseIT extends AbstractIT {
 
@@ -47,6 +45,9 @@ class ViewCraftingRequestsGroupsUseCaseIT extends AbstractIT {
     @Autowired
     private TestDataSource testDataSource;
 
+    @Autowired
+    private BranchTestHelper branchTestHelper;
+
     @Test
     void givenStaff_viewCraftingRequests() {
         CustomDesign customDesign = customDesignTestHelper.createCustomDesign();
@@ -58,6 +59,7 @@ class ViewCraftingRequestsGroupsUseCaseIT extends AbstractIT {
                 .metalSpecification(metalSpecificationRepository.getReferenceById(1L))
                 .diamondSpecification(diamondSpecificationRepository.getReferenceById(1L))
                 .engraving("test")
+                .branch(branchTestHelper.createBranch())
                 .build();
         testDataSource.save(craftingRequest);
         String token = jwtTestHelper.generateToken(AccountTestConstant.STAFF_EMAIL);

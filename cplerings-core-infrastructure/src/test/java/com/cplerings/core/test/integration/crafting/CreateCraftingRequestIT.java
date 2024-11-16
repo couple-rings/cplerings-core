@@ -2,11 +2,12 @@ package com.cplerings.core.test.integration.crafting;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.cplerings.core.api.crafting.data.CraftingRequest;
 import com.cplerings.core.api.crafting.request.CreateCraftingRequestRequest;
 import com.cplerings.core.api.crafting.response.CreateCraftingRequestResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
+import com.cplerings.core.application.shared.entity.crafting.ACraftingRequest;
 import com.cplerings.core.common.api.APIConstant;
+import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.shared.State;
@@ -21,6 +22,7 @@ import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.infrastructure.repository.SpouseRepository;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
+import com.cplerings.core.test.shared.helper.BranchTestHelper;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -58,8 +60,12 @@ public class CreateCraftingRequestIT extends AbstractIT {
     @Autowired
     private CustomDesignRepository customDesignRepository;
 
+    @Autowired
+    private BranchTestHelper branchTestHelper;
+
     private Spouse spouseCreated;
     private DesignVersion designVersionCreated;
+    private Branch branch;
 
     @BeforeEach
     public void start() {
@@ -90,6 +96,8 @@ public class CreateCraftingRequestIT extends AbstractIT {
                 .modifiedBy("CP")
                 .build();
         designVersionCreated = designVersionRepository.saveAndFlush(designVersion);
+
+        this.branch = branchTestHelper.createBranch();
     }
 
     @Test
@@ -117,6 +125,7 @@ public class CreateCraftingRequestIT extends AbstractIT {
                 .fingerSize(23)
                 .engraving("test")
                 .metalSpecId(1L)
+                .branchId(branch.getId())
                 .build();
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(APIConstant.CRAFTING_REQUEST_PATH)
@@ -138,9 +147,11 @@ public class CreateCraftingRequestIT extends AbstractIT {
                 .isNotNull();
         assertThat(responseBody.getType())
                 .isEqualTo(AbstractResponse.Type.DATA);
-        assertThat(responseBody.getData())
+
+        final ACraftingRequest data = responseBody.getData().craftingRequest();
+        assertThat(data)
                 .isNotNull()
-                .isExactlyInstanceOf(CraftingRequest.class);
-        assertThat(responseBody.getData().craftingRequest()).isNotNull();
+                .isExactlyInstanceOf(ACraftingRequest.class);
+        assertThat(data.getBranch()).isNotNull();
     }
 }

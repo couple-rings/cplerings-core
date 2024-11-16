@@ -52,7 +52,7 @@ public class Branch extends AbstractEntity {
     @Column(name = "phone", nullable = false)
     private String phone;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "cover_image")
     private Image coverImage;
 

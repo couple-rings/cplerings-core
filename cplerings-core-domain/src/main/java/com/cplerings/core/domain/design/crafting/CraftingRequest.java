@@ -2,6 +2,7 @@ package com.cplerings.core.domain.design.crafting;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.diamond.DiamondSpecification;
 import com.cplerings.core.domain.metal.MetalSpecification;
@@ -75,4 +76,8 @@ public class CraftingRequest extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "crafting_request_status", nullable = false)
     private CraftingRequestStatus craftingRequestStatus;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
 }

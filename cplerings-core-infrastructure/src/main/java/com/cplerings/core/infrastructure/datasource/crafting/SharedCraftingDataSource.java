@@ -68,8 +68,7 @@ import java.util.Optional;
 public class SharedCraftingDataSource extends AbstractDataSource
         implements CreateCraftingRequestDataSource, AcceptCraftingRequestDataSource, DepositCraftingStageDataSource,
         ProcessCraftingStageDepositDataSource, ViewCraftingRequestsDataSource, CompleteCraftingStageDataSource, ViewCraftingRequestDataSource,
-        ViewCraftingRequestsGroupsDataSource, ViewCraftingStagesDataSource
-{
+        ViewCraftingRequestsGroupsDataSource, ViewCraftingStagesDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QDiamondSpecification Q_DIAMOND_SPECIFICATION = QDiamondSpecification.diamondSpecification;
@@ -99,6 +98,8 @@ public class SharedCraftingDataSource extends AbstractDataSource
         return Optional.ofNullable(createQuery()
                 .select(Q_ACCOUNT)
                 .from(Q_ACCOUNT)
+                .leftJoin(Q_ACCOUNT.craftingRequests, Q_CRAFTING_REQUEST).fetchJoin()
+                .leftJoin(Q_CRAFTING_REQUEST.branch).fetchJoin()
                 .where(Q_ACCOUNT.id.eq(customerId)
                         .and(Q_ACCOUNT.state.eq(State.ACTIVE)))
                 .fetchOne());

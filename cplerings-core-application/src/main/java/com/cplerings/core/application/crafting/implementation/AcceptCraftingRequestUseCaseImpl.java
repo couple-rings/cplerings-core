@@ -12,7 +12,6 @@ import com.cplerings.core.application.shared.service.price.CalculationTotalPrice
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
-import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.configuration.Configuration;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
@@ -29,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +50,6 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
         if (input.status() == ACraftingRequestStatus.REJECTED) {
             validator.validateAndStopExecution(input.firstCommentCrafting() != null, AcceptCraftingRequestErrorCode.COMMENT_REQUIRED);
             validator.validateAndStopExecution(input.secondCommentCrafting() != null, AcceptCraftingRequestErrorCode.COMMENT_REQUIRED);
-            validator.validateAndStopExecution(input.branchId() != null, AcceptCraftingRequestErrorCode.BRANCH_ID_REQUIRED);
         }
     }
 
@@ -67,9 +64,6 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
         validator.validateAndStopExecution(secondCraftingRequest != null, AcceptCraftingRequestErrorCode.INVALID_CRAFTING_REQUEST_ID);
         validator.validateAndStopExecution(firstCraftingRequest.getCraftingRequestStatus() == CraftingRequestStatus.PENDING, AcceptCraftingRequestErrorCode.INVALID_CRAFTING_REQUEST_STATUS);
         if (input.status() == ACraftingRequestStatus.ACCEPTED) {
-            Branch branch = acceptCraftingRequestDataSource.getBranchById(input.branchId())
-                    .orElse(null);
-            validator.validateAndStopExecution(branch != null, AcceptCraftingRequestErrorCode.INVALID_BRANCH_ID);
             firstCraftingRequest.setCraftingRequestStatus(CraftingRequestStatus.ACCEPTED);
             secondCraftingRequest.setCraftingRequestStatus(CraftingRequestStatus.ACCEPTED);
             if (input.firstCommentCrafting() != null)
@@ -82,14 +76,14 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
             List<CraftingRequest> craftingRequestUpdated = acceptCraftingRequestDataSource.saveCraftingRequests(craftingRequests);
             List<Ring> rings = new ArrayList<>();
             Ring firstRing = Ring.builder()
-                    .branch(branch)
+                    .branch(firstCraftingRequest.getBranch())
                     .status(RingStatus.NOT_AVAIL)
                     .spouse(firstCraftingRequest.getCustomDesign().getSpouse())
                     .purchaseDate(Instant.now())
                     .build();
             rings.add(firstRing);
             Ring secondRing = Ring.builder()
-                    .branch(branch)
+                    .branch(secondCraftingRequest.getBranch())
                     .status(RingStatus.NOT_AVAIL)
                     .spouse(secondCraftingRequest.getCustomDesign().getSpouse())
                     .purchaseDate(Instant.now())

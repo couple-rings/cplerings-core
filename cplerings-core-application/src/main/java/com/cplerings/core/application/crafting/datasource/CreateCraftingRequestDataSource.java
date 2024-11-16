@@ -1,6 +1,7 @@
 package com.cplerings.core.application.crafting.datasource;
 
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
 import com.cplerings.core.domain.diamond.DiamondSpecification;
@@ -19,4 +20,6 @@ public interface CreateCraftingRequestDataSource {
     Optional<CustomDesign> getCustomDesignByCustomDesignId(Long customDesignId);
 
     CraftingRequest save(CraftingRequest craftingRequest);
+
+    Optional<Branch> getBranchById(Long branchId);
 }

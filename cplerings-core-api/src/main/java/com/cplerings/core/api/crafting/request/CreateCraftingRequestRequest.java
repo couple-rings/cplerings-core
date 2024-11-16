@@ -4,5 +4,5 @@ import lombok.Builder;
 
 @Builder
 public record CreateCraftingRequestRequest(Long customerId, Long metalSpecId, Long diamondSpecId, Long customDesignId,
-                                           String engraving, Integer fingerSize) {
+                                           String engraving, Integer fingerSize, Long branchId) {
 }
