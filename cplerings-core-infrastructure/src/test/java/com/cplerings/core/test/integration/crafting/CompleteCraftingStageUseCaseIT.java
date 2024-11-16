@@ -26,6 +26,7 @@ import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
+import com.cplerings.core.test.shared.helper.BranchTestHelper;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
 import com.cplerings.core.test.shared.spouse.SpouseTestHelper;
 
@@ -56,6 +57,9 @@ class CompleteCraftingStageUseCaseIT extends AbstractIT {
     @Autowired
     private CustomOrderRepository customOrderRepository;
 
+    @Autowired
+    private BranchTestHelper branchTestHelper;
+
     private CraftingStage firstCraftingStage;
 
     private CraftingStage secondCraftingStage;
@@ -68,12 +72,7 @@ class CompleteCraftingStageUseCaseIT extends AbstractIT {
         Contract contract = Contract.builder()
                 .build();
         contract = testDataSource.save(contract);
-        Branch branch = Branch.builder()
-                .address("123 Hello")
-                .phone("1234567890")
-                .storeName("Hello")
-                .build();
-        branch = testDataSource.save(branch);
+        final Branch branch = branchTestHelper.createBranch();
         Ring firstRing = Ring.builder()
                 .status(RingStatus.NOT_AVAIL)
                 .branch(branch)

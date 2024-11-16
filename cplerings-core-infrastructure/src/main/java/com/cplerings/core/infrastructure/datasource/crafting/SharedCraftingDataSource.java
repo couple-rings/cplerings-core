@@ -43,9 +43,11 @@ import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.shared.State;
+import com.cplerings.core.domain.spouse.Agreement;
 import com.cplerings.core.domain.spouse.QSpouse;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
+import com.cplerings.core.infrastructure.repository.AgreementRepository;
 import com.cplerings.core.infrastructure.repository.ContractRepository;
 import com.cplerings.core.infrastructure.repository.CraftingRequestRepository;
 import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
@@ -92,6 +94,7 @@ public class SharedCraftingDataSource extends AbstractDataSource
     private final ImageRepository imageRepository;
     private final TransportationAddressRepository transportationAddressRepository;
     private final TransportationOrderRepository transportationOrderRepository;
+    private final AgreementRepository agreementRepository;
 
     @Override
     public Optional<Account> getAccountByCustomerId(Long customerId) {
@@ -253,6 +256,12 @@ public class SharedCraftingDataSource extends AbstractDataSource
     public TransportationOrder save(TransportationOrder transportationOrder) {
         updateAuditor(transportationOrder);
         return transportationOrderRepository.save(transportationOrder);
+    }
+
+    @Override
+    public Agreement save(Agreement agreement) {
+        updateAuditor(agreement);
+        return agreementRepository.save(agreement);
     }
 
     @Override

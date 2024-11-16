@@ -40,4 +40,21 @@ public final class TemporalUtils {
         }
         return !instantToCheck.isBefore(instantToCheckAgainst);
     }
+
+    /**
+     * Get current timestamp with these parts removed:
+     * <ul>
+     * <li> Hour
+     * <li> Minute
+     * <li> Second
+     * <li> Millisecond
+     * </ul>
+     */
+    public static Instant getCurrentInstantUTCExcludeTimePartAndBelow() {
+        final Instant now = getCurrentInstantUTC();
+        return now.atZone(ZoneOffset.UTC)
+                .toLocalDate()
+                .atStartOfDay(ZoneOffset.UTC)
+                .toInstant();
+    }
 }

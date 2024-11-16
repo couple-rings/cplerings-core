@@ -1,6 +1,8 @@
 package com.cplerings.core.domain.spouse;
 
 import com.cplerings.core.common.database.DatabaseConstant;
+import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.shared.AbstractEntity;
 
 import lombok.AllArgsConstructor;
@@ -40,13 +42,23 @@ public class Agreement extends AbstractEntity {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "main_spouse_id", unique = true)
-    private Spouse mainSpouse;
+    @JoinColumn(name = "customer_id")
+    private Account customer;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "second_spouse_id", unique = true)
-    private Spouse secondSpouse;
+    @Column(name = "main_name")
+    private String mainName;
 
-    @Column(name = "signed_date", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "main_signature_id")
+    private Image mainSignature;
+
+    @Column(name = "partner_name")
+    private String partnerName;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "partner_signature_id")
+    private Image partnerSignature;
+
+    @Column(name = "signed_date")
     private Instant signedDate;
 }
