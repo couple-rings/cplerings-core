@@ -1,4 +1,4 @@
-package com.cplerings.core.test.shared.hello;
+package com.cplerings.core.test.shared.entity.hello;
 
 import static com.cplerings.core.application.shared.errorcode.ErrorCode.System.ERROR;
 

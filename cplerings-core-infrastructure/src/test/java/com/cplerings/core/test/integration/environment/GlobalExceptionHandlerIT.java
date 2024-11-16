@@ -7,7 +7,7 @@ import com.cplerings.core.api.shared.ErrorCodeResponse;
 import com.cplerings.core.api.shared.ErrorCodesResponse;
 import com.cplerings.core.application.shared.errorcode.ErrorCode;
 import com.cplerings.core.test.shared.AbstractIT;
-import com.cplerings.core.test.shared.hello.HelloController;
+import com.cplerings.core.test.shared.entity.hello.HelloController;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.reactive.server.WebTestClient;

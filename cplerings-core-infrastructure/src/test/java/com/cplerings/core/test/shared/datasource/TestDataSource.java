@@ -19,6 +19,7 @@ import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.spouse.Spouse;
 import com.cplerings.core.domain.spouse.SpouseAccount;
+import com.cplerings.core.test.shared.entity.order.DummyOrder;
 
 import java.util.Optional;
 
@@ -65,4 +66,6 @@ public interface TestDataSource {
     Optional<CraftingStage> findCraftingStageById(Long craftingStageId);
 
     Account getTransporterWithBranch(Long id);
+
+    DummyOrder save(DummyOrder dummyOrder);
 }

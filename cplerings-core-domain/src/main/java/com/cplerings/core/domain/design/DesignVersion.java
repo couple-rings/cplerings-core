@@ -14,6 +14,8 @@ import lombok.experimental.SuperBuilder;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -72,4 +74,8 @@ public class DesignVersion extends AbstractEntity {
 
     @Column(name = "is_old", nullable = false)
     private Boolean isOld;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "owner", length = DatabaseConstant.DEFAULT_ENUM_LENGTH)
+    private DesignVersionOwner owner;
 }

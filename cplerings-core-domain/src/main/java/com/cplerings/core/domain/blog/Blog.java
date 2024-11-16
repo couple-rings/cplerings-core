@@ -63,6 +63,9 @@ public class Blog extends AbstractEntity {
     @JoinColumn(name = "topic_id")
     private Topic topic;
 
+    @Column(name = "summary", nullable = false)
+    private String summary;
+
     @OneToMany(mappedBy = "blog", fetch = FetchType.LAZY)
     private Set<BlogTag> tags;
 }

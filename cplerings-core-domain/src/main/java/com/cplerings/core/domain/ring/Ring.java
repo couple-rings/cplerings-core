@@ -73,4 +73,7 @@ public class Ring extends AbstractEntity {
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "spouse_id")
     private Spouse spouse;
+
+    @Column(name = "engraving", length = DatabaseConstant.DEFAULT_ENGRAVING_LENGTH)
+    private String engraving;
 }
