@@ -1,8 +1,9 @@
 package com.cplerings.core.application.design.input;
 
+import com.cplerings.core.application.design.input.data.CreateDesignVersionInputData;
+
 import lombok.Builder;
 
 @Builder
-public record CreateDesignVersionInput(Long designId, Long customerId, Long previewImageId,
-                                       Long designFileId) {
+public record CreateDesignVersionInput(CreateDesignVersionInputData maleVersion, CreateDesignVersionInputData femaleVersion) {
 }
