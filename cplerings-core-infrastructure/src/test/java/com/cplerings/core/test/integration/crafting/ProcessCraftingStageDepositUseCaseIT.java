@@ -25,6 +25,7 @@ import com.cplerings.core.domain.ring.RingStatus;
 import com.cplerings.core.domain.shared.valueobject.Money;
 import com.cplerings.core.domain.spouse.Spouse;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
+import com.cplerings.core.infrastructure.repository.AgreementRepository;
 import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
@@ -32,6 +33,7 @@ import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.TestDataLoader;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
+import com.cplerings.core.test.shared.helper.BranchTestHelper;
 import com.cplerings.core.test.shared.spouse.SpouseTestHelper;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -73,6 +75,12 @@ class ProcessCraftingStageDepositUseCaseIT extends AbstractIT {
     @Autowired
     private TransportationOrderRepository transportationOrderRepository;
 
+    @Autowired
+    private AgreementRepository agreementRepository;
+
+    @Autowired
+    private BranchTestHelper branchTestHelper;
+
     private VNPayPaymentRequest request;
 
     private CraftingStage firstCraftingStage;
@@ -110,12 +118,7 @@ class ProcessCraftingStageDepositUseCaseIT extends AbstractIT {
         Contract contract = Contract.builder()
                 .build();
         contract = testDataSource.save(contract);
-        Branch branch = Branch.builder()
-                .address("123 Hello")
-                .phone("1234567890")
-                .storeName("Hello")
-                .build();
-        branch = testDataSource.save(branch);
+        final Branch branch = branchTestHelper.createBranch();
         Ring firstRing = Ring.builder()
                 .status(RingStatus.NOT_AVAIL)
                 .branch(branch)
@@ -228,6 +231,7 @@ class ProcessCraftingStageDepositUseCaseIT extends AbstractIT {
         thenResponseIsOk(response);
         thenCraftingStageStatusIsPaid(secondCraftingStage.getId());
         thenTransportationOrderIsCreated(customOrder.getId());
+        thenAgreementIsCreated(customOrder.getCustomer().getId());
     }
 
     private void thenCustomOrderStatusIsWaiting(Long customOrderId) {
@@ -247,5 +251,9 @@ class ProcessCraftingStageDepositUseCaseIT extends AbstractIT {
 
     private void thenTransportationOrderIsCreated(Long customOrderId) {
         assertThat(transportationOrderRepository.existsByCustomOrderId(customOrderId)).isTrue();
+    }
+
+    private void thenAgreementIsCreated(Long customerId) {
+        assertThat(agreementRepository.existsByCustomerId(customerId)).isTrue();
     }
 }

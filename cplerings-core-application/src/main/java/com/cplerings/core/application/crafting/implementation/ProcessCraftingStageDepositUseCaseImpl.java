@@ -17,6 +17,7 @@ import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.payment.PaymentReceiverType;
+import com.cplerings.core.domain.spouse.Agreement;
 
 import lombok.RequiredArgsConstructor;
 
@@ -83,6 +84,10 @@ public class ProcessCraftingStageDepositUseCaseImpl extends AbstractUseCase<Paym
                         .build();
                 dataSource.save(transportationOrder);
             }
+            final Agreement agreement = Agreement.builder()
+                    .customer(customOrder.getCustomer())
+                    .build();
+            dataSource.save(agreement);
         }
         return NoOutput.INSTANCE;
     }
