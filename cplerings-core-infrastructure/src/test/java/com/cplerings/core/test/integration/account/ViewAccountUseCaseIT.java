@@ -57,10 +57,10 @@ class ViewAccountUseCaseIT extends AbstractIT {
                 .isNotNull()
                 .isExactlyInstanceOf(AccountData.class);
         AccountData account = responseBody.getData();
-        assertThat(account.email())
+        assertThat(account.account().getEmail())
                 .isNotNull()
                 .isEqualTo(AccountTestConstant.CUSTOMER_EMAIL);
-        assertThat(account.id())
+        assertThat(account.account().getId())
                 .isNotNull()
                 .isEqualTo(id);
     }
