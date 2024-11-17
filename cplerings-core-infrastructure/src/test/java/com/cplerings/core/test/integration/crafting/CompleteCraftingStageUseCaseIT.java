@@ -6,6 +6,7 @@ import com.cplerings.core.api.crafting.request.CompleteCraftingStageRequest;
 import com.cplerings.core.api.crafting.response.CompleteCraftingStageResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.application.crafting.error.CompleteCraftingStageErrorCode;
+import com.cplerings.core.application.crafting.input.data.RingMaintenance;
 import com.cplerings.core.application.shared.entity.crafting.ACraftingStage;
 import com.cplerings.core.application.shared.entity.file.AImage;
 import com.cplerings.core.common.api.APIConstant;
@@ -14,6 +15,7 @@ import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.crafting.CraftingStageStatus;
+import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.ring.Ring;
@@ -27,6 +29,7 @@ import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
 import com.cplerings.core.test.shared.helper.BranchTestHelper;
+import com.cplerings.core.test.shared.helper.DocumentTestHelper;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
 import com.cplerings.core.test.shared.spouse.SpouseTestHelper;
 
@@ -36,6 +39,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Set;
 
 class CompleteCraftingStageUseCaseIT extends AbstractIT {
 
@@ -60,11 +66,16 @@ class CompleteCraftingStageUseCaseIT extends AbstractIT {
     @Autowired
     private BranchTestHelper branchTestHelper;
 
+    @Autowired
+    private DocumentTestHelper documentTestHelper;
+
     private CraftingStage firstCraftingStage;
 
     private CraftingStage secondCraftingStage;
 
     private CustomOrder customOrder;
+
+    private Collection<Long> ringIds;
 
     @BeforeEach
     public void setUpCraftingStage() {
@@ -85,6 +96,8 @@ class CompleteCraftingStageUseCaseIT extends AbstractIT {
                 .spouse(spouses[1])
                 .build();
         secondRing = testDataSource.save(secondRing);
+        this.ringIds = Set.of(firstRing.getId(), secondRing.getId());
+
         CustomOrder customOrder = CustomOrder.builder()
                 .customer(accountRepository.findByEmail(AccountTestConstant.CUSTOMER_EMAIL).orElse(null))
                 .contract(contract)
@@ -138,9 +151,25 @@ class CompleteCraftingStageUseCaseIT extends AbstractIT {
         updatedFirstCraftingStage.setCompletionDate(TemporalUtils.getCurrentInstantUTC());
         testDataSource.save(updatedFirstCraftingStage);
 
+        final Document firstMaintenance = documentTestHelper.createDocument();
+        final RingMaintenance firstRingMaintenance = RingMaintenance.builder()
+                .ringId(ringIds.stream()
+                        .min(Comparator.naturalOrder())
+                        .orElseThrow(() -> new IllegalStateException("No ring ID detected")))
+                .maintenanceDocumentId(firstMaintenance.getId())
+                .build();
+        final Document secondMaintenance = documentTestHelper.createDocument();
+        final RingMaintenance secondRingMaintenance = RingMaintenance.builder()
+                .ringId(ringIds.stream()
+                        .max(Comparator.naturalOrder())
+                        .orElseThrow(() -> new IllegalStateException("No ring ID detected")))
+                .maintenanceDocumentId(secondMaintenance.getId())
+                .build();
+
         final String token = jwtTestHelper.generateToken(AccountTestConstant.JEWELER_EMAIL);
         final CompleteCraftingStageRequest request = CompleteCraftingStageRequest.builder()
                 .imageId(1L)
+                .ringMaintenances(Set.of(firstRingMaintenance, secondRingMaintenance))
                 .build();
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(APIConstant.COMPLETE_CRAFTING_STAGE_PATH, secondCraftingStage.getId())
@@ -153,6 +182,7 @@ class CompleteCraftingStageUseCaseIT extends AbstractIT {
         thenResponseIsCompletedCraftingStage(response);
         thenCraftingStageIsDone(firstCraftingStage.getId());
         thenCustomOrderIsDone();
+        thenRingsHaveMaintenanceDocuments();
     }
 
     @Test
@@ -234,5 +264,14 @@ class CompleteCraftingStageUseCaseIT extends AbstractIT {
                 .orElse(null);
         assertThat(expectedCustomOrder).isNotNull();
         assertThat(expectedCustomOrder.getStatus()).isEqualTo(CustomOrderStatus.DONE);
+    }
+
+    private void thenRingsHaveMaintenanceDocuments() {
+        final Collection<Ring> rings = testDataSource.findAllRingsByIds(ringIds);
+        assertThat(rings).hasSize(2);
+        rings.forEach(ring -> {
+            assertThat(ring.getMaintenanceDocument()).isNotNull();
+            assertThat(ring.getMaintenanceExpiredDate()).isNotNull();
+        });
     }
 }
