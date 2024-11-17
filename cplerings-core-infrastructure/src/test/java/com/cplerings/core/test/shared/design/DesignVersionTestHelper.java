@@ -33,4 +33,17 @@ public class DesignVersionTestHelper {
                 .build();
         return testDataSource.save(designVersion);
     }
+
+    public DesignVersion createDesignVersion2() {
+        DesignVersion designVersion = DesignVersion.builder()
+                .designFile(documentRepository.getReferenceById(11L))
+                .customer(accountRepository.getReferenceById(1L))
+                .image(imageRepository.getReferenceById(11L))
+                .design(designRepository.getReferenceById(11L))
+                .versionNumber(3)
+                .isAccepted(false)
+                .isOld(false)
+                .build();
+        return testDataSource.save(designVersion);
+    }
 }

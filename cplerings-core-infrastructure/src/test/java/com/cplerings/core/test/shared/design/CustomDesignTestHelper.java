@@ -1,6 +1,8 @@
 package com.cplerings.core.test.shared.design;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.boot.test.context.TestComponent;
 
@@ -40,5 +42,36 @@ public class CustomDesignTestHelper {
                 .spouse(spouses[0])
                 .build();
         return testDataSource.save(customDesign);
+    }
+
+    public CustomDesignSpouse createCustomDesignsAndSpouses() {
+        List<CustomDesign> customDesigns = new ArrayList<>();
+        DesignVersion designVersion1 = designVersionTestHelper.createDesignVersion();
+        DesignVersion designVersion2 = designVersionTestHelper.createDesignVersion2();
+        final Spouse[] spouses = spouseTestHelper.createSpouseFromCustomerEmail(AccountTestConstant.CUSTOMER_EMAIL);
+        CustomDesign customDesign1 = CustomDesign.builder()
+                .blueprint(documentRepository.getReferenceById(1L))
+                .metalWeight(Weight.create(BigDecimal.valueOf(12L)))
+                .designVersion(designVersion1)
+                .sideDiamondsCount(12)
+                .account(accountRepository.getReferenceById(1L))
+                .spouse(spouses[0])
+                .build();
+        CustomDesign customDesign2 = CustomDesign.builder()
+                .blueprint(documentRepository.getReferenceById(11L))
+                .metalWeight(Weight.create(BigDecimal.valueOf(12L)))
+                .designVersion(designVersion2)
+                .sideDiamondsCount(12)
+                .account(accountRepository.getReferenceById(1L))
+                .spouse(spouses[1])
+                .build();
+        CustomDesign customDesignCreated1 = testDataSource.save(customDesign1);
+        CustomDesign customDesignCreated2 = testDataSource.save(customDesign2);
+        customDesigns.add(customDesignCreated1);
+        customDesigns.add(customDesignCreated2);
+        return CustomDesignSpouse.builder()
+                .customDesign(customDesigns)
+                .spouses(spouses)
+                .build();
     }
 }

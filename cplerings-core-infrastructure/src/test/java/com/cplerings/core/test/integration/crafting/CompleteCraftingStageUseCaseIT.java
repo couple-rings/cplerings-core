@@ -14,6 +14,7 @@ import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.crafting.CraftingStageStatus;
+import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.ring.Ring;
@@ -26,6 +27,8 @@ import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
+import com.cplerings.core.test.shared.design.CustomDesignSpouse;
+import com.cplerings.core.test.shared.design.CustomDesignTestHelper;
 import com.cplerings.core.test.shared.helper.BranchTestHelper;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
 import com.cplerings.core.test.shared.spouse.SpouseTestHelper;
@@ -60,6 +63,9 @@ class CompleteCraftingStageUseCaseIT extends AbstractIT {
     @Autowired
     private BranchTestHelper branchTestHelper;
 
+    @Autowired
+    private CustomDesignTestHelper customDesignTestHelper;
+
     private CraftingStage firstCraftingStage;
 
     private CraftingStage secondCraftingStage;
@@ -68,7 +74,7 @@ class CompleteCraftingStageUseCaseIT extends AbstractIT {
 
     @BeforeEach
     public void setUpCraftingStage() {
-        final Spouse[] spouses = spouseTestHelper.createSpouseFromCustomerEmail(AccountTestConstant.CUSTOMER_EMAIL);
+        CustomDesignSpouse customDesignsAndSpouses = customDesignTestHelper.createCustomDesignsAndSpouses();
         Contract contract = Contract.builder()
                 .build();
         contract = testDataSource.save(contract);
@@ -76,13 +82,15 @@ class CompleteCraftingStageUseCaseIT extends AbstractIT {
         Ring firstRing = Ring.builder()
                 .status(RingStatus.NOT_AVAIL)
                 .branch(branch)
-                .spouse(spouses[0])
+                .spouse(customDesignsAndSpouses.spouses()[0])
+                .customDesign(customDesignsAndSpouses.customDesign().get(0))
                 .build();
         firstRing = testDataSource.save(firstRing);
         Ring secondRing = Ring.builder()
                 .status(RingStatus.NOT_AVAIL)
                 .branch(branch)
-                .spouse(spouses[1])
+                .spouse(customDesignsAndSpouses.spouses()[1])
+                .customDesign(customDesignsAndSpouses.customDesign().get(1))
                 .build();
         secondRing = testDataSource.save(secondRing);
         CustomOrder customOrder = CustomOrder.builder()
