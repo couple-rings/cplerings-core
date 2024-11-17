@@ -18,6 +18,9 @@ public enum CreateDesignVersionErrorCode implements ErrorCode {
     INVALID_CUSTOMER_ID("008", "design.version.error.invalidCustomerId", Type.BUSINESS),
     INVALID_DOCUMENT("009", "design.version.error.invalidDocument", ErrorCode.Type.BUSINESS),
     INVALID_IMAGE("010", "design.version.error.invalidImage", ErrorCode.Type.BUSINESS),
+    DESIGN_ID_REQUIRED("011", "design.version.error.designIdRequired", ErrorCode.Type.BUSINESS),
+    CUSTOMER_ID_REQUIRED("012", "design.version.error.customerIdRequired", ErrorCode.Type.BUSINESS),
+    NO_MORE_SESSIONS("013", "design.version.error.hasNoMoreSessionToCreateVersion", ErrorCode.Type.BUSINESS),
     ;
 
     private final String code;

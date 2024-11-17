@@ -24,6 +24,8 @@ import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
+import com.cplerings.core.test.shared.design.CustomDesignSpouse;
+import com.cplerings.core.test.shared.design.CustomDesignTestHelper;
 import com.cplerings.core.test.shared.helper.BranchTestHelper;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
 import com.cplerings.core.test.shared.spouse.SpouseTestHelper;
@@ -55,13 +57,16 @@ public class DepositCraftingStageUseCaseIT extends AbstractIT {
     @Autowired
     private BranchTestHelper branchTestHelper;
 
+    @Autowired
+    private CustomDesignTestHelper customDesignTestHelper;
+
     private CraftingStage firstCraftingStage;
 
     private CraftingStage secondCraftingStage;
 
     @BeforeEach
     void setUpCustomOrderAndCraftingStages() {
-        final Spouse[] spouses = spouseTestHelper.createSpouseFromCustomerEmail(AccountTestConstant.CUSTOMER_EMAIL);
+        CustomDesignSpouse customDesignsAndSpouses = customDesignTestHelper.createCustomDesignsAndSpouses();
         Contract contract = Contract.builder()
                 .build();
         contract = testDataSource.save(contract);
@@ -69,13 +74,15 @@ public class DepositCraftingStageUseCaseIT extends AbstractIT {
         Ring firstRing = Ring.builder()
                 .status(RingStatus.NOT_AVAIL)
                 .branch(branch)
-                .spouse(spouses[0])
+                .spouse(customDesignsAndSpouses.spouses()[0])
+                .customDesign(customDesignsAndSpouses.customDesign().get(0))
                 .build();
         firstRing = testDataSource.save(firstRing);
         Ring secondRing = Ring.builder()
                 .status(RingStatus.NOT_AVAIL)
                 .branch(branch)
-                .spouse(spouses[1])
+                .spouse(customDesignsAndSpouses.spouses()[1])
+                .customDesign(customDesignsAndSpouses.customDesign().get(1))
                 .build();
         secondRing = testDataSource.save(secondRing);
         CustomOrder customOrder = CustomOrder.builder()
@@ -98,7 +105,7 @@ public class DepositCraftingStageUseCaseIT extends AbstractIT {
         CraftingStage secondCraftingStage = CraftingStage.builder()
                 .customOrder(customOrder)
                 .status(CraftingStageStatus.PENDING)
-                .name("Stage 1")
+                .name("Stage 2")
                 .progress(100)
                 .build();
         this.secondCraftingStage = testDataSource.save(secondCraftingStage);

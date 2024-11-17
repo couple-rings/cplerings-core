@@ -13,6 +13,8 @@ public enum DetermineDesignVersionErrorCode implements ErrorCode {
     INVALID_DESIGN_VERSION_ID("003", "determine.design-version.error.designVersionIdIsNotReal", Type.BUSINESS),
     DESIGN_VERSION_ID_REQUIRED("004", "determine.design-version.error.designVersionIdRequired", Type.VALIDATION),
     HAS_BEEN_ACCEPTED("005", "determine.design-version.error.designVersionHasBeenAccepted", Type.VALIDATION),
+    DESIGN_VERSION_ACCEPTED_REQUIRED("006", "determine.design-version.error.designVersionAcceptedRequired", Type.VALIDATION),
+    DESIGN_VERSION_OWNER("007", "determine.design-version.error.designVersionOwnerRequired", Type.VALIDATION),
     ;
 
     private final String code;
