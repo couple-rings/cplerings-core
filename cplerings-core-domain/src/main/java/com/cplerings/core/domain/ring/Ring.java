@@ -2,6 +2,7 @@ package com.cplerings.core.domain.ring;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.branch.Branch;
+import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.shared.AbstractEntity;
@@ -76,4 +77,8 @@ public class Ring extends AbstractEntity {
 
     @Column(name = "engraving", length = DatabaseConstant.DEFAULT_ENGRAVING_LENGTH)
     private String engraving;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "custom_design_id", nullable = false)
+    private CustomDesign customDesign;
 }

@@ -1,5 +1,6 @@
 package com.cplerings.core.application.shared.entity.ring;
 
+import com.cplerings.core.application.shared.entity.design.ACustomDesign;
 import com.cplerings.core.application.shared.entity.file.ADocument;
 import com.cplerings.core.application.shared.entity.spouse.ASpouse;
 import com.cplerings.core.domain.ring.RingStatus;
@@ -27,4 +28,5 @@ public class ARing implements Serializable {
     private ADocument maintenanceDocument;
     private ASpouse spouse;
     private Instant createdAt;
+    private ACustomDesign customDesign;
 }

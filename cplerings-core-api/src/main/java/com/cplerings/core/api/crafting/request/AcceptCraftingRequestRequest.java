@@ -7,5 +7,5 @@ import lombok.Builder;
 @Builder
 public record AcceptCraftingRequestRequest(Long firstCraftingRequestId, Long secondCraftingRequestId,
                                            ACraftingRequestStatus status, String firstCommentCrafting,
-                                           String secondCommentCrafting, Long branchId) {
+                                           String secondCommentCrafting) {
 }
