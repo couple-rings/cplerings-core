@@ -13,4 +13,6 @@ public interface ConfigurationService {
     Integer getCraftingStageProgress2();
 
     Integer getCraftingStageProgress3();
+
+    Integer getMaximumMaintenanceDuration();
 }

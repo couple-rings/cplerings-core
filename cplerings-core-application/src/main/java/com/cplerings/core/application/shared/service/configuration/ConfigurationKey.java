@@ -32,6 +32,11 @@ public enum ConfigurationKey {
      * Crafting stage progress 3
      */
     CSP3("CSP3"),
+
+    /**
+     * Maximum maintenance duration
+     */
+    MMAD("MMAD"),
     ;
 
     private final String key;

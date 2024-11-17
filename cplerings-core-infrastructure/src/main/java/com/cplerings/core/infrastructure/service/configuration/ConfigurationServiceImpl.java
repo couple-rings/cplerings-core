@@ -46,6 +46,11 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         return getConfiguration(ConfigurationKey.CSP3.getKey(), Integer.class);
     }
 
+    @Override
+    public Integer getMaximumMaintenanceDuration() {
+        return getConfiguration(ConfigurationKey.MMAD.getKey(), Integer.class);
+    }
+
     private <T> T getConfiguration(String key, Class<T> clazz) {
         if (StringUtils.isEmpty(key) || clazz == null) {
             throw new IllegalArgumentException("key or clazz is null");

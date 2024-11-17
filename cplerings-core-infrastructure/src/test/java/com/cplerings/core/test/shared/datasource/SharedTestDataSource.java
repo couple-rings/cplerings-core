@@ -15,6 +15,7 @@ import com.cplerings.core.domain.design.crafting.CraftingRequest;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
+import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.payment.Payment;
@@ -35,6 +36,7 @@ import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
 import com.cplerings.core.infrastructure.repository.DesignCustomRequestRepository;
 import com.cplerings.core.infrastructure.repository.DesignSessionRepository;
 import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
+import com.cplerings.core.infrastructure.repository.DocumentRepository;
 import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
 import com.cplerings.core.infrastructure.repository.PaymentRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
@@ -49,6 +51,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.boot.test.context.TestComponent;
 
+import java.util.Collection;
 import java.util.Optional;
 
 @TestComponent
@@ -79,6 +82,7 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private final TransportationOrderRepository transportationOrderRepository;
     private final TransportationAddressRepository transportationAddressRepository;
     private final DummyOrderRepository dummyOrderRepository;
+    private final DocumentRepository documentRepository;
 
     @Override
     public Payment save(Payment payment) {
@@ -188,6 +192,17 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     public DummyOrder save(DummyOrder dummyOrder) {
         updateAuditor(dummyOrder);
         return dummyOrderRepository.save(dummyOrder);
+    }
+
+    @Override
+    public Document save(Document document) {
+        updateAuditor(document);
+        return documentRepository.save(document);
+    }
+
+    @Override
+    public Collection<Ring> findAllRingsByIds(Collection<Long> ringIds) {
+        return ringRepository.findAllById(ringIds);
     }
 
     @Override

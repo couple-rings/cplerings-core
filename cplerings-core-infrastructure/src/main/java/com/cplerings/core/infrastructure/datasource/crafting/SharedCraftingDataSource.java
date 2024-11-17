@@ -52,6 +52,7 @@ import com.cplerings.core.infrastructure.repository.ContractRepository;
 import com.cplerings.core.infrastructure.repository.CraftingRequestRepository;
 import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
+import com.cplerings.core.infrastructure.repository.DocumentRepository;
 import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
@@ -62,8 +63,11 @@ import lombok.RequiredArgsConstructor;
 
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @DataSource
 @RequiredArgsConstructor
@@ -95,6 +99,7 @@ public class SharedCraftingDataSource extends AbstractDataSource
     private final TransportationAddressRepository transportationAddressRepository;
     private final TransportationOrderRepository transportationOrderRepository;
     private final AgreementRepository agreementRepository;
+    private final DocumentRepository documentRepository;
 
     @Override
     public Optional<Account> getAccountByCustomerId(Long customerId) {
@@ -250,6 +255,17 @@ public class SharedCraftingDataSource extends AbstractDataSource
     public CustomOrder save(CustomOrder customOrder) {
         updateAuditor(customOrder);
         return customOrderRepository.save(customOrder);
+    }
+
+    @Override
+    public Set<Document> getMaintenancesByIds(Collection<Long> maintenanceIds) {
+        return new HashSet<>(documentRepository.findAllById(maintenanceIds));
+    }
+
+    @Override
+    public Ring save(Ring ring) {
+        updateAuditor(ring);
+        return ringRepository.save(ring);
     }
 
     @Override

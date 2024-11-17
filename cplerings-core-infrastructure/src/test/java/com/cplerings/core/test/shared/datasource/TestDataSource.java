@@ -12,6 +12,7 @@ import com.cplerings.core.domain.design.crafting.CraftingRequest;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
+import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.payment.Payment;
@@ -21,6 +22,7 @@ import com.cplerings.core.domain.spouse.Spouse;
 import com.cplerings.core.domain.spouse.SpouseAccount;
 import com.cplerings.core.test.shared.entity.order.DummyOrder;
 
+import java.util.Collection;
 import java.util.Optional;
 
 public interface TestDataSource {
@@ -68,4 +70,8 @@ public interface TestDataSource {
     Account getTransporterWithBranch(Long id);
 
     DummyOrder save(DummyOrder dummyOrder);
+
+    Document save(Document document);
+
+    Collection<Ring> findAllRingsByIds(Collection<Long> ringIds);
 }
