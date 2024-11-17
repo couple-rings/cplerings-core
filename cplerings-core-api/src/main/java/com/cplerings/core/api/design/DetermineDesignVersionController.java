@@ -3,11 +3,13 @@ package com.cplerings.core.api.design;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cplerings.core.api.design.data.DesignVersion;
 import com.cplerings.core.api.design.mapper.APIDetermineDesignVersionMapper;
 import com.cplerings.core.api.design.request.DetermineDesignVersionRequest;
+import com.cplerings.core.api.design.request.data.DetermineDesignVersionRequestData;
 import com.cplerings.core.api.design.response.DetermineDesignVersionResponse;
 import com.cplerings.core.api.shared.AbstractController;
 import com.cplerings.core.api.shared.mapper.APIMapper;
@@ -44,8 +46,12 @@ public class DetermineDesignVersionController extends AbstractController<Determi
             )
     )
     @ErrorAPIResponse
-    public ResponseEntity<Object> create(@PathVariable("designVersionId") Long designVersionId) {
-        DetermineDesignVersionRequest request = new DetermineDesignVersionRequest(designVersionId);
+    public ResponseEntity<Object> create(@PathVariable("designVersionId") Long designVersionId, @RequestBody DetermineDesignVersionRequestData determineDesignVersionRequestData) {
+        DetermineDesignVersionRequest request = DetermineDesignVersionRequest.builder()
+                .designVersionId(designVersionId)
+                .owner(determineDesignVersionRequestData.owner())
+                .isAccepted(determineDesignVersionRequestData.isAccepted())
+                .build();
         return handleRequest(request);
     }
 

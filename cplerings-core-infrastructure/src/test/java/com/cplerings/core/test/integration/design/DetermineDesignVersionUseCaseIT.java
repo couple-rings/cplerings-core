@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.cplerings.core.api.design.request.DetermineDesignVersionRequest;
+import com.cplerings.core.api.design.request.data.DetermineDesignVersionRequestData;
 import com.cplerings.core.api.design.response.DetermineDesignVersionResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
+import com.cplerings.core.application.shared.entity.design.ADesignVersionOwner;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.design.DesignVersion;
@@ -51,8 +53,9 @@ public class DetermineDesignVersionUseCaseIT extends AbstractIT {
     void givenCustomer_whenDetermineDesignVersion() {
         final String token = jwtTestHelper.generateToken(AccountTestConstant.CUSTOMER_EMAIL);
 
-        DetermineDesignVersionRequest request = DetermineDesignVersionRequest.builder()
-                .designVersionId(1L)
+        DetermineDesignVersionRequestData requestData = DetermineDesignVersionRequestData.builder()
+                .owner(ADesignVersionOwner.SELF)
+                .isAccepted(true)
                 .build();
 
         CustomRequest customRequest = CustomRequest.builder()
@@ -82,6 +85,7 @@ public class DetermineDesignVersionUseCaseIT extends AbstractIT {
                 .path(APIConstant.ACCEPT_SINGLE_DESIGN_VERSION_PATH.replace("{designVersionId}", Long.toString(1)))
                 .authorizationHeader(token)
                 .method(RequestBuilder.Method.PUT)
+                .body(requestData)
                 .send();
 
         thenResponseIsOk(response);
