@@ -58,11 +58,11 @@ class ViewCurrentProfileUseCaseIT extends AbstractIT {
                 .isExactlyInstanceOf(ProfileData.class);
 
         final ProfileData profile = responseBody.getData();
-        assertThat(profile.id()).isEqualTo(account.getId());
-        assertThat(profile.email()).isEqualTo(account.getEmail());
-        assertThat(profile.username()).isEqualTo(account.getUsername());
-        assertThat(profile.phone()).isEqualTo(account.getPhone());
-        assertThat(profile.avatar()).isEqualTo(account.getAvatar());
+        assertThat(profile.account().getId()).isEqualTo(account.getId());
+        assertThat(profile.account().getEmail()).isEqualTo(account.getEmail());
+        assertThat(profile.account().getUsername()).isEqualTo(account.getUsername());
+        assertThat(profile.account().getPhone()).isEqualTo(account.getPhone());
+        assertThat(profile.account().getAvatar()).isEqualTo(account.getAvatar());
     }
 
     @Test
