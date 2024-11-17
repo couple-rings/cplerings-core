@@ -11,7 +11,6 @@ public interface DetermineDesignVersionDataSource {
     DesignVersion acceptDesignVersion(DesignVersion designVersion);
     Optional<DesignVersion> getDesignVersionById(long designVersionId);
     void updateCustomRequest(CustomRequest customRequest);
-    int getRemainingDesignSessionsCount(Long customerId);
-    List<DesignVersion> getDesignVersionByCustomerIdAndNotAcceptedAndNotOld(Long customerId);
+    List<DesignVersion> getDesignVersionRemainingByDesignId(Long designId, Long designVersionId);
     DesignVersion save(DesignVersion designVersion);
 }

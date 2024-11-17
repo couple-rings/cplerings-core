@@ -113,12 +113,11 @@ public class SharedDesignDataSource extends AbstractDataSource
     }
 
     @Override
-    public List<DesignVersion> getDesignVersionByCustomerIdAndNotAcceptedAndNotOld(Long customerId) {
+    public List<DesignVersion> getDesignVersionRemainingByDesignId(Long designId, Long designVersionId) {
         return createQuery().select(Q_DESIGN_VERSION)
                 .from(Q_DESIGN_VERSION)
-                .where(Q_DESIGN_VERSION.customer.id.eq(customerId)
-                        .and(Q_DESIGN_VERSION.isAccepted.eq(false)
-                                .and(Q_DESIGN_VERSION.isOld.eq(false))))
+                .where(Q_DESIGN_VERSION.design.id.eq(designId)
+                        .and(Q_DESIGN_VERSION.id.ne(designVersionId)))
                 .fetch();
     }
 

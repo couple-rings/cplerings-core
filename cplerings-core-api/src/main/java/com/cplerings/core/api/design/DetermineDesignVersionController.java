@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cplerings.core.api.design.data.DesignVersion;
+import com.cplerings.core.api.design.data.DetermineDesignVersionData;
 import com.cplerings.core.api.design.mapper.APIDetermineDesignVersionMapper;
 import com.cplerings.core.api.design.request.DetermineDesignVersionRequest;
 import com.cplerings.core.api.design.request.data.DetermineDesignVersionRequestData;
@@ -29,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-public class DetermineDesignVersionController extends AbstractController<DetermineDesignVersionInput, DetermineDesignVersionOutput, DesignVersion, DetermineDesignVersionRequest, DetermineDesignVersionResponse> {
+public class DetermineDesignVersionController extends AbstractController<DetermineDesignVersionInput, DetermineDesignVersionOutput, DetermineDesignVersionData, DetermineDesignVersionRequest, DetermineDesignVersionResponse> {
 
     private final APIDetermineDesignVersionMapper apiDetermineDesignVersionMapper;
     private final DetermineDesignVersionUseCase determineDesignVersionUseCase;
@@ -46,12 +47,7 @@ public class DetermineDesignVersionController extends AbstractController<Determi
             )
     )
     @ErrorAPIResponse
-    public ResponseEntity<Object> create(@PathVariable("designVersionId") Long designVersionId, @RequestBody DetermineDesignVersionRequestData determineDesignVersionRequestData) {
-        DetermineDesignVersionRequest request = DetermineDesignVersionRequest.builder()
-                .designVersionId(designVersionId)
-                .owner(determineDesignVersionRequestData.owner())
-                .isAccepted(determineDesignVersionRequestData.isAccepted())
-                .build();
+    public ResponseEntity<Object> update(@RequestBody DetermineDesignVersionRequest request) {
         return handleRequest(request);
     }
 
@@ -61,7 +57,7 @@ public class DetermineDesignVersionController extends AbstractController<Determi
     }
 
     @Override
-    protected APIMapper<DetermineDesignVersionInput, DetermineDesignVersionOutput, DesignVersion, DetermineDesignVersionRequest, DetermineDesignVersionResponse> getMapper() {
+    protected APIMapper<DetermineDesignVersionInput, DetermineDesignVersionOutput, DetermineDesignVersionData, DetermineDesignVersionRequest, DetermineDesignVersionResponse> getMapper() {
         return apiDetermineDesignVersionMapper;
     }
 }

@@ -5,5 +5,5 @@ import com.cplerings.core.application.shared.entity.design.ADesignVersion;
 import lombok.Builder;
 
 @Builder
-public record DetermineDesignVersionOutput(ADesignVersion designVersion) {
+public record DetermineDesignVersionOutput(ADesignVersion femaleDesignVersion, ADesignVersion maleDesignVersion) {
 }

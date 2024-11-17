@@ -26,46 +26,57 @@ public class DetermineDesignVersionUseCaseImpl extends AbstractUseCase<Determine
 
     private final ADetermineDesignVersionMapper aDetermineDesignVersionMapper;
     private final DetermineDesignVersionDataSource determineDesignVersionDataSource;
-    private final SecurityService securityService;
 
     @Override
     protected void validateInput(UseCaseValidator validator, DetermineDesignVersionInput input) {
         super.validateInput(validator, input);
-        validator.validate(input.designVersionId() != null , DetermineDesignVersionErrorCode.DESIGN_VERSION_ID_REQUIRED);
-        validator.validate(input.designVersionId() > 0, DetermineDesignVersionErrorCode.DESIGN_VERSION_ID_WRONG_POSITIVE_NUMBER);
-        validator.validate(input.isAccepted() != null , DetermineDesignVersionErrorCode.DESIGN_VERSION_ACCEPTED_REQUIRED);
+        validator.validate(input.femaleVersion().designVersionId() != null, DetermineDesignVersionErrorCode.DESIGN_VERSION_ID_REQUIRED);
+        validator.validate(input.maleVersion().designVersionId() != null, DetermineDesignVersionErrorCode.DESIGN_VERSION_ID_REQUIRED);
+        validator.validate(input.femaleVersion().designVersionId() > 0, DetermineDesignVersionErrorCode.DESIGN_VERSION_ID_WRONG_POSITIVE_NUMBER);
+        validator.validate(input.maleVersion().designVersionId() > 0, DetermineDesignVersionErrorCode.DESIGN_VERSION_ID_WRONG_POSITIVE_NUMBER);
     }
 
     @Override
     protected DetermineDesignVersionOutput internalExecute(UseCaseValidator validator, DetermineDesignVersionInput input) {
-        DesignVersion designVersion = determineDesignVersionDataSource.getDesignVersionById(input.designVersionId())
+        DesignVersion femaleDesignVersion = determineDesignVersionDataSource.getDesignVersionById(input.femaleVersion().designVersionId())
                 .orElse(null);
-        validator.validateAndStopExecution(designVersion != null, DetermineDesignVersionErrorCode.INVALID_DESIGN_VERSION_ID);
-        validator.validateAndStopExecution(!designVersion.getIsAccepted(), DetermineDesignVersionErrorCode.HAS_BEEN_ACCEPTED);
-        if (input.isAccepted()) {
-            validator.validateAndStopExecution(input.owner() != null , DetermineDesignVersionErrorCode.DESIGN_VERSION_OWNER);
-            designVersion.setIsAccepted(true);
-            switch (input.owner()) {
-                case SELF -> designVersion.setOwner(DesignVersionOwner.SELF);
-                case PARTNER -> designVersion.setOwner(DesignVersionOwner.PARTNER);
-            }
-            CustomRequest customRequest = designVersion.getDesign().getDesignCustomRequests().stream().findFirst().get().getCustomRequest();
-            customRequest.setStatus(CustomRequestStatus.COMPLETED);
-            determineDesignVersionDataSource.updateCustomRequest(customRequest);
-            DesignVersion designVersionUpdated = determineDesignVersionDataSource.acceptDesignVersion(designVersion);
-            return aDetermineDesignVersionMapper.toOutput(designVersionUpdated);
+        validator.validateAndStopExecution(femaleDesignVersion != null, DetermineDesignVersionErrorCode.INVALID_DESIGN_VERSION_ID);
+        DesignVersion maleDesignVersion = determineDesignVersionDataSource.getDesignVersionById(input.maleVersion().designVersionId())
+                .orElse(null);
+        validator.validateAndStopExecution(maleDesignVersion != null, DetermineDesignVersionErrorCode.INVALID_DESIGN_VERSION_ID);
+        validator.validateAndStopExecution(!femaleDesignVersion.getIsAccepted(), DetermineDesignVersionErrorCode.HAS_BEEN_ACCEPTED);
+        validator.validateAndStopExecution(!maleDesignVersion.getIsAccepted(), DetermineDesignVersionErrorCode.HAS_BEEN_ACCEPTED);
+        validator.validateAndStopExecution(input.femaleVersion().owner() != null, DetermineDesignVersionErrorCode.DESIGN_VERSION_OWNER);
+        validator.validateAndStopExecution(input.maleVersion().owner() != null, DetermineDesignVersionErrorCode.DESIGN_VERSION_OWNER);
+        femaleDesignVersion.setIsAccepted(true);
+        maleDesignVersion.setIsAccepted(true);
+        switch (input.femaleVersion().owner()) {
+            case SELF -> femaleDesignVersion.setOwner(DesignVersionOwner.SELF);
+            case PARTNER -> femaleDesignVersion.setOwner(DesignVersionOwner.PARTNER);
         }
-        else {
-            CurrentUser currentUser = securityService.getCurrentUser();
-            int designSessionsRemaining = determineDesignVersionDataSource.getRemainingDesignSessionsCount(currentUser.id());
-            if (designSessionsRemaining == 0) {
-                List<DesignVersion> designVersions = determineDesignVersionDataSource.getDesignVersionByCustomerIdAndNotAcceptedAndNotOld(currentUser.id());
-                designVersions.forEach(designVersionUpdate -> {
-                    designVersionUpdate.setIsOld(true);
-                    determineDesignVersionDataSource.save(designVersionUpdate);
-                });
-            }
-            return DetermineDesignVersionOutput.builder().build();
+
+        switch (input.maleVersion().owner()) {
+            case SELF -> maleDesignVersion.setOwner(DesignVersionOwner.SELF);
+            case PARTNER -> maleDesignVersion.setOwner(DesignVersionOwner.PARTNER);
         }
+        CustomRequest customRequest = femaleDesignVersion.getDesign().getDesignCustomRequests().stream().findFirst().get().getCustomRequest();
+        customRequest.setStatus(CustomRequestStatus.COMPLETED);
+        determineDesignVersionDataSource.updateCustomRequest(customRequest);
+        DesignVersion femaleDesignVersionUpdated = determineDesignVersionDataSource.acceptDesignVersion(femaleDesignVersion);
+        DesignVersion maleDesignVersionUpdated = determineDesignVersionDataSource.acceptDesignVersion(maleDesignVersion);
+        List<DesignVersion> femaleDesignVersions = determineDesignVersionDataSource.getDesignVersionRemainingByDesignId(femaleDesignVersion.getDesign().getId() ,femaleDesignVersionUpdated.getId());
+        femaleDesignVersions.forEach(designVersionUpdate -> {
+            designVersionUpdate.setIsOld(true);
+            determineDesignVersionDataSource.save(designVersionUpdate);
+        });
+        if (!femaleDesignVersionUpdated.getDesign().getId().equals(maleDesignVersion.getDesign().getId())) {
+            List<DesignVersion> maleDesignVersions = determineDesignVersionDataSource.getDesignVersionRemainingByDesignId(maleDesignVersion.getDesign().getId() ,maleDesignVersionUpdated.getId());
+            maleDesignVersions.forEach(designVersionUpdate -> {
+                designVersionUpdate.setIsOld(true);
+                determineDesignVersionDataSource.save(designVersionUpdate);
+            });
+        }
+
+        return aDetermineDesignVersionMapper.toOutput(femaleDesignVersionUpdated, maleDesignVersionUpdated);
     }
 }

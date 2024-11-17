@@ -5,5 +5,5 @@ import com.cplerings.core.application.shared.entity.design.ADesignVersionOwner;
 import lombok.Builder;
 
 @Builder
-public record DetermineDesignVersionRequestData(ADesignVersionOwner owner, Boolean isAccepted) {
+public record DetermineDesignVersionRequestData(Long designVersionId, ADesignVersionOwner owner) {
 }

@@ -19,5 +19,5 @@ import com.cplerings.core.domain.design.DesignVersion;
 )
 public interface ADetermineDesignVersionMapper {
 
-        DetermineDesignVersionOutput toOutput(DesignVersion designVersion);
+        DetermineDesignVersionOutput toOutput(DesignVersion femaleDesignVersion, DesignVersion maleDesignVersion);
 }
