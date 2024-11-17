@@ -32,7 +32,6 @@ import com.cplerings.core.test.shared.design.CustomDesignTestHelper;
 import com.cplerings.core.test.shared.helper.BranchTestHelper;
 import com.cplerings.core.test.shared.helper.DocumentTestHelper;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
-import com.cplerings.core.test.shared.spouse.SpouseTestHelper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,9 +44,6 @@ import java.util.Comparator;
 import java.util.Set;
 
 class CompleteCraftingStageUseCaseIT extends AbstractIT {
-
-    @Autowired
-    private SpouseTestHelper spouseTestHelper;
 
     @Autowired
     private TestDataSource testDataSource;
