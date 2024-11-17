@@ -4,13 +4,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import com.cplerings.core.api.design.data.DetermineDesignVersionData;
 import com.cplerings.core.api.design.request.DetermineDesignVersionRequest;
+import com.cplerings.core.api.design.request.data.DetermineDesignVersionRequestData;
 import com.cplerings.core.api.design.response.DetermineDesignVersionResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
+import com.cplerings.core.application.shared.entity.design.ADesignVersionOwner;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.design.DesignVersion;
@@ -47,12 +51,51 @@ public class DetermineDesignVersionUseCaseIT extends AbstractIT {
     @Autowired
     private TestDataSource testDataSource;
 
+    private DesignVersion firstDesignVersion;
+    private DesignVersion secondDesignVersion;
+
+    @BeforeEach
+    public void start() {
+        DesignVersion designVersion1 = DesignVersion.builder()
+                .designFile(documentRepository.getReferenceById(1L))
+                .customer(accountRepository.getReferenceById(1L))
+                .image(imageRepository.getReferenceById(1L))
+                .design(designRepository.getReferenceById(1L))
+                .versionNumber(3)
+                .isAccepted(false)
+                .isOld(false)
+                .build();
+        firstDesignVersion = testDataSource.save(designVersion1);
+
+        DesignVersion designVersion2 = DesignVersion.builder()
+                .designFile(documentRepository.getReferenceById(11L))
+                .customer(accountRepository.getReferenceById(1L))
+                .image(imageRepository.getReferenceById(11L))
+                .design(designRepository.getReferenceById(11L))
+                .versionNumber(3)
+                .isAccepted(false)
+                .isOld(false)
+                .build();
+        secondDesignVersion = testDataSource.save(designVersion2);
+    }
+
     @Test
     void givenCustomer_whenDetermineDesignVersion() {
         final String token = jwtTestHelper.generateToken(AccountTestConstant.CUSTOMER_EMAIL);
 
+        DetermineDesignVersionRequestData firstRequestData = DetermineDesignVersionRequestData.builder()
+                .owner(ADesignVersionOwner.SELF)
+                .designVersionId(firstDesignVersion.getId())
+                .build();
+
+        DetermineDesignVersionRequestData secondRequestData = DetermineDesignVersionRequestData.builder()
+                .owner(ADesignVersionOwner.SELF)
+                .designVersionId(secondDesignVersion.getId())
+                .build();
+
         DetermineDesignVersionRequest request = DetermineDesignVersionRequest.builder()
-                .designVersionId(1L)
+                .femaleVersion(firstRequestData)
+                .maleVersion(secondRequestData)
                 .build();
 
         CustomRequest customRequest = CustomRequest.builder()
@@ -67,21 +110,12 @@ public class DetermineDesignVersionUseCaseIT extends AbstractIT {
                 .design(designRepository.getReferenceById(1L))
                 .build();
         testDataSource.save(designCustomRequest);
-        DesignVersion designVersion = DesignVersion.builder()
-                .designFile(documentRepository.getReferenceById(1L))
-                .customer(accountRepository.getReferenceById(1L))
-                .image(imageRepository.getReferenceById(1L))
-                .design(designRepository.getReferenceById(1L))
-                .versionNumber(3)
-                .isAccepted(false)
-                .isOld(false)
-                .build();
-        testDataSource.save(designVersion);
 
         final WebTestClient.ResponseSpec response = requestBuilder()
-                .path(APIConstant.ACCEPT_SINGLE_DESIGN_VERSION_PATH.replace("{designVersionId}", Long.toString(1)))
+                .path(APIConstant.ACCEPT_SINGLE_DESIGN_VERSION_PATH)
                 .authorizationHeader(token)
                 .method(RequestBuilder.Method.PUT)
+                .body(request)
                 .send();
 
         thenResponseIsOk(response);
@@ -99,8 +133,10 @@ public class DetermineDesignVersionUseCaseIT extends AbstractIT {
                 .isEqualTo(AbstractResponse.Type.DATA);
         assertThat(responseBody.getData())
                 .isNotNull()
-                .isExactlyInstanceOf(com.cplerings.core.api.design.data.DesignVersion.class);
-        assertThat(responseBody.getData().designVersion()).isNotNull();
-        assertThat(responseBody.getData().designVersion().getIsAccepted()).isEqualTo(true);
+                .isExactlyInstanceOf(DetermineDesignVersionData.class);
+        assertThat(responseBody.getData().femaleDesignVersion()).isNotNull();
+        assertThat(responseBody.getData().maleDesignVersion()).isNotNull();
+        assertThat(responseBody.getData().femaleDesignVersion().getIsAccepted()).isEqualTo(true);
+        assertThat(responseBody.getData().maleDesignVersion().getIsAccepted()).isEqualTo(true);
     }
 }

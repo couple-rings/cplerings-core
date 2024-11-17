@@ -113,6 +113,15 @@ public class SharedDesignDataSource extends AbstractDataSource
     }
 
     @Override
+    public List<DesignVersion> getDesignVersionRemainingByDesignId(Long designId, Long designVersionId) {
+        return createQuery().select(Q_DESIGN_VERSION)
+                .from(Q_DESIGN_VERSION)
+                .where(Q_DESIGN_VERSION.design.id.eq(designId)
+                        .and(Q_DESIGN_VERSION.id.ne(designVersionId)))
+                .fetch();
+    }
+
+    @Override
     public DesignVersion save(DesignVersion designVersion) {
         updateAuditor(designVersion);
         return designVersionRepository.save(designVersion);
