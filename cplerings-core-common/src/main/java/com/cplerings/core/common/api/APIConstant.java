@@ -68,6 +68,7 @@ public final class APIConstant {
     public static final String ACCEPT_SINGLE_DESIGN_VERSION_PATH = DESIGN_VERSION_PATH + "/{designVersionId}";
     public static final String VIEW_CUSTOM_DESIGNS_PATH = CUSTOM_DESIGN_PATH;
     public static final String VIEW_CUSTOM_DESIGN_PATH = CUSTOM_DESIGN_PATH + "/{customDesignId}";
+    public static final String VIEW_DESIGN_SESSIONS_LEFT_PATH = DESIGN_SESSION_PATH + "/customers/{customerId}/left";
 
     /*
        Uploading path

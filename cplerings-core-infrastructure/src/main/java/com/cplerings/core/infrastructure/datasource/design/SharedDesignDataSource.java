@@ -10,6 +10,7 @@ import com.cplerings.core.application.design.datasource.CreateDesignSessionDataS
 import com.cplerings.core.application.design.datasource.CreateDesignVersionDataSource;
 import com.cplerings.core.application.design.datasource.DetermineDesignVersionDataSource;
 import com.cplerings.core.application.design.datasource.ProcessDesignSessionPaymentDataSource;
+import com.cplerings.core.application.design.datasource.ViewDesignSessionsLeftDataSource;
 import com.cplerings.core.application.design.datasource.ViewDesignVersionDataSource;
 import com.cplerings.core.application.design.datasource.ViewDesignVersionsDataSource;
 import com.cplerings.core.application.design.datasource.result.DesignVersions;
@@ -51,7 +52,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SharedDesignDataSource extends AbstractDataSource
         implements CreateDesignSessionDataSource, ProcessDesignSessionPaymentDataSource, CheckRemainingDesignSessionDataSource,
-        CreateDesignVersionDataSource, ViewDesignVersionDataSource, ViewDesignVersionsDataSource, DetermineDesignVersionDataSource {
+        CreateDesignVersionDataSource, ViewDesignVersionDataSource, ViewDesignVersionsDataSource, DetermineDesignVersionDataSource, ViewDesignSessionsLeftDataSource {
 
     private static final QDesign Q_DESIGN = QDesign.design;
     private static final QDesignVersion Q_DESIGN_VERSION = QDesignVersion.designVersion;
