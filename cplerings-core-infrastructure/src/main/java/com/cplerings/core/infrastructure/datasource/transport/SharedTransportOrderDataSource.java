@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.design.datasource.result.CustomDesigns;
 import com.cplerings.core.application.transport.datasource.AssignTransportOrderDataSource;
+import com.cplerings.core.application.transport.datasource.UpdateTransportationOrderStatusDataSource;
 import com.cplerings.core.application.transport.datasource.UpdateTransportationOrdersToOngoingDataSource;
 import com.cplerings.core.application.transport.datasource.ViewTransportationOrdersDataSource;
 import com.cplerings.core.application.transport.datasource.result.TransportationOrders;
@@ -25,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @DataSource
-public class SharedTransportOrderDataSource extends AbstractDataSource implements AssignTransportOrderDataSource, UpdateTransportationOrdersToOngoingDataSource, ViewTransportationOrdersDataSource {
+public class SharedTransportOrderDataSource extends AbstractDataSource implements AssignTransportOrderDataSource, UpdateTransportationOrdersToOngoingDataSource, ViewTransportationOrdersDataSource, UpdateTransportationOrderStatusDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QTransportationOrder Q_TRANSPORTATION_ORDER = QTransportationOrder.transportationOrder;
