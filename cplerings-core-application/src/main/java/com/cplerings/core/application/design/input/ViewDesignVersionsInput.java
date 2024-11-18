@@ -12,6 +12,7 @@ import lombok.Setter;
 public class ViewDesignVersionsInput extends AbstractPaginatedInput {
 
     private Long designId;
+    private Long customerId;
 
     public static Builder builder() {
         return new Builder();
@@ -20,9 +21,15 @@ public class ViewDesignVersionsInput extends AbstractPaginatedInput {
     public static final class Builder extends AbstractPaginatedInputBuilder<Builder, ViewDesignVersionsInput> {
 
         private Long designId;
+        private Long customerId;
 
         public Builder designId(Long designId) {
             this.designId = designId;
+            return self();
+        }
+
+        public Builder customerId(Long customerId) {
+            this.customerId = customerId;
             return self();
         }
 
@@ -30,6 +37,7 @@ public class ViewDesignVersionsInput extends AbstractPaginatedInput {
         public ViewDesignVersionsInput build() {
             final ViewDesignVersionsInput input = super.build();
             input.setDesignId(designId);
+            input.setCustomerId(customerId);
             return input;
         }
 
