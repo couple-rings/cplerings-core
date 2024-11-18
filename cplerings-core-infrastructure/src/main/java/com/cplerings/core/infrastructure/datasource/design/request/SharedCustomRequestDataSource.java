@@ -1,5 +1,6 @@
 package com.cplerings.core.infrastructure.datasource.design.request;
 
+import com.cplerings.core.application.design.datasource.CancelCustomRequestDataSource;
 import com.cplerings.core.application.design.datasource.CreateCustomRequestDataSource;
 import com.cplerings.core.application.design.datasource.DetermineCustomRequestDataSource;
 import com.cplerings.core.application.design.datasource.ViewCustomRequestDataSource;
@@ -39,7 +40,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @DataSource
-public class SharedCustomRequestDataSource extends AbstractDataSource implements ViewCustomRequestDataSource, CreateCustomRequestDataSource, ViewCustomRequestsDataSource, DetermineCustomRequestDataSource {
+public class SharedCustomRequestDataSource extends AbstractDataSource implements ViewCustomRequestDataSource, CreateCustomRequestDataSource, ViewCustomRequestsDataSource, DetermineCustomRequestDataSource, CancelCustomRequestDataSource {
 
     private static final QCustomRequest Q_CUSTOM_REQUEST = QCustomRequest.customRequest;
     private static final QDesign Q_DESIGN = QDesign.design;
@@ -61,6 +62,27 @@ public class SharedCustomRequestDataSource extends AbstractDataSource implements
                 .leftJoin(Q_DESIGN_CUSTOM_REQUEST.design, Q_DESIGN).fetchJoin()
                 .where(Q_CUSTOM_REQUEST.id.eq(customRequestId))
                 .fetchOne());
+    }
+
+    @Override
+    public List<DesignVersion> getDesignVersionsByDesignId(Long designId) {
+        return createQuery()
+                .select(Q_DESIGN_VERSION)
+                .from(Q_DESIGN_VERSION)
+                .where(Q_DESIGN_VERSION.design.id.eq(designId))
+                .fetch();
+    }
+
+    @Override
+    public Design save(Design design) {
+        updateAuditor(design);
+        return designRepository.save(design);
+    }
+
+    @Override
+    public DesignVersion save(DesignVersion designVersion) {
+        updateAuditor(designVersion);
+        return designVersionRepository.save(designVersion);
     }
 
     @Override
