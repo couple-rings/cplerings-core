@@ -31,6 +31,7 @@ class ViewCustomOrdersUseCaseIT extends AbstractIT {
         ViewCustomOrdersRequest request = ViewCustomOrdersRequest.builder()
                 .page(0)
                 .pageSize(1)
+                .branchId(1L)
                 .build();
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(APIConstant.CUSTOM_ORDERS_PATH)
