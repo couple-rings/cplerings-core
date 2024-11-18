@@ -30,6 +30,7 @@ import com.cplerings.core.domain.crafting.QCraftingStage;
 import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.QCustomDesign;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
+import com.cplerings.core.domain.design.crafting.CraftingRequestStatus;
 import com.cplerings.core.domain.design.crafting.QCraftingRequest;
 import com.cplerings.core.domain.diamond.DiamondSpecification;
 import com.cplerings.core.domain.diamond.QDiamondSpecification;
@@ -62,6 +63,7 @@ import com.cplerings.core.infrastructure.repository.TransportationOrderRepositor
 import lombok.RequiredArgsConstructor;
 
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
+import com.querydsl.core.types.dsl.BooleanExpression;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -287,9 +289,24 @@ public class SharedCraftingDataSource extends AbstractDataSource
                 .select(Q_CRAFTING_REQUEST)
                 .from(Q_CRAFTING_REQUEST);
 
+        final BooleanExpressionBuilder booleanExpressionBuilder = createBooleanExpressionBuilder();
         if (input.getCustomDesignId() != null) {
-            query.where(Q_CRAFTING_REQUEST.customDesign.id.eq(input.getCustomDesignId()));
+            booleanExpressionBuilder.and(Q_CRAFTING_REQUEST.customDesign.id.eq(input.getCustomDesignId()));
         }
+
+        if (input.getCustomerId() != null) {
+            booleanExpressionBuilder.and(Q_CRAFTING_REQUEST.customer.id.eq(input.getCustomerId()));
+        }
+
+        if (input.getStatus() != null) {
+            switch (input.getStatus()) {
+                case PENDING -> booleanExpressionBuilder.and(Q_CRAFTING_REQUEST.craftingRequestStatus.eq(CraftingRequestStatus.PENDING));
+                case ACCEPTED -> booleanExpressionBuilder.and(Q_CRAFTING_REQUEST.craftingRequestStatus.eq(CraftingRequestStatus.ACCEPTED));
+                case REJECTED -> booleanExpressionBuilder.and(Q_CRAFTING_REQUEST.craftingRequestStatus.eq(CraftingRequestStatus.REJECTED));
+            }
+        }
+        final BooleanExpression predicate = booleanExpressionBuilder.build();
+        query.where(predicate);
 
         long count = query.distinct().fetchCount();
         List<CraftingRequest> craftingRequests = query.limit(input.getPageSize()).offset(offset).fetch();

@@ -29,4 +29,5 @@ public class ADesignVersion implements Serializable {
     private Boolean isAccepted;
     private Boolean isOld;
     private Instant createdAt;
+    private ADesignVersionOwner owner;
 }

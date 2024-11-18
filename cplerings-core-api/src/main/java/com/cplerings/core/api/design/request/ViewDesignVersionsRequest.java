@@ -16,4 +16,5 @@ import lombok.experimental.SuperBuilder;
 public class ViewDesignVersionsRequest extends AbstractPaginatedRequest {
 
     private Long designId;
+    private Long customerId;
 }
