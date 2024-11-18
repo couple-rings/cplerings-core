@@ -127,4 +127,10 @@ public final class APIConstant {
     */
     public static final String CUSTOM_ORDERS_PATH = "/custom-orders";
     public static final String VIEW_A_CUSTOM_ORDER_PATH = CUSTOM_ORDERS_PATH + "/{customOrderId}";
+
+    /*
+       agreements paths
+    */
+    public static final String AGREEMENTS_PATH = "/agreements";
+
 }

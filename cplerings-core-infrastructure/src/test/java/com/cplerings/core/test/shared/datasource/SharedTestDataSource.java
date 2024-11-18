@@ -21,11 +21,13 @@ import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.ring.Ring;
+import com.cplerings.core.domain.spouse.Agreement;
 import com.cplerings.core.domain.spouse.Spouse;
 import com.cplerings.core.domain.spouse.SpouseAccount;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.infrastructure.repository.AccountVerificationRepository;
+import com.cplerings.core.infrastructure.repository.AgreementRepository;
 import com.cplerings.core.infrastructure.repository.BranchRepository;
 import com.cplerings.core.infrastructure.repository.ContractRepository;
 import com.cplerings.core.infrastructure.repository.CraftingRequestRepository;
@@ -83,6 +85,7 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private final TransportationAddressRepository transportationAddressRepository;
     private final DummyOrderRepository dummyOrderRepository;
     private final DocumentRepository documentRepository;
+    private final AgreementRepository agreementRepository;
 
     @Override
     public Payment save(Payment payment) {
@@ -203,6 +206,12 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     @Override
     public Collection<Ring> findAllRingsByIds(Collection<Long> ringIds) {
         return ringRepository.findAllById(ringIds);
+    }
+
+    @Override
+    public Agreement save(Agreement agreement) {
+        updateAuditor(agreement);
+        return agreementRepository.save(agreement);
     }
 
     @Override
