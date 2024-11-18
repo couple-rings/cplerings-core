@@ -15,6 +15,7 @@ public class ViewCustomOrdersInput extends AbstractPaginatedInput {
     private Long customerId;
     private Long jewelerId;
     private ACustomOrderStatus status;
+    private Long branchId;
 
     public static Builder builder() {
         return new Builder();
@@ -25,6 +26,7 @@ public class ViewCustomOrdersInput extends AbstractPaginatedInput {
         private Long customerId;
         private Long jewelerId;
         private ACustomOrderStatus status;
+        private Long branchId;
 
         public Builder customerId(Long customerId) {
             this.customerId = customerId;
@@ -41,12 +43,18 @@ public class ViewCustomOrdersInput extends AbstractPaginatedInput {
             return self();
         }
 
+        public Builder branchId(Long branchId) {
+            this.branchId = branchId;
+            return self();
+        }
+
         @Override
         public ViewCustomOrdersInput build() {
             final ViewCustomOrdersInput input = super.build();
             input.setCustomerId(customerId);
             input.setJewelerId(jewelerId);
             input.setStatus(status);
+            input.setBranchId(branchId);
             return input;
         }
 

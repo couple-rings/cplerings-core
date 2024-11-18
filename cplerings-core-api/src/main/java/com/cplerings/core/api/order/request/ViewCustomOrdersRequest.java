@@ -19,4 +19,5 @@ public class ViewCustomOrdersRequest extends AbstractPaginatedRequest {
     private Long customerId;
     private Long jewelerId;
     private ACustomOrderStatus status;
+    private Long branchId;
 }

@@ -51,6 +51,10 @@ public class SharedCustomOrderDataSource extends AbstractDataSource implements V
             booleanExpressionBuilder.and(Q_CUSTOM_ORDER.jeweler.id.eq(input.getJewelerId()));
         }
 
+        if (input.getBranchId() != null) {
+            booleanExpressionBuilder.and(Q_CUSTOM_ORDER.firstRing.branch.id.eq(input.getBranchId()));
+        }
+
         final BooleanExpression predicate = booleanExpressionBuilder.build();
         query.where(predicate);
 
