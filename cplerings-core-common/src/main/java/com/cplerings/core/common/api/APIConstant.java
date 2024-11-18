@@ -82,6 +82,7 @@ public final class APIConstant {
     public static final String CUSTOM_SINGLE_REQUEST_PATH = CUSTOM_REQUEST_PATH + "/{customRequestId}";
     public static final String VIEW_CUSTOM_REQUESTS_PATH = CUSTOM_REQUEST_PATH;
     public static final String DETERMINE_CUSTOM_REQUEST_PATH = CUSTOM_REQUEST_PATH + "/determination/{customRequestId}";
+    public static final String CANCEL_CUSTOM_REQUEST_PATH = CUSTOM_REQUEST_PATH + "/{customRequestId}/rejection";
 
     /*
         Crafting request
