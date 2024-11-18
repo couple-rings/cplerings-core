@@ -67,6 +67,7 @@ public class SecurityConfiguration {
         handleMetalSpecificationAPI(localHttp);
         handleContractAPI(localHttp);
         handleOrderAPI(localHttp);
+        handleAgreementAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
                 .denyAll());
         return localHttp.build();
@@ -238,6 +239,11 @@ public class SecurityConfiguration {
                         .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_JEWELER, RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VIEW_A_CUSTOM_ORDER_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_JEWELER, RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER));
+    }
+
+    private void handleAgreementAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.AGREEMENTS_PATH))
+                .permitAll());
     }
 
     private String resolvePath(String path) {

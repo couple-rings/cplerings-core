@@ -18,6 +18,7 @@ import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.ring.Ring;
+import com.cplerings.core.domain.spouse.Agreement;
 import com.cplerings.core.domain.spouse.Spouse;
 import com.cplerings.core.domain.spouse.SpouseAccount;
 import com.cplerings.core.test.shared.entity.order.DummyOrder;
@@ -74,4 +75,6 @@ public interface TestDataSource {
     Document save(Document document);
 
     Collection<Ring> findAllRingsByIds(Collection<Long> ringIds);
+
+    Agreement save(Agreement agreement);
 }
