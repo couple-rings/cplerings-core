@@ -65,6 +65,7 @@ public class ViewCraftingRequestsUseCaseIT extends AbstractIT {
         ViewCraftingRequestsRequest request = ViewCraftingRequestsRequest.builder()
                 .page(0)
                 .pageSize(1)
+                .customDesignId(1L)
                 .build();
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(APIConstant.VIEW_CRAFTING_REQUESTS_PATH)

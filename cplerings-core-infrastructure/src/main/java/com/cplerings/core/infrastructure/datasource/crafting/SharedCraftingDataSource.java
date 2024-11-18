@@ -286,6 +286,11 @@ public class SharedCraftingDataSource extends AbstractDataSource
         BlazeJPAQuery<CraftingRequest> query = createQuery()
                 .select(Q_CRAFTING_REQUEST)
                 .from(Q_CRAFTING_REQUEST);
+
+        if (input.getCustomDesignId() != null) {
+            query.where(Q_CRAFTING_REQUEST.customDesign.id.eq(input.getCustomDesignId()));
+        }
+
         long count = query.distinct().fetchCount();
         List<CraftingRequest> craftingRequests = query.limit(input.getPageSize()).offset(offset).fetch();
         return CraftingRequests.builder()
