@@ -41,4 +41,15 @@ public class TransportOrderTestHelper {
                 .build();
         return testDataSource.save(transportationOrder);
     }
+
+    public TransportationOrder createTransportOrderWithOnGoingStatus() {
+        TransportationOrder transportationOrder = TransportationOrder.builder()
+                .customOrder(customOrderTestHelper.createCustomOrder())
+                .deliveryAddress("Test")
+                .receiverName("Test")
+                .receiverPhone("Test")
+                .status(TransportStatus.ON_GOING)
+                .build();
+        return testDataSource.save(transportationOrder);
+    }
 }
