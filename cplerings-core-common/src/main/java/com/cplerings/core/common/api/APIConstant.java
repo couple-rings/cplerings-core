@@ -141,4 +141,8 @@ public final class APIConstant {
     */
      public static final String BRANCHES_PATH = "/branches";
 
+    /*
+      finger sizes paths
+   */
+    public static final String FINGER_SIZES_PATH = "/finger-sizes";
 }

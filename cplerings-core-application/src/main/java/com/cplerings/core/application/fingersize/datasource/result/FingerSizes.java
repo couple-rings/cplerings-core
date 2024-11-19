@@ -1,8 +1,8 @@
-package com.cplerings.core.application.branch.datasource.result;
+package com.cplerings.core.application.fingersize.datasource.result;
 
 import java.util.List;
 
-import com.cplerings.core.domain.branch.Branch;
+import com.cplerings.core.domain.ring.FingerSize;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,9 +13,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @Builder
-public class Branches {
+public class FingerSizes {
 
-    private List<Branch> branches;
+    private List<FingerSize> fingerSizes;
     private Long count;
     private Integer page;
     private Integer pageSize;
