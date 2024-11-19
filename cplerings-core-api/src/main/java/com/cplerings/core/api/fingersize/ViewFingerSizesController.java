@@ -4,16 +4,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cplerings.core.api.branch.request.ViewBranchesRequest;
-import com.cplerings.core.api.branch.response.ViewBranchesResponse;
 import com.cplerings.core.api.fingersize.data.FingerSizesData;
 import com.cplerings.core.api.fingersize.mapper.APIViewFingerSizesMapper;
 import com.cplerings.core.api.fingersize.request.ViewFingerSizesRequest;
 import com.cplerings.core.api.fingersize.response.ViewFingerSizesResponse;
 import com.cplerings.core.api.shared.AbstractController;
 import com.cplerings.core.api.shared.mapper.APIMapper;
-import com.cplerings.core.api.shared.openapi.BranchTag;
 import com.cplerings.core.api.shared.openapi.ErrorAPIResponse;
+import com.cplerings.core.api.shared.openapi.FingerSizeTag;
 import com.cplerings.core.application.fingersize.ViewFingerSizesUseCase;
 import com.cplerings.core.application.fingersize.input.ViewFingerSizesInput;
 import com.cplerings.core.application.fingersize.output.ViewFingerSizesOutput;
@@ -44,7 +42,7 @@ public class ViewFingerSizesController extends AbstractController<ViewFingerSize
     }
 
     @GetMapping(APIConstant.FINGER_SIZES_PATH)
-    @BranchTag
+    @FingerSizeTag
     @Operation(summary = "View finger sizes")
     @ApiResponse(
             description = "View finger sizes",

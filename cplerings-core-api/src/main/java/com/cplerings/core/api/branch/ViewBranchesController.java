@@ -11,7 +11,6 @@ import com.cplerings.core.api.branch.response.ViewBranchesResponse;
 import com.cplerings.core.api.shared.AbstractController;
 import com.cplerings.core.api.shared.mapper.APIMapper;
 import com.cplerings.core.api.shared.openapi.BranchTag;
-import com.cplerings.core.api.shared.openapi.DiamondSpecificationTag;
 import com.cplerings.core.api.shared.openapi.ErrorAPIResponse;
 import com.cplerings.core.application.branch.ViewBranchesUseCase;
 import com.cplerings.core.application.branch.input.ViewBranchesInput;
