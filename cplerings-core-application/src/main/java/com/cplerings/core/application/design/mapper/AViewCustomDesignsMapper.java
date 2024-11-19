@@ -31,7 +31,6 @@ import com.cplerings.core.domain.metal.MetalSpecification;
 )
 public interface AViewCustomDesignsMapper {
 
-    @Mapping(target = "items", source = "customDesigns")
     default ViewCustomDesignsOutput toOutput(CustomDesigns customDesigns) {
         List<ACustomDesign> aCustomDesigns = customDesigns.getCustomDesigns().stream()
                 .map(this::toACustomDesignWithSpecifications)
