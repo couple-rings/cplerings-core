@@ -49,10 +49,6 @@ public class ViewCraftingRequestController extends AbstractController<ViewCrafti
     @GetMapping(APIConstant.VIEW_CRAFTING_REQUEST_PATH)
     @CraftingRequestTag
     @Operation(summary = "View crafting request detail")
-    @Parameter(
-            name = "customRequestId",
-            description = "crafting request ID"
-    )
     @ApiResponse(
             description = "The crafting request information",
             responseCode = "200",
