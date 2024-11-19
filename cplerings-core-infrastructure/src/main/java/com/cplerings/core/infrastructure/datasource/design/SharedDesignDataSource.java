@@ -192,6 +192,15 @@ public class SharedDesignDataSource extends AbstractDataSource
     }
 
     @Override
+    public Long countDesignVersionNumber(Long designId, Long customerId) {
+       return createQuery().select(Q_DESIGN_VERSION)
+               .from(Q_DESIGN_VERSION)
+               .where(Q_DESIGN_VERSION.design.id.eq(designId)
+                       .and(Q_DESIGN_VERSION.customer.id.eq(customerId)))
+               .distinct().fetchCount();
+    }
+
+    @Override
     public Optional<DesignVersion> getDesignVersionById(long designVersionId) {
         return Optional.ofNullable(createQuery().select(Q_DESIGN_VERSION)
                 .from(Q_DESIGN_VERSION)

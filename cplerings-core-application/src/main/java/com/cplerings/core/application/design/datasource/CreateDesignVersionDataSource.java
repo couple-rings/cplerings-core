@@ -29,4 +29,6 @@ public interface CreateDesignVersionDataSource {
     List<DesignSession> getDesignSessionsByCustomerId(Long customerId);
 
     void save(DesignSession designSession);
+
+    Long countDesignVersionNumber(Long designId, Long customerId);
 }
