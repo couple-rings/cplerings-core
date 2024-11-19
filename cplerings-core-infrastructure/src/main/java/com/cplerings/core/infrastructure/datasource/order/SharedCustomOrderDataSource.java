@@ -4,25 +4,32 @@ import java.util.List;
 import java.util.Optional;
 
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
+import com.cplerings.core.application.order.datasource.AssignJewelerToCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrdersDataSource;
 import com.cplerings.core.application.order.datasource.result.CustomOrders;
 import com.cplerings.core.application.order.input.ViewCustomOrdersInput;
 import com.cplerings.core.common.pagination.PaginationUtils;
+import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.order.QCustomOrder;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
+import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @DataSource
-public class SharedCustomOrderDataSource extends AbstractDataSource implements ViewCustomOrdersDataSource, ViewCustomOrderDataSource {
+public class SharedCustomOrderDataSource extends AbstractDataSource implements ViewCustomOrdersDataSource, ViewCustomOrderDataSource, AssignJewelerToCustomOrderDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
+    private static final QAccount Q_ACCOUNT = QAccount.account;
+
+    private final CustomOrderRepository customOrderRepository;
 
     @Override
     public CustomOrders getCustomOrders(ViewCustomOrdersInput input) {
@@ -75,5 +82,29 @@ public class SharedCustomOrderDataSource extends AbstractDataSource implements V
                 .from(Q_CUSTOM_ORDER)
                 .where(Q_CUSTOM_ORDER.id.eq(customOrderId))
                 .fetchOne());
+    }
+
+    @Override
+    public Optional<Account> getJewelerById(Long jewelerId) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_ACCOUNT)
+                .from(Q_ACCOUNT)
+                .where(Q_ACCOUNT.id.eq(jewelerId))
+                .fetchOne());
+    }
+
+    @Override
+    public Optional<CustomOrder> getCustomOrderById(Long customOrderId) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_CUSTOM_ORDER)
+                .from(Q_CUSTOM_ORDER)
+                .where(Q_CUSTOM_ORDER.id.eq(customOrderId))
+                .fetchOne());
+    }
+
+    @Override
+    public CustomOrder save(CustomOrder customOrder) {
+        updateAuditor(customOrder);
+        return customOrderRepository.save(customOrder);
     }
 }
