@@ -23,5 +23,4 @@ public class BranchesData extends AbstractPaginatedData<ABranch> {
             return new BranchesData();
         }
     }
-
 }
