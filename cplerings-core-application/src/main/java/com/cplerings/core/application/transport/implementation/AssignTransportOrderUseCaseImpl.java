@@ -12,6 +12,8 @@ import com.cplerings.core.application.transport.output.AssignTransportOrderOutpu
 import com.cplerings.core.common.security.RoleConstant;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.Role;
+import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
 
@@ -47,6 +49,10 @@ public class AssignTransportOrderUseCaseImpl extends AbstractUseCase<AssignTrans
         transportationOrder.setStatus(TransportStatus.WAITING);
         transportationOrder.setTransporter(transporter);
         TransportationOrder transportationOrderAssigned = assignTransportOrderDataSource.save(transportationOrder);
+
+        CustomOrder customOrder = transportationOrder.getCustomOrder();
+        customOrder.setStatus(CustomOrderStatus.DELIVERING);
+        assignTransportOrderDataSource.save(customOrder);
         return aAssignTransportOrderMapper.toOutput(transportationOrderAssigned);
     }
 }

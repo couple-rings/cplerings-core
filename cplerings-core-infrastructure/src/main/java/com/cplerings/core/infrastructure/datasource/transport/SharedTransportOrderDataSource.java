@@ -15,11 +15,14 @@ import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.design.CustomDesign;
+import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.QCustomOrder;
 import com.cplerings.core.domain.order.QTransportationOrder;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
+import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -30,8 +33,10 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QTransportationOrder Q_TRANSPORTATION_ORDER = QTransportationOrder.transportationOrder;
+    private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
 
     private final TransportationOrderRepository transportationOrderRepository;
+    private final CustomOrderRepository customOrderRepository;
 
     @Override
     public Optional<Account> getTransporterById(Long transporterId) {
@@ -48,6 +53,7 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
         return Optional.ofNullable(createQuery()
                 .select(Q_TRANSPORTATION_ORDER)
                 .from(Q_TRANSPORTATION_ORDER)
+                .leftJoin(Q_TRANSPORTATION_ORDER.customOrder, Q_CUSTOM_ORDER).fetchJoin()
                 .where(Q_TRANSPORTATION_ORDER.id.eq(transportationOrderId))
                 .fetchOne());
     }
@@ -56,6 +62,12 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
     public TransportationOrder save(TransportationOrder transportationOrder) {
         updateAuditor(transportationOrder);
         return transportationOrderRepository.save(transportationOrder);
+    }
+
+    @Override
+    public void save(CustomOrder customOrder) {
+        updateAuditor(customOrder);
+        customOrderRepository.save(customOrder);
     }
 
     @Override
