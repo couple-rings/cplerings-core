@@ -68,6 +68,8 @@ public class SecurityConfiguration {
         handleContractAPI(localHttp);
         handleOrderAPI(localHttp);
         handleAgreementAPI(localHttp);
+        handleBranchAPI(localHttp);
+        handleFingerSizeAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
                 .denyAll());
         return localHttp.build();
@@ -249,6 +251,16 @@ public class SecurityConfiguration {
 
     private void handleAgreementAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.AGREEMENTS_PATH))
+                .permitAll());
+    }
+
+    private void handleBranchAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.BRANCHES_PATH))
+                .permitAll());
+    }
+
+    private void handleFingerSizeAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.FINGER_SIZES_PATH))
                 .permitAll());
     }
 

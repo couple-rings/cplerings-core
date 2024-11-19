@@ -2,6 +2,7 @@ package com.cplerings.core.application.shared.entity.crafting;
 
 import com.cplerings.core.application.shared.entity.account.AAccount;
 import com.cplerings.core.application.shared.entity.branch.ABranch;
+import com.cplerings.core.application.shared.entity.design.ACustomDesign;
 import com.cplerings.core.application.shared.entity.design.ADiamondSpecification;
 import com.cplerings.core.application.shared.entity.design.AMetalSpecification;
 import com.cplerings.core.domain.design.crafting.CraftingRequestStatus;
@@ -33,4 +34,5 @@ public class ACraftingRequest implements Serializable {
     private CraftingRequestStatus craftingRequestStatus;
     private Instant createdAt;
     private ABranch branch;
+    private ACustomDesign customDesign;
 }
