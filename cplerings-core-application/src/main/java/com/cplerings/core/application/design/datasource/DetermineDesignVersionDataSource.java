@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.session.DesignSession;
 
 public interface DetermineDesignVersionDataSource {
 
@@ -13,4 +14,6 @@ public interface DetermineDesignVersionDataSource {
     void updateCustomRequest(CustomRequest customRequest);
     List<DesignVersion> getDesignVersionRemainingByDesignId(Long designId, Long designVersionId);
     DesignVersion save(DesignVersion designVersion);
+    List<DesignSession> getListDesignSession(Long customerId);
+    void save(DesignSession designSession);
 }
