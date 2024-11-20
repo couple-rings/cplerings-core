@@ -145,4 +145,9 @@ public final class APIConstant {
       finger sizes paths
    */
     public static final String FINGER_SIZES_PATH = "/finger-sizes";
+
+    /*
+     address paths
+  */
+    public static final String ADDRESS_PATH = "/addresses";
 }
