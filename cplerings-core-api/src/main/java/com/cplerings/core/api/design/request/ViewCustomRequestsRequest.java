@@ -18,4 +18,5 @@ public class ViewCustomRequestsRequest extends AbstractPaginatedRequest {
 
     private ACustomRequestStatus status;
     private Long customerId;
+    private Long staffId;
 }

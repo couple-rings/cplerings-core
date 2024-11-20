@@ -150,6 +150,9 @@ public class SharedCustomRequestDataSource extends AbstractDataSource implements
         if (input.getCustomerId() != null) {
             booleanExpressionBuilder.and(Q_CUSTOM_REQUEST.customer.id.eq(input.getCustomerId()));
         }
+        if (input.getStaffId() != null) {
+            booleanExpressionBuilder.and(Q_CUSTOM_REQUEST.staff.id.eq(input.getStaffId()));
+        }
         final BooleanExpression predicate = booleanExpressionBuilder.build();
         query.where(predicate);
 
