@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @UseCaseImplementation
-public class CreateCraftingRequestImpl extends AbstractUseCase<CreateCraftingRequestInput, CreateCraftingRequestOutput> implements CreateCraftingRequestUseCase {
+public class CreateCraftingRequestUseCaseImpl extends AbstractUseCase<CreateCraftingRequestInput, CreateCraftingRequestOutput> implements CreateCraftingRequestUseCase {
 
     private final CreateCraftingRequestDataSource dataSource;
     private final ACreateCraftingRequestMapper aCreateCraftingRequestMapper;

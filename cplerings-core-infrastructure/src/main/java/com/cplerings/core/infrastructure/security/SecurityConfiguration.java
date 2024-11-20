@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Role;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -71,6 +70,7 @@ public class SecurityConfiguration {
         handleBranchAPI(localHttp);
         handleFingerSizeAPI(localHttp);
         handleTransportationAddressAPI(localHttp);
+        handleDiamondAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
                 .denyAll());
         return localHttp.build();
@@ -268,6 +268,11 @@ public class SecurityConfiguration {
     private void handleTransportationAddressAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.ADDRESS_PATH))
                 .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER));
+    }
+
+    private void handleDiamondAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.DIAMONDS_PATH))
+                .hasAuthority(RoleConstant.ROLE_MANAGER));
     }
 
     private String resolvePath(String path) {

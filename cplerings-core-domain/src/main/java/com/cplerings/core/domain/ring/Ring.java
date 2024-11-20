@@ -24,11 +24,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import java.time.Instant;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -81,4 +83,10 @@ public class Ring extends AbstractEntity {
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "custom_design_id", nullable = false)
     private CustomDesign customDesign;
+
+    @Column(name = "finger_size", nullable = false)
+    private Integer fingerSize;
+
+    @OneToMany(mappedBy = "ring", fetch = FetchType.LAZY)
+    private Set<RingDiamond> ringDiamonds;
 }
