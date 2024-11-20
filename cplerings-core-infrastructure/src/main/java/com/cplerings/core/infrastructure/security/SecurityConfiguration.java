@@ -70,6 +70,7 @@ public class SecurityConfiguration {
         handleAgreementAPI(localHttp);
         handleBranchAPI(localHttp);
         handleFingerSizeAPI(localHttp);
+        handleTransportationAddressAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
                 .denyAll());
         return localHttp.build();
@@ -262,6 +263,11 @@ public class SecurityConfiguration {
     private void handleFingerSizeAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.FINGER_SIZES_PATH))
                 .permitAll());
+    }
+
+    private void handleTransportationAddressAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.ADDRESS_PATH))
+                .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER));
     }
 
     private String resolvePath(String path) {
