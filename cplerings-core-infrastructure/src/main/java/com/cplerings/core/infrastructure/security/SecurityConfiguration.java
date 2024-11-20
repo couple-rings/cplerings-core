@@ -1,10 +1,6 @@
 package com.cplerings.core.infrastructure.security;
 
-import com.cplerings.core.common.api.APIConstant;
-import com.cplerings.core.common.profile.ProfileConstant;
-import com.cplerings.core.common.security.RoleConstant;
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +17,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
+import com.cplerings.core.common.api.APIConstant;
+import com.cplerings.core.common.profile.ProfileConstant;
+import com.cplerings.core.common.security.RoleConstant;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
@@ -272,7 +272,9 @@ public class SecurityConfiguration {
 
     private void handleDiamondAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.DIAMONDS_PATH))
-                .hasAuthority(RoleConstant.ROLE_MANAGER));
+                        .hasAuthority(RoleConstant.ROLE_MANAGER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.DIAMONDS_PATH))
+                        .hasAuthority(RoleConstant.ROLE_MANAGER));
     }
 
     private String resolvePath(String path) {
