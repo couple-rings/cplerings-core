@@ -110,11 +110,11 @@ public final class APIConstant {
     */
     public static final String METAL_SPECIFICATION_PATH = "/metal-specifications";
 
-     /*
-        Contract
-     */
-     public static final String CONTRACT_PATH = "/contracts";
-     public static final String SIGNING_CONTRACT_PATH = CONTRACT_PATH + "/{contractId}/signing";
+    /*
+       Contract
+    */
+    public static final String CONTRACT_PATH = "/contracts";
+    public static final String SIGNING_CONTRACT_PATH = CONTRACT_PATH + "/{contractId}/signing";
 
     /*
        transport paths
@@ -136,13 +136,18 @@ public final class APIConstant {
     */
     public static final String AGREEMENTS_PATH = "/agreements";
 
-     /*
-       branches paths
-    */
-     public static final String BRANCHES_PATH = "/branches";
+    /*
+      branches paths
+   */
+    public static final String BRANCHES_PATH = "/branches";
 
     /*
       finger sizes paths
    */
     public static final String FINGER_SIZES_PATH = "/finger-sizes";
+
+    /*
+        Diamond paths
+     */
+    public static final String DIAMONDS_PATH = "/diamonds";
 }

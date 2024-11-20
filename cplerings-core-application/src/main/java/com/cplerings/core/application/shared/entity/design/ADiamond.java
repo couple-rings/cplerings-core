@@ -1,5 +1,6 @@
 package com.cplerings.core.application.shared.entity.design;
 
+import com.cplerings.core.application.shared.entity.branch.ABranch;
 import com.cplerings.core.application.shared.entity.file.ADocument;
 
 import lombok.AllArgsConstructor;
@@ -21,5 +22,7 @@ public class ADiamond implements Serializable {
     private Long id;
     private ADocument giaDocument;
     private String giaReportNumber;
+    private ADiamondSpecification diamondSpecification;
+    private ABranch branch;
     private Instant createdAt;
 }
