@@ -12,6 +12,7 @@ import com.cplerings.core.domain.design.crafting.CraftingRequest;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
+import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.TransportationOrder;
@@ -77,4 +78,6 @@ public interface TestDataSource {
     Collection<Ring> findAllRingsByIds(Collection<Long> ringIds);
 
     Agreement save(Agreement agreement);
+
+    Diamond save(Diamond diamond);
 }
