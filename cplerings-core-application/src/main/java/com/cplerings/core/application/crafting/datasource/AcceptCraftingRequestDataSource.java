@@ -7,10 +7,13 @@ import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
 import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.ring.Ring;
+import com.cplerings.core.domain.ring.RingDiamond;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,4 +40,12 @@ public interface AcceptCraftingRequestDataSource {
     void save(CustomDesign customDesign);
 
     void save(CustomRequest customRequest);
+
+    Ring save(Ring ring);
+
+    Collection<Diamond> getUnusedDiamondsFromSpecsAndBranch(Collection<Long> diamondSpecIds, Long branchId);
+
+    Optional<Diamond> getUnusedDiamondFromSpecAndBranch(Long diamondSpecId, Long branchId);
+
+    RingDiamond save(RingDiamond ringDiamond);
 }

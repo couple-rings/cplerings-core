@@ -9,33 +9,21 @@ import com.cplerings.core.api.crafting.response.DepositCraftingStageResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.domain.address.TransportationAddress;
-import com.cplerings.core.domain.branch.Branch;
-import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.crafting.CraftingStageStatus;
 import com.cplerings.core.domain.order.CustomOrder;
-import com.cplerings.core.domain.order.CustomOrderStatus;
-import com.cplerings.core.domain.ring.Ring;
-import com.cplerings.core.domain.ring.RingStatus;
-import com.cplerings.core.domain.shared.valueobject.Money;
-import com.cplerings.core.domain.spouse.Spouse;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
-import com.cplerings.core.test.shared.design.CustomDesignSpouse;
-import com.cplerings.core.test.shared.design.CustomDesignTestHelper;
-import com.cplerings.core.test.shared.helper.BranchTestHelper;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
-import com.cplerings.core.test.shared.spouse.SpouseTestHelper;
+import com.cplerings.core.test.shared.order.CustomOrderTestHelper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
-import java.math.BigDecimal;
 
 public class DepositCraftingStageUseCaseIT extends AbstractIT {
 
@@ -49,16 +37,10 @@ public class DepositCraftingStageUseCaseIT extends AbstractIT {
     private JWTTestHelper jwtTestHelper;
 
     @Autowired
-    private SpouseTestHelper spouseTestHelper;
-
-    @Autowired
     private CraftingStageRepository craftingStageRepository;
 
     @Autowired
-    private BranchTestHelper branchTestHelper;
-
-    @Autowired
-    private CustomDesignTestHelper customDesignTestHelper;
+    private CustomOrderTestHelper customOrderTestHelper;
 
     private CraftingStage firstCraftingStage;
 
@@ -66,34 +48,7 @@ public class DepositCraftingStageUseCaseIT extends AbstractIT {
 
     @BeforeEach
     void setUpCustomOrderAndCraftingStages() {
-        CustomDesignSpouse customDesignsAndSpouses = customDesignTestHelper.createCustomDesignsAndSpouses();
-        Contract contract = Contract.builder()
-                .build();
-        contract = testDataSource.save(contract);
-        final Branch branch = branchTestHelper.createBranch();
-        Ring firstRing = Ring.builder()
-                .status(RingStatus.NOT_AVAIL)
-                .branch(branch)
-                .spouse(customDesignsAndSpouses.spouses()[0])
-                .customDesign(customDesignsAndSpouses.customDesign().get(0))
-                .build();
-        firstRing = testDataSource.save(firstRing);
-        Ring secondRing = Ring.builder()
-                .status(RingStatus.NOT_AVAIL)
-                .branch(branch)
-                .spouse(customDesignsAndSpouses.spouses()[1])
-                .customDesign(customDesignsAndSpouses.customDesign().get(1))
-                .build();
-        secondRing = testDataSource.save(secondRing);
-        CustomOrder customOrder = CustomOrder.builder()
-                .customer(accountRepository.findByEmail(AccountTestConstant.CUSTOMER_EMAIL).orElse(null))
-                .contract(contract)
-                .status(CustomOrderStatus.PENDING)
-                .totalPrice(Money.create(BigDecimal.valueOf(100000)))
-                .firstRing(firstRing)
-                .secondRing(secondRing)
-                .build();
-        customOrder = testDataSource.save(customOrder);
+        CustomOrder customOrder = customOrderTestHelper.createCustomOrder();
 
         CraftingStage firstCraftingStage = CraftingStage.builder()
                 .customOrder(customOrder)
@@ -102,6 +57,7 @@ public class DepositCraftingStageUseCaseIT extends AbstractIT {
                 .progress(30)
                 .build();
         this.firstCraftingStage = testDataSource.save(firstCraftingStage);
+
         CraftingStage secondCraftingStage = CraftingStage.builder()
                 .customOrder(customOrder)
                 .status(CraftingStageStatus.PENDING)

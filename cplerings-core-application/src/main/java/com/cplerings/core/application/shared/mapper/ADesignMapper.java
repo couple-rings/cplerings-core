@@ -1,5 +1,6 @@
 package com.cplerings.core.application.shared.mapper;
 
+import com.cplerings.core.application.shared.entity.design.ACustomDesign;
 import com.cplerings.core.application.shared.entity.design.ADesign;
 import com.cplerings.core.application.shared.entity.design.ADesignCollection;
 import com.cplerings.core.application.shared.entity.design.ADesignCouple;
@@ -9,6 +10,9 @@ import com.cplerings.core.application.shared.entity.design.ADiamondSpecification
 import com.cplerings.core.application.shared.entity.design.AMetalSpecification;
 import com.cplerings.core.application.shared.entity.design.request.ACustomRequest;
 import com.cplerings.core.common.mapper.SpringMapperConfiguration;
+import com.cplerings.core.domain.design.CustomDesign;
+import com.cplerings.core.domain.design.CustomDesignDiamondSpecification;
+import com.cplerings.core.domain.design.CustomDesignMetalSpecification;
 import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.DesignCollection;
 import com.cplerings.core.domain.design.DesignCouple;
@@ -16,11 +20,17 @@ import com.cplerings.core.domain.design.DesignDiamondSpecification;
 import com.cplerings.core.domain.design.DesignMetalSpecification;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
-import com.cplerings.core.domain.diamond.DiamondSpecification;
 import com.cplerings.core.domain.metal.MetalSpecification;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 @Mapper(
         config = SpringMapperConfiguration.class,
@@ -31,32 +41,59 @@ import org.mapstruct.Mapping;
                 MoneyMapper.class,
                 DesignSizeMapper.class,
                 WeightMapper.class,
-                AAccountMapper.class
+                AAccountMapper.class,
+                ADiamondMapper.class,
+                ASpouseMapper.class,
         }
 )
-public interface ADesignMapper {
+public abstract class ADesignMapper {
 
-    ADesignCouple toDesignCouple(DesignCouple designCouple);
+    @Autowired
+    private ADiamondMetalSpecificationMapper diamondMetalSpecificationMapper;
 
-    ADesign toDesign(Design design);
+    public abstract ADesignCouple toDesignCouple(DesignCouple designCouple);
 
-    ADesignMetalSpecification toDesignMetalSpecification(DesignMetalSpecification designMetalSpecification);
+    public abstract ADesign toDesign(Design design);
 
-    ADesignDiamondSpecification toDesignDiamondSpecification(DesignDiamondSpecification designDiamondSpecification);
+    public abstract ADesignMetalSpecification toDesignMetalSpecification(DesignMetalSpecification designMetalSpecification);
 
-    ADesignCollection toDesignCollection(DesignCollection designCollection);
+    public abstract ADesignDiamondSpecification toDesignDiamondSpecification(DesignDiamondSpecification designDiamondSpecification);
 
-    AMetalSpecification toMetalSpecification(MetalSpecification metalSpecification);
+    public abstract ADesignCollection toDesignCollection(DesignCollection designCollection);
 
-    ADiamondSpecification toDiamondSpecification(DiamondSpecification diamondSpecification);
+    public abstract AMetalSpecification toMetalSpecification(MetalSpecification metalSpecification);
 
     @Mapping(target = "designs", source = "designCustomRequests")
-    ACustomRequest toCustomRequest(CustomRequest customRequest);
+    public abstract ACustomRequest toCustomRequest(CustomRequest customRequest);
 
-    default ADesign toDesign(DesignCustomRequest designCustomRequest) {
+    @Mapping(target = "diamondSpecifications", source = "customDesignDiamondSpecifications")
+    @Mapping(target = "metalSpecifications", source = "customDesignMetalSpecifications")
+    public abstract ACustomDesign toCustomDesign(CustomDesign customDesign);
+
+    public final ADesign toDesign(DesignCustomRequest designCustomRequest) {
         if (designCustomRequest == null) {
             return null;
         }
         return toDesign(designCustomRequest.getDesign());
+    }
+
+    public final List<ADiamondSpecification> toDiamondSpecifications(Collection<CustomDesignDiamondSpecification> customDesignDiamondSpecifications) {
+        if (CollectionUtils.isEmpty(customDesignDiamondSpecifications)) {
+            return new ArrayList<>();
+        }
+        return customDesignDiamondSpecifications.stream()
+                .filter(Objects::nonNull)
+                .map(spec -> diamondMetalSpecificationMapper.toDiamondSpecification(spec.getDiamondSpecification()))
+                .toList();
+    }
+
+    public final List<AMetalSpecification> toMetalSpecifications(Collection<CustomDesignMetalSpecification> customDesignMetalSpecifications) {
+        if (CollectionUtils.isEmpty(customDesignMetalSpecifications)) {
+            return new ArrayList<>();
+        }
+        return customDesignMetalSpecifications.stream()
+                .filter(Objects::nonNull)
+                .map(spec -> diamondMetalSpecificationMapper.toMetalSpecification(spec.getMetalSpecification()))
+                .toList();
     }
 }

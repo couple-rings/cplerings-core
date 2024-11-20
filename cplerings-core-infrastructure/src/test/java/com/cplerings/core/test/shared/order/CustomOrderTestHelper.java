@@ -3,20 +3,16 @@ package com.cplerings.core.test.shared.order;
 import com.cplerings.core.common.temporal.TemporalUtils;
 import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.contract.Contract;
-import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingStatus;
 import com.cplerings.core.domain.shared.valueobject.Money;
-import com.cplerings.core.domain.spouse.Spouse;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
-import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
 import com.cplerings.core.test.shared.design.CustomDesignSpouse;
 import com.cplerings.core.test.shared.design.CustomDesignTestHelper;
 import com.cplerings.core.test.shared.helper.BranchTestHelper;
-import com.cplerings.core.test.shared.spouse.SpouseTestHelper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -43,6 +39,7 @@ public class CustomOrderTestHelper {
                 .branch(branch)
                 .status(RingStatus.NOT_AVAIL)
                 .customDesign(customDesignSpouse.customDesign().get(0))
+                .fingerSize(15)
                 .build();
         Ring firstRingCreated = testDataSource.save(firstRing);
         Ring secondRing = Ring.builder()
@@ -52,6 +49,7 @@ public class CustomOrderTestHelper {
                 .branch(branch)
                 .status(RingStatus.NOT_AVAIL)
                 .customDesign(customDesignSpouse.customDesign().get(1))
+                .fingerSize(16)
                 .build();
         Ring secondRingCreated = testDataSource.save(secondRing);
         Contract contract = Contract.builder().build();
@@ -78,6 +76,7 @@ public class CustomOrderTestHelper {
                 .branch(branch)
                 .status(RingStatus.NOT_AVAIL)
                 .customDesign(customDesignSpouse.customDesign().get(0))
+                .fingerSize(15)
                 .build();
         Ring firstRingCreated = testDataSource.save(firstRing);
         Ring secondRing = Ring.builder()
@@ -87,6 +86,7 @@ public class CustomOrderTestHelper {
                 .branch(branch)
                 .status(RingStatus.NOT_AVAIL)
                 .customDesign(customDesignSpouse.customDesign().get(1))
+                .fingerSize(16)
                 .build();
         Ring secondRingCreated = testDataSource.save(secondRing);
         Contract contract = Contract.builder().build();

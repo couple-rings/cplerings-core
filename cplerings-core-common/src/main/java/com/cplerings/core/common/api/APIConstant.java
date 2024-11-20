@@ -72,7 +72,7 @@ public final class APIConstant {
 
     /*
        Uploading path
-    */
+     */
     public static final String FILES_PATH = "/files";
 
     /*
@@ -102,23 +102,23 @@ public final class APIConstant {
 
     /*
        Diamond specification
-    */
+     */
     public static final String DIAMOND_SPECIFICATION_PATH = "/diamond-specifications";
 
     /*
        Metal specification
-    */
+     */
     public static final String METAL_SPECIFICATION_PATH = "/metal-specifications";
 
-     /*
-        Contract
-     */
-     public static final String CONTRACT_PATH = "/contracts";
-     public static final String SIGNING_CONTRACT_PATH = CONTRACT_PATH + "/{contractId}/signing";
+    /*
+       Contract
+    */
+    public static final String CONTRACT_PATH = "/contracts";
+    public static final String SIGNING_CONTRACT_PATH = CONTRACT_PATH + "/{contractId}/signing";
 
     /*
        transport paths
-    */
+     */
     public static final String TRANSPORTATION_ORDER_PATH = "/transportation-orders";
     public static final String ASSIGN_TRANSPORTATION_ORDER_PATH = TRANSPORTATION_ORDER_PATH + "/{transportationOrderId}/assigning";
     public static final String UPDATE_TRANSPORTATION_ORDER_TO_ONGOING_PATH = TRANSPORTATION_ORDER_PATH + "/ongoing";
@@ -126,28 +126,33 @@ public final class APIConstant {
 
     /*
        custom order paths
-    */
+     */
     public static final String CUSTOM_ORDERS_PATH = "/custom-orders";
     public static final String VIEW_A_CUSTOM_ORDER_PATH = CUSTOM_ORDERS_PATH + "/{customOrderId}";
     public static final String ASSIGN_CUSTOM_ORDER_TO_JEWELER_PATH = CUSTOM_ORDERS_PATH + "/{customOrderId}/assigning";
 
     /*
        agreements paths
-    */
+     */
     public static final String AGREEMENTS_PATH = "/agreements";
 
-     /*
-       branches paths
-    */
-     public static final String BRANCHES_PATH = "/branches";
+    /*
+      branches paths
+     */
+    public static final String BRANCHES_PATH = "/branches";
 
     /*
       finger sizes paths
-   */
+     */
     public static final String FINGER_SIZES_PATH = "/finger-sizes";
 
     /*
      address paths
-  */
+     */
     public static final String ADDRESS_PATH = "/addresses";
+
+    /*
+        Diamond paths
+     */
+    public static final String DIAMONDS_PATH = "/diamonds";
 }

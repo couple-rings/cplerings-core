@@ -1,7 +1,9 @@
 package com.cplerings.core.domain.diamond;
 
 import com.cplerings.core.common.database.DatabaseConstant;
+import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.file.Document;
+import com.cplerings.core.domain.ring.RingDiamond;
 import com.cplerings.core.domain.shared.AbstractEntity;
 
 import lombok.AllArgsConstructor;
@@ -18,9 +20,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+
+import java.util.Set;
 
 @Getter
 @Setter
@@ -49,4 +54,11 @@ public class Diamond extends AbstractEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "diamond_specification_id")
     private DiamondSpecification diamondSpecification;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
+
+    @OneToMany(mappedBy = "diamond", fetch = FetchType.LAZY)
+    private Set<RingDiamond> ringDiamonds;
 }

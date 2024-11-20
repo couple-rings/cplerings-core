@@ -2,13 +2,6 @@ package com.cplerings.core.infrastructure.datasource.crafting;
 
 import static com.cplerings.core.domain.design.QCustomDesign.customDesign;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.crafting.datasource.AcceptCraftingRequestDataSource;
 import com.cplerings.core.application.crafting.datasource.CompleteCraftingStageDataSource;
 import com.cplerings.core.application.crafting.datasource.CreateCraftingRequestDataSource;
@@ -46,7 +39,9 @@ import com.cplerings.core.domain.design.crafting.QCraftingRequest;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.QCustomRequest;
 import com.cplerings.core.domain.design.request.QDesignCustomRequest;
+import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.diamond.DiamondSpecification;
+import com.cplerings.core.domain.diamond.QDiamond;
 import com.cplerings.core.domain.diamond.QDiamondSpecification;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.file.Image;
@@ -56,7 +51,9 @@ import com.cplerings.core.domain.metal.QMetalSpecification;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.payment.PaymentReceiver;
+import com.cplerings.core.domain.ring.QRingDiamond;
 import com.cplerings.core.domain.ring.Ring;
+import com.cplerings.core.domain.ring.RingDiamond;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.domain.spouse.Agreement;
 import com.cplerings.core.domain.spouse.QSpouse;
@@ -72,12 +69,22 @@ import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
 import com.cplerings.core.infrastructure.repository.DocumentRepository;
 import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
+import com.cplerings.core.infrastructure.repository.RingDiamondRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
 import com.cplerings.core.infrastructure.repository.TransportationAddressRepository;
 import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
-import com.querydsl.core.types.dsl.BooleanExpression;
 
 import lombok.RequiredArgsConstructor;
+
+import com.blazebit.persistence.querydsl.BlazeJPAQuery;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @DataSource
 @RequiredArgsConstructor
@@ -100,6 +107,8 @@ public class SharedCraftingDataSource extends AbstractDataSource
     private static final QDesign Q_DESIGN = QDesign.design;
     private static final QDesignCustomRequest Q_DESIGN_CUSTOM_REQUEST = QDesignCustomRequest.designCustomRequest;
     private static final QCustomRequest Q_CUSTOM_REQUEST = QCustomRequest.customRequest;
+    private static final QDiamond Q_DIAMOND = QDiamond.diamond;
+    private static final QRingDiamond Q_RING_DIAMOND = QRingDiamond.ringDiamond;
 
     private static final String SIDE_DIAMOND_PRICE = "SDPR";
 
@@ -116,6 +125,7 @@ public class SharedCraftingDataSource extends AbstractDataSource
     private final DocumentRepository documentRepository;
     private final CustomDesignRepository customDesignRepository;
     private final CustomRequestRepository customRequestRepository;
+    private final RingDiamondRepository ringDiamondRepository;
 
     @Override
     public Optional<Account> getAccountByCustomerId(Long customerId) {
@@ -301,6 +311,44 @@ public class SharedCraftingDataSource extends AbstractDataSource
     }
 
     @Override
+    public Collection<Diamond> getUnusedDiamondsFromSpecsAndBranch(Collection<Long> diamondSpecIds, Long branchId) {
+        return new HashSet<>(createQuery().select(Q_DIAMOND)
+                .from(Q_DIAMOND)
+                .where(Q_DIAMOND.state.eq(State.ACTIVE)
+                        .and(Q_DIAMOND.branch.id.eq(branchId))
+                        .and(Q_DIAMOND.diamondSpecification.id.in(diamondSpecIds))
+                        .and(JPAExpressions.selectOne()
+                                .from(Q_RING_DIAMOND)
+                                .where(Q_RING_DIAMOND.diamond.eq(Q_DIAMOND)
+                                        .and(Q_RING_DIAMOND.state.eq(State.ACTIVE)))
+                                .notExists()))
+                .distinct()
+                .limit(2)
+                .fetch());
+    }
+
+    @Override
+    public Optional<Diamond> getUnusedDiamondFromSpecAndBranch(Long diamondSpecId, Long branchId) {
+        return Optional.ofNullable(createQuery().select(Q_DIAMOND)
+                .from(Q_DIAMOND)
+                .where(Q_DIAMOND.state.eq(State.ACTIVE)
+                        .and(Q_DIAMOND.branch.id.eq(branchId))
+                        .and(Q_DIAMOND.diamondSpecification.id.eq(diamondSpecId))
+                        .and(JPAExpressions.selectOne()
+                                .from(Q_RING_DIAMOND)
+                                .where(Q_RING_DIAMOND.diamond.eq(Q_DIAMOND)
+                                        .and(Q_RING_DIAMOND.state.eq(State.ACTIVE)))
+                                .notExists()))
+                .fetchFirst());
+    }
+
+    @Override
+    public RingDiamond save(RingDiamond ringDiamond) {
+        updateAuditor(ringDiamond);
+        return ringDiamondRepository.save(ringDiamond);
+    }
+
+    @Override
     public TransportationOrder save(TransportationOrder transportationOrder) {
         updateAuditor(transportationOrder);
         return transportationOrderRepository.save(transportationOrder);
@@ -330,9 +378,12 @@ public class SharedCraftingDataSource extends AbstractDataSource
 
         if (input.getStatus() != null) {
             switch (input.getStatus()) {
-                case PENDING -> booleanExpressionBuilder.and(Q_CRAFTING_REQUEST.craftingRequestStatus.eq(CraftingRequestStatus.PENDING));
-                case ACCEPTED -> booleanExpressionBuilder.and(Q_CRAFTING_REQUEST.craftingRequestStatus.eq(CraftingRequestStatus.ACCEPTED));
-                case REJECTED -> booleanExpressionBuilder.and(Q_CRAFTING_REQUEST.craftingRequestStatus.eq(CraftingRequestStatus.REJECTED));
+                case PENDING ->
+                        booleanExpressionBuilder.and(Q_CRAFTING_REQUEST.craftingRequestStatus.eq(CraftingRequestStatus.PENDING));
+                case ACCEPTED ->
+                        booleanExpressionBuilder.and(Q_CRAFTING_REQUEST.craftingRequestStatus.eq(CraftingRequestStatus.ACCEPTED));
+                case REJECTED ->
+                        booleanExpressionBuilder.and(Q_CRAFTING_REQUEST.craftingRequestStatus.eq(CraftingRequestStatus.REJECTED));
             }
         }
         final BooleanExpression predicate = booleanExpressionBuilder.build();
