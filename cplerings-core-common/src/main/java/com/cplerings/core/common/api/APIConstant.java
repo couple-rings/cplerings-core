@@ -112,7 +112,7 @@ public final class APIConstant {
 
     /*
        Contract
-     */
+    */
     public static final String CONTRACT_PATH = "/contracts";
     public static final String SIGNING_CONTRACT_PATH = CONTRACT_PATH + "/{contractId}/signing";
 
