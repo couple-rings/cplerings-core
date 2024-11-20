@@ -17,6 +17,7 @@ public class ViewCustomRequestsInput extends AbstractPaginatedInput {
 
     private ACustomRequestStatus status;
     private Long customerId;
+    private Long staffId;
 
     public static Builder builder() {
         return new Builder();
@@ -28,6 +29,7 @@ public class ViewCustomRequestsInput extends AbstractPaginatedInput {
 
         private ACustomRequestStatus status;
         private Long customerId;
+        private Long staffId;
 
         public Builder status(ACustomRequestStatus status) {
             this.status = status;
@@ -39,11 +41,17 @@ public class ViewCustomRequestsInput extends AbstractPaginatedInput {
             return self();
         }
 
+        public Builder staffId(Long staffId) {
+            this.staffId = staffId;
+            return self();
+        }
+
         @Override
         public ViewCustomRequestsInput build() {
             final ViewCustomRequestsInput input = super.build();
             input.setCustomerId(customerId);
             input.setStatus(status);
+            input.setStaffId(staffId);
             return input;
         }
 

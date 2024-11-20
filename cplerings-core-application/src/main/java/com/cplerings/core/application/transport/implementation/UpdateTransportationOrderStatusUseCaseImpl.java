@@ -9,6 +9,8 @@ import com.cplerings.core.application.transport.error.UpdateTransportationOrderS
 import com.cplerings.core.application.transport.input.UpdateTransportationOrderStatusInput;
 import com.cplerings.core.application.transport.mapper.AUpdateTransportationOrderStatusMapper;
 import com.cplerings.core.application.transport.output.UpdateTransportationOrderStatusOutput;
+import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
 
@@ -55,6 +57,9 @@ public class UpdateTransportationOrderStatusUseCaseImpl extends AbstractUseCase<
                 validator.validateAndStopExecution(transportationOrder.getStatus() == TransportStatus.DELIVERING, UpdateTransportationOrderStatusErrorCode.INVALID_STATUS);
                 transportationOrder.setStatus(TransportStatus.REJECTED);
                 updateTransportationOrderStatusDataSource.save(transportationOrder);
+                CustomOrder customOrder = transportationOrder.getCustomOrder();
+                customOrder.setStatus(CustomOrderStatus.COMPLETED);
+                updateTransportationOrderStatusDataSource.save(customOrder);
                 break;
             }
 
@@ -62,6 +67,9 @@ public class UpdateTransportationOrderStatusUseCaseImpl extends AbstractUseCase<
                 validator.validateAndStopExecution(transportationOrder.getStatus() == TransportStatus.DELIVERING, UpdateTransportationOrderStatusErrorCode.INVALID_STATUS);
                 transportationOrder.setStatus(TransportStatus.COMPLETED);
                 updateTransportationOrderStatusDataSource.save(transportationOrder);
+                CustomOrder customOrder = transportationOrder.getCustomOrder();
+                customOrder.setStatus(CustomOrderStatus.COMPLETED);
+                updateTransportationOrderStatusDataSource.save(customOrder);
                 break;
             }
 

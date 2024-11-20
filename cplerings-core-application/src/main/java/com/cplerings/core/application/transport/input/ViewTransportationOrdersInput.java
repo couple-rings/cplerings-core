@@ -1,5 +1,6 @@
 package com.cplerings.core.application.transport.input;
 
+import com.cplerings.core.application.shared.entity.transport.ATransportationOrderStatus;
 import com.cplerings.core.application.shared.pagination.AbstractPaginatedInput;
 
 import lombok.AllArgsConstructor;
@@ -14,6 +15,8 @@ import lombok.Setter;
 public class ViewTransportationOrdersInput extends AbstractPaginatedInput {
 
     private Long transporterId;
+    private Long branchId;
+    private ATransportationOrderStatus status;
 
     public static Builder builder() {
         return new Builder();
@@ -24,6 +27,18 @@ public class ViewTransportationOrdersInput extends AbstractPaginatedInput {
     public static final class Builder extends AbstractPaginatedInputBuilder<Builder, ViewTransportationOrdersInput> {
 
         private Long transporterId;
+        private Long branchId;
+        private ATransportationOrderStatus status;
+
+        public Builder branchId(Long branchId) {
+            this.branchId = branchId;
+            return self();
+        }
+
+        public Builder status(ATransportationOrderStatus status) {
+            this.status = status;
+            return self();
+        }
 
         public Builder transporterId(Long transporterId) {
             this.transporterId = transporterId;
@@ -34,6 +49,8 @@ public class ViewTransportationOrdersInput extends AbstractPaginatedInput {
         public ViewTransportationOrdersInput build() {
             final ViewTransportationOrdersInput input = super.build();
             input.setTransporterId(transporterId);
+            input.setBranchId(branchId);
+            input.setStatus(status);
             return input;
         }
 

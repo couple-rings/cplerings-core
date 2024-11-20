@@ -34,7 +34,7 @@ public class ViewTransportationUseCaseIT extends AbstractIT {
 
     @Test
     void givenTransporterOrStaff_whenViewTransportationOrders() {
-        var transportationOrder = transportOrderTestHelper.createTransportOrderWithWaitingStatus();
+        var transportationOrder = transportOrderTestHelper.createTransportOrderWithWaitingStatusAndCustomOrderDone();
         transportationOrder.setTransporter(accountRepository.getReferenceById(51L));
         testDataSource.save(transportationOrder);
         String token = jwtTestHelper.generateToken(AccountTestConstant.TRANSPORTER_EMAIL);

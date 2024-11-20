@@ -52,4 +52,15 @@ public class TransportOrderTestHelper {
                 .build();
         return testDataSource.save(transportationOrder);
     }
+
+    public TransportationOrder createTransportOrderWithWaitingStatusAndCustomOrderDone() {
+        TransportationOrder transportationOrder = TransportationOrder.builder()
+                .customOrder(customOrderTestHelper.createCustomOrderDone())
+                .deliveryAddress("Test")
+                .receiverName("Test")
+                .receiverPhone("Test")
+                .status(TransportStatus.WAITING)
+                .build();
+        return testDataSource.save(transportationOrder);
+    }
 }

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
-import com.cplerings.core.application.design.datasource.result.CustomDesigns;
 import com.cplerings.core.application.transport.datasource.AssignTransportOrderDataSource;
 import com.cplerings.core.application.transport.datasource.UpdateTransportationOrderStatusDataSource;
 import com.cplerings.core.application.transport.datasource.UpdateTransportationOrdersToOngoingDataSource;
@@ -14,13 +13,18 @@ import com.cplerings.core.application.transport.input.ViewTransportationOrdersIn
 import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
-import com.cplerings.core.domain.design.CustomDesign;
+import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.CustomOrderStatus;
+import com.cplerings.core.domain.order.QCustomOrder;
 import com.cplerings.core.domain.order.QTransportationOrder;
+import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
+import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
+import com.querydsl.core.types.dsl.BooleanExpression;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,8 +34,10 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QTransportationOrder Q_TRANSPORTATION_ORDER = QTransportationOrder.transportationOrder;
+    private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
 
     private final TransportationOrderRepository transportationOrderRepository;
+    private final CustomOrderRepository customOrderRepository;
 
     @Override
     public Optional<Account> getTransporterById(Long transporterId) {
@@ -48,6 +54,7 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
         return Optional.ofNullable(createQuery()
                 .select(Q_TRANSPORTATION_ORDER)
                 .from(Q_TRANSPORTATION_ORDER)
+                .leftJoin(Q_TRANSPORTATION_ORDER.customOrder, Q_CUSTOM_ORDER).fetchJoin()
                 .where(Q_TRANSPORTATION_ORDER.id.eq(transportationOrderId))
                 .fetchOne());
     }
@@ -56,6 +63,12 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
     public TransportationOrder save(TransportationOrder transportationOrder) {
         updateAuditor(transportationOrder);
         return transportationOrderRepository.save(transportationOrder);
+    }
+
+    @Override
+    public void save(CustomOrder customOrder) {
+        updateAuditor(customOrder);
+        customOrderRepository.save(customOrder);
     }
 
     @Override
@@ -77,10 +90,32 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
         var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
         BlazeJPAQuery<TransportationOrder> query = createQuery()
                 .select(Q_TRANSPORTATION_ORDER)
-                .from(Q_TRANSPORTATION_ORDER);
+                .from(Q_TRANSPORTATION_ORDER)
+                .leftJoin(Q_TRANSPORTATION_ORDER.customOrder, Q_CUSTOM_ORDER).fetchJoin();
+        final BooleanExpressionBuilder booleanExpressionBuilder = createBooleanExpressionBuilder();
+        booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.customOrder.status.eq(CustomOrderStatus.DONE));
         if (input.getTransporterId() != null) {
-            query.where(Q_TRANSPORTATION_ORDER.transporter.id.eq(input.getTransporterId()));
+            booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.transporter.id.eq(input.getTransporterId()));
         }
+
+        if (input.getBranchId() != null) {
+            booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.customOrder.firstRing.branch.id.eq(input.getBranchId()));
+        }
+
+        if (input.getStatus() != null) {
+            switch (input.getStatus()) {
+                case WAITING -> booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.WAITING));
+                case ON_GOING -> booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.ON_GOING));
+                case DELIVERING -> booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.DELIVERING));
+                case PENDING -> booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.PENDING));
+                case COMPLETED -> booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.COMPLETED));
+                case REJECTED -> booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.REJECTED));
+            }
+        }
+        final BooleanExpression predicate = booleanExpressionBuilder.build();
+        query.where(predicate);
+
+
         long count = query.distinct().fetchCount();
         List<TransportationOrder> transportationOrders = query.limit(input.getPageSize()).offset(offset).fetch();
         return TransportationOrders.builder()

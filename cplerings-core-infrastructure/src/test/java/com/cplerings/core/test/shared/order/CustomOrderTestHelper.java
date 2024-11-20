@@ -67,4 +67,39 @@ public class CustomOrderTestHelper {
                 .build();
         return testDataSource.save(customOrder);
     }
+
+    public CustomOrder createCustomOrderDone() {
+        final Branch branch = branchTestHelper.createBranch();
+        CustomDesignSpouse customDesignSpouse = customDesignTestHelper.createCustomDesignsAndSpouses();
+        Ring firstRing = Ring.builder()
+                .spouse(customDesignSpouse.spouses()[0])
+                .maintenanceExpiredDate(TemporalUtils.getCurrentInstantUTC())
+                .purchaseDate(TemporalUtils.getCurrentInstantUTC())
+                .branch(branch)
+                .status(RingStatus.NOT_AVAIL)
+                .customDesign(customDesignSpouse.customDesign().get(0))
+                .build();
+        Ring firstRingCreated = testDataSource.save(firstRing);
+        Ring secondRing = Ring.builder()
+                .spouse(customDesignSpouse.spouses()[1])
+                .maintenanceExpiredDate(TemporalUtils.getCurrentInstantUTC())
+                .purchaseDate(TemporalUtils.getCurrentInstantUTC())
+                .branch(branch)
+                .status(RingStatus.NOT_AVAIL)
+                .customDesign(customDesignSpouse.customDesign().get(1))
+                .build();
+        Ring secondRingCreated = testDataSource.save(secondRing);
+        Contract contract = Contract.builder().build();
+        Contract contractCreated = testDataSource.save(contract);
+        CustomOrder customOrder = CustomOrder.builder()
+                .totalPrice(Money.create(BigDecimal.valueOf(120000)))
+                .customer(accountRepository.getReferenceById(1L))
+                .status(CustomOrderStatus.DONE)
+                .firstRing(firstRingCreated)
+                .secondRing(secondRingCreated)
+                .contract(contractCreated)
+                .jeweler(accountRepository.getReferenceById(41L))
+                .build();
+        return testDataSource.save(customOrder);
+    }
 }
