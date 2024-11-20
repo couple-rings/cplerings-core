@@ -77,7 +77,7 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
         if (input.status() == ACraftingRequestStatus.ACCEPTED) {
             List<CraftingRequest> craftingRequests = acceptCraftingRequests(input, firstCraftingRequest, secondCraftingRequest);
 
-            List<Ring> rings = createRings(firstCraftingRequest, secondCraftingRequest);
+            List<Ring> rings = createRings(validator, firstCraftingRequest, secondCraftingRequest);
 
             Contract contract = createContract();
 
@@ -120,12 +120,22 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
         return craftingRequestUpdated;
     }
 
-    private List<Ring> createRings(CraftingRequest firstCraftingRequest, CraftingRequest secondCraftingRequest) {
+    private List<Ring> createRings(UseCaseValidator validator, CraftingRequest firstCraftingRequest, CraftingRequest secondCraftingRequest) {
         final Collection<Long> diamondSpecIds = new HashSet<>();
         diamondSpecIds.add(firstCraftingRequest.getDiamondSpecification().getId());
         diamondSpecIds.add(secondCraftingRequest.getDiamondSpecification().getId());
 
-        final Collection<Diamond> unusedDiamonds = dataSource.getUnusedDiamondsFromSpecsAndBranch(diamondSpecIds, firstCraftingRequest.getBranch().getId());
+        final Collection<Diamond> unusedDiamonds;
+        if (diamondSpecIds.size() == 1) {
+            unusedDiamonds = dataSource.getUnusedDiamondsFromSpecsAndBranch(diamondSpecIds, firstCraftingRequest.getBranch().getId());
+        } else {
+            unusedDiamonds = new HashSet<>();
+            dataSource.getUnusedDiamondFromSpecAndBranch(firstCraftingRequest.getDiamondSpecification().getId(), firstCraftingRequest.getBranch().getId())
+                    .ifPresent(unusedDiamonds::add);
+            dataSource.getUnusedDiamondFromSpecAndBranch(secondCraftingRequest.getDiamondSpecification().getId(), secondCraftingRequest.getBranch().getId())
+                    .ifPresent(unusedDiamonds::add);
+        }
+        validator.validateAndStopExecution(unusedDiamonds.size() == 2, AcceptCraftingRequestErrorCode.NOT_ENOUGH_UNUSED_DIAMONDS);
 
         Ring firstRing = Ring.builder()
                 .branch(firstCraftingRequest.getBranch())

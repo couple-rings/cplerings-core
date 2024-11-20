@@ -45,5 +45,7 @@ public interface AcceptCraftingRequestDataSource {
 
     Collection<Diamond> getUnusedDiamondsFromSpecsAndBranch(Collection<Long> diamondSpecIds, Long branchId);
 
+    Optional<Diamond> getUnusedDiamondFromSpecAndBranch(Long diamondSpecId, Long branchId);
+
     RingDiamond save(RingDiamond ringDiamond);
 }

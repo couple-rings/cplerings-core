@@ -328,6 +328,21 @@ public class SharedCraftingDataSource extends AbstractDataSource
     }
 
     @Override
+    public Optional<Diamond> getUnusedDiamondFromSpecAndBranch(Long diamondSpecId, Long branchId) {
+        return Optional.ofNullable(createQuery().select(Q_DIAMOND)
+                .from(Q_DIAMOND)
+                .where(Q_DIAMOND.state.eq(State.ACTIVE)
+                        .and(Q_DIAMOND.branch.id.eq(branchId))
+                        .and(Q_DIAMOND.diamondSpecification.id.eq(diamondSpecId))
+                        .and(JPAExpressions.selectOne()
+                                .from(Q_RING_DIAMOND)
+                                .where(Q_RING_DIAMOND.diamond.eq(Q_DIAMOND)
+                                        .and(Q_RING_DIAMOND.state.eq(State.ACTIVE)))
+                                .notExists()))
+                .fetchFirst());
+    }
+
+    @Override
     public RingDiamond save(RingDiamond ringDiamond) {
         updateAuditor(ringDiamond);
         return ringDiamondRepository.save(ringDiamond);
