@@ -75,34 +75,27 @@ public class CreateDesignVersionUseCaseImpl extends AbstractUseCase<CreateDesign
         validator.validateAndStopExecution(designSessions != null && designSessions.size() > 0, CreateDesignVersionErrorCode.NO_MORE_SESSIONS);
         designSessions.get(0).setStatus(DesignSessionStatus.USED);
         createDesignVersionDataSource.save(designSessions.get(0));
-        int firstVersionNumber = 1;
-        if (firstDesign.getDesignVersions() != null && !firstDesign.getDesignVersions().isEmpty()) {
-            firstVersionNumber = firstDesign.getDesignVersions().size() + 1;
-        }
+        Long firstVersionNumber = createDesignVersionDataSource.countDesignVersionNumber(firstDesign.getId(), customer.getId()) + 1L;
         DesignVersion firstDesignVersion = DesignVersion.builder()
                 .designFile(firstDocument)
                 .customer(customer)
                 .image(firstImage)
                 .design(firstDesign)
-                .versionNumber(firstVersionNumber)
+                .versionNumber(firstVersionNumber.intValue())
                 .isAccepted(false)
                 .isOld(false)
                 .build();
         DesignVersion firstDesignVersionCreated = createDesignVersionDataSource.save(firstDesignVersion);
-        int secondVersionNumber = 1;
+        Long secondVersionNumber = createDesignVersionDataSource.countDesignVersionNumber(secondDesign.getId(), customer.getId()) + 1;
         if (firstDesign.getId() == secondDesign.getId()) {
-            secondVersionNumber = firstVersionNumber;
-        }
-
-        if (secondDesign.getDesignVersions() != null && !secondDesign.getDesignVersions().isEmpty()) {
-            secondVersionNumber = secondDesign.getDesignVersions().size() + 1;
+            secondVersionNumber = firstVersionNumber + 1L;
         }
         DesignVersion secondDesignVersion = DesignVersion.builder()
                 .designFile(secondDocument)
                 .customer(customer)
                 .image(secondImage)
                 .design(secondDesign)
-                .versionNumber(secondVersionNumber)
+                .versionNumber(secondVersionNumber.intValue())
                 .isAccepted(false)
                 .isOld(false)
                 .build();

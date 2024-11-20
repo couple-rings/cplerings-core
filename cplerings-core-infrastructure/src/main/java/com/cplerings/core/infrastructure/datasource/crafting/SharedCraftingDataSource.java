@@ -1,5 +1,14 @@
 package com.cplerings.core.infrastructure.datasource.crafting;
 
+import static com.cplerings.core.domain.design.QCustomDesign.customDesign;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.crafting.datasource.AcceptCraftingRequestDataSource;
 import com.cplerings.core.application.crafting.datasource.CompleteCraftingStageDataSource;
 import com.cplerings.core.application.crafting.datasource.CreateCraftingRequestDataSource;
@@ -29,9 +38,14 @@ import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.crafting.QCraftingStage;
 import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.QCustomDesign;
+import com.cplerings.core.domain.design.QDesign;
+import com.cplerings.core.domain.design.QDesignVersion;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
 import com.cplerings.core.domain.design.crafting.CraftingRequestStatus;
 import com.cplerings.core.domain.design.crafting.QCraftingRequest;
+import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.request.QCustomRequest;
+import com.cplerings.core.domain.design.request.QDesignCustomRequest;
 import com.cplerings.core.domain.diamond.DiamondSpecification;
 import com.cplerings.core.domain.diamond.QDiamondSpecification;
 import com.cplerings.core.domain.file.Document;
@@ -52,24 +66,18 @@ import com.cplerings.core.infrastructure.repository.AgreementRepository;
 import com.cplerings.core.infrastructure.repository.ContractRepository;
 import com.cplerings.core.infrastructure.repository.CraftingRequestRepository;
 import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
+import com.cplerings.core.infrastructure.repository.CustomDesignRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
+import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
 import com.cplerings.core.infrastructure.repository.DocumentRepository;
 import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
 import com.cplerings.core.infrastructure.repository.TransportationAddressRepository;
 import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
-
-import lombok.RequiredArgsConstructor;
-
-import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import lombok.RequiredArgsConstructor;
 
 @DataSource
 @RequiredArgsConstructor
@@ -81,15 +89,19 @@ public class SharedCraftingDataSource extends AbstractDataSource
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QDiamondSpecification Q_DIAMOND_SPECIFICATION = QDiamondSpecification.diamondSpecification;
     private static final QMetalSpecification Q_METAL_SPECIFICATION = QMetalSpecification.metalSpecification;
-    private static final QCustomDesign Q_CUSTOM_DESIGN = QCustomDesign.customDesign;
+    private static final QCustomDesign Q_CUSTOM_DESIGN = customDesign;
     private static final QCraftingRequest Q_CRAFTING_REQUEST = QCraftingRequest.craftingRequest;
     private static final QSpouse Q_SPOUSE = QSpouse.spouse;
     private static final QDocument Q_DOCUMENT = QDocument.document;
     private static final QBranch Q_BRANCH = QBranch.branch;
     private static final QConfiguration Q_CONFIGURATION = QConfiguration.configuration;
     private static final QCraftingStage Q_CRAFTING_STAGE = QCraftingStage.craftingStage;
+    private static final QDesignVersion Q_DESIGN_VERSION = QDesignVersion.designVersion;
+    private static final QDesign Q_DESIGN = QDesign.design;
+    private static final QDesignCustomRequest Q_DESIGN_CUSTOM_REQUEST = QDesignCustomRequest.designCustomRequest;
+    private static final QCustomRequest Q_CUSTOM_REQUEST = QCustomRequest.customRequest;
 
-    private static final String SIDE_DIAMOND_PRICE = "DEFE";
+    private static final String SIDE_DIAMOND_PRICE = "SDPR";
 
     private final CraftingRequestRepository craftingRequestRepository;
     private final RingRepository ringRepository;
@@ -102,6 +114,8 @@ public class SharedCraftingDataSource extends AbstractDataSource
     private final TransportationOrderRepository transportationOrderRepository;
     private final AgreementRepository agreementRepository;
     private final DocumentRepository documentRepository;
+    private final CustomDesignRepository customDesignRepository;
+    private final CustomRequestRepository customRequestRepository;
 
     @Override
     public Optional<Account> getAccountByCustomerId(Long customerId) {
@@ -156,6 +170,10 @@ public class SharedCraftingDataSource extends AbstractDataSource
         return Optional.ofNullable(createQuery().select(Q_CRAFTING_REQUEST)
                 .from(Q_CRAFTING_REQUEST)
                 .leftJoin(Q_CRAFTING_REQUEST.customDesign, Q_CUSTOM_DESIGN).fetchJoin()
+                .leftJoin(Q_CUSTOM_DESIGN.designVersion, Q_DESIGN_VERSION).fetchJoin()
+                .leftJoin(Q_DESIGN_VERSION.design, Q_DESIGN).fetchJoin()
+                .leftJoin(Q_DESIGN.designCustomRequests, Q_DESIGN_CUSTOM_REQUEST).fetchJoin()
+                .leftJoin(Q_DESIGN_CUSTOM_REQUEST.customRequest, Q_CUSTOM_REQUEST).fetchJoin()
                 .leftJoin(Q_CRAFTING_REQUEST.metalSpecification, Q_METAL_SPECIFICATION).fetchJoin()
                 .leftJoin(Q_CRAFTING_REQUEST.diamondSpecification, Q_DIAMOND_SPECIFICATION).fetchJoin()
                 .leftJoin(Q_CUSTOM_DESIGN.spouse, Q_SPOUSE).fetchJoin()
@@ -214,6 +232,18 @@ public class SharedCraftingDataSource extends AbstractDataSource
     public void saveStages(List<CraftingStage> craftingStages) {
         craftingStages.forEach(this::updateAuditor);
         craftingStageRepository.saveAll(craftingStages);
+    }
+
+    @Override
+    public void save(CustomDesign customDesign) {
+        updateAuditor(customDesign);
+        customDesignRepository.save(customDesign);
+    }
+
+    @Override
+    public void save(CustomRequest customRequest) {
+        updateAuditor(customRequest);
+        customRequestRepository.save(customRequest);
     }
 
     @Override

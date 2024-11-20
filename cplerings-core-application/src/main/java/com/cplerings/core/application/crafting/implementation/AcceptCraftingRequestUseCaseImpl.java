@@ -16,12 +16,17 @@ import com.cplerings.core.domain.configuration.Configuration;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.crafting.CraftingStageStatus;
+import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
 import com.cplerings.core.domain.design.crafting.CraftingRequestStatus;
+import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.request.CustomRequestStatus;
+import com.cplerings.core.domain.design.request.DesignCustomRequest;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingStatus;
+import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
 import lombok.RequiredArgsConstructor;
@@ -132,6 +137,20 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
             craftingStages.add(secondStage);
             craftingStages.add(thirdStage);
             acceptCraftingRequestDataSource.saveStages(craftingStages);
+            // complete custom request
+            DesignCustomRequest designCustomRequest = firstCraftingRequest.getCustomDesign().getDesignVersion().getDesign().getDesignCustomRequests().stream()
+                    .filter(x -> x.getCustomRequest().getStatus() == CustomRequestStatus.APPROVED).findFirst().get();
+            CustomRequest customRequest = designCustomRequest.getCustomRequest();
+            customRequest.setStatus(CustomRequestStatus.COMPLETED);
+            acceptCraftingRequestDataSource.save(customRequest);
+            // soft delete custom design
+            CustomDesign firstCustomDesign = firstCraftingRequest.getCustomDesign();
+            firstCustomDesign.setState(State.INACTIVE);
+            acceptCraftingRequestDataSource.save(firstCustomDesign);
+            CustomDesign secondCustomDesign = secondCraftingRequest.getCustomDesign();
+            secondCustomDesign.setState(State.INACTIVE);
+            acceptCraftingRequestDataSource.save(secondCustomDesign);
+
             return aAcceptCraftingRequestMapper.toOutput(customOrderCreated, craftingRequestUpdated.get(0), craftingRequestUpdated.get(1));
         }
         if (input.status() == ACraftingRequestStatus.REJECTED) {

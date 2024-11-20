@@ -130,6 +130,14 @@ public class SharedDesignDataSource extends AbstractDataSource
     }
 
     @Override
+    public List<DesignSession> getListDesignSession(Long customerId) {
+        return createQuery().select(Q_DESIGN_SESSION)
+                .from(Q_DESIGN_SESSION)
+                .where(Q_DESIGN_SESSION.customer.id.eq(customerId))
+                .fetch();
+    }
+
+    @Override
     public Document saveDocument(Document document) {
         updateAuditor(document);
         return documentRepository.save(document);
@@ -189,6 +197,15 @@ public class SharedDesignDataSource extends AbstractDataSource
     public void save(DesignSession designSession) {
         updateAuditor(designSession);
         designSessionRepository.save(designSession);
+    }
+
+    @Override
+    public Long countDesignVersionNumber(Long designId, Long customerId) {
+       return createQuery().select(Q_DESIGN_VERSION)
+               .from(Q_DESIGN_VERSION)
+               .where(Q_DESIGN_VERSION.design.id.eq(designId)
+                       .and(Q_DESIGN_VERSION.customer.id.eq(customerId)))
+               .distinct().fetchCount();
     }
 
     @Override

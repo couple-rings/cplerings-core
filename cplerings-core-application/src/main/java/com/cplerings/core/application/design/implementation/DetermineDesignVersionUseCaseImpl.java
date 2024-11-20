@@ -8,15 +8,13 @@ import com.cplerings.core.application.design.error.DetermineDesignVersionErrorCo
 import com.cplerings.core.application.design.input.DetermineDesignVersionInput;
 import com.cplerings.core.application.design.mapper.ADetermineDesignVersionMapper;
 import com.cplerings.core.application.design.output.DetermineDesignVersionOutput;
-import com.cplerings.core.application.shared.service.security.CurrentUser;
-import com.cplerings.core.application.shared.service.security.SecurityService;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.DesignVersionOwner;
-import com.cplerings.core.domain.design.request.CustomRequest;
-import com.cplerings.core.domain.design.request.CustomRequestStatus;
+import com.cplerings.core.domain.design.session.DesignSession;
+import com.cplerings.core.domain.design.session.DesignSessionStatus;
 
 import lombok.RequiredArgsConstructor;
 
@@ -59,9 +57,6 @@ public class DetermineDesignVersionUseCaseImpl extends AbstractUseCase<Determine
             case SELF -> maleDesignVersion.setOwner(DesignVersionOwner.SELF);
             case PARTNER -> maleDesignVersion.setOwner(DesignVersionOwner.PARTNER);
         }
-        CustomRequest customRequest = femaleDesignVersion.getDesign().getDesignCustomRequests().stream().findFirst().get().getCustomRequest();
-        customRequest.setStatus(CustomRequestStatus.COMPLETED);
-        determineDesignVersionDataSource.updateCustomRequest(customRequest);
         DesignVersion femaleDesignVersionUpdated = determineDesignVersionDataSource.acceptDesignVersion(femaleDesignVersion);
         DesignVersion maleDesignVersionUpdated = determineDesignVersionDataSource.acceptDesignVersion(maleDesignVersion);
         List<DesignVersion> femaleDesignVersions = determineDesignVersionDataSource.getDesignVersionRemainingByDesignId(femaleDesignVersion.getDesign().getId() ,femaleDesignVersionUpdated.getId());
@@ -76,7 +71,12 @@ public class DetermineDesignVersionUseCaseImpl extends AbstractUseCase<Determine
                 determineDesignVersionDataSource.save(designVersionUpdate);
             });
         }
-
+        Long customerId = femaleDesignVersion.getDesign().getId() == null ? maleDesignVersion.getDesign().getId() : femaleDesignVersion.getDesign().getId();
+        List<DesignSession> designSessions = determineDesignVersionDataSource.getListDesignSession(customerId);
+        designSessions.forEach(designSession -> {
+            designSession.setStatus(DesignSessionStatus.USED);
+            determineDesignVersionDataSource.save(designSession);
+        });
         return aDetermineDesignVersionMapper.toOutput(femaleDesignVersionUpdated, maleDesignVersionUpdated);
     }
 }

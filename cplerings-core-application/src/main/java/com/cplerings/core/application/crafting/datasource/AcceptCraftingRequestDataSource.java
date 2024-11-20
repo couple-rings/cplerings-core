@@ -4,7 +4,9 @@ import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.configuration.Configuration;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
+import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
+import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.ring.Ring;
@@ -31,4 +33,8 @@ public interface AcceptCraftingRequestDataSource {
     Configuration getConfigurationForSideDiamond();
 
     void saveStages(List<CraftingStage> craftingStages);
+
+    void save(CustomDesign customDesign);
+
+    void save(CustomRequest customRequest);
 }
