@@ -147,8 +147,8 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
             CustomDesign firstCustomDesign = firstCraftingRequest.getCustomDesign();
             firstCustomDesign.setState(State.INACTIVE);
             acceptCraftingRequestDataSource.save(firstCustomDesign);
-            CustomDesign secondCustomDesign = firstCraftingRequest.getCustomDesign();
-            firstCustomDesign.setState(State.INACTIVE);
+            CustomDesign secondCustomDesign = secondCraftingRequest.getCustomDesign();
+            secondCustomDesign.setState(State.INACTIVE);
             acceptCraftingRequestDataSource.save(secondCustomDesign);
 
             return aAcceptCraftingRequestMapper.toOutput(customOrderCreated, craftingRequestUpdated.get(0), craftingRequestUpdated.get(1));
