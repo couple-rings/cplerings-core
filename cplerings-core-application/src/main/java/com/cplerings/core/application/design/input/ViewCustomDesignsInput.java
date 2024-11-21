@@ -29,7 +29,7 @@ public class ViewCustomDesignsInput extends AbstractPaginatedInput {
         private AState state;
         private Long customerId;
 
-        public Builder status(AState state) {
+        public Builder state(AState state) {
             this.state = state;
             return self();
         }

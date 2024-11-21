@@ -27,5 +27,6 @@ public class ATransportationOrder implements Serializable {
     private String deliveryAddress;
     private ACustomOrder customOrder;
     private AAccount transporter;
+    private String orderNo;
     private Collection<ATransportationNote> transportationNotes;
 }

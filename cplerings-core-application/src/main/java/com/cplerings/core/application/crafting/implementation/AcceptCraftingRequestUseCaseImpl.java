@@ -144,6 +144,7 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                 .customDesign(firstCraftingRequest.getCustomDesign())
                 .fingerSize(firstCraftingRequest.getFingerSize())
                 .engraving(firstCraftingRequest.getEngraving())
+                .metalSpecification(firstCraftingRequest.getMetalSpecification())
                 .build();
         firstRing = dataSource.save(firstRing);
 
@@ -162,6 +163,7 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                 .customDesign(secondCraftingRequest.getCustomDesign())
                 .fingerSize(secondCraftingRequest.getFingerSize())
                 .engraving(secondCraftingRequest.getEngraving())
+                .metalSpecification(secondCraftingRequest.getMetalSpecification())
                 .build();
         secondRing = dataSource.save(secondRing);
 
