@@ -215,6 +215,7 @@ public class SharedDesignDataSource extends AbstractDataSource
                 .leftJoin(Q_DESIGN_VERSION.design, Q_DESIGN).fetchJoin()
                 .leftJoin(Q_DESIGN.designCustomRequests, Q_DESIGN_CUSTOM_REQUEST).fetchJoin()
                 .leftJoin(Q_DESIGN_CUSTOM_REQUEST.customRequest, Q_CUSTOM_REQUEST).fetchJoin()
+                .leftJoin(Q_DESIGN_VERSION.customer, Q_ACCOUNT).fetchJoin()
                 .where(Q_DESIGN_VERSION.id.eq(designVersionId))
                 .fetchOne());
     }

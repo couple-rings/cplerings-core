@@ -71,7 +71,7 @@ public class DetermineDesignVersionUseCaseImpl extends AbstractUseCase<Determine
                 determineDesignVersionDataSource.save(designVersionUpdate);
             });
         }
-        Long customerId = femaleDesignVersion.getDesign().getId() == null ? maleDesignVersion.getDesign().getId() : femaleDesignVersion.getDesign().getId();
+        Long customerId = femaleDesignVersion.getCustomer().getId() == null ? maleDesignVersion.getDesign().getId() : femaleDesignVersion.getCustomer().getId();
         List<DesignSession> designSessions = determineDesignVersionDataSource.getListDesignSession(customerId);
         designSessions.forEach(designSession -> {
             designSession.setStatus(DesignSessionStatus.USED);
