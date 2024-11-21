@@ -11,14 +11,13 @@ import com.cplerings.core.api.diamond.request.ViewDiamondsRequest;
 import com.cplerings.core.api.diamond.response.ViewDiamondsResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.common.api.APIConstant;
-import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.diamond.Diamond;
+import com.cplerings.core.infrastructure.repository.BranchRepository;
 import com.cplerings.core.infrastructure.repository.DiamondSpecificationRepository;
 import com.cplerings.core.infrastructure.repository.DocumentRepository;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
-import com.cplerings.core.test.shared.helper.BranchTestHelper;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
 
 public class ViewDiamondsUseCaseIT extends AbstractIT {
@@ -30,7 +29,7 @@ public class ViewDiamondsUseCaseIT extends AbstractIT {
     private DiamondSpecificationRepository diamondSpecificationRepository;
 
     @Autowired
-    private BranchTestHelper branchTestHelper;
+    private BranchRepository branchRepository;
 
     @Autowired
     private DocumentRepository documentRepository;
@@ -40,7 +39,6 @@ public class ViewDiamondsUseCaseIT extends AbstractIT {
 
     @Test
     void givenAnyone_whenViewDiamondSpecifications() {
-        Branch branch = branchTestHelper.createBranch();
         final String token = jwtTestHelper.generateToken(AccountTestConstant.MANAGER_EMAIL);
         ViewDiamondsRequest request = ViewDiamondsRequest.builder()
                 .page(0)
@@ -48,7 +46,7 @@ public class ViewDiamondsUseCaseIT extends AbstractIT {
                 .build();
         Diamond diamond = Diamond.builder()
                 .diamondSpecification(diamondSpecificationRepository.getReferenceById(1L))
-                .branch(branch)
+                .branch(branchRepository.getReferenceById(1L))
                 .giaDocument(documentRepository.getReferenceById(1L))
                 .giaReportNumber("test")
                 .build();

@@ -9,6 +9,8 @@ import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingStatus;
 import com.cplerings.core.domain.shared.valueobject.Money;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
+import com.cplerings.core.infrastructure.repository.BranchRepository;
+import com.cplerings.core.infrastructure.repository.MetalSpecificationRepository;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
 import com.cplerings.core.test.shared.design.CustomDesignSpouse;
 import com.cplerings.core.test.shared.design.CustomDesignTestHelper;
@@ -26,30 +28,32 @@ public class CustomOrderTestHelper {
 
     private final TestDataSource testDataSource;
     private final AccountRepository accountRepository;
-    private final BranchTestHelper branchTestHelper;
+    private final BranchRepository branchRepository;
     private final CustomDesignTestHelper customDesignTestHelper;
+    private final MetalSpecificationRepository metalSpecificationRepository;
 
     public CustomOrder createCustomOrder() {
-        final Branch branch = branchTestHelper.createBranch();
         CustomDesignSpouse customDesignSpouse = customDesignTestHelper.createCustomDesignsAndSpouses();
         Ring firstRing = Ring.builder()
                 .spouse(customDesignSpouse.spouses()[0])
                 .maintenanceExpiredDate(TemporalUtils.getCurrentInstantUTC())
                 .purchaseDate(TemporalUtils.getCurrentInstantUTC())
-                .branch(branch)
+                .branch(branchRepository.getReferenceById(1L))
                 .status(RingStatus.NOT_AVAIL)
                 .customDesign(customDesignSpouse.customDesign().get(0))
                 .fingerSize(15)
+                .metalSpecification(metalSpecificationRepository.getReferenceById(1L))
                 .build();
         Ring firstRingCreated = testDataSource.save(firstRing);
         Ring secondRing = Ring.builder()
                 .spouse(customDesignSpouse.spouses()[1])
                 .maintenanceExpiredDate(TemporalUtils.getCurrentInstantUTC())
                 .purchaseDate(TemporalUtils.getCurrentInstantUTC())
-                .branch(branch)
+                .branch(branchRepository.getReferenceById(1L))
                 .status(RingStatus.NOT_AVAIL)
                 .customDesign(customDesignSpouse.customDesign().get(1))
                 .fingerSize(16)
+                .metalSpecification(metalSpecificationRepository.getReferenceById(11L))
                 .build();
         Ring secondRingCreated = testDataSource.save(secondRing);
         Contract contract = Contract.builder().build();
@@ -67,26 +71,27 @@ public class CustomOrderTestHelper {
     }
 
     public CustomOrder createCustomOrderDone() {
-        final Branch branch = branchTestHelper.createBranch();
         CustomDesignSpouse customDesignSpouse = customDesignTestHelper.createCustomDesignsAndSpouses();
         Ring firstRing = Ring.builder()
                 .spouse(customDesignSpouse.spouses()[0])
                 .maintenanceExpiredDate(TemporalUtils.getCurrentInstantUTC())
                 .purchaseDate(TemporalUtils.getCurrentInstantUTC())
-                .branch(branch)
+                .branch(branchRepository.getReferenceById(1L))
                 .status(RingStatus.NOT_AVAIL)
                 .customDesign(customDesignSpouse.customDesign().get(0))
                 .fingerSize(15)
+                .metalSpecification(metalSpecificationRepository.getReferenceById(1L))
                 .build();
         Ring firstRingCreated = testDataSource.save(firstRing);
         Ring secondRing = Ring.builder()
                 .spouse(customDesignSpouse.spouses()[1])
                 .maintenanceExpiredDate(TemporalUtils.getCurrentInstantUTC())
                 .purchaseDate(TemporalUtils.getCurrentInstantUTC())
-                .branch(branch)
+                .branch(branchRepository.getReferenceById(1L))
                 .status(RingStatus.NOT_AVAIL)
                 .customDesign(customDesignSpouse.customDesign().get(1))
                 .fingerSize(16)
+                .metalSpecification(metalSpecificationRepository.getReferenceById(11L))
                 .build();
         Ring secondRingCreated = testDataSource.save(secondRing);
         Contract contract = Contract.builder().build();

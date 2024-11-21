@@ -30,5 +30,6 @@ public class ACustomOrder implements Serializable {
     private AContract contract;
     private Money totalPrice;
     private CustomOrderStatus status;
+    private String orderNo;
     private Instant createdAt;
 }

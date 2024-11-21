@@ -2,6 +2,15 @@ package com.cplerings.core.test.integration.crafting;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.UUID;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.WebTestClient;
+
 import com.cplerings.core.api.crafting.request.CreateCraftingRequestRequest;
 import com.cplerings.core.api.crafting.response.CreateCraftingRequestResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
@@ -14,6 +23,7 @@ import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.domain.shared.valueobject.Weight;
 import com.cplerings.core.domain.spouse.Spouse;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
+import com.cplerings.core.infrastructure.repository.BranchRepository;
 import com.cplerings.core.infrastructure.repository.CustomDesignRepository;
 import com.cplerings.core.infrastructure.repository.DesignRepository;
 import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
@@ -22,17 +32,7 @@ import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.infrastructure.repository.SpouseRepository;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
-import com.cplerings.core.test.shared.helper.BranchTestHelper;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.reactive.server.WebTestClient;
-
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.UUID;
 
 public class CreateCraftingRequestIT extends AbstractIT {
 
@@ -61,7 +61,7 @@ public class CreateCraftingRequestIT extends AbstractIT {
     private CustomDesignRepository customDesignRepository;
 
     @Autowired
-    private BranchTestHelper branchTestHelper;
+    private BranchRepository branchRepository;
 
     private Spouse spouseCreated;
     private DesignVersion designVersionCreated;
@@ -97,7 +97,7 @@ public class CreateCraftingRequestIT extends AbstractIT {
                 .build();
         designVersionCreated = designVersionRepository.saveAndFlush(designVersion);
 
-        this.branch = branchTestHelper.createBranch();
+        this.branch = branchRepository.getReferenceById(1L);
     }
 
     @Test
