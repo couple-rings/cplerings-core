@@ -7,12 +7,17 @@ import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.transport.datasource.AssignTransportOrderDataSource;
 import com.cplerings.core.application.transport.datasource.UpdateTransportationOrderStatusDataSource;
 import com.cplerings.core.application.transport.datasource.UpdateTransportationOrdersToOngoingDataSource;
+import com.cplerings.core.application.transport.datasource.ViewTransportationAddressesDataSource;
 import com.cplerings.core.application.transport.datasource.ViewTransportationOrdersDataSource;
+import com.cplerings.core.application.transport.datasource.result.TransportationAddresses;
 import com.cplerings.core.application.transport.datasource.result.TransportationOrders;
+import com.cplerings.core.application.transport.input.ViewTransportationAddressesInput;
 import com.cplerings.core.application.transport.input.ViewTransportationOrdersInput;
 import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
+import com.cplerings.core.domain.address.QTransportationAddress;
+import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.order.QCustomOrder;
@@ -30,11 +35,14 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @DataSource
-public class SharedTransportOrderDataSource extends AbstractDataSource implements AssignTransportOrderDataSource, UpdateTransportationOrdersToOngoingDataSource, ViewTransportationOrdersDataSource, UpdateTransportationOrderStatusDataSource {
+public class SharedTransportOrderDataSource extends AbstractDataSource implements AssignTransportOrderDataSource,
+        UpdateTransportationOrdersToOngoingDataSource, ViewTransportationOrdersDataSource,
+        UpdateTransportationOrderStatusDataSource, ViewTransportationAddressesDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QTransportationOrder Q_TRANSPORTATION_ORDER = QTransportationOrder.transportationOrder;
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
+    private static final QTransportationAddress Q_TRANSPORTATION_ADDRESS = QTransportationAddress.transportationAddress;
 
     private final TransportationOrderRepository transportationOrderRepository;
     private final CustomOrderRepository customOrderRepository;
@@ -120,6 +128,26 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
         List<TransportationOrder> transportationOrders = query.limit(input.getPageSize()).offset(offset).fetch();
         return TransportationOrders.builder()
                 .transportationOrders(transportationOrders)
+                .count(count)
+                .page(input.getPage())
+                .pageSize(input.getPageSize())
+                .build();
+    }
+
+    @Override
+    public TransportationAddresses getTransportationAddresses(ViewTransportationAddressesInput input) {
+        var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
+        BlazeJPAQuery<TransportationAddress> query = createQuery()
+                .select(Q_TRANSPORTATION_ADDRESS)
+                .from(Q_TRANSPORTATION_ADDRESS);
+        if (input.getCustomerId() != null) {
+            query.where(Q_TRANSPORTATION_ADDRESS.customer.id.eq(input.getCustomerId()));
+        }
+
+        long count = query.distinct().fetchCount();
+        List<TransportationAddress> transportationAddresses = query.limit(input.getPageSize()).offset(offset).fetch();
+        return TransportationAddresses.builder()
+                .transportationAddresses(transportationAddresses)
                 .count(count)
                 .page(input.getPage())
                 .pageSize(input.getPageSize())

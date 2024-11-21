@@ -1,5 +1,6 @@
 package com.cplerings.core.test.shared.datasource;
 
+import com.cplerings.core.application.transport.datasource.result.TransportationAddresses;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountVerification;
 import com.cplerings.core.domain.address.TransportationAddress;
