@@ -22,7 +22,7 @@ import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
-import com.cplerings.core.test.shared.helper.DocumentTestHelper;
+import com.cplerings.core.test.shared.helper.FileTestHelper;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
 import com.cplerings.core.test.shared.order.CustomOrderTestHelper;
 
@@ -51,7 +51,7 @@ class CompleteCraftingStageUseCaseIT extends AbstractIT {
     private CustomOrderRepository customOrderRepository;
 
     @Autowired
-    private DocumentTestHelper documentTestHelper;
+    private FileTestHelper fileTestHelper;
 
     @Autowired
     private CustomOrderTestHelper customOrderTestHelper;
@@ -112,14 +112,14 @@ class CompleteCraftingStageUseCaseIT extends AbstractIT {
         updatedFirstCraftingStage.setCompletionDate(TemporalUtils.getCurrentInstantUTC());
         testDataSource.save(updatedFirstCraftingStage);
 
-        final Document firstMaintenance = documentTestHelper.createDocument();
+        final Document firstMaintenance = fileTestHelper.createDocument();
         final RingMaintenance firstRingMaintenance = RingMaintenance.builder()
                 .ringId(ringIds.stream()
                         .min(Comparator.naturalOrder())
                         .orElseThrow(() -> new IllegalStateException("No ring ID detected")))
                 .maintenanceDocumentId(firstMaintenance.getId())
                 .build();
-        final Document secondMaintenance = documentTestHelper.createDocument();
+        final Document secondMaintenance = fileTestHelper.createDocument();
         final RingMaintenance secondRingMaintenance = RingMaintenance.builder()
                 .ringId(ringIds.stream()
                         .max(Comparator.naturalOrder())

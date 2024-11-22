@@ -15,6 +15,7 @@ import com.cplerings.core.domain.design.request.DesignCustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.file.Document;
+import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.payment.Payment;
@@ -81,4 +82,8 @@ public interface TestDataSource {
     Agreement save(Agreement agreement);
 
     Diamond save(Diamond diamond);
+
+    Image save(Image image);
+
+    Optional<Agreement> findAgreementById(Long agreementId);
 }

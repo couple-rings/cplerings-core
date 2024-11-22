@@ -1,6 +1,10 @@
 package com.cplerings.core.infrastructure.security;
 
-import java.util.List;
+import com.cplerings.core.common.api.APIConstant;
+import com.cplerings.core.common.profile.ProfileConstant;
+import com.cplerings.core.common.security.RoleConstant;
+
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,11 +21,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.cplerings.core.common.api.APIConstant;
-import com.cplerings.core.common.profile.ProfileConstant;
-import com.cplerings.core.common.security.RoleConstant;
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -254,7 +254,9 @@ public class SecurityConfiguration {
 
     private void handleAgreementAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.AGREEMENTS_PATH))
-                .permitAll());
+                        .permitAll())
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.PUT, resolvePath(APIConstant.SIGN_AGREEMENT_PATH))
+                        .hasAuthority(RoleConstant.ROLE_CUSTOMER));
     }
 
     private void handleBranchAPI(HttpSecurity localHttp) throws Exception {

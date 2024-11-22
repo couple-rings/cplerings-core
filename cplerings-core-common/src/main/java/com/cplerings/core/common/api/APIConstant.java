@@ -136,6 +136,7 @@ public final class APIConstant {
        agreements paths
      */
     public static final String AGREEMENTS_PATH = "/agreements";
+    public static final String SIGN_AGREEMENT_PATH = AGREEMENTS_PATH + "/{agreementId}";
 
     /*
       branches paths

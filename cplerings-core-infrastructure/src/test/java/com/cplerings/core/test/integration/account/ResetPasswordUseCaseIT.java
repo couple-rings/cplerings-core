@@ -12,7 +12,7 @@ import com.cplerings.core.infrastructure.repository.AccountPasswordResetReposito
 import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
-import com.cplerings.core.test.shared.helper.AccountHelper;
+import com.cplerings.core.test.shared.helper.AccountTestHelper;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ class ResetPasswordUseCaseIT extends AbstractIT {
     private AccountRepository accountRepository;
 
     @Autowired
-    private AccountHelper accountHelper;
+    private AccountTestHelper accountTestHelper;
 
     @Autowired
     private AccountPasswordResetRepository accountPasswordResetRepository;
@@ -45,7 +45,7 @@ class ResetPasswordUseCaseIT extends AbstractIT {
                 .code("123456")
                 .status(ResetCodeStatus.PENDING)
                 .build();
-        accountHelper.updateAuditor(accountPasswordReset);
+        accountTestHelper.updateAuditor(accountPasswordReset);
         accountPasswordResetRepository.save(accountPasswordReset);
 
         final ResetPasswordRequest request = ResetPasswordRequest.builder()
