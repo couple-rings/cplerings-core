@@ -20,7 +20,7 @@ public abstract class AbstractResponse {
 
     public enum Type {
 
-        DATA, PAGINATED_DATA, INFO, ERROR
+        DATA, PAGINATED_DATA, INFO, ERROR, EXCEPTION
     }
 
     @Getter(AccessLevel.PROTECTED)
