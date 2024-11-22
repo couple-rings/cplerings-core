@@ -18,6 +18,7 @@ import java.util.UUID;
 public class ASpouse implements Serializable {
 
     private Long id;
+    private String fullName;
     private Long customerId;
     private UUID coupleId;
     private Instant createdAt;
