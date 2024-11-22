@@ -40,6 +40,11 @@ public class SharedAgreementDataSource extends AbstractDataSource
         BlazeJPAQuery<Agreement> query = createQuery()
                 .select(Q_AGREEMENT)
                 .from(Q_AGREEMENT);
+
+        if (input.getCustomerId() != null) {
+            query.where(Q_AGREEMENT.customer.id.eq(input.getCustomerId()));
+        }
+
         long count = query.distinct().fetchCount();
         List<Agreement> agreements = query.limit(input.getPageSize()).offset(offset).fetch();
         return Agreements.builder()
