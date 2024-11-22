@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.TestComponent;
 
 import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.DesignVersion;
+import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.domain.shared.valueobject.Weight;
 import com.cplerings.core.domain.spouse.Spouse;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
@@ -73,5 +74,20 @@ public class CustomDesignTestHelper {
                 .customDesign(customDesigns)
                 .spouses(spouses)
                 .build();
+    }
+
+    public CustomDesign createCustomDesignInactive() {
+        DesignVersion designVersion = designVersionTestHelper.createDesignVersion();
+        final Spouse[] spouses = spouseTestHelper.createSpouseFromCustomerEmail(AccountTestConstant.CUSTOMER_EMAIL);
+        CustomDesign customDesign = CustomDesign.builder()
+                .blueprint(documentRepository.getReferenceById(1L))
+                .metalWeight(Weight.create(BigDecimal.valueOf(12L)))
+                .designVersion(designVersion)
+                .sideDiamondsCount(12)
+                .account(accountRepository.getReferenceById(1L))
+                .spouse(spouses[0])
+                .state(State.INACTIVE)
+                .build();
+        return testDataSource.save(customDesign);
     }
 }

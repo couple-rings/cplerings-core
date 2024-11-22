@@ -11,6 +11,7 @@ import com.cplerings.core.api.design.data.CustomDesigns;
 import com.cplerings.core.api.design.request.ViewCustomDesignsRequest;
 import com.cplerings.core.api.design.response.ViewCustomDesignsResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
+import com.cplerings.core.application.shared.entity.shared.AState;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.test.shared.AbstractIT;
@@ -32,12 +33,13 @@ class ViewCustomDesignsUseCaseIT extends AbstractIT {
 
     @Test
     void givenAnyone_whenViewCustomDesigns() {
-        CustomDesign customDesign = customDesignTestHelper.createCustomDesign();
+        CustomDesign customDesign = customDesignTestHelper.createCustomDesignInactive();
         testDataSource.save(customDesign);
         String token = jwtTestHelper.generateToken(AccountTestConstant.CUSTOMER_EMAIL);
         ViewCustomDesignsRequest request = ViewCustomDesignsRequest.builder()
                 .page(0)
                 .pageSize(1)
+                .state(AState.INACTIVE)
                 .build();
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(APIConstant.VIEW_CUSTOM_DESIGNS_PATH)

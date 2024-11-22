@@ -66,6 +66,7 @@ import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
 import com.cplerings.core.infrastructure.repository.CustomDesignRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
+import com.cplerings.core.infrastructure.repository.DiamondRepository;
 import com.cplerings.core.infrastructure.repository.DocumentRepository;
 import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
@@ -126,6 +127,7 @@ public class SharedCraftingDataSource extends AbstractDataSource
     private final CustomDesignRepository customDesignRepository;
     private final CustomRequestRepository customRequestRepository;
     private final RingDiamondRepository ringDiamondRepository;
+    private final DiamondRepository diamondRepository;
 
     @Override
     public Optional<Account> getAccountByCustomerId(Long customerId) {
@@ -346,6 +348,12 @@ public class SharedCraftingDataSource extends AbstractDataSource
     public RingDiamond save(RingDiamond ringDiamond) {
         updateAuditor(ringDiamond);
         return ringDiamondRepository.save(ringDiamond);
+    }
+
+    @Override
+    public Diamond save(Diamond diamond) {
+        updateAuditor(diamond);
+        return diamondRepository.save(diamond);
     }
 
     @Override

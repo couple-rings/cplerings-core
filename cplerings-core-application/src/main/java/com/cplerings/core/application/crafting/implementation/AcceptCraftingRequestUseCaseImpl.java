@@ -144,6 +144,7 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                 .customDesign(firstCraftingRequest.getCustomDesign())
                 .fingerSize(firstCraftingRequest.getFingerSize())
                 .engraving(firstCraftingRequest.getEngraving())
+                .metalSpecification(firstCraftingRequest.getMetalSpecification())
                 .build();
         firstRing = dataSource.save(firstRing);
 
@@ -162,6 +163,7 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                 .customDesign(secondCraftingRequest.getCustomDesign())
                 .fingerSize(secondCraftingRequest.getFingerSize())
                 .engraving(secondCraftingRequest.getEngraving())
+                .metalSpecification(secondCraftingRequest.getMetalSpecification())
                 .build();
         secondRing = dataSource.save(secondRing);
 
@@ -172,6 +174,11 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                         .orElseThrow(() -> new IllegalStateException("Cannot get second unused Diamond")))
                 .build();
         dataSource.save(secondRingDiamond);
+
+        unusedDiamonds.forEach(diamond -> {
+            diamond.setState(State.INACTIVE);
+            dataSource.save(diamond);
+        });
 
         List<Ring> rings = new ArrayList<>();
         rings.add(firstRing);

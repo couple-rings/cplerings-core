@@ -18,6 +18,7 @@ import com.cplerings.core.domain.diamond.DiamondSpecification;
 import com.cplerings.core.domain.diamond.QDiamond;
 import com.cplerings.core.domain.diamond.QDiamondSpecification;
 import com.cplerings.core.domain.file.Document;
+import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.BranchRepository;
@@ -83,7 +84,8 @@ public class SharedDiamondDataSource extends AbstractDataSource
         var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
         BlazeJPAQuery<Diamond> query = createQuery()
                 .select(Q_DIAMOND)
-                .from(Q_DIAMOND);
+                .from(Q_DIAMOND)
+                .where(Q_DIAMOND.state.eq(State.ACTIVE));
 
         BooleanExpressionBuilder booleanExpressionBuilder = createBooleanExpressionBuilder();
 

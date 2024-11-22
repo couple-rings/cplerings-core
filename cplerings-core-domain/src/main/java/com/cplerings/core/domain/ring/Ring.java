@@ -4,6 +4,7 @@ import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.file.Document;
+import com.cplerings.core.domain.metal.MetalSpecification;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.spouse.Spouse;
@@ -89,4 +90,8 @@ public class Ring extends AbstractEntity {
 
     @OneToMany(mappedBy = "ring", fetch = FetchType.LAZY)
     private Set<RingDiamond> ringDiamonds;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "metal_specification_id", nullable = false)
+    private MetalSpecification metalSpecification;
 }

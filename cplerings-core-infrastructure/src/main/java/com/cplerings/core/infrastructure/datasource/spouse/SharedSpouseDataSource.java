@@ -6,7 +6,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.cplerings.core.application.spouse.datasource.CreateSpouseDataSource;
+import com.cplerings.core.application.spouse.datasource.VerifyResidentIdDataSource;
 import com.cplerings.core.application.spouse.datasource.ViewSpousesOfCustomerDataSource;
+import com.cplerings.core.application.spouse.input.VerifyResidentIdInput;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.spouse.QSpouse;
@@ -22,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @DataSource
 @RequiredArgsConstructor
 public class SharedSpouseDataSource extends AbstractDataSource
-        implements CreateSpouseDataSource, ViewSpousesOfCustomerDataSource {
+        implements CreateSpouseDataSource, ViewSpousesOfCustomerDataSource, VerifyResidentIdDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QSpouse Q_SPOUSE = QSpouse.spouse;
@@ -83,5 +85,14 @@ public class SharedSpouseDataSource extends AbstractDataSource
                 .from(Q_SPOUSE)
                 .where(Q_SPOUSE.coupleId.eq(coupleId))
                 .fetch();
+    }
+
+    @Override
+    public Optional<Spouse> getSpouseByCitizenId(VerifyResidentIdInput input) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_SPOUSE)
+                .from(Q_SPOUSE)
+                .where(Q_SPOUSE.citizenId.eq(input.citizenId()))
+                .fetchFirst());
     }
 }

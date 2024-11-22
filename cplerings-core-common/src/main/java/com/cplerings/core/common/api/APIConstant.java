@@ -46,6 +46,7 @@ public final class APIConstant {
         Spouses' paths
      */
     public static final String SPOUSES_PATH = "/spouses";
+    public static final String VERIFY_SPOUSE_PATH = SPOUSES_PATH + "/{citizenId}";
 
     /*
         Payments' paths
