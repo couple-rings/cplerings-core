@@ -6,21 +6,21 @@ import java.math.BigDecimal;
 
 public abstract class AbstractVNPayPaymentService {
 
-    protected final Integer toAmountWithConversion(Money amount) {
+    protected final Long toAmountWithConversion(Money amount) {
         if (amount == null) {
-            return 0;
+            return 0L;
         }
-        return Integer.valueOf(amount.getAmount()
+        return Long.valueOf(amount.getAmount()
                 .multiply(BigDecimal.valueOf(100L))
                 .toBigInteger()
                 .toString());
     }
 
-    protected final Integer toAmountWithoutConversion(Money amount) {
+    protected final Long toAmountWithoutConversion(Money amount) {
         if (amount == null) {
-            return 0;
+            return 0L;
         }
-        return Integer.valueOf(amount.getAmount()
+        return Long.valueOf(amount.getAmount()
                 .toBigInteger()
                 .toString());
     }
