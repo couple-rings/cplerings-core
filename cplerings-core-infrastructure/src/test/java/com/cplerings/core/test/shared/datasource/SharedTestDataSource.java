@@ -17,12 +17,14 @@ import com.cplerings.core.domain.design.request.DesignCustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.file.Document;
+import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.spouse.Agreement;
+import com.cplerings.core.domain.spouse.QAgreement;
 import com.cplerings.core.domain.spouse.Spouse;
 import com.cplerings.core.domain.spouse.SpouseAccount;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
@@ -41,6 +43,7 @@ import com.cplerings.core.infrastructure.repository.DesignSessionRepository;
 import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
 import com.cplerings.core.infrastructure.repository.DiamondRepository;
 import com.cplerings.core.infrastructure.repository.DocumentRepository;
+import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
 import com.cplerings.core.infrastructure.repository.PaymentRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
@@ -65,6 +68,7 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private static final QCraftingStage Q_CRAFTING_STAGE = QCraftingStage.craftingStage;
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QBranch Q_BRANCH = QBranch.branch;
+    private static final QAgreement Q_AGREEMENT = QAgreement.agreement;
 
     private final PaymentRepository paymentRepository;
     private final PaymentReceiverRepository paymentReceiverRepository;
@@ -89,6 +93,7 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private final DocumentRepository documentRepository;
     private final AgreementRepository agreementRepository;
     private final DiamondRepository diamondRepository;
+    private final ImageRepository imageRepository;
 
     @Override
     public Payment save(Payment payment) {
@@ -221,6 +226,23 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     public Diamond save(Diamond diamond) {
         updateAuditor(diamond);
         return diamondRepository.save(diamond);
+    }
+
+    @Override
+    public Image save(Image image) {
+        updateAuditor(image);
+        return imageRepository.save(image);
+    }
+
+    @Override
+    public Optional<Agreement> findAgreementById(Long agreementId) {
+        return Optional.ofNullable(createQuery().select(Q_AGREEMENT)
+                .from(Q_AGREEMENT)
+                .leftJoin(Q_AGREEMENT.mainSignature).fetchJoin()
+                .leftJoin(Q_AGREEMENT.partnerSignature).fetchJoin()
+                .leftJoin(Q_AGREEMENT.customer).fetchJoin()
+                .where(Q_AGREEMENT.id.eq(agreementId))
+                .fetchFirst());
     }
 
     @Override
