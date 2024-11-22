@@ -175,6 +175,11 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                 .build();
         dataSource.save(secondRingDiamond);
 
+        unusedDiamonds.forEach(diamond -> {
+            diamond.setState(State.INACTIVE);
+            dataSource.save(diamond);
+        });
+
         List<Ring> rings = new ArrayList<>();
         rings.add(firstRing);
         rings.add(secondRing);
