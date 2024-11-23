@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.Collection;
 
+import com.cplerings.core.application.shared.entity.branch.ABranch;
 import com.cplerings.core.application.shared.entity.design.ACustomDesign;
 import com.cplerings.core.application.shared.entity.design.ADiamond;
 import com.cplerings.core.application.shared.entity.design.AMetalSpecification;
@@ -36,4 +37,5 @@ public class ARing implements Serializable {
     private AMetalSpecification metalSpecification;
     private Collection<ADiamond> diamonds;
     private Instant createdAt;
+    private ABranch branch;
 }
