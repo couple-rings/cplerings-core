@@ -17,6 +17,7 @@ import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.ring.Ring;
+import com.cplerings.core.domain.ring.RingStatus;
 import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.cplerings.core.test.shared.AbstractIT;
@@ -144,6 +145,7 @@ class CompleteCraftingStageUseCaseIT extends AbstractIT {
         thenCraftingStageIsDone(firstCraftingStage.getId());
         thenCustomOrderIsDone();
         thenRingsHaveMaintenanceDocuments();
+        thenRingsHaveChangedStatus();
     }
 
     @Test
@@ -233,6 +235,14 @@ class CompleteCraftingStageUseCaseIT extends AbstractIT {
         rings.forEach(ring -> {
             assertThat(ring.getMaintenanceDocument()).isNotNull();
             assertThat(ring.getMaintenanceExpiredDate()).isNotNull();
+        });
+    }
+
+    private void thenRingsHaveChangedStatus() {
+        final Collection<Ring> rings = testDataSource.findAllRingsByIds(ringIds);
+        assertThat(rings).hasSize(2);
+        rings.forEach(ring -> {
+            assertThat(ring.getStatus()).isEqualByComparingTo(RingStatus.AVAILABLE);
         });
     }
 }

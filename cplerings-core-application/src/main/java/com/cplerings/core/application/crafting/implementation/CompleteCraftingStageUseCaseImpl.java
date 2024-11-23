@@ -36,6 +36,7 @@ import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.ring.Ring;
+import com.cplerings.core.domain.ring.RingStatus;
 
 import lombok.RequiredArgsConstructor;
 
@@ -100,10 +101,10 @@ public class CompleteCraftingStageUseCaseImpl extends AbstractUseCase<CompleteCr
             validator.validateAndStopExecution(maintenances.size() == 2, MAINTENANCES_NOT_FOUND);
 
             final Ring firstRing = craftingStage.getCustomOrder().getFirstRing();
-            updateRingMaintenance(input, maintenances, firstRing);
+            updateRing(input, maintenances, firstRing);
 
             final Ring secondRing = craftingStage.getCustomOrder().getSecondRing();
-            updateRingMaintenance(input, maintenances, secondRing);
+            updateRing(input, maintenances, secondRing);
 
             final CustomOrder customOrder = craftingStage.getCustomOrder();
             customOrder.setStatus(CustomOrderStatus.DONE);
@@ -115,7 +116,7 @@ public class CompleteCraftingStageUseCaseImpl extends AbstractUseCase<CompleteCr
                 .build();
     }
 
-    private void updateRingMaintenance(CompleteCraftingStageInput input, Set<Document> maintenances, Ring ring) {
+    private void updateRing(CompleteCraftingStageInput input, Set<Document> maintenances, Ring ring) {
         final RingMaintenance maintenance = input.ringMaintenances()
                 .stream()
                 .filter(rm -> Objects.equals(rm.ringId(), ring.getId()))
@@ -128,6 +129,7 @@ public class CompleteCraftingStageUseCaseImpl extends AbstractUseCase<CompleteCr
         ring.setMaintenanceDocument(secondMaintenance);
         ring.setMaintenanceExpiredDate(TemporalUtils.getCurrentInstantUTCExcludeTimePartAndBelow()
                 .plus(configurationService.getMaximumMaintenanceDuration() * 365L, ChronoUnit.DAYS));
+        ring.setStatus(RingStatus.AVAILABLE);
         dataSource.save(ring);
     }
 

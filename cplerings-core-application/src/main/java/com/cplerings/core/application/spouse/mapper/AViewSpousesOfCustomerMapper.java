@@ -17,6 +17,7 @@ public interface AViewSpousesOfCustomerMapper {
 
     default List<ASpouse> mapSpouses(List<Spouse> spouses) {
         return spouses.stream().map(spouse -> ASpouse.builder()
+                        .fullName(spouse.getFullName())
                         .id(spouse.getId())
                         .customerId(spouse.getSpouseAccount() != null && spouse.getSpouseAccount().getCustomer() != null
                                 ? spouse.getSpouseAccount().getCustomer().getId()

@@ -59,5 +59,6 @@ public class ViewSpousesOfCustomerUseCaseIT extends AbstractIT {
         assertThat(spouseResponse.getData().spouses()).hasSize(2);
         assertThat(spouseResponse.getData().spouses().get(0)).isNotNull();
         assertThat(spouseResponse.getData().spouses().get(1)).isNotNull();
+        assertThat(spouseResponse.getData().spouses().get(1).getFullName()).isNotBlank();
     }
 }
