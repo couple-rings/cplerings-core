@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.transport.datasource.AssignTransportOrderDataSource;
+import com.cplerings.core.application.transport.datasource.GetTransportationOrderByCustomOrderDataSource;
 import com.cplerings.core.application.transport.datasource.UpdateTransportationOrderStatusDataSource;
 import com.cplerings.core.application.transport.datasource.UpdateTransportationOrdersToOngoingDataSource;
 import com.cplerings.core.application.transport.datasource.ViewTransportationAddressesDataSource;
@@ -39,7 +40,7 @@ import lombok.RequiredArgsConstructor;
 @DataSource
 public class SharedTransportOrderDataSource extends AbstractDataSource implements AssignTransportOrderDataSource,
         UpdateTransportationOrdersToOngoingDataSource, ViewTransportationOrdersDataSource,
-        UpdateTransportationOrderStatusDataSource, ViewTransportationAddressesDataSource {
+        UpdateTransportationOrderStatusDataSource, ViewTransportationAddressesDataSource, GetTransportationOrderByCustomOrderDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QTransportationOrder Q_TRANSPORTATION_ORDER = QTransportationOrder.transportationOrder;
@@ -166,5 +167,15 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
                 .page(input.getPage())
                 .pageSize(input.getPageSize())
                 .build();
+    }
+
+    @Override
+    public Optional<TransportationOrder> getTransportationOrderByCustomOrderId(Long customOrderId) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_TRANSPORTATION_ORDER)
+                .from(Q_TRANSPORTATION_ORDER)
+                .leftJoin(Q_TRANSPORTATION_ORDER.customOrder, Q_CUSTOM_ORDER)
+                .where(Q_TRANSPORTATION_ORDER.customOrder.id.eq(customOrderId))
+                .fetchFirst());
     }
 }
