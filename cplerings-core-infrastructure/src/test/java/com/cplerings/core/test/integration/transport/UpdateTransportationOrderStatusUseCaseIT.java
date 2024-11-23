@@ -55,6 +55,6 @@ class UpdateTransportationOrderStatusUseCaseIT extends AbstractIT {
 
         final TransportationOrder transportationOrder = responseBody.getData();
         assertThat(transportationOrder).isNotNull();
-        assertThat(transportationOrder.transportationOrder().getStatus()).isEqualByComparingTo(TransportStatus.DELIVERING);
+        assertThat(transportationOrder.transportationOrder().getStatus()).isEqualByComparingTo(ATransportationOrderStatus.DELIVERING);
     }
 }
