@@ -33,6 +33,7 @@ public final class APIConstant {
     public static final String CURRENT_PROFILE_PATH = ACCOUNTS_PATH + "/profile/current";
     public static final String TRANSPORTERS_PATH = ACCOUNTS_PATH + "/transporters";
     public static final String JEWELERS_PATH = ACCOUNTS_PATH + "/jewelers";
+    public static final String USERS_PATH = ACCOUNTS_PATH + "/users";
 
 
     /*

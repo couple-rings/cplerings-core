@@ -14,8 +14,10 @@ import com.cplerings.core.application.account.datasource.ViewAccountDataSource;
 import com.cplerings.core.application.account.datasource.ViewCurrentProfileDataSource;
 import com.cplerings.core.application.account.datasource.ViewJewelersUseDataSource;
 import com.cplerings.core.application.account.datasource.ViewTransportersDataSource;
+import com.cplerings.core.application.account.datasource.ViewUsersDataSource;
 import com.cplerings.core.application.account.datasource.result.Jewelers;
 import com.cplerings.core.application.account.datasource.result.Transporters;
+import com.cplerings.core.application.account.datasource.result.Users;
 import com.cplerings.core.application.account.input.ViewJewelersInput;
 import com.cplerings.core.application.account.input.ViewTransportersInput;
 import com.cplerings.core.common.pagination.PaginationUtils;
@@ -40,7 +42,7 @@ import lombok.RequiredArgsConstructor;
 public class SharedAccountDataSource extends AbstractDataSource
         implements RegisterCustomerDataSource, VerifyCustomerDataSource, RequestResetPasswordDataSource,
         ResetPasswordDataSource, ViewAccountDataSource, ViewCurrentProfileDataSource, ViewTransportersDataSource,
-        ViewJewelersUseDataSource {
+        ViewJewelersUseDataSource, ViewUsersDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QAccountVerification Q_ACCOUNT_VERIFICATION = QAccountVerification.accountVerification;
@@ -173,5 +175,14 @@ public class SharedAccountDataSource extends AbstractDataSource
                 .page(input.getPage())
                 .pageSize(input.getPageSize())
                 .build();
+    }
+
+    @Override
+    public Users getUsers(List<Long> userIds) {
+        List<Account> users = createQuery().select(Q_ACCOUNT)
+                .from(Q_ACCOUNT)
+                .where(Q_ACCOUNT.id.in(userIds))
+                .fetch();
+        return Users.builder().users(users).build();
     }
 }
