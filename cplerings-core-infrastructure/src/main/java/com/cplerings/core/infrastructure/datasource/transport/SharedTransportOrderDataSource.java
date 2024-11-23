@@ -18,12 +18,14 @@ import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.address.QTransportationAddress;
 import com.cplerings.core.domain.address.TransportationAddress;
+import com.cplerings.core.domain.branch.QBranch;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.order.QCustomOrder;
 import com.cplerings.core.domain.order.QTransportationOrder;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
+import com.cplerings.core.domain.ring.QRing;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
@@ -43,6 +45,10 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
     private static final QTransportationOrder Q_TRANSPORTATION_ORDER = QTransportationOrder.transportationOrder;
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QTransportationAddress Q_TRANSPORTATION_ADDRESS = QTransportationAddress.transportationAddress;
+    private static final QRing FIRST_Q_RING = new QRing("firstRing");
+    private static final QRing SECOND_Q_RING = new QRing("secondRing");
+    private static final QBranch FIRST_Q_BRANCH = new QBranch("firstBranch");
+    private static final QBranch SECOND_Q_BRANCH = new QBranch("secondBranch");
 
     private final TransportationOrderRepository transportationOrderRepository;
     private final CustomOrderRepository customOrderRepository;
@@ -99,7 +105,11 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
         BlazeJPAQuery<TransportationOrder> query = createQuery()
                 .select(Q_TRANSPORTATION_ORDER)
                 .from(Q_TRANSPORTATION_ORDER)
-                .leftJoin(Q_TRANSPORTATION_ORDER.customOrder, Q_CUSTOM_ORDER).fetchJoin();
+                .leftJoin(Q_TRANSPORTATION_ORDER.customOrder, Q_CUSTOM_ORDER).fetchJoin()
+                .leftJoin(Q_CUSTOM_ORDER.firstRing, FIRST_Q_RING).fetchJoin()
+                .leftJoin(Q_CUSTOM_ORDER.secondRing, SECOND_Q_RING).fetchJoin()
+                .leftJoin(FIRST_Q_RING.branch, FIRST_Q_BRANCH).fetchJoin()
+                .leftJoin(SECOND_Q_RING.branch, SECOND_Q_BRANCH).fetchJoin();
         final BooleanExpressionBuilder booleanExpressionBuilder = createBooleanExpressionBuilder();
         booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.customOrder.status.eq(CustomOrderStatus.DONE));
         if (input.getTransporterId() != null) {
@@ -107,17 +117,21 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
         }
 
         if (input.getBranchId() != null) {
-            booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.customOrder.firstRing.branch.id.eq(input.getBranchId()));
+            booleanExpressionBuilder.and(FIRST_Q_RING.branch.id.eq(input.getBranchId()));
         }
 
         if (input.getStatus() != null) {
             switch (input.getStatus()) {
                 case WAITING -> booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.WAITING));
-                case ON_GOING -> booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.ON_GOING));
-                case DELIVERING -> booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.DELIVERING));
+                case ON_GOING ->
+                        booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.ON_GOING));
+                case DELIVERING ->
+                        booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.DELIVERING));
                 case PENDING -> booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.PENDING));
-                case COMPLETED -> booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.COMPLETED));
-                case REJECTED -> booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.REJECTED));
+                case COMPLETED ->
+                        booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.COMPLETED));
+                case REJECTED ->
+                        booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.REJECTED));
             }
         }
         final BooleanExpression predicate = booleanExpressionBuilder.build();
