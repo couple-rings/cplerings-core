@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import com.cplerings.core.application.shared.entity.account.AAccount;
 import com.cplerings.core.application.shared.entity.transport.ATransportationNote;
+import com.cplerings.core.application.shared.entity.transport.ATransportationOrderStatus;
 import com.cplerings.core.domain.order.TransportStatus;
 
 import lombok.AllArgsConstructor;
@@ -21,7 +22,7 @@ import lombok.Setter;
 public class ATransportationOrder implements Serializable {
 
     private Long id;
-    private TransportStatus status;
+    private ATransportationOrderStatus status;
     private String receiverName;
     private String receiverPhone;
     private String deliveryAddress;
