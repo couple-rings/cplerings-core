@@ -2,6 +2,7 @@ package com.cplerings.core.application.account.implementation;
 
 import com.cplerings.core.application.account.ViewUsersUseCase;
 import com.cplerings.core.application.account.datasource.ViewUsersDataSource;
+import com.cplerings.core.application.account.error.ViewUsersErrorCode;
 import com.cplerings.core.application.account.input.ViewUsersInput;
 import com.cplerings.core.application.account.mapper.AViewUsersMapper;
 import com.cplerings.core.application.account.output.ViewUsersOutput;
@@ -21,6 +22,7 @@ public class ViewUsersUseCaseImpl extends AbstractUseCase<ViewUsersInput, ViewUs
     @Override
     protected ViewUsersOutput internalExecute(UseCaseValidator validator, ViewUsersInput input) {
         var users = dataSource.getUsers(input.userIds());
+        validator.validateAndStopExecution(users.users().size() == input.userIds().size(), ViewUsersErrorCode.NOT_FOUND_SOME_USERS);
         return aMapper.toOutput(users);
     }
 }
