@@ -10,6 +10,7 @@ import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.api.transport.data.TransportationOrder;
 import com.cplerings.core.api.transport.request.data.AssignTransportOrderRequestData;
 import com.cplerings.core.api.transport.response.AssignTransportOrderResponse;
+import com.cplerings.core.application.shared.entity.transport.ATransportationOrderStatus;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.test.shared.AbstractIT;
@@ -55,6 +56,6 @@ class AssignTransportOrderUseCaseIT extends AbstractIT {
         final TransportationOrder transportationOrder = responseBody.getData();
         assertThat(transportationOrder).isNotNull();
         assertThat(transportationOrder.transportationOrder().getTransporter()).isNotNull();
-        assertThat(transportationOrder.transportationOrder().getStatus()).isEqualByComparingTo(TransportStatus.WAITING);
+        assertThat(transportationOrder.transportationOrder().getStatus()).isEqualByComparingTo(ATransportationOrderStatus.WAITING);
     }
 }

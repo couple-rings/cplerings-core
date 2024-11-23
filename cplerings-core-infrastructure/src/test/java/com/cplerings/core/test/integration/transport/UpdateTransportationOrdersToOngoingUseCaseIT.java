@@ -14,6 +14,7 @@ import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.api.transport.data.TransportationOrderList;
 import com.cplerings.core.api.transport.request.UpdateTransportationOrdersToOngoingRequest;
 import com.cplerings.core.api.transport.response.UpdateTransportationOrdersToOngoingResponse;
+import com.cplerings.core.application.shared.entity.transport.ATransportationOrderStatus;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.test.shared.AbstractIT;
@@ -62,6 +63,6 @@ public class UpdateTransportationOrdersToOngoingUseCaseIT extends AbstractIT {
         assertThat(transportationOrder).isNotNull();
         assertThat(transportationOrder.transportationOrders()).isNotNull();
         assertThat(transportationOrder.transportationOrders().get(0)).isNotNull();
-        assertThat(transportationOrder.transportationOrders().get(0).getStatus()).isEqualByComparingTo(TransportStatus.ON_GOING);
+        assertThat(transportationOrder.transportationOrders().get(0).getStatus()).isEqualByComparingTo(ATransportationOrderStatus.ON_GOING);
     }
 }

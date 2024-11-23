@@ -4,14 +4,17 @@ import static com.cplerings.core.application.design.error.DesignErrorCode.INVALI
 import static com.cplerings.core.application.design.error.DesignErrorCode.INVALID_PAGE_SIZE;
 
 import com.cplerings.core.application.design.input.ViewCustomDesignsInput;
+import com.cplerings.core.application.shared.entity.transport.ATransportationOrderStatus;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.application.transport.ViewTransportationOrdersUseCase;
 import com.cplerings.core.application.transport.datasource.ViewTransportationOrdersDataSource;
+import com.cplerings.core.application.transport.error.ViewTransportationOrdersErrorCode;
 import com.cplerings.core.application.transport.input.ViewTransportationOrdersInput;
 import com.cplerings.core.application.transport.mapper.AViewTransportationOrdersMapper;
 import com.cplerings.core.application.transport.output.ViewTransportationOrdersOutput;
+import com.cplerings.core.domain.order.CustomOrderStatus;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,6 +35,11 @@ public class ViewTransportationOrdersUseCaseImpl extends AbstractUseCase<ViewTra
     @Override
     protected ViewTransportationOrdersOutput internalExecute(UseCaseValidator validator, ViewTransportationOrdersInput input) {
         var result = viewTransportationOrdersDataSource.getTransportationOrders(input);
+        if (input.getStatus() == ATransportationOrderStatus.PENDING) {
+            result.getTransportationOrders().forEach(transportationOrder -> {
+                validator.validateAndStopExecution(transportationOrder.getCustomOrder().getStatus() == CustomOrderStatus.DONE, ViewTransportationOrdersErrorCode.NOT_DONE_CUSTOM_ORDER);
+            });
+        }
         return viewTransportationOrdersMapper.toOutput(result);
     }
 }
