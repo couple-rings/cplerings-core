@@ -10,6 +10,7 @@ import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.api.transport.data.TransportationOrdersData;
 import com.cplerings.core.api.transport.request.ViewTransportationOrdersRequest;
 import com.cplerings.core.api.transport.response.ViewTransportationOrdersResponse;
+import com.cplerings.core.application.shared.entity.transport.ATransportationOrderStatus;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.test.shared.AbstractIT;
@@ -42,6 +43,7 @@ public class ViewTransportationUseCaseIT extends AbstractIT {
                 .page(0)
                 .pageSize(1)
                 .transporterId(51L)
+                .status(ATransportationOrderStatus.WAITING)
                 .build();
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(APIConstant.TRANSPORTATION_ORDER_PATH)
@@ -69,5 +71,6 @@ public class ViewTransportationUseCaseIT extends AbstractIT {
         assertThat(transportationOrdersData.getPageSize()).isEqualTo(1);
         assertThat(transportationOrdersData.getItems()).hasSize(1);
         assertThat(transportationOrdersData.getTotalPages()).isEqualTo(1);
+        assertThat(transportationOrdersData.getItems().stream().findFirst().get().getStatus()).isEqualByComparingTo(ATransportationOrderStatus.WAITING);
     }
 }
