@@ -12,4 +12,5 @@ public final class RoleConstant {
     public static final String ROLE_JEWELER = "ROLE_JEWELER";
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
     public static final String ROLE_TRANSPORTER = "ROLE_TRANSPORTER";
+    public static final String ROLE_SERVICE = "ROLE_SERVICE";
 }

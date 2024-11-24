@@ -43,6 +43,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 @Slf4j
 @SpringBootTest(
@@ -187,7 +188,11 @@ public abstract class AbstractIT {
                             field.setAccessible(true);
                             final Object value = field.get(queryObject);
                             if (value != null) {
-                                queries.put(field.getName(), Objects.toString(value));
+                                if (value instanceof Collection<?> valueCollection) {
+                                    queries.put(field.getName(), convertCollectionToQuery(valueCollection));
+                                } else {
+                                    queries.put(field.getName(), Objects.toString(value));
+                                }
                             }
                         } catch (Exception e) {
                             log.error(e.getMessage(), e);
@@ -195,6 +200,13 @@ public abstract class AbstractIT {
                             field.setAccessible(originalAccessible);
                         }
                     });
+        }
+
+        private String convertCollectionToQuery(Collection<?> valueCollection) {
+            return valueCollection.stream()
+                    .filter(Objects::nonNull)
+                    .map(Objects::toString)
+                    .collect(Collectors.joining(","));
         }
 
         private <Q> Collection<Class<?>> extractClassAndItsParents(Q obj) {

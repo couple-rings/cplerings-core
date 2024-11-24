@@ -30,7 +30,9 @@ class DefaultAccountVerificationIT extends AbstractIT {
     private void thenEachAccountRoleHasOneAccount(List<Account> accounts) {
         Assertions.assertThat(accounts)
                 .hasSize(Role.values().length);
-        Arrays.stream(Role.values()).forEach(role -> {
+        Arrays.stream(Role.values())
+                .filter(role -> role != Role.SERVICE)
+                .forEach(role -> {
             final List<Account> roleAccounts = accounts.stream()
                     .filter(acc -> StringUtils.containsIgnoreCase(acc.getEmail(), role.name()))
                     .toList();

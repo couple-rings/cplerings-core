@@ -74,6 +74,7 @@ public final class JWTAuthenticationFilter extends OncePerRequestFilter {
             case JEWELER -> RoleConstant.ROLE_JEWELER;
             case ADMIN -> RoleConstant.ROLE_ADMIN;
             case TRANSPORTER -> RoleConstant.ROLE_TRANSPORTER;
+            case SERVICE -> RoleConstant.ROLE_SERVICE;
         };
         return Collections.singletonList(new SimpleGrantedAuthority(roleAuthority));
     }

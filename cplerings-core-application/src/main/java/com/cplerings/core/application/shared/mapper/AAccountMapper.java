@@ -9,7 +9,8 @@ import org.mapstruct.Mapper;
 @Mapper(
         config = SpringMapperConfiguration.class,
         uses = {
-                AEnumMapper.class
+                AEnumMapper.class,
+                ABranchMapper.class,
         }
 )
 public interface AAccountMapper {

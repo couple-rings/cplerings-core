@@ -12,6 +12,7 @@ public final class AccountTestConstant {
     public static final String JEWELER_EMAIL = "jeweler@cplerings.com";
     public static final String TRANSPORTER_EMAIL = "transporter@cplerings.com";
     public static final String ADMIN_EMAIL = "admin@cplerings.com";
+    public static final String SERVICE_EMAIL = "secondary.server@cplerings.com";
 
     public static final String PASSWORD = "P@ssw0rd";
 }
