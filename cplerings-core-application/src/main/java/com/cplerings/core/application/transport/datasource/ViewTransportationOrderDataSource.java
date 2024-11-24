@@ -1,0 +1,10 @@
+package com.cplerings.core.application.transport.datasource;
+
+import java.util.Optional;
+
+import com.cplerings.core.domain.order.TransportationOrder;
+
+public interface ViewTransportationOrderDataSource {
+
+    Optional<TransportationOrder> getTransportationOrder(Long id);
+}
