@@ -255,7 +255,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VIEW_TRANSPORTATION_ORDER_BY_CUSTOM_ORDER_ID))
                         .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VIEW_TRANSPORTATION_ORDER_DETAIL))
-                        .hasAnyAuthority(RoleConstant.ROLE_TRANSPORTER, RoleConstant.ROLE_STAFF));
+                        .hasAnyAuthority(RoleConstant.ROLE_TRANSPORTER, RoleConstant.ROLE_STAFF))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.PUT, resolvePath(APIConstant.UPDATE_TRANSPORTATION_DELIVERY_IMAGE_ORDER_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_TRANSPORTER));
     }
 
     private void handleAgreementAPI(HttpSecurity localHttp) throws Exception {

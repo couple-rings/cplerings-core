@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.transport.datasource.AssignTransportOrderDataSource;
 import com.cplerings.core.application.transport.datasource.GetTransportationOrderByCustomOrderDataSource;
+import com.cplerings.core.application.transport.datasource.UpdateImageDeliveryDataSource;
 import com.cplerings.core.application.transport.datasource.UpdateTransportationOrderStatusDataSource;
 import com.cplerings.core.application.transport.datasource.UpdateTransportationOrdersToOngoingDataSource;
 import com.cplerings.core.application.transport.datasource.ViewTransportationAddressesDataSource;
@@ -21,6 +22,8 @@ import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.address.QTransportationAddress;
 import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.branch.QBranch;
+import com.cplerings.core.domain.file.Image;
+import com.cplerings.core.domain.file.QImage;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.QCustomOrder;
 import com.cplerings.core.domain.order.QTransportationOrder;
@@ -41,7 +44,7 @@ import lombok.RequiredArgsConstructor;
 public class SharedTransportOrderDataSource extends AbstractDataSource implements AssignTransportOrderDataSource,
         UpdateTransportationOrdersToOngoingDataSource, ViewTransportationOrdersDataSource,
         UpdateTransportationOrderStatusDataSource, ViewTransportationAddressesDataSource, GetTransportationOrderByCustomOrderDataSource,
-        ViewTransportationOrderDataSource {
+        ViewTransportationOrderDataSource, UpdateImageDeliveryDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QTransportationOrder Q_TRANSPORTATION_ORDER = QTransportationOrder.transportationOrder;
@@ -51,6 +54,7 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
     private static final QRing SECOND_Q_RING = new QRing("secondRing");
     private static final QBranch FIRST_Q_BRANCH = new QBranch("firstBranch");
     private static final QBranch SECOND_Q_BRANCH = new QBranch("secondBranch");
+    private static final QImage Q_IMAGE = QImage.image;
 
     private final TransportationOrderRepository transportationOrderRepository;
     private final CustomOrderRepository customOrderRepository;
@@ -185,6 +189,15 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
                 .select(Q_TRANSPORTATION_ORDER)
                 .from(Q_TRANSPORTATION_ORDER)
                 .where(Q_TRANSPORTATION_ORDER.id.eq(id))
+                .fetchFirst());
+    }
+
+    @Override
+    public Optional<Image> getImageById(Long imageId) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_IMAGE)
+                .from(Q_IMAGE)
+                .where(Q_IMAGE.id.eq(imageId))
                 .fetchFirst());
     }
 }

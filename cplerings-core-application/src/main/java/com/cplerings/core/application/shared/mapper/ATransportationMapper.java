@@ -10,7 +10,8 @@ import com.cplerings.core.domain.order.TransportationOrder;
         uses = {
                 MoneyMapper.class,
                 WeightMapper.class,
-                DesignSizeMapper.class
+                DesignSizeMapper.class,
+                AImageMapper.class
         }
 )
 public interface ATransportationMapper {
