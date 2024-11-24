@@ -11,11 +11,14 @@ import com.cplerings.core.application.transport.datasource.UpdateImageDeliveryDa
 import com.cplerings.core.application.transport.datasource.UpdateTransportationOrderStatusDataSource;
 import com.cplerings.core.application.transport.datasource.UpdateTransportationOrdersToOngoingDataSource;
 import com.cplerings.core.application.transport.datasource.ViewTransportationAddressesDataSource;
+import com.cplerings.core.application.transport.datasource.ViewTransportationNotesDataSource;
 import com.cplerings.core.application.transport.datasource.ViewTransportationOrderDataSource;
 import com.cplerings.core.application.transport.datasource.ViewTransportationOrdersDataSource;
 import com.cplerings.core.application.transport.datasource.result.TransportationAddresses;
+import com.cplerings.core.application.transport.datasource.result.TransportationNotes;
 import com.cplerings.core.application.transport.datasource.result.TransportationOrders;
 import com.cplerings.core.application.transport.input.ViewTransportationAddressesInput;
+import com.cplerings.core.application.transport.input.ViewTransportationNotesInput;
 import com.cplerings.core.application.transport.input.ViewTransportationOrdersInput;
 import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
@@ -30,6 +33,7 @@ import com.cplerings.core.domain.order.QCustomOrder;
 import com.cplerings.core.domain.order.QTransportationOrder;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
+import com.cplerings.core.domain.order.status.QTransportationNote;
 import com.cplerings.core.domain.order.status.TransportationNote;
 import com.cplerings.core.domain.ring.QRing;
 import com.cplerings.core.domain.shared.State;
@@ -47,7 +51,8 @@ import lombok.RequiredArgsConstructor;
 public class SharedTransportOrderDataSource extends AbstractDataSource implements AssignTransportOrderDataSource,
         UpdateTransportationOrdersToOngoingDataSource, ViewTransportationOrdersDataSource,
         UpdateTransportationOrderStatusDataSource, ViewTransportationAddressesDataSource, GetTransportationOrderByCustomOrderDataSource,
-        ViewTransportationOrderDataSource, UpdateImageDeliveryDataSource, CreateTransportationNoteDataSource {
+        ViewTransportationOrderDataSource, UpdateImageDeliveryDataSource, CreateTransportationNoteDataSource,
+        ViewTransportationNotesDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QTransportationOrder Q_TRANSPORTATION_ORDER = QTransportationOrder.transportationOrder;
@@ -58,6 +63,7 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
     private static final QBranch FIRST_Q_BRANCH = new QBranch("firstBranch");
     private static final QBranch SECOND_Q_BRANCH = new QBranch("secondBranch");
     private static final QImage Q_IMAGE = QImage.image;
+    private static final QTransportationNote Q_TRANSPORTATION_NOTE = QTransportationNote.transportationNote;
 
     private final TransportationOrderRepository transportationOrderRepository;
     private final CustomOrderRepository customOrderRepository;
@@ -209,5 +215,22 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
                 .from(Q_IMAGE)
                 .where(Q_IMAGE.id.eq(imageId))
                 .fetchFirst());
+    }
+
+    @Override
+    public TransportationNotes getTransportationNotes(ViewTransportationNotesInput input) {
+        var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
+        BlazeJPAQuery<TransportationNote> query = createQuery()
+                .select(Q_TRANSPORTATION_NOTE)
+                .from(Q_TRANSPORTATION_NOTE);
+
+        long count = query.distinct().fetchCount();
+        List<TransportationNote> transportationNotes = query.limit(input.getPageSize()).offset(offset).fetch();
+        return TransportationNotes.builder()
+                .transportationNotes(transportationNotes)
+                .count(count)
+                .page(input.getPage())
+                .pageSize(input.getPageSize())
+                .build();
     }
 }

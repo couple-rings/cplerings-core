@@ -20,6 +20,7 @@ import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.TransportationOrder;
+import com.cplerings.core.domain.order.status.TransportationNote;
 import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.ring.Ring;
@@ -50,6 +51,7 @@ import com.cplerings.core.infrastructure.repository.RingRepository;
 import com.cplerings.core.infrastructure.repository.SpouseAccountRepository;
 import com.cplerings.core.infrastructure.repository.SpouseRepository;
 import com.cplerings.core.infrastructure.repository.TransportationAddressRepository;
+import com.cplerings.core.infrastructure.repository.TransportationNoteRepository;
 import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
 import com.cplerings.core.test.shared.entity.order.DummyOrder;
 import com.cplerings.core.test.shared.entity.order.DummyOrderRepository;
@@ -94,6 +96,7 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private final AgreementRepository agreementRepository;
     private final DiamondRepository diamondRepository;
     private final ImageRepository imageRepository;
+    private final TransportationNoteRepository transportationNoteRepository;
 
     @Override
     public Payment save(Payment payment) {
@@ -243,6 +246,12 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
                 .leftJoin(Q_AGREEMENT.customer).fetchJoin()
                 .where(Q_AGREEMENT.id.eq(agreementId))
                 .fetchFirst());
+    }
+
+    @Override
+    public TransportationNote save(TransportationNote transportationNote) {
+        updateAuditor(transportationNote);
+        return transportationNoteRepository.save(transportationNote);
     }
 
     @Override

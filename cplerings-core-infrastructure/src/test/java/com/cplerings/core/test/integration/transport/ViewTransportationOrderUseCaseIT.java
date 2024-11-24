@@ -63,5 +63,10 @@ public class ViewTransportationOrderUseCaseIT extends AbstractIT {
         assertThat(responseBody.getData().transportationOrder()).isNotNull();
         assertThat(responseBody.getData().transportationOrder().getOrderNo()).isNotNull();
         assertThat(responseBody.getData().transportationOrder().getTransporter()).isNotNull();
+        assertThat(responseBody.getData().transportationOrder().getCustomOrder()).isNotNull();
+        assertThat(responseBody.getData().transportationOrder().getCustomOrder().getFirstRing()).isNotNull();
+        assertThat(responseBody.getData().transportationOrder().getCustomOrder().getFirstRing().getDiamonds()).isNotNull();
+        assertThat(responseBody.getData().transportationOrder().getCustomOrder().getFirstRing().getDiamonds()).isNotNull()
+                .allSatisfy(diamond -> assertThat(diamond).isNotNull());
     }
 }
