@@ -72,5 +72,9 @@ public class ViewTransportationUseCaseIT extends AbstractIT {
         assertThat(transportationOrdersData.getItems()).hasSize(1);
         assertThat(transportationOrdersData.getTotalPages()).isEqualTo(1);
         assertThat(transportationOrdersData.getItems().stream().findFirst().get().getStatus()).isEqualByComparingTo(ATransportationOrderStatus.WAITING);
+        assertThat(transportationOrdersData.getItems().stream().findFirst().get().getCustomOrder().getFirstRing()).isNotNull();
+        assertThat(transportationOrdersData.getItems().stream().findFirst().get().getCustomOrder().getFirstRing().getDiamonds()).isNotNull();
+        assertThat(transportationOrdersData.getItems().stream().findFirst().get().getCustomOrder().getFirstRing().getDiamonds()).isNotNull()
+                .allSatisfy(diamond -> assertThat(diamond).isNotNull());
     }
 }

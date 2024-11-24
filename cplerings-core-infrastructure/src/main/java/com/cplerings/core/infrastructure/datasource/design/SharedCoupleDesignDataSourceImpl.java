@@ -6,6 +6,7 @@ import com.cplerings.core.application.design.input.ViewCoupleDesignInput;
 import com.cplerings.core.common.number.NumberUtils;
 import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.design.DesignCouple;
+import com.cplerings.core.domain.design.DesignStatus;
 import com.cplerings.core.domain.design.QDesign;
 import com.cplerings.core.domain.design.QDesignCollection;
 import com.cplerings.core.domain.design.QDesignCouple;
@@ -82,6 +83,14 @@ public class SharedCoupleDesignDataSourceImpl extends AbstractDataSource
             booleanExpressionBuilder.and(Q_DESIGN_COUPLE.designs
                     .any().designCollection.id.eq(input.getCollectionId()));
         }
+        if (input.getStatus() != null) {
+            switch (input.getStatus()) {
+                case AVAILABLE -> booleanExpressionBuilder.and(Q_DESIGN.status.eq(DesignStatus.AVAILABLE));
+                case UNAVAILABLE -> booleanExpressionBuilder.and(Q_DESIGN.status.eq(DesignStatus.UNAVAILABLE));
+                case USED -> booleanExpressionBuilder.and(Q_DESIGN.status.eq(DesignStatus.USED));
+            }
+        }
+
         if (NumberUtils.isLessThanOrEqual(input.getMinPrice(), BigDecimal.ZERO)) {
             if (NumberUtils.isLessThanOrEqual(input.getMaxPrice(), BigDecimal.ZERO)) {
                 // Get all results
@@ -115,6 +124,7 @@ public class SharedCoupleDesignDataSourceImpl extends AbstractDataSource
                         .between(input.getMinPrice(), input.getMaxPrice()));
             }
         }
+
         final BooleanExpression predicate = booleanExpressionBuilder.build();
         if (predicate != null) {
             query.where(predicate);

@@ -10,6 +10,7 @@ import com.cplerings.core.application.design.datasource.CreateDesignSessionDataS
 import com.cplerings.core.application.design.datasource.CreateDesignVersionDataSource;
 import com.cplerings.core.application.design.datasource.DetermineDesignVersionDataSource;
 import com.cplerings.core.application.design.datasource.ProcessDesignSessionPaymentDataSource;
+import com.cplerings.core.application.design.datasource.ViewDesignDataSource;
 import com.cplerings.core.application.design.datasource.ViewDesignSessionsLeftDataSource;
 import com.cplerings.core.application.design.datasource.ViewDesignVersionDataSource;
 import com.cplerings.core.application.design.datasource.ViewDesignVersionsDataSource;
@@ -54,7 +55,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SharedDesignDataSource extends AbstractDataSource
         implements CreateDesignSessionDataSource, ProcessDesignSessionPaymentDataSource, CheckRemainingDesignSessionDataSource,
-        CreateDesignVersionDataSource, ViewDesignVersionDataSource, ViewDesignVersionsDataSource, DetermineDesignVersionDataSource, ViewDesignSessionsLeftDataSource {
+        CreateDesignVersionDataSource, ViewDesignVersionDataSource, ViewDesignVersionsDataSource, DetermineDesignVersionDataSource,
+        ViewDesignSessionsLeftDataSource, ViewDesignDataSource {
 
     private static final QDesign Q_DESIGN = QDesign.design;
     private static final QDesignVersion Q_DESIGN_VERSION = QDesignVersion.designVersion;
@@ -201,11 +203,11 @@ public class SharedDesignDataSource extends AbstractDataSource
 
     @Override
     public Long countDesignVersionNumber(Long designId, Long customerId) {
-       return createQuery().select(Q_DESIGN_VERSION)
-               .from(Q_DESIGN_VERSION)
-               .where(Q_DESIGN_VERSION.design.id.eq(designId)
-                       .and(Q_DESIGN_VERSION.customer.id.eq(customerId)))
-               .distinct().fetchCount();
+        return createQuery().select(Q_DESIGN_VERSION)
+                .from(Q_DESIGN_VERSION)
+                .where(Q_DESIGN_VERSION.design.id.eq(designId)
+                        .and(Q_DESIGN_VERSION.customer.id.eq(customerId)))
+                .distinct().fetchCount();
     }
 
     @Override
@@ -263,5 +265,13 @@ public class SharedDesignDataSource extends AbstractDataSource
     public DesignVersion acceptDesignVersion(DesignVersion designVersion) {
         updateAuditor(designVersion);
         return designVersionRepository.save(designVersion);
+    }
+
+    @Override
+    public Optional<Design> getDesign(Long designId) {
+        return Optional.ofNullable(createQuery().select(Q_DESIGN)
+                .from(Q_DESIGN)
+                .where(Q_DESIGN.id.eq(designId))
+                .fetchFirst());
     }
 }

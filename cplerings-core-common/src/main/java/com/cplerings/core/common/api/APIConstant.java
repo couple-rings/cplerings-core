@@ -73,6 +73,7 @@ public final class APIConstant {
     public static final String VIEW_CUSTOM_DESIGNS_PATH = CUSTOM_DESIGN_PATH;
     public static final String VIEW_CUSTOM_DESIGN_PATH = CUSTOM_DESIGN_PATH + "/{customDesignId}";
     public static final String VIEW_DESIGN_SESSIONS_LEFT_PATH = DESIGN_SESSION_PATH + "/customers/{customerId}/left";
+    public static final String VIEW_DESIGN_PATH = DESIGN_PATH + "/{designId}";
 
     /*
        Uploading path
@@ -128,6 +129,10 @@ public final class APIConstant {
     public static final String UPDATE_TRANSPORTATION_ORDER_TO_ONGOING_PATH = TRANSPORTATION_ORDER_PATH + "/ongoing";
     public static final String UPDATE_TRANSPORTATION_ORDER_STATUS = TRANSPORTATION_ORDER_PATH + "/{transportationOrderId}/status";
     public static final String VIEW_TRANSPORTATION_ORDER_BY_CUSTOM_ORDER_ID = TRANSPORTATION_ORDER_PATH + "/custom-orders/{customOrderId}";
+    public static final String VIEW_TRANSPORTATION_ORDER_DETAIL = TRANSPORTATION_ORDER_PATH + "/{transportationOrderId}";
+    public static final String UPDATE_TRANSPORTATION_DELIVERY_IMAGE_ORDER_PATH = TRANSPORTATION_ORDER_PATH + "/{transportationOrderId}/delivery-image";
+    public static final String CREATE_TRANSPORTATION_NOTE_PATH = TRANSPORTATION_ORDER_PATH + "/notes";
+    public static final String TRANSPORTATION_NOTE_PATH = CREATE_TRANSPORTATION_NOTE_PATH;
 
     /*
        custom order paths

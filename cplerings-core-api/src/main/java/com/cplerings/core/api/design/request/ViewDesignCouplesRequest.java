@@ -1,6 +1,7 @@
 package com.cplerings.core.api.design.request;
 
 import com.cplerings.core.api.shared.AbstractPaginatedRequest;
+import com.cplerings.core.application.shared.entity.design.ADesignStatus;
 import com.cplerings.core.common.pagination.FilterableByPrice;
 
 import lombok.AllArgsConstructor;
@@ -22,4 +23,5 @@ public class ViewDesignCouplesRequest extends AbstractPaginatedRequest implement
     private Long metalSpecificationId;
     private BigDecimal minPrice;
     private BigDecimal maxPrice;
+    private ADesignStatus status;
 }

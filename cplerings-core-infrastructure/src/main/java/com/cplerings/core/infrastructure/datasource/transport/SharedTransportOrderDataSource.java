@@ -5,14 +5,20 @@ import java.util.Optional;
 
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.transport.datasource.AssignTransportOrderDataSource;
+import com.cplerings.core.application.transport.datasource.CreateTransportationNoteDataSource;
 import com.cplerings.core.application.transport.datasource.GetTransportationOrderByCustomOrderDataSource;
+import com.cplerings.core.application.transport.datasource.UpdateImageDeliveryDataSource;
 import com.cplerings.core.application.transport.datasource.UpdateTransportationOrderStatusDataSource;
 import com.cplerings.core.application.transport.datasource.UpdateTransportationOrdersToOngoingDataSource;
 import com.cplerings.core.application.transport.datasource.ViewTransportationAddressesDataSource;
+import com.cplerings.core.application.transport.datasource.ViewTransportationNotesDataSource;
+import com.cplerings.core.application.transport.datasource.ViewTransportationOrderDataSource;
 import com.cplerings.core.application.transport.datasource.ViewTransportationOrdersDataSource;
 import com.cplerings.core.application.transport.datasource.result.TransportationAddresses;
+import com.cplerings.core.application.transport.datasource.result.TransportationNotes;
 import com.cplerings.core.application.transport.datasource.result.TransportationOrders;
 import com.cplerings.core.application.transport.input.ViewTransportationAddressesInput;
+import com.cplerings.core.application.transport.input.ViewTransportationNotesInput;
 import com.cplerings.core.application.transport.input.ViewTransportationOrdersInput;
 import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
@@ -20,17 +26,21 @@ import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.address.QTransportationAddress;
 import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.branch.QBranch;
+import com.cplerings.core.domain.file.Image;
+import com.cplerings.core.domain.file.QImage;
 import com.cplerings.core.domain.order.CustomOrder;
-import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.order.QCustomOrder;
 import com.cplerings.core.domain.order.QTransportationOrder;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
+import com.cplerings.core.domain.order.status.QTransportationNote;
+import com.cplerings.core.domain.order.status.TransportationNote;
 import com.cplerings.core.domain.ring.QRing;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
+import com.cplerings.core.infrastructure.repository.TransportationNoteRepository;
 import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
@@ -40,7 +50,9 @@ import lombok.RequiredArgsConstructor;
 @DataSource
 public class SharedTransportOrderDataSource extends AbstractDataSource implements AssignTransportOrderDataSource,
         UpdateTransportationOrdersToOngoingDataSource, ViewTransportationOrdersDataSource,
-        UpdateTransportationOrderStatusDataSource, ViewTransportationAddressesDataSource, GetTransportationOrderByCustomOrderDataSource {
+        UpdateTransportationOrderStatusDataSource, ViewTransportationAddressesDataSource, GetTransportationOrderByCustomOrderDataSource,
+        ViewTransportationOrderDataSource, UpdateImageDeliveryDataSource, CreateTransportationNoteDataSource,
+        ViewTransportationNotesDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QTransportationOrder Q_TRANSPORTATION_ORDER = QTransportationOrder.transportationOrder;
@@ -50,9 +62,12 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
     private static final QRing SECOND_Q_RING = new QRing("secondRing");
     private static final QBranch FIRST_Q_BRANCH = new QBranch("firstBranch");
     private static final QBranch SECOND_Q_BRANCH = new QBranch("secondBranch");
+    private static final QImage Q_IMAGE = QImage.image;
+    private static final QTransportationNote Q_TRANSPORTATION_NOTE = QTransportationNote.transportationNote;
 
     private final TransportationOrderRepository transportationOrderRepository;
     private final CustomOrderRepository customOrderRepository;
+    private final TransportationNoteRepository transportationNoteRepository;
 
     @Override
     public Optional<Account> getTransporterById(Long transporterId) {
@@ -176,5 +191,46 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
                 .leftJoin(Q_TRANSPORTATION_ORDER.customOrder, Q_CUSTOM_ORDER)
                 .where(Q_TRANSPORTATION_ORDER.customOrder.id.eq(customOrderId))
                 .fetchFirst());
+    }
+
+    @Override
+    public Optional<TransportationOrder> getTransportationOrder(Long id) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_TRANSPORTATION_ORDER)
+                .from(Q_TRANSPORTATION_ORDER)
+                .where(Q_TRANSPORTATION_ORDER.id.eq(id))
+                .fetchFirst());
+    }
+
+    @Override
+    public TransportationNote save(TransportationNote transportationNote) {
+        updateAuditor(transportationNote);
+        return transportationNoteRepository.save(transportationNote);
+    }
+
+    @Override
+    public Optional<Image> getImageById(Long imageId) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_IMAGE)
+                .from(Q_IMAGE)
+                .where(Q_IMAGE.id.eq(imageId))
+                .fetchFirst());
+    }
+
+    @Override
+    public TransportationNotes getTransportationNotes(ViewTransportationNotesInput input) {
+        var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
+        BlazeJPAQuery<TransportationNote> query = createQuery()
+                .select(Q_TRANSPORTATION_NOTE)
+                .from(Q_TRANSPORTATION_NOTE);
+
+        long count = query.distinct().fetchCount();
+        List<TransportationNote> transportationNotes = query.limit(input.getPageSize()).offset(offset).fetch();
+        return TransportationNotes.builder()
+                .transportationNotes(transportationNotes)
+                .count(count)
+                .page(input.getPage())
+                .pageSize(input.getPageSize())
+                .build();
     }
 }

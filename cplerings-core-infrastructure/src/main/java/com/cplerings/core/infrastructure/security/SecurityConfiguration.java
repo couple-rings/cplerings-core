@@ -162,6 +162,8 @@ public class SecurityConfiguration {
                         .permitAll())
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VIEW_SINGLE_DESIGN_VERSION_PATH))
                         .permitAll())
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VIEW_DESIGN_PATH))
+                        .permitAll())
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.CREATE_DESIGN_SESSION_PATH))
                         .hasAuthority(RoleConstant.ROLE_CUSTOMER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.DESIGN_SESSION_PATH))
@@ -255,7 +257,15 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.ASSIGN_CUSTOM_ORDER_TO_JEWELER_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_JEWELER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VIEW_TRANSPORTATION_ORDER_BY_CUSTOM_ORDER_ID))
-                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER));
+                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VIEW_TRANSPORTATION_ORDER_DETAIL))
+                        .hasAnyAuthority(RoleConstant.ROLE_TRANSPORTER, RoleConstant.ROLE_STAFF))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.PUT, resolvePath(APIConstant.UPDATE_TRANSPORTATION_DELIVERY_IMAGE_ORDER_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_TRANSPORTER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.CREATE_TRANSPORTATION_NOTE_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_TRANSPORTER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.TRANSPORTATION_NOTE_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_TRANSPORTER, RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF));
     }
 
     private void handleAgreementAPI(HttpSecurity localHttp) throws Exception {
