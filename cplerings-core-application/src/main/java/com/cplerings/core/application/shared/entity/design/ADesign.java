@@ -7,7 +7,6 @@ import java.util.Collection;
 
 import com.cplerings.core.application.shared.entity.file.ADocument;
 import com.cplerings.core.application.shared.entity.shared.AState;
-import com.cplerings.core.domain.shared.State;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,4 +34,5 @@ public class ADesign implements Serializable {
     private ADesignCollection designCollection;
     private Instant createdAt;
     private AState state;
+    private ADesignStatus status;
 }

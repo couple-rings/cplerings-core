@@ -9,7 +9,7 @@ import com.cplerings.core.domain.order.TransportationOrder;
 
 @Mapper(config = SpringMapperConfiguration.class,
         uses = {
-            ATransportationOrderMapper.class
+                ATransportationOrderMapper.class
         })
 public interface AViewTransportationOrderMapper {
 
