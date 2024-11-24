@@ -126,6 +126,7 @@ public final class APIConstant {
     public static final String UPDATE_TRANSPORTATION_ORDER_TO_ONGOING_PATH = TRANSPORTATION_ORDER_PATH + "/ongoing";
     public static final String UPDATE_TRANSPORTATION_ORDER_STATUS = TRANSPORTATION_ORDER_PATH + "/{transportationOrderId}/status";
     public static final String VIEW_TRANSPORTATION_ORDER_BY_CUSTOM_ORDER_ID = TRANSPORTATION_ORDER_PATH + "/custom-orders/{customOrderId}";
+    public static final String VIEW_TRANSPORTATION_ORDER_DETAIL = TRANSPORTATION_ORDER_PATH + "/{transportationOrderId}";
 
     /*
        custom order paths

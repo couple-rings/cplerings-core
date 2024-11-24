@@ -253,7 +253,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.ASSIGN_CUSTOM_ORDER_TO_JEWELER_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_JEWELER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VIEW_TRANSPORTATION_ORDER_BY_CUSTOM_ORDER_ID))
-                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER));
+                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VIEW_TRANSPORTATION_ORDER_DETAIL))
+                        .hasAnyAuthority(RoleConstant.ROLE_TRANSPORTER, RoleConstant.ROLE_STAFF));
     }
 
     private void handleAgreementAPI(HttpSecurity localHttp) throws Exception {

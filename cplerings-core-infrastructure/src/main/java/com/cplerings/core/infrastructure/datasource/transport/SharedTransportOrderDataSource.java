@@ -9,6 +9,7 @@ import com.cplerings.core.application.transport.datasource.GetTransportationOrde
 import com.cplerings.core.application.transport.datasource.UpdateTransportationOrderStatusDataSource;
 import com.cplerings.core.application.transport.datasource.UpdateTransportationOrdersToOngoingDataSource;
 import com.cplerings.core.application.transport.datasource.ViewTransportationAddressesDataSource;
+import com.cplerings.core.application.transport.datasource.ViewTransportationOrderDataSource;
 import com.cplerings.core.application.transport.datasource.ViewTransportationOrdersDataSource;
 import com.cplerings.core.application.transport.datasource.result.TransportationAddresses;
 import com.cplerings.core.application.transport.datasource.result.TransportationOrders;
@@ -21,7 +22,6 @@ import com.cplerings.core.domain.address.QTransportationAddress;
 import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.branch.QBranch;
 import com.cplerings.core.domain.order.CustomOrder;
-import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.order.QCustomOrder;
 import com.cplerings.core.domain.order.QTransportationOrder;
 import com.cplerings.core.domain.order.TransportStatus;
@@ -40,7 +40,8 @@ import lombok.RequiredArgsConstructor;
 @DataSource
 public class SharedTransportOrderDataSource extends AbstractDataSource implements AssignTransportOrderDataSource,
         UpdateTransportationOrdersToOngoingDataSource, ViewTransportationOrdersDataSource,
-        UpdateTransportationOrderStatusDataSource, ViewTransportationAddressesDataSource, GetTransportationOrderByCustomOrderDataSource {
+        UpdateTransportationOrderStatusDataSource, ViewTransportationAddressesDataSource, GetTransportationOrderByCustomOrderDataSource,
+        ViewTransportationOrderDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QTransportationOrder Q_TRANSPORTATION_ORDER = QTransportationOrder.transportationOrder;
@@ -175,6 +176,15 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
                 .from(Q_TRANSPORTATION_ORDER)
                 .leftJoin(Q_TRANSPORTATION_ORDER.customOrder, Q_CUSTOM_ORDER)
                 .where(Q_TRANSPORTATION_ORDER.customOrder.id.eq(customOrderId))
+                .fetchFirst());
+    }
+
+    @Override
+    public Optional<TransportationOrder> getTransportationOrder(Long id) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_TRANSPORTATION_ORDER)
+                .from(Q_TRANSPORTATION_ORDER)
+                .where(Q_TRANSPORTATION_ORDER.id.eq(id))
                 .fetchFirst());
     }
 }
