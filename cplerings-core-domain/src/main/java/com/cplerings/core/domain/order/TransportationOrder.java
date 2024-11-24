@@ -2,9 +2,11 @@ package com.cplerings.core.domain.order;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.status.TransportationNote;
 import com.cplerings.core.domain.shared.AbstractOrderEntity;
 
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -67,4 +69,8 @@ public class TransportationOrder extends AbstractOrderEntity {
 
     @OneToMany(mappedBy = "transportationOrder", fetch = FetchType.LAZY)
     private Set<TransportationNote> transportationNotes;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "image_id")
+    private Image image;
 }
