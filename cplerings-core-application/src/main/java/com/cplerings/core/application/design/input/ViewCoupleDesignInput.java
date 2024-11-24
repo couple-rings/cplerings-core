@@ -1,5 +1,8 @@
 package com.cplerings.core.application.design.input;
 
+import java.math.BigDecimal;
+
+import com.cplerings.core.application.shared.entity.design.ADesignStatus;
 import com.cplerings.core.application.shared.pagination.AbstractPaginatedInput;
 import com.cplerings.core.common.pagination.FilterableByPrice;
 
@@ -8,8 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -21,6 +22,7 @@ public class ViewCoupleDesignInput extends AbstractPaginatedInput implements Fil
     private Long metalSpecificationId;
     private BigDecimal minPrice;
     private BigDecimal maxPrice;
+    private ADesignStatus status;
 
     public static Builder builder() {
         return new Builder();
@@ -34,6 +36,7 @@ public class ViewCoupleDesignInput extends AbstractPaginatedInput implements Fil
         private Long metalSpecificationId;
         private BigDecimal minPrice;
         private BigDecimal maxPrice;
+        private ADesignStatus status;
 
         public Builder collectionId(Long collectionId) {
             this.collectionId = collectionId;
@@ -55,6 +58,11 @@ public class ViewCoupleDesignInput extends AbstractPaginatedInput implements Fil
             return self();
         }
 
+        public Builder status(ADesignStatus status) {
+            this.status = status;
+            return self();
+        }
+
         @Override
         public ViewCoupleDesignInput build() {
             final ViewCoupleDesignInput input = super.build();
@@ -62,6 +70,7 @@ public class ViewCoupleDesignInput extends AbstractPaginatedInput implements Fil
             input.setMetalSpecificationId(metalSpecificationId);
             input.setMinPrice(minPrice);
             input.setMaxPrice(maxPrice);
+            input.setStatus(status);
             return input;
         }
 
