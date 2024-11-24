@@ -1,6 +1,10 @@
 package com.cplerings.core.infrastructure.security;
 
-import java.util.List;
+import com.cplerings.core.common.api.APIConstant;
+import com.cplerings.core.common.profile.ProfileConstant;
+import com.cplerings.core.common.security.RoleConstant;
+
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,11 +21,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.cplerings.core.common.api.APIConstant;
-import com.cplerings.core.common.profile.ProfileConstant;
-import com.cplerings.core.common.security.RoleConstant;
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -101,7 +101,7 @@ public class SecurityConfiguration {
 
     private void handleAccountAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.USERS_PATH))
-                        .permitAll())
+                        .hasAuthority(RoleConstant.ROLE_SERVICE))
                 .authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.ACCOUNT_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER, RoleConstant.ROLE_ADMIN))
                 .authorizeHttpRequests(config -> config.requestMatchers(resolvePath(APIConstant.REGISTER_CUSTOMER_PATH))
@@ -117,7 +117,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.TRANSPORTERS_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.JEWELERS_PATH))
-                        .hasAnyAuthority(RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER));
+                        .hasAnyAuthority(RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.GET_RANDOM_STAFF_PATH))
+                        .hasAuthority(RoleConstant.ROLE_SERVICE));
     }
 
     private void handleDevelopmentAPI(HttpSecurity localHttp) throws Exception {

@@ -1,9 +1,9 @@
 package com.cplerings.core.application.account.input;
 
-import java.util.List;
-
 import lombok.Builder;
 
+import java.util.Set;
+
 @Builder
-public record ViewUsersInput(List<Long> userIds) {
+public record ViewUsersInput(Set<Long> userIds) {
 }

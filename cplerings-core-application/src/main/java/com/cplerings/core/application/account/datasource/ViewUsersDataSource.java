@@ -1,10 +1,10 @@
 package com.cplerings.core.application.account.datasource;
 
-import java.util.List;
-
 import com.cplerings.core.application.account.datasource.result.Users;
+
+import java.util.Collection;
 
 public interface ViewUsersDataSource {
 
-    Users getUsers(List<Long> userIds);
+    Users getUsers(Collection<Long> userIds);
 }

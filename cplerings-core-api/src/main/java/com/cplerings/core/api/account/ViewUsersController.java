@@ -1,14 +1,5 @@
 package com.cplerings.core.api.account;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.cplerings.core.api.account.data.UsersData;
 import com.cplerings.core.api.account.mapper.APIViewUsersMapper;
 import com.cplerings.core.api.account.request.ViewUsersRequest;
@@ -23,11 +14,19 @@ import com.cplerings.core.application.account.output.ViewUsersOutput;
 import com.cplerings.core.application.shared.usecase.UseCase;
 import com.cplerings.core.common.api.APIConstant;
 
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.RequiredArgsConstructor;
+
+import java.util.Set;
 
 @RequiredArgsConstructor
 @RestController
@@ -58,8 +57,10 @@ public class ViewUsersController extends AbstractController<ViewUsersInput, View
             )
     )
     @ErrorAPIResponse
-    public ResponseEntity<Object> view(@RequestParam List<Long> userIds) {
-        ViewUsersRequest request = ViewUsersRequest.builder().userIds(userIds).build();
+    public ResponseEntity<Object> view(@RequestParam Set<Long> userIds) {
+        ViewUsersRequest request = ViewUsersRequest.builder()
+                .userIds(userIds)
+                .build();
         return handleRequest(request);
     }
 }

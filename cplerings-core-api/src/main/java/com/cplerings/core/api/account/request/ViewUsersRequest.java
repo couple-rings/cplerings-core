@@ -1,9 +1,10 @@
 package com.cplerings.core.api.account.request;
 
-import java.util.List;
-
 import lombok.Builder;
 
+import java.util.Set;
+
 @Builder
-public record ViewUsersRequest(List<Long> userIds) {
+public record ViewUsersRequest(Set<Long> userIds) {
+
 }
