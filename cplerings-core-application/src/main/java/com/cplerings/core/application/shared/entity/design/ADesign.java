@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.util.Collection;
 
 import com.cplerings.core.application.shared.entity.file.ADocument;
+import com.cplerings.core.application.shared.entity.shared.AState;
 import com.cplerings.core.domain.shared.State;
 
 import lombok.AllArgsConstructor;
@@ -33,5 +34,5 @@ public class ADesign implements Serializable {
     private Collection<ADesignDiamondSpecification> designDiamondSpecifications;
     private ADesignCollection designCollection;
     private Instant createdAt;
-    private State state;
+    private AState state;
 }
