@@ -12,6 +12,7 @@ import com.cplerings.core.application.spouse.input.VerifyResidentIdInput;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.spouse.QSpouse;
+import com.cplerings.core.domain.spouse.QSpouseAccount;
 import com.cplerings.core.domain.spouse.Spouse;
 import com.cplerings.core.domain.spouse.SpouseAccount;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
@@ -28,7 +29,7 @@ public class SharedSpouseDataSource extends AbstractDataSource
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QSpouse Q_SPOUSE = QSpouse.spouse;
-
+    private static final QSpouseAccount Q_SPOUSE_ACCOUNT = QSpouseAccount.spouseAccount;
 
     private final SpouseRepository spouseRepository;
     private final SpouseAccountRepository spouseAccountRepository;
@@ -93,6 +94,17 @@ public class SharedSpouseDataSource extends AbstractDataSource
                 .select(Q_SPOUSE)
                 .from(Q_SPOUSE)
                 .where(Q_SPOUSE.citizenId.eq(input.citizenId()))
+                .fetchFirst());
+    }
+
+    @Override
+    public Optional<Account> getCustomerWithSpouseById(Long customerId) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_ACCOUNT)
+                .from(Q_ACCOUNT)
+                .leftJoin(Q_ACCOUNT.spouse, Q_SPOUSE_ACCOUNT).fetchJoin()
+                .leftJoin(Q_SPOUSE_ACCOUNT.spouse, Q_SPOUSE).fetchJoin()
+                .where(Q_ACCOUNT.id.eq(customerId))
                 .fetchFirst());
     }
 }

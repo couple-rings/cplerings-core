@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import com.cplerings.core.api.spouse.request.data.VerifyResidentIdRequestData;
 import com.cplerings.core.api.spouse.response.VerifyResidentIdResponse;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.test.shared.AbstractIT;
@@ -29,10 +30,13 @@ class VerifyResidentIdUseCaseIT extends AbstractIT {
 
         String token = jwtTestHelper.generateToken(AccountTestConstant.TRANSPORTER_EMAIL);
         String citizenId = SpouseTestConstant.PRIMARY_SPOUSE_CITIZEN_ID;
+        VerifyResidentIdRequestData verifyResidentIdRequestData = VerifyResidentIdRequestData
+                .builder().customerId(1L).build();
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(APIConstant.VERIFY_SPOUSE_PATH, citizenId)
                 .authorizationHeader(token)
                 .method(RequestBuilder.Method.GET)
+                .query(verifyResidentIdRequestData)
                 .send();
 
         thenResponseIsOk(response);

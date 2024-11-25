@@ -3,6 +3,7 @@ package com.cplerings.core.api.spouse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cplerings.core.api.shared.AbstractController;
@@ -12,6 +13,7 @@ import com.cplerings.core.api.shared.openapi.SpouseTag;
 import com.cplerings.core.api.spouse.data.SpouseData;
 import com.cplerings.core.api.spouse.mapper.APIVerifyResidentIdMapper;
 import com.cplerings.core.api.spouse.request.VerifyResidentIdRequest;
+import com.cplerings.core.api.spouse.request.data.VerifyResidentIdRequestData;
 import com.cplerings.core.api.spouse.response.VerifyResidentIdResponse;
 import com.cplerings.core.application.shared.usecase.UseCase;
 import com.cplerings.core.application.spouse.VerifyResidentIdUseCase;
@@ -44,8 +46,11 @@ public class VerifyResidentIdController extends AbstractController<VerifyResiden
             )
     )
     @ErrorAPIResponse
-    public ResponseEntity<Object> verifySpouse(@PathVariable("citizenId") String citizenId) {
-        VerifyResidentIdRequest request = VerifyResidentIdRequest.builder().citizenId(citizenId).build();
+    public ResponseEntity<Object> verifySpouse(@PathVariable("citizenId") String citizenId, VerifyResidentIdRequestData verifyResidentIdRequestData) {
+        VerifyResidentIdRequest request = VerifyResidentIdRequest.builder()
+                .citizenId(citizenId)
+                .customerId(verifyResidentIdRequestData.customerId())
+                .build();
         return handleRequest(request);
     }
 
