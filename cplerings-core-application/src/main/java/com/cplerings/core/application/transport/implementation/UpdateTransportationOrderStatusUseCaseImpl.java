@@ -72,9 +72,6 @@ public class UpdateTransportationOrderStatusUseCaseImpl extends AbstractUseCase<
                 updateTransportationOrderStatusDataSource.save(customOrder);
                 break;
             }
-
-            default:
-                validator.validateAndStopExecution(true, UpdateTransportationOrderStatusErrorCode.WRONG_STATUS);
         }
 
         return aUpdateTransportationOrderStatusMapper.toOutput(transportationOrder);
