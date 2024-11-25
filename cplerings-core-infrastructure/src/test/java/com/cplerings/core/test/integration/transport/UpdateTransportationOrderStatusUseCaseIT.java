@@ -57,4 +57,100 @@ class UpdateTransportationOrderStatusUseCaseIT extends AbstractIT {
         assertThat(transportationOrder).isNotNull();
         assertThat(transportationOrder.transportationOrder().getStatus()).isEqualByComparingTo(ATransportationOrderStatus.DELIVERING);
     }
+
+    @Test
+    void givenTransporter_whenUpdateTransportationOrder2() {
+        transportOrderTestHelper.createTransportOrderWithStatusDelivering();
+        String token = jwtTestHelper.generateToken(AccountTestConstant.TRANSPORTER_EMAIL);
+        UpdateTransportationOrderStatusRequestData updateTransportationOrderStatusRequestData = UpdateTransportationOrderStatusRequestData.builder()
+                .status(ATransportationOrderStatus.REJECTED)
+                .build();
+        final WebTestClient.ResponseSpec response = requestBuilder()
+                .path(APIConstant.UPDATE_TRANSPORTATION_ORDER_STATUS.replace("{transportationOrderId}", Long.toString(1L)))
+                .method(AbstractIT.RequestBuilder.Method.PUT)
+                .authorizationHeader(token)
+                .body(updateTransportationOrderStatusRequestData)
+                .send();
+        thenResponseIsOk(response);
+        thenResponseReturnTransportationOrder2(response);
+    }
+
+    private void thenResponseReturnTransportationOrder2(WebTestClient.ResponseSpec response) {
+        final UpdateTransportationOrderStatusResponse responseBody = response.expectBody(UpdateTransportationOrderStatusResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(responseBody)
+                .isNotNull();
+        assertThat(responseBody.getType())
+                .isEqualTo(AbstractResponse.Type.DATA);
+
+        final TransportationOrder transportationOrder = responseBody.getData();
+        assertThat(transportationOrder).isNotNull();
+        assertThat(transportationOrder.transportationOrder().getStatus()).isEqualByComparingTo(ATransportationOrderStatus.REJECTED);
+    }
+
+    @Test
+    void givenTransporter_whenUpdateTransportationOrder3() {
+        transportOrderTestHelper.createTransportOrderWithStatusDelivering();
+        String token = jwtTestHelper.generateToken(AccountTestConstant.TRANSPORTER_EMAIL);
+        UpdateTransportationOrderStatusRequestData updateTransportationOrderStatusRequestData = UpdateTransportationOrderStatusRequestData.builder()
+                .status(ATransportationOrderStatus.COMPLETED)
+                .build();
+        final WebTestClient.ResponseSpec response = requestBuilder()
+                .path(APIConstant.UPDATE_TRANSPORTATION_ORDER_STATUS.replace("{transportationOrderId}", Long.toString(1L)))
+                .method(AbstractIT.RequestBuilder.Method.PUT)
+                .authorizationHeader(token)
+                .body(updateTransportationOrderStatusRequestData)
+                .send();
+        thenResponseIsOk(response);
+        thenResponseReturnTransportationOrder3(response);
+    }
+
+    private void thenResponseReturnTransportationOrder3(WebTestClient.ResponseSpec response) {
+        final UpdateTransportationOrderStatusResponse responseBody = response.expectBody(UpdateTransportationOrderStatusResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(responseBody)
+                .isNotNull();
+        assertThat(responseBody.getType())
+                .isEqualTo(AbstractResponse.Type.DATA);
+
+        final TransportationOrder transportationOrder = responseBody.getData();
+        assertThat(transportationOrder).isNotNull();
+        assertThat(transportationOrder.transportationOrder().getStatus()).isEqualByComparingTo(ATransportationOrderStatus.COMPLETED);
+    }
+
+    @Test
+    void givenTransporter_whenUpdateTransportationOrder4() {
+        transportOrderTestHelper.createTransportOrderWithStatusDelivering();
+        String token = jwtTestHelper.generateToken(AccountTestConstant.TRANSPORTER_EMAIL);
+        UpdateTransportationOrderStatusRequestData updateTransportationOrderStatusRequestData = UpdateTransportationOrderStatusRequestData.builder()
+                .status(ATransportationOrderStatus.WAITING)
+                .build();
+        final WebTestClient.ResponseSpec response = requestBuilder()
+                .path(APIConstant.UPDATE_TRANSPORTATION_ORDER_STATUS.replace("{transportationOrderId}", Long.toString(1L)))
+                .method(AbstractIT.RequestBuilder.Method.PUT)
+                .authorizationHeader(token)
+                .body(updateTransportationOrderStatusRequestData)
+                .send();
+        thenResponseIsOk(response);
+        thenResponseReturnTransportationOrder4(response);
+    }
+
+    private void thenResponseReturnTransportationOrder4(WebTestClient.ResponseSpec response) {
+        final UpdateTransportationOrderStatusResponse responseBody = response.expectBody(UpdateTransportationOrderStatusResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(responseBody)
+                .isNotNull();
+        assertThat(responseBody.getType())
+                .isEqualTo(AbstractResponse.Type.DATA);
+
+        final TransportationOrder transportationOrder = responseBody.getData();
+        assertThat(transportationOrder).isNotNull();
+        assertThat(transportationOrder.transportationOrder().getStatus()).isEqualByComparingTo(ATransportationOrderStatus.WAITING);
+    }
 }
