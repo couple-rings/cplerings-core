@@ -42,21 +42,18 @@ public class UpdateTransportationOrderStatusUseCaseImpl extends AbstractUseCase<
             case DELIVERING: {
                 validator.validateAndStopExecution(transportationOrder.getStatus() == TransportStatus.ON_GOING, UpdateTransportationOrderStatusErrorCode.INVALID_STATUS);
                 transportationOrder.setStatus(TransportStatus.DELIVERING);
-                updateTransportationOrderStatusDataSource.save(transportationOrder);
                 break;
             }
 
             case WAITING: {
                 validator.validateAndStopExecution(transportationOrder.getStatus() == TransportStatus.DELIVERING, UpdateTransportationOrderStatusErrorCode.INVALID_STATUS);
                 transportationOrder.setStatus(TransportStatus.WAITING);
-                updateTransportationOrderStatusDataSource.save(transportationOrder);
                 break;
             }
 
             case REJECTED: {
                 validator.validateAndStopExecution(transportationOrder.getStatus() == TransportStatus.DELIVERING, UpdateTransportationOrderStatusErrorCode.INVALID_STATUS);
                 transportationOrder.setStatus(TransportStatus.REJECTED);
-                updateTransportationOrderStatusDataSource.save(transportationOrder);
                 CustomOrder customOrder = transportationOrder.getCustomOrder();
                 customOrder.setStatus(CustomOrderStatus.COMPLETED);
                 updateTransportationOrderStatusDataSource.save(customOrder);
@@ -66,13 +63,16 @@ public class UpdateTransportationOrderStatusUseCaseImpl extends AbstractUseCase<
             case COMPLETED: {
                 validator.validateAndStopExecution(transportationOrder.getStatus() == TransportStatus.DELIVERING, UpdateTransportationOrderStatusErrorCode.INVALID_STATUS);
                 transportationOrder.setStatus(TransportStatus.COMPLETED);
-                updateTransportationOrderStatusDataSource.save(transportationOrder);
                 CustomOrder customOrder = transportationOrder.getCustomOrder();
                 customOrder.setStatus(CustomOrderStatus.COMPLETED);
                 updateTransportationOrderStatusDataSource.save(customOrder);
                 break;
             }
+
+            default:
+                validator.validateAndStopExecution(false, UpdateTransportationOrderStatusErrorCode.WRONG_STATUS);
         }
+        updateTransportationOrderStatusDataSource.save(transportationOrder);
 
         return aUpdateTransportationOrderStatusMapper.toOutput(transportationOrder);
     }
