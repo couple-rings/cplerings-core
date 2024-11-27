@@ -82,7 +82,7 @@ public class CraftingRingUseCaseImpl extends AbstractUseCase<CraftingRingInput, 
                 .orElse(null);
         validator.validateAndStopExecution(selfDesign != null, CraftingRingErrorCode.DESIGN_NOT_FOUND);
 
-        Design partnerDesign = craftingRingDataSource.getDesignByDesignId(input.self().designId())
+        Design partnerDesign = craftingRingDataSource.getDesignByDesignId(input.partner().designId())
                 .orElse(null);
         validator.validateAndStopExecution(partnerDesign != null, CraftingRingErrorCode.DESIGN_NOT_FOUND);
 
@@ -90,7 +90,7 @@ public class CraftingRingUseCaseImpl extends AbstractUseCase<CraftingRingInput, 
                 .orElse(null);
         validator.validateAndStopExecution(selfnerMetalSpecification != null, CraftingRingErrorCode.METAL_SPEC_NOT_FOUND);
 
-        MetalSpecification partnernerMetalSpecification = craftingRingDataSource.getMetalSpecificationById(input.self().metalSpecId())
+        MetalSpecification partnernerMetalSpecification = craftingRingDataSource.getMetalSpecificationById(input.partner().metalSpecId())
                 .orElse(null);
         validator.validateAndStopExecution(partnernerMetalSpecification != null, CraftingRingErrorCode.METAL_SPEC_NOT_FOUND);
 
@@ -98,7 +98,7 @@ public class CraftingRingUseCaseImpl extends AbstractUseCase<CraftingRingInput, 
                 .orElse(null);
         validator.validateAndStopExecution(selfDiamondSpecification != null, CraftingRingErrorCode.DIAMOND_SPEC_NOT_FOUND);
 
-        DiamondSpecification partnerDiamondSpecification = craftingRingDataSource.getDiamondSpecificationById(input.self().diamondSpecId())
+        DiamondSpecification partnerDiamondSpecification = craftingRingDataSource.getDiamondSpecificationById(input.partner().diamondSpecId())
                 .orElse(null);
         validator.validateAndStopExecution(partnerDiamondSpecification != null, CraftingRingErrorCode.DIAMOND_SPEC_NOT_FOUND);
 
