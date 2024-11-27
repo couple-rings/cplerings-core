@@ -71,6 +71,7 @@ public class SecurityConfiguration {
         handleFingerSizeAPI(localHttp);
         handleTransportationAddressAPI(localHttp);
         handleDiamondAPI(localHttp);
+        handleCraftingRingAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
                 .denyAll());
         return localHttp.build();
@@ -297,6 +298,11 @@ public class SecurityConfiguration {
                         .hasAuthority(RoleConstant.ROLE_MANAGER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.DIAMONDS_PATH))
                         .hasAuthority(RoleConstant.ROLE_MANAGER));
+    }
+
+    private void handleCraftingRingAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.CRAFTING_RING_PATH))
+                        .hasAuthority(RoleConstant.ROLE_STAFF));
     }
 
     private String resolvePath(String path) {

@@ -2,8 +2,16 @@ package com.cplerings.core.infrastructure.datasource.crafting;
 
 import static com.cplerings.core.domain.design.QCustomDesign.customDesign;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.crafting.datasource.AcceptCraftingRequestDataSource;
 import com.cplerings.core.application.crafting.datasource.CompleteCraftingStageDataSource;
+import com.cplerings.core.application.crafting.datasource.CraftingRingDataSource;
 import com.cplerings.core.application.crafting.datasource.CreateCraftingRequestDataSource;
 import com.cplerings.core.application.crafting.datasource.DepositCraftingStageDataSource;
 import com.cplerings.core.application.crafting.datasource.ProcessCraftingStageDepositDataSource;
@@ -30,8 +38,11 @@ import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.crafting.QCraftingStage;
 import com.cplerings.core.domain.design.CustomDesign;
+import com.cplerings.core.domain.design.Design;
+import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.QCustomDesign;
 import com.cplerings.core.domain.design.QDesign;
+import com.cplerings.core.domain.design.QDesignMetalSpecification;
 import com.cplerings.core.domain.design.QDesignVersion;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
 import com.cplerings.core.domain.design.crafting.CraftingRequestStatus;
@@ -57,6 +68,7 @@ import com.cplerings.core.domain.ring.RingDiamond;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.domain.spouse.Agreement;
 import com.cplerings.core.domain.spouse.QSpouse;
+import com.cplerings.core.domain.spouse.Spouse;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.AgreementRepository;
@@ -66,6 +78,8 @@ import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
 import com.cplerings.core.infrastructure.repository.CustomDesignRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
+import com.cplerings.core.infrastructure.repository.DesignRepository;
+import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
 import com.cplerings.core.infrastructure.repository.DiamondRepository;
 import com.cplerings.core.infrastructure.repository.DocumentRepository;
 import com.cplerings.core.infrastructure.repository.ImageRepository;
@@ -74,25 +88,17 @@ import com.cplerings.core.infrastructure.repository.RingDiamondRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
 import com.cplerings.core.infrastructure.repository.TransportationAddressRepository;
 import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
-
-import lombok.RequiredArgsConstructor;
-
-import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import lombok.RequiredArgsConstructor;
 
 @DataSource
 @RequiredArgsConstructor
 public class SharedCraftingDataSource extends AbstractDataSource
         implements CreateCraftingRequestDataSource, AcceptCraftingRequestDataSource, DepositCraftingStageDataSource,
         ProcessCraftingStageDepositDataSource, ViewCraftingRequestsDataSource, CompleteCraftingStageDataSource, ViewCraftingRequestDataSource,
-        ViewCraftingRequestsGroupsDataSource, ViewCraftingStagesDataSource {
+        ViewCraftingRequestsGroupsDataSource, ViewCraftingStagesDataSource, CraftingRingDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QDiamondSpecification Q_DIAMOND_SPECIFICATION = QDiamondSpecification.diamondSpecification;
@@ -110,6 +116,7 @@ public class SharedCraftingDataSource extends AbstractDataSource
     private static final QCustomRequest Q_CUSTOM_REQUEST = QCustomRequest.customRequest;
     private static final QDiamond Q_DIAMOND = QDiamond.diamond;
     private static final QRingDiamond Q_RING_DIAMOND = QRingDiamond.ringDiamond;
+    private static final QDesignMetalSpecification Q_DESIGN_METAL_SPECIFICATION = QDesignMetalSpecification.designMetalSpecification;
 
     private static final String SIDE_DIAMOND_PRICE = "SDPR";
 
@@ -128,6 +135,8 @@ public class SharedCraftingDataSource extends AbstractDataSource
     private final CustomRequestRepository customRequestRepository;
     private final RingDiamondRepository ringDiamondRepository;
     private final DiamondRepository diamondRepository;
+    private final DesignVersionRepository designVersionRepository;
+    private final DesignRepository designRepository;
 
     @Override
     public Optional<Account> getAccountByCustomerId(Long customerId) {
@@ -178,6 +187,12 @@ public class SharedCraftingDataSource extends AbstractDataSource
     }
 
     @Override
+    public void updateDesignUnavailable(Design design) {
+        updateAuditor(design);
+        designRepository.save(design);
+    }
+
+    @Override
     public Optional<CraftingRequest> getCraftingRequestById(Long craftingRequestId) {
         return Optional.ofNullable(createQuery().select(Q_CRAFTING_REQUEST)
                 .from(Q_CRAFTING_REQUEST)
@@ -225,11 +240,65 @@ public class SharedCraftingDataSource extends AbstractDataSource
     }
 
     @Override
+    public Optional<Account> getCustomerById(Long id) {
+        return Optional.ofNullable(createQuery().select(Q_ACCOUNT)
+                .from(Q_ACCOUNT)
+                .where(Q_ACCOUNT.id.eq(id))
+                .fetchOne());
+    }
+
+    @Override
     public Optional<Branch> getBranchById(Long branchId) {
         return Optional.ofNullable(createQuery().select(Q_BRANCH)
                 .from(Q_BRANCH)
                 .where(Q_BRANCH.id.eq(branchId))
                 .fetchOne());
+    }
+
+    @Override
+    public Optional<Spouse> getSpouseById(Long id) {
+        return Optional.ofNullable(createQuery().select(Q_SPOUSE)
+                .from(Q_SPOUSE)
+                .where(Q_SPOUSE.id.eq(id))
+                .fetchOne());
+    }
+
+    @Override
+    public Optional<Design> getDesignByDesignId(Long id) {
+        return Optional.ofNullable(createQuery().select(Q_DESIGN)
+                .from(Q_DESIGN)
+                .leftJoin(Q_DESIGN.designMetalSpecifications, Q_DESIGN_METAL_SPECIFICATION).fetchJoin()
+                .leftJoin(Q_DESIGN_METAL_SPECIFICATION.metalSpecification, Q_METAL_SPECIFICATION).fetchJoin()
+                .where(Q_DESIGN.id.eq(id))
+                .fetchOne());
+    }
+
+    @Override
+    public Optional<MetalSpecification> getMetalSpecificationById(Long id) {
+        return Optional.ofNullable(createQuery().select(Q_METAL_SPECIFICATION)
+                .from(Q_METAL_SPECIFICATION)
+                .where(Q_METAL_SPECIFICATION.id.eq(id))
+                .fetchOne());
+    }
+
+    @Override
+    public Optional<DiamondSpecification> getDiamondSpecificationById(Long id) {
+        return Optional.ofNullable(createQuery().select(Q_DIAMOND_SPECIFICATION)
+                .from(Q_DIAMOND_SPECIFICATION)
+                .where(Q_DIAMOND_SPECIFICATION.id.eq(id))
+                .fetchOne());
+    }
+
+    @Override
+    public DesignVersion save(DesignVersion designVersion) {
+        updateAuditor(designVersion);
+        return designVersionRepository.save(designVersion);
+    }
+
+    @Override
+    public CustomDesign saveCustomDesign(CustomDesign customDesign) {
+        updateAuditor(customDesign);
+        return customDesignRepository.save(customDesign);
     }
 
     @Override
