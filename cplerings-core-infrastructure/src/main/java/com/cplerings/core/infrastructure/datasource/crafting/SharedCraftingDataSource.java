@@ -48,6 +48,7 @@ import com.cplerings.core.domain.design.crafting.CraftingRequest;
 import com.cplerings.core.domain.design.crafting.CraftingRequestStatus;
 import com.cplerings.core.domain.design.crafting.QCraftingRequest;
 import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.request.CustomRequestHistory;
 import com.cplerings.core.domain.design.request.QCustomRequest;
 import com.cplerings.core.domain.design.request.QDesignCustomRequest;
 import com.cplerings.core.domain.diamond.Diamond;
@@ -77,6 +78,7 @@ import com.cplerings.core.infrastructure.repository.CraftingRequestRepository;
 import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
 import com.cplerings.core.infrastructure.repository.CustomDesignRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
+import com.cplerings.core.infrastructure.repository.CustomRequestHistoryRepository;
 import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
 import com.cplerings.core.infrastructure.repository.DesignRepository;
 import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
@@ -137,6 +139,7 @@ public class SharedCraftingDataSource extends AbstractDataSource
     private final DiamondRepository diamondRepository;
     private final DesignVersionRepository designVersionRepository;
     private final DesignRepository designRepository;
+    private final CustomRequestHistoryRepository customRequestHistoryRepository;
 
     @Override
     public Optional<Account> getAccountByCustomerId(Long customerId) {
@@ -322,9 +325,15 @@ public class SharedCraftingDataSource extends AbstractDataSource
     }
 
     @Override
-    public void save(CustomRequest customRequest) {
+    public CustomRequest save(CustomRequest customRequest) {
         updateAuditor(customRequest);
-        customRequestRepository.save(customRequest);
+        return customRequestRepository.save(customRequest);
+    }
+
+    @Override
+    public CustomRequestHistory save(CustomRequestHistory customRequestHistory) {
+        updateAuditor(customRequestHistory);
+        return customRequestHistoryRepository.save(customRequestHistory);
     }
 
     @Override

@@ -20,6 +20,7 @@ import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
 import com.cplerings.core.domain.design.crafting.CraftingRequestStatus;
 import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.request.CustomRequestHistory;
 import com.cplerings.core.domain.design.request.CustomRequestStatus;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
 import com.cplerings.core.domain.diamond.Diamond;
@@ -231,7 +232,13 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                 .filter(x -> x.getCustomRequest().getStatus() == CustomRequestStatus.APPROVED).findFirst().get();
         CustomRequest customRequest = designCustomRequest.getCustomRequest();
         customRequest.setStatus(CustomRequestStatus.COMPLETED);
-        dataSource.save(customRequest);
+        CustomRequest customRequestUpdated = dataSource.save(customRequest);
+
+        CustomRequestHistory customRequestHistory = CustomRequestHistory.builder()
+                .status(CustomRequestStatus.COMPLETED)
+                .customRequest(customRequestUpdated)
+                .build();
+        dataSource.save(customRequestHistory);
     }
 
     private void createCraftingStages(CustomOrder customOrderCreated) {

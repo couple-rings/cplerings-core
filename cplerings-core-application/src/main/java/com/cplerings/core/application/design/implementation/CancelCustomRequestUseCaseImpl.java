@@ -16,6 +16,7 @@ import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.DesignStatus;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.request.CustomRequestHistory;
 import com.cplerings.core.domain.design.request.CustomRequestStatus;
 
 import lombok.RequiredArgsConstructor;
@@ -61,6 +62,11 @@ public class CancelCustomRequestUseCaseImpl extends AbstractUseCase<CancelCustom
         }
         customRequest.setStatus(CustomRequestStatus.REJECTED);
         CustomRequest customRequestUpdated = cancelCustomRequestDataSource.save(customRequest);
+        CustomRequestHistory customRequestHistory = CustomRequestHistory.builder()
+                .customRequest(customRequestUpdated)
+                .status(CustomRequestStatus.REJECTED)
+                .build();
+        cancelCustomRequestDataSource.saveCustomRequestHistory(customRequestHistory);
         return aCancelCustomRequestMapper.toOutput(customRequestUpdated);
     }
 }

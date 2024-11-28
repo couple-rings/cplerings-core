@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.request.CustomRequestHistory;
 
 public interface CancelCustomRequestDataSource {
 
@@ -18,4 +19,6 @@ public interface CancelCustomRequestDataSource {
     DesignVersion save(DesignVersion designVersion);
 
     CustomRequest save(CustomRequest customRequest);
+
+    CustomRequestHistory saveCustomRequestHistory(CustomRequestHistory customRequestHistory);
 }

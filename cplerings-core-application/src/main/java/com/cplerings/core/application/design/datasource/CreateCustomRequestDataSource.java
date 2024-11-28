@@ -4,6 +4,7 @@ import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.request.CustomRequestHistory;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
 
 import java.util.Collection;
@@ -24,4 +25,6 @@ public interface CreateCustomRequestDataSource {
     Collection<DesignVersion> getAllDesignVersionsOfPreviousDesignSessions(Long id, Collection<Long> designIds);
 
     Collection<DesignVersion> saveAll(Collection<DesignVersion> oldDesignVersions);
+
+    CustomRequestHistory saveCustomRequestHistory(CustomRequestHistory customRequestHistory);
 }

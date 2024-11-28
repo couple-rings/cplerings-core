@@ -24,6 +24,7 @@ import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.DesignStatus;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.request.CustomRequestHistory;
 import com.cplerings.core.domain.design.request.CustomRequestStatus;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
 
@@ -74,6 +75,12 @@ public class CreateCustomRequestUseCaseImpl extends AbstractUseCase<CreateCustom
                 .status(CustomRequestStatus.PENDING)
                 .build();
         customRequest = dataSource.save(customRequest);
+        CustomRequestHistory customRequestHistory = CustomRequestHistory.builder()
+                .customRequest(customRequest)
+                .status(CustomRequestStatus.PENDING)
+                .build();
+        dataSource.saveCustomRequestHistory(customRequestHistory);
+
         Collection<DesignCustomRequest> designCustomRequests = new ArrayList<>();
         for (Design design : designs) {
             designCustomRequests.add(DesignCustomRequest.builder()

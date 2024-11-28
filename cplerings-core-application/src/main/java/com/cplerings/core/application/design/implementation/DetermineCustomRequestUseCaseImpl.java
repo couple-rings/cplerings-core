@@ -13,6 +13,7 @@ import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.request.CustomRequestHistory;
 import com.cplerings.core.domain.design.request.CustomRequestStatus;
 
 import lombok.RequiredArgsConstructor;
@@ -51,6 +52,11 @@ public class DetermineCustomRequestUseCaseImpl extends AbstractUseCase<Determine
             customRequest.setStatus(CustomRequestStatus.REJECTED);
         }
         CustomRequest customRequestUpdated = determineCustomRequestDataSource.updateCraftingRequest(customRequest);
+        CustomRequestHistory customRequestHistory = CustomRequestHistory.builder()
+                .status(CustomRequestStatus.APPROVED)
+                .customRequest(customRequestUpdated)
+                .build();
+        determineCustomRequestDataSource.saveCustomRequestHistory(customRequestHistory);
         return aDetermineCustomRequestMapper.toOutput(customRequestUpdated);
     }
 }
