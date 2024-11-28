@@ -2,6 +2,7 @@ package com.cplerings.core.application.crafting.datasource;
 
 import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.spouse.Agreement;
 
@@ -18,4 +19,6 @@ public interface ProcessCraftingStageDepositDataSource {
     TransportationOrder save(TransportationOrder transportationOrder);
 
     Agreement save(Agreement agreement);
+
+    CustomOrderHistory save(CustomOrderHistory customOrderHistory);
 }

@@ -4,6 +4,7 @@ import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.ring.Ring;
 
 import java.util.Collection;
@@ -23,4 +24,6 @@ public interface CompleteCraftingStageDataSource {
     Set<Document> getMaintenancesByIds(Collection<Long> maintenanceIds);
 
     Ring save(Ring ring);
+
+    CustomOrderHistory save(CustomOrderHistory customOrderHistory);
 }

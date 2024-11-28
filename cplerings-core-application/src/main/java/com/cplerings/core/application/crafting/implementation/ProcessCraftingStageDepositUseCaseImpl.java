@@ -13,6 +13,7 @@ import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.crafting.CraftingStageStatus;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
@@ -64,7 +65,12 @@ public class ProcessCraftingStageDepositUseCaseImpl extends AbstractUseCase<Paym
         if (Objects.equals(firstCraftingStage.getId(), craftingStageId)) {
             final CustomOrder customOrder = craftingStage.getCustomOrder();
             customOrder.setStatus(CustomOrderStatus.WAITING);
-            dataSource.save(customOrder);
+            CustomOrder customOrderUpdated = dataSource.save(customOrder);
+            CustomOrderHistory customOrderHistory = CustomOrderHistory.builder()
+                    .status(CustomOrderStatus.WAITING)
+                    .customOrder(customOrderUpdated)
+                    .build();
+            dataSource.save(customOrderHistory);
             return NoOutput.INSTANCE;
         }
         final CraftingStage finalCraftingStage = craftingStages.stream()

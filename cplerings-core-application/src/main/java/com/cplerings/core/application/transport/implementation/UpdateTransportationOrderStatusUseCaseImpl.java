@@ -10,6 +10,7 @@ import com.cplerings.core.application.transport.input.UpdateTransportationOrderS
 import com.cplerings.core.application.transport.mapper.AUpdateTransportationOrderStatusMapper;
 import com.cplerings.core.application.transport.output.UpdateTransportationOrderStatusOutput;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
@@ -56,7 +57,12 @@ public class UpdateTransportationOrderStatusUseCaseImpl extends AbstractUseCase<
                 transportationOrder.setStatus(TransportStatus.REJECTED);
                 CustomOrder customOrder = transportationOrder.getCustomOrder();
                 customOrder.setStatus(CustomOrderStatus.COMPLETED);
-                updateTransportationOrderStatusDataSource.save(customOrder);
+                CustomOrder customOrderUpdated = updateTransportationOrderStatusDataSource.save(customOrder);
+                CustomOrderHistory customOrderHistory = CustomOrderHistory.builder()
+                        .customOrder(customOrderUpdated)
+                        .status(CustomOrderStatus.COMPLETED)
+                        .build();
+                updateTransportationOrderStatusDataSource.save(customOrderHistory);
                 break;
             }
 
@@ -65,7 +71,12 @@ public class UpdateTransportationOrderStatusUseCaseImpl extends AbstractUseCase<
                 transportationOrder.setStatus(TransportStatus.COMPLETED);
                 CustomOrder customOrder = transportationOrder.getCustomOrder();
                 customOrder.setStatus(CustomOrderStatus.COMPLETED);
-                updateTransportationOrderStatusDataSource.save(customOrder);
+                CustomOrder customOrderUpdated = updateTransportationOrderStatusDataSource.save(customOrder);
+                CustomOrderHistory customOrderHistory = CustomOrderHistory.builder()
+                        .customOrder(customOrderUpdated)
+                        .status(CustomOrderStatus.COMPLETED)
+                        .build();
+                updateTransportationOrderStatusDataSource.save(customOrderHistory);
                 break;
             }
 

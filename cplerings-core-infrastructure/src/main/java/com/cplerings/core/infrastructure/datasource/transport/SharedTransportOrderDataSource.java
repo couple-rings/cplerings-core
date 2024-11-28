@@ -29,6 +29,7 @@ import com.cplerings.core.domain.branch.QBranch;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.file.QImage;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.QCustomOrder;
 import com.cplerings.core.domain.order.QTransportationOrder;
 import com.cplerings.core.domain.order.TransportStatus;
@@ -39,6 +40,7 @@ import com.cplerings.core.domain.ring.QRing;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
+import com.cplerings.core.infrastructure.repository.CustomOrderHistoryRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.cplerings.core.infrastructure.repository.TransportationNoteRepository;
 import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
@@ -68,6 +70,7 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
     private final TransportationOrderRepository transportationOrderRepository;
     private final CustomOrderRepository customOrderRepository;
     private final TransportationNoteRepository transportationNoteRepository;
+    private final CustomOrderHistoryRepository customOrderHistoryRepository;
 
     @Override
     public Optional<Account> getTransporterById(Long transporterId) {
@@ -96,9 +99,15 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
     }
 
     @Override
-    public void save(CustomOrder customOrder) {
+    public CustomOrder save(CustomOrder customOrder) {
         updateAuditor(customOrder);
-        customOrderRepository.save(customOrder);
+        return customOrderRepository.save(customOrder);
+    }
+
+    @Override
+    public CustomOrderHistory save(CustomOrderHistory customOrderHistory) {
+        updateAuditor(customOrderHistory);
+        return customOrderHistoryRepository.save(customOrderHistory);
     }
 
     @Override

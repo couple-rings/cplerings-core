@@ -13,6 +13,7 @@ import com.cplerings.core.common.security.RoleConstant;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
@@ -52,7 +53,12 @@ public class AssignTransportOrderUseCaseImpl extends AbstractUseCase<AssignTrans
 
         CustomOrder customOrder = transportationOrder.getCustomOrder();
         customOrder.setStatus(CustomOrderStatus.DELIVERING);
-        assignTransportOrderDataSource.save(customOrder);
+        CustomOrder customOrderUpdated = assignTransportOrderDataSource.save(customOrder);
+        CustomOrderHistory customOrderHistory = CustomOrderHistory.builder()
+                .customOrder(customOrderUpdated)
+                .status(CustomOrderStatus.DELIVERING)
+                .build();
+        assignTransportOrderDataSource.save(customOrderHistory);
         return aAssignTransportOrderMapper.toOutput(transportationOrderAssigned);
     }
 }

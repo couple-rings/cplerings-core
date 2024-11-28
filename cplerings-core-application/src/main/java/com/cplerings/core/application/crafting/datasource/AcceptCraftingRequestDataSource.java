@@ -12,6 +12,7 @@ import com.cplerings.core.domain.design.request.CustomRequestHistory;
 import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
 
@@ -56,4 +57,6 @@ public interface AcceptCraftingRequestDataSource {
     CustomRequestHistory save(CustomRequestHistory customRequestHistory);
 
     CraftingRequestHistory save(CraftingRequestHistory craftingRequestHistory);
+
+    CustomOrderHistory save(CustomOrderHistory customOrderHistory);
 }

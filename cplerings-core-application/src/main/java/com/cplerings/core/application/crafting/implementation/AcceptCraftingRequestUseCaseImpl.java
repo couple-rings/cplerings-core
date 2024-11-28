@@ -26,6 +26,7 @@ import com.cplerings.core.domain.design.request.CustomRequestStatus;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
 import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
@@ -225,6 +226,11 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                 .totalPrice(totalPrice)
                 .build();
         CustomOrder customOrderCreated = dataSource.saveCustomOrder(customOrder);
+        CustomOrderHistory customOrderHistory = CustomOrderHistory.builder()
+                .customOrder(customOrderCreated)
+                .status(CustomOrderStatus.PENDING)
+                .build();
+        dataSource.save(customOrderHistory);
         return customOrderCreated;
     }
 

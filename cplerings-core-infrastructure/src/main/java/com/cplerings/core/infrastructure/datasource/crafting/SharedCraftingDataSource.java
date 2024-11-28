@@ -62,6 +62,7 @@ import com.cplerings.core.domain.file.QDocument;
 import com.cplerings.core.domain.metal.MetalSpecification;
 import com.cplerings.core.domain.metal.QMetalSpecification;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.ring.QRingDiamond;
@@ -79,6 +80,7 @@ import com.cplerings.core.infrastructure.repository.CraftingRequestHistoryReposi
 import com.cplerings.core.infrastructure.repository.CraftingRequestRepository;
 import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
 import com.cplerings.core.infrastructure.repository.CustomDesignRepository;
+import com.cplerings.core.infrastructure.repository.CustomOrderHistoryRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.cplerings.core.infrastructure.repository.CustomRequestHistoryRepository;
 import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
@@ -143,6 +145,7 @@ public class SharedCraftingDataSource extends AbstractDataSource
     private final DesignRepository designRepository;
     private final CustomRequestHistoryRepository customRequestHistoryRepository;
     private final CraftingRequestHistoryRepository craftingRequestHistoryRepository;
+    private final CustomOrderHistoryRepository customOrderHistoryRepository;
 
     @Override
     public Optional<Account> getAccountByCustomerId(Long customerId) {
@@ -265,6 +268,12 @@ public class SharedCraftingDataSource extends AbstractDataSource
     public CraftingRequestHistory save(CraftingRequestHistory craftingRequestHistory) {
         updateAuditor(craftingRequestHistory);
         return craftingRequestHistoryRepository.save(craftingRequestHistory);
+    }
+
+    @Override
+    public CustomOrderHistory save(CustomOrderHistory customOrderHistory) {
+        updateAuditor(customOrderHistory);
+        return customOrderHistoryRepository.save(customOrderHistory);
     }
 
     @Override

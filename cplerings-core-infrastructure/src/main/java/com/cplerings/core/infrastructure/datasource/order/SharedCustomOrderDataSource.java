@@ -13,10 +13,12 @@ import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.order.QCustomOrder;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
+import com.cplerings.core.infrastructure.repository.CustomOrderHistoryRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
@@ -30,6 +32,7 @@ public class SharedCustomOrderDataSource extends AbstractDataSource implements V
     private static final QAccount Q_ACCOUNT = QAccount.account;
 
     private final CustomOrderRepository customOrderRepository;
+    private final CustomOrderHistoryRepository customOrderHistoryRepository;
 
     @Override
     public CustomOrders getCustomOrders(ViewCustomOrdersInput input) {
@@ -106,5 +109,11 @@ public class SharedCustomOrderDataSource extends AbstractDataSource implements V
     public CustomOrder save(CustomOrder customOrder) {
         updateAuditor(customOrder);
         return customOrderRepository.save(customOrder);
+    }
+
+    @Override
+    public CustomOrderHistory save(CustomOrderHistory customOrderHistory) {
+        updateAuditor(customOrderHistory);
+        return customOrderHistoryRepository.save(customOrderHistory);
     }
 }

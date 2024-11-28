@@ -12,6 +12,7 @@ import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 
 import lombok.RequiredArgsConstructor;
@@ -46,6 +47,11 @@ public class AssignJewelerToCustomOrderUseCaseImpl extends AbstractUseCase<Assig
         customOrder.setStatus(CustomOrderStatus.IN_PROGRESS);
         customOrder.setJeweler(jeweler);
         CustomOrder customOrderAssigned = assignJewelerToCustomOrderDataSource.save(customOrder);
+        CustomOrderHistory customOrderHistory = CustomOrderHistory.builder()
+                .customOrder(customOrderAssigned)
+                .status(CustomOrderStatus.IN_PROGRESS)
+                .build();
+        assignJewelerToCustomOrderDataSource.save(customOrderHistory);
         return aAssignJewelerToCustomOrderMapper.toOutput(customOrderAssigned);
     }
 
