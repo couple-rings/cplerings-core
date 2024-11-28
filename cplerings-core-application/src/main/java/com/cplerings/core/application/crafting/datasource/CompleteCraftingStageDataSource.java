@@ -6,6 +6,7 @@ import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.ring.Ring;
+import com.cplerings.core.domain.ring.RingHistory;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -26,4 +27,6 @@ public interface CompleteCraftingStageDataSource {
     Ring save(Ring ring);
 
     CustomOrderHistory save(CustomOrderHistory customOrderHistory);
+
+    RingHistory save(RingHistory ringHistory);
 }

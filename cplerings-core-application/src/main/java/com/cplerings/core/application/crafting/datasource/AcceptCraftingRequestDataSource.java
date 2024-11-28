@@ -15,6 +15,7 @@ import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
+import com.cplerings.core.domain.ring.RingHistory;
 
 import java.util.Collection;
 import java.util.List;
@@ -59,4 +60,6 @@ public interface AcceptCraftingRequestDataSource {
     CraftingRequestHistory save(CraftingRequestHistory craftingRequestHistory);
 
     CustomOrderHistory save(CustomOrderHistory customOrderHistory);
+
+    RingHistory save(RingHistory ringHistory);
 }

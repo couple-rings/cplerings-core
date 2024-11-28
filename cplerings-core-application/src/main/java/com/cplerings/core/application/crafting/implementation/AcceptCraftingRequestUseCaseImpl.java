@@ -30,6 +30,7 @@ import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
+import com.cplerings.core.domain.ring.RingHistory;
 import com.cplerings.core.domain.ring.RingStatus;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.domain.shared.valueobject.Money;
@@ -166,6 +167,11 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                 .metalSpecification(firstCraftingRequest.getMetalSpecification())
                 .build();
         firstRing = dataSource.save(firstRing);
+        RingHistory firstRingHistory = RingHistory.builder()
+                .ring(firstRing)
+                .status(RingStatus.NOT_AVAIL)
+                .build();
+        dataSource.save(firstRingHistory);
 
         final RingDiamond firstRingDiamond = RingDiamond.builder()
                 .ring(firstRing)
@@ -185,6 +191,11 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                 .metalSpecification(secondCraftingRequest.getMetalSpecification())
                 .build();
         secondRing = dataSource.save(secondRing);
+        RingHistory secondRingHistory = RingHistory.builder()
+                .ring(firstRing)
+                .status(RingStatus.NOT_AVAIL)
+                .build();
+        dataSource.save(secondRingHistory);
 
         final RingDiamond secondRingDiamond = RingDiamond.builder()
                 .ring(secondRing)

@@ -69,6 +69,7 @@ import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.ring.QRingDiamond;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
+import com.cplerings.core.domain.ring.RingHistory;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.domain.spouse.Agreement;
 import com.cplerings.core.domain.spouse.QSpouse;
@@ -92,6 +93,7 @@ import com.cplerings.core.infrastructure.repository.DocumentRepository;
 import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
 import com.cplerings.core.infrastructure.repository.RingDiamondRepository;
+import com.cplerings.core.infrastructure.repository.RingHistoryRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
 import com.cplerings.core.infrastructure.repository.TransportOrderHistoryRepository;
 import com.cplerings.core.infrastructure.repository.TransportationAddressRepository;
@@ -149,6 +151,7 @@ public class SharedCraftingDataSource extends AbstractDataSource
     private final CraftingRequestHistoryRepository craftingRequestHistoryRepository;
     private final CustomOrderHistoryRepository customOrderHistoryRepository;
     private final TransportOrderHistoryRepository transportOrderHistoryRepository;
+    private final RingHistoryRepository ringHistoryRepository;
 
     @Override
     public Optional<Account> getAccountByCustomerId(Long customerId) {
@@ -277,6 +280,12 @@ public class SharedCraftingDataSource extends AbstractDataSource
     public CustomOrderHistory save(CustomOrderHistory customOrderHistory) {
         updateAuditor(customOrderHistory);
         return customOrderHistoryRepository.save(customOrderHistory);
+    }
+
+    @Override
+    public RingHistory save(RingHistory ringHistory) {
+        updateAuditor(ringHistory);
+        return ringHistoryRepository.save(ringHistory);
     }
 
     @Override

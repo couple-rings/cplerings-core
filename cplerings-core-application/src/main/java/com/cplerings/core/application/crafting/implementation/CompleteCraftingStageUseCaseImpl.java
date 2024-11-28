@@ -37,6 +37,7 @@ import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.ring.Ring;
+import com.cplerings.core.domain.ring.RingHistory;
 import com.cplerings.core.domain.ring.RingStatus;
 
 import lombok.RequiredArgsConstructor;
@@ -136,7 +137,13 @@ public class CompleteCraftingStageUseCaseImpl extends AbstractUseCase<CompleteCr
         ring.setMaintenanceExpiredDate(TemporalUtils.getCurrentInstantUTCExcludeTimePartAndBelow()
                 .plus(configurationService.getMaximumMaintenanceDuration() * 365L, ChronoUnit.DAYS));
         ring.setStatus(RingStatus.AVAILABLE);
-        dataSource.save(ring);
+        Ring ringUpdated = dataSource.save(ring);
+
+        RingHistory ringHistory = RingHistory.builder()
+                .ring(ringUpdated)
+                .status(RingStatus.AVAILABLE)
+                .build();
+        dataSource.save(ringHistory);
     }
 
     private boolean previousCraftingStagesAreCompleted(CraftingStage craftingStage) {
