@@ -1,8 +1,12 @@
 package com.cplerings.core.domain.design.request;
 
 import com.cplerings.core.common.database.DatabaseConstant;
+import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.shared.AbstractEntity;
 
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,4 +43,8 @@ public class CustomRequestHistory extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
     private CustomRequestStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "custom_request_id")
+    private CustomRequest customRequest;
 }

@@ -2,6 +2,7 @@ package com.cplerings.core.domain.design.request;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.shared.AbstractEntity;
 
 import lombok.AllArgsConstructor;
@@ -60,4 +61,7 @@ public class CustomRequest extends AbstractEntity {
 
     @OneToMany(mappedBy = "customRequest", fetch = FetchType.LAZY)
     private Set<DesignCustomRequest> designCustomRequests;
+
+    @OneToMany(mappedBy = "customRequest", fetch = FetchType.LAZY)
+    private Set<CustomRequestHistory> customRequestHistories;
 }

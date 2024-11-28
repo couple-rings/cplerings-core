@@ -1,8 +1,12 @@
 package com.cplerings.core.domain.order;
 
 import com.cplerings.core.common.database.DatabaseConstant;
+import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.shared.AbstractEntity;
 
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,4 +43,8 @@ public class TransportOrderHistory extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
     private TransportStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "transport_order_id")
+    private TransportationOrder transportationOrder;
 }

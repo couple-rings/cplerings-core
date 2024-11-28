@@ -1,10 +1,13 @@
 package com.cplerings.core.domain.order;
 
+import java.util.Set;
+
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -54,4 +57,7 @@ public class StandardOrder extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
     private StandardOrderStatus status;
+
+    @OneToMany(mappedBy = "standardOrder", fetch = FetchType.LAZY)
+    private Set<StandardOrderHistory> standardOrderHistories;
 }

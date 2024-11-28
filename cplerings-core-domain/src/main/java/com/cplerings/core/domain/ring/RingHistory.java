@@ -1,4 +1,4 @@
-package com.cplerings.core.domain.design.crafting;
+package com.cplerings.core.domain.ring;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.shared.AbstractEntity;
@@ -27,22 +27,22 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_crafting_request_history")
-public class CraftingRequestHistory extends AbstractEntity {
+@Table(name = "tbl_ring_history")
+public class RingHistory extends AbstractEntity {
 
-    private static final String CRAFTING_REQUEST_HISTORY_SEQUENCE = "crafting_request_history_sequence";
+    private static final String RING_HISTORY_SEQUENCE = "ring_history_seq";
 
     @Id
-    @GeneratedValue(generator = CRAFTING_REQUEST_HISTORY_SEQUENCE, strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = CRAFTING_REQUEST_HISTORY_SEQUENCE, allocationSize = DatabaseConstant.SEQ_ALLOCATION_SIZE)
-    @Column(name = "crafting_request_history_id")
+    @GeneratedValue(generator = RING_HISTORY_SEQUENCE, strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = RING_HISTORY_SEQUENCE, allocationSize = DatabaseConstant.SEQ_ALLOCATION_SIZE)
+    @Column(name = "ring_history_id")
     private Long id;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
-    private CraftingRequestStatus status;
+    private RingStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "crafting_request_id")
-    private CraftingRequest craftingRequest;
+    @JoinColumn(name = "ring_id")
+    private Ring ring;
 }

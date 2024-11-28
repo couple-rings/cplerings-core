@@ -1,13 +1,17 @@
 package com.cplerings.core.domain.design.crafting;
 
+import java.util.Set;
+
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.design.CustomDesign;
+import com.cplerings.core.domain.design.request.CustomRequestHistory;
 import com.cplerings.core.domain.diamond.DiamondSpecification;
 import com.cplerings.core.domain.metal.MetalSpecification;
 import com.cplerings.core.domain.shared.AbstractEntity;
 
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -80,4 +84,7 @@ public class CraftingRequest extends AbstractEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "branch_id")
     private Branch branch;
+
+    @OneToMany(mappedBy = "craftingRequest", fetch = FetchType.LAZY)
+    private Set<CraftingRequestHistory> craftingRequestHistories;
 }
