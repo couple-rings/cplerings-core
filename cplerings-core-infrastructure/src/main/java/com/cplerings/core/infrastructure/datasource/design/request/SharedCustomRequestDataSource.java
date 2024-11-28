@@ -21,6 +21,8 @@ import com.cplerings.core.domain.design.request.CustomRequestStatus;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
 import com.cplerings.core.domain.design.request.QCustomRequest;
 import com.cplerings.core.domain.design.request.QDesignCustomRequest;
+import com.cplerings.core.domain.design.session.DesignSession;
+import com.cplerings.core.domain.design.session.QDesignSession;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
@@ -28,6 +30,7 @@ import com.cplerings.core.infrastructure.repository.CustomRequestHistoryReposito
 import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
 import com.cplerings.core.infrastructure.repository.DesignCustomRequestRepository;
 import com.cplerings.core.infrastructure.repository.DesignRepository;
+import com.cplerings.core.infrastructure.repository.DesignSessionRepository;
 import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -49,6 +52,7 @@ public class SharedCustomRequestDataSource extends AbstractDataSource implements
     private static final QDesignCustomRequest Q_DESIGN_CUSTOM_REQUEST = QDesignCustomRequest.designCustomRequest;
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QDesignVersion Q_DESIGN_VERSION = QDesignVersion.designVersion;
+    private static final QDesignSession Q_DESIGN_SESSION = QDesignSession.designSession;
 
     private final DesignRepository designRepository;
     private final AccountRepository accountRepository;
@@ -56,6 +60,7 @@ public class SharedCustomRequestDataSource extends AbstractDataSource implements
     private final DesignCustomRequestRepository designCustomRequestRepository;
     private final DesignVersionRepository designVersionRepository;
     private final CustomRequestHistoryRepository customRequestHistoryRepository;
+    private final DesignSessionRepository designSessionRepository;
 
     @Override
     public Optional<CustomRequest> getCustomRequestById(Long customRequestId) {
@@ -111,6 +116,20 @@ public class SharedCustomRequestDataSource extends AbstractDataSource implements
     public CustomRequest save(CustomRequest customRequest) {
         updateAuditor(customRequest);
         return customRequestRepository.save(customRequest);
+    }
+
+    @Override
+    public List<DesignSession> getListDesignSession(Long customerId) {
+        return createQuery().select(Q_DESIGN_SESSION)
+                .from(Q_DESIGN_SESSION)
+                .where(Q_DESIGN_SESSION.customer.id.eq(customerId))
+                .fetch();
+    }
+
+    @Override
+    public DesignSession save(DesignSession designSession) {
+        updateAuditor(designSession);
+        return designSessionRepository.save(designSession);
     }
 
     @Override
