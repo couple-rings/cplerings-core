@@ -94,4 +94,7 @@ public class Ring extends AbstractEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "metal_specification_id", nullable = false)
     private MetalSpecification metalSpecification;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ring")
+    private Set<RingHistory> ringHistories;
 }

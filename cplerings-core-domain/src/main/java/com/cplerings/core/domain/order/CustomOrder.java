@@ -88,4 +88,7 @@ public class CustomOrder extends AbstractOrderEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transportation_address_id")
     private TransportationAddress transportationAddress;
+
+    @OneToMany(mappedBy = "customOrder", fetch = FetchType.LAZY)
+    private Set<CustomOrderHistory> customOrderHistories;
 }

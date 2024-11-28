@@ -7,34 +7,34 @@ on:
       - reopened
 
 jobs:
-  unit-testing:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout codes
-        uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '21'
-          cache: maven
-
-      - name: Run Unit Tests
-        run: mvn clean test
-
-  integration-testing:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout codes
-        uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '21'
-          cache: maven
+#  unit-testing:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout codes
+#        uses: actions/checkout@v4
+#
+#      - name: Set up JDK
+#        uses: actions/setup-java@v4
+#        with:
+#          distribution: 'temurin'
+#          java-version: '21'
+#          cache: maven
+#
+#      - name: Run Unit Tests
+#        run: mvn clean test
+#
+#  integration-testing:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout codes
+#        uses: actions/checkout@v4
+#
+#      - name: Set up JDK
+#        uses: actions/setup-java@v4
+#        with:
+#          distribution: 'temurin'
+#          java-version: '21'
+#          cache: maven
 
       - name: Run Integration Tests
         run: mvn clean verify

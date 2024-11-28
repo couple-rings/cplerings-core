@@ -73,4 +73,7 @@ public class TransportationOrder extends AbstractOrderEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_id")
     private Image image;
+
+    @OneToMany(mappedBy = "transportationOrder", fetch = FetchType.LAZY)
+    private Set<TransportOrderHistory> transportOrderHistories;
 }
