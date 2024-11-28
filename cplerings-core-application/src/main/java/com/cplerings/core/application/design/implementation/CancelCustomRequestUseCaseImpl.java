@@ -12,12 +12,15 @@ import com.cplerings.core.application.design.output.CancelCustomRequestOutput;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
+import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.DesignStatus;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.CustomRequestHistory;
 import com.cplerings.core.domain.design.request.CustomRequestStatus;
+import com.cplerings.core.domain.design.session.DesignSession;
+import com.cplerings.core.domain.design.session.DesignSessionStatus;
 
 import lombok.RequiredArgsConstructor;
 
@@ -67,6 +70,12 @@ public class CancelCustomRequestUseCaseImpl extends AbstractUseCase<CancelCustom
                 .status(CustomRequestStatus.REJECTED)
                 .build();
         cancelCustomRequestDataSource.saveCustomRequestHistory(customRequestHistory);
+        // Change sessions to USED
+        List<DesignSession> designSessions = cancelCustomRequestDataSource.getListDesignSession(customRequestUpdated.getCustomer().getId());
+        designSessions.forEach(designSession -> {
+            designSession.setStatus(DesignSessionStatus.USED);
+            cancelCustomRequestDataSource.save(designSession);
+        });
         return aCancelCustomRequestMapper.toOutput(customRequestUpdated);
     }
 }
