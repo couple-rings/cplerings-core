@@ -30,7 +30,7 @@ import jakarta.persistence.Table;
 @AllArgsConstructor
 @Entity
 @Table(name = "tbl_design_metal_specification")
-public class  DesignMetalSpecification extends AbstractEntity {
+public class DesignMetalSpecification extends AbstractEntity {
 
     private static final String DESIGN_METAL_SPECIFICATION_SEQUENCE = "design_metal_specification_seq";
 
