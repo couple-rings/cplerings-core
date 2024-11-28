@@ -15,6 +15,8 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Collection;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -35,4 +37,5 @@ public class ACraftingRequest implements Serializable {
     private Instant createdAt;
     private ABranch branch;
     private ACustomDesign customDesign;
+    private Collection<ACraftingRequestHistory> craftingRequestHistories;
 }

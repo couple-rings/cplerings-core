@@ -13,6 +13,7 @@ import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
 import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.request.CustomRequestHistory;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.diamond.Diamond;
@@ -38,6 +39,7 @@ import com.cplerings.core.infrastructure.repository.CraftingRequestRepository;
 import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
 import com.cplerings.core.infrastructure.repository.CustomDesignRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
+import com.cplerings.core.infrastructure.repository.CustomRequestHistoryRepository;
 import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
 import com.cplerings.core.infrastructure.repository.DesignCustomRequestRepository;
 import com.cplerings.core.infrastructure.repository.DesignSessionRepository;
@@ -97,6 +99,7 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private final DiamondRepository diamondRepository;
     private final ImageRepository imageRepository;
     private final TransportationNoteRepository transportationNoteRepository;
+    private final CustomRequestHistoryRepository customRequestHistoryRepository;
 
     @Override
     public Payment save(Payment payment) {
@@ -252,6 +255,12 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     public TransportationNote save(TransportationNote transportationNote) {
         updateAuditor(transportationNote);
         return transportationNoteRepository.save(transportationNote);
+    }
+
+    @Override
+    public CustomRequestHistory save(CustomRequestHistory customRequestHistory) {
+        updateAuditor(customRequestHistory);
+        return customRequestHistoryRepository.save(customRequestHistory);
     }
 
     @Override

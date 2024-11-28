@@ -11,6 +11,7 @@ import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
 import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.request.CustomRequestHistory;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.diamond.Diamond;
@@ -89,4 +90,6 @@ public interface TestDataSource {
     Optional<Agreement> findAgreementById(Long agreementId);
 
     TransportationNote save(TransportationNote transportationNote);
+
+    CustomRequestHistory save(CustomRequestHistory customRequestHistory);
 }

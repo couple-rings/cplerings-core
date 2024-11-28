@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Set;
 
 @Getter
@@ -26,4 +27,5 @@ public class ACustomRequest implements Serializable {
     private AAccount customer;
     private AAccount staff;
     private Set<ADesign> designs;
+    private Collection<ACustomRequestHistory> customRequestHistories;
 }
