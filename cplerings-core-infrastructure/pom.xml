@@ -252,9 +252,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M8</version>
+                <version>3.1.2</version>
                 <configuration>
-                    <argLine>-Xmx2048m</argLine>
+                    <argLine>-Xmx2048m -Xms512m</argLine>
                 </configuration>
             </plugin>
         </plugins>
