@@ -13,7 +13,9 @@ import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.crafting.CraftingStageStatus;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.CustomOrderStatus;
+import com.cplerings.core.domain.order.TransportOrderHistory;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.payment.PaymentReceiverType;
@@ -64,7 +66,12 @@ public class ProcessCraftingStageDepositUseCaseImpl extends AbstractUseCase<Paym
         if (Objects.equals(firstCraftingStage.getId(), craftingStageId)) {
             final CustomOrder customOrder = craftingStage.getCustomOrder();
             customOrder.setStatus(CustomOrderStatus.WAITING);
-            dataSource.save(customOrder);
+            CustomOrder customOrderUpdated = dataSource.save(customOrder);
+            CustomOrderHistory customOrderHistory = CustomOrderHistory.builder()
+                    .status(CustomOrderStatus.WAITING)
+                    .customOrder(customOrderUpdated)
+                    .build();
+            dataSource.save(customOrderHistory);
             return NoOutput.INSTANCE;
         }
         final CraftingStage finalCraftingStage = craftingStages.stream()
@@ -82,7 +89,13 @@ public class ProcessCraftingStageDepositUseCaseImpl extends AbstractUseCase<Paym
                         .status(TransportStatus.PENDING)
                         .receiverPhone(transportationAddress.getReceiverPhone())
                         .build();
-                dataSource.save(transportationOrder);
+                TransportationOrder transportationOrderCreated = dataSource.save(transportationOrder);
+
+                TransportOrderHistory transportOrderHistory = TransportOrderHistory.builder()
+                        .transportationOrder(transportationOrderCreated)
+                        .status(TransportStatus.PENDING)
+                        .build();
+                dataSource.save(transportOrderHistory);
             }
             final Agreement agreement = Agreement.builder()
                     .customer(customOrder.getCustomer())

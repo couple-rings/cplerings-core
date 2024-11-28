@@ -32,4 +32,5 @@ public class ATransportationOrder implements Serializable {
     private String orderNo;
     private Collection<ATransportationNote> transportationNotes;
     private AImage image;
+    private Collection<ATransportOrderHistory> transportOrderHistories;
 }

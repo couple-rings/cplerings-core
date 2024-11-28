@@ -16,6 +16,7 @@ import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.QDesign;
 import com.cplerings.core.domain.design.QDesignVersion;
 import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.request.CustomRequestHistory;
 import com.cplerings.core.domain.design.request.CustomRequestStatus;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
 import com.cplerings.core.domain.design.request.QCustomRequest;
@@ -23,6 +24,7 @@ import com.cplerings.core.domain.design.request.QDesignCustomRequest;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
+import com.cplerings.core.infrastructure.repository.CustomRequestHistoryRepository;
 import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
 import com.cplerings.core.infrastructure.repository.DesignCustomRequestRepository;
 import com.cplerings.core.infrastructure.repository.DesignRepository;
@@ -53,6 +55,7 @@ public class SharedCustomRequestDataSource extends AbstractDataSource implements
     private final CustomRequestRepository customRequestRepository;
     private final DesignCustomRequestRepository designCustomRequestRepository;
     private final DesignVersionRepository designVersionRepository;
+    private final CustomRequestHistoryRepository customRequestHistoryRepository;
 
     @Override
     public Optional<CustomRequest> getCustomRequestById(Long customRequestId) {
@@ -129,6 +132,12 @@ public class SharedCustomRequestDataSource extends AbstractDataSource implements
     public Collection<DesignVersion> saveAll(Collection<DesignVersion> oldDesignVersions) {
         oldDesignVersions.forEach(this::updateAuditor);
         return designVersionRepository.saveAll(oldDesignVersions);
+    }
+
+    @Override
+    public CustomRequestHistory saveCustomRequestHistory(CustomRequestHistory customRequestHistory) {
+        updateAuditor(customRequestHistory);
+        return customRequestHistoryRepository.save(customRequestHistory);
     }
 
     @Override

@@ -34,8 +34,10 @@ import com.cplerings.core.domain.crafting.CraftingStageStatus;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.ring.Ring;
+import com.cplerings.core.domain.ring.RingHistory;
 import com.cplerings.core.domain.ring.RingStatus;
 
 import lombok.RequiredArgsConstructor;
@@ -108,7 +110,12 @@ public class CompleteCraftingStageUseCaseImpl extends AbstractUseCase<CompleteCr
 
             final CustomOrder customOrder = craftingStage.getCustomOrder();
             customOrder.setStatus(CustomOrderStatus.DONE);
-            dataSource.save(customOrder);
+            CustomOrder customOrderUpdated = dataSource.save(customOrder);
+            CustomOrderHistory customOrderHistory = CustomOrderHistory.builder()
+                    .status(CustomOrderStatus.DONE)
+                    .customOrder(customOrderUpdated)
+                    .build();
+            dataSource.save(customOrderHistory);
         }
         craftingStage = dataSource.save(craftingStage);
         return CompleteCraftingStageOutput.builder()
@@ -130,7 +137,13 @@ public class CompleteCraftingStageUseCaseImpl extends AbstractUseCase<CompleteCr
         ring.setMaintenanceExpiredDate(TemporalUtils.getCurrentInstantUTCExcludeTimePartAndBelow()
                 .plus(configurationService.getMaximumMaintenanceDuration() * 365L, ChronoUnit.DAYS));
         ring.setStatus(RingStatus.AVAILABLE);
-        dataSource.save(ring);
+        Ring ringUpdated = dataSource.save(ring);
+
+        RingHistory ringHistory = RingHistory.builder()
+                .ring(ringUpdated)
+                .status(RingStatus.AVAILABLE)
+                .build();
+        dataSource.save(ringHistory);
     }
 
     private boolean previousCraftingStagesAreCompleted(CraftingStage craftingStage) {

@@ -45,9 +45,11 @@ import com.cplerings.core.domain.design.QDesign;
 import com.cplerings.core.domain.design.QDesignMetalSpecification;
 import com.cplerings.core.domain.design.QDesignVersion;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
+import com.cplerings.core.domain.design.crafting.CraftingRequestHistory;
 import com.cplerings.core.domain.design.crafting.CraftingRequestStatus;
 import com.cplerings.core.domain.design.crafting.QCraftingRequest;
 import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.request.CustomRequestHistory;
 import com.cplerings.core.domain.design.request.QCustomRequest;
 import com.cplerings.core.domain.design.request.QDesignCustomRequest;
 import com.cplerings.core.domain.diamond.Diamond;
@@ -60,11 +62,14 @@ import com.cplerings.core.domain.file.QDocument;
 import com.cplerings.core.domain.metal.MetalSpecification;
 import com.cplerings.core.domain.metal.QMetalSpecification;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.CustomOrderHistory;
+import com.cplerings.core.domain.order.TransportOrderHistory;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.ring.QRingDiamond;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
+import com.cplerings.core.domain.ring.RingHistory;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.domain.spouse.Agreement;
 import com.cplerings.core.domain.spouse.QSpouse;
@@ -73,10 +78,13 @@ import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.AgreementRepository;
 import com.cplerings.core.infrastructure.repository.ContractRepository;
+import com.cplerings.core.infrastructure.repository.CraftingRequestHistoryRepository;
 import com.cplerings.core.infrastructure.repository.CraftingRequestRepository;
 import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
 import com.cplerings.core.infrastructure.repository.CustomDesignRepository;
+import com.cplerings.core.infrastructure.repository.CustomOrderHistoryRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
+import com.cplerings.core.infrastructure.repository.CustomRequestHistoryRepository;
 import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
 import com.cplerings.core.infrastructure.repository.DesignRepository;
 import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
@@ -85,7 +93,9 @@ import com.cplerings.core.infrastructure.repository.DocumentRepository;
 import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
 import com.cplerings.core.infrastructure.repository.RingDiamondRepository;
+import com.cplerings.core.infrastructure.repository.RingHistoryRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
+import com.cplerings.core.infrastructure.repository.TransportOrderHistoryRepository;
 import com.cplerings.core.infrastructure.repository.TransportationAddressRepository;
 import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -137,6 +147,11 @@ public class SharedCraftingDataSource extends AbstractDataSource
     private final DiamondRepository diamondRepository;
     private final DesignVersionRepository designVersionRepository;
     private final DesignRepository designRepository;
+    private final CustomRequestHistoryRepository customRequestHistoryRepository;
+    private final CraftingRequestHistoryRepository craftingRequestHistoryRepository;
+    private final CustomOrderHistoryRepository customOrderHistoryRepository;
+    private final TransportOrderHistoryRepository transportOrderHistoryRepository;
+    private final RingHistoryRepository ringHistoryRepository;
 
     @Override
     public Optional<Account> getAccountByCustomerId(Long customerId) {
@@ -256,6 +271,30 @@ public class SharedCraftingDataSource extends AbstractDataSource
     }
 
     @Override
+    public CraftingRequestHistory save(CraftingRequestHistory craftingRequestHistory) {
+        updateAuditor(craftingRequestHistory);
+        return craftingRequestHistoryRepository.save(craftingRequestHistory);
+    }
+
+    @Override
+    public CustomOrderHistory save(CustomOrderHistory customOrderHistory) {
+        updateAuditor(customOrderHistory);
+        return customOrderHistoryRepository.save(customOrderHistory);
+    }
+
+    @Override
+    public RingHistory save(RingHistory ringHistory) {
+        updateAuditor(ringHistory);
+        return ringHistoryRepository.save(ringHistory);
+    }
+
+    @Override
+    public TransportOrderHistory save(TransportOrderHistory transportOrderHistory) {
+        updateAuditor(transportOrderHistory);
+        return transportOrderHistoryRepository.save(transportOrderHistory);
+    }
+
+    @Override
     public Optional<Spouse> getSpouseById(Long id) {
         return Optional.ofNullable(createQuery().select(Q_SPOUSE)
                 .from(Q_SPOUSE)
@@ -322,9 +361,15 @@ public class SharedCraftingDataSource extends AbstractDataSource
     }
 
     @Override
-    public void save(CustomRequest customRequest) {
+    public CustomRequest save(CustomRequest customRequest) {
         updateAuditor(customRequest);
-        customRequestRepository.save(customRequest);
+        return customRequestRepository.save(customRequest);
+    }
+
+    @Override
+    public CustomRequestHistory save(CustomRequestHistory customRequestHistory) {
+        updateAuditor(customRequestHistory);
+        return customRequestHistoryRepository.save(customRequestHistory);
     }
 
     @Override

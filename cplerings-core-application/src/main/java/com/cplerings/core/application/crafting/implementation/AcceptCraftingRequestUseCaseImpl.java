@@ -18,15 +18,19 @@ import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.crafting.CraftingStageStatus;
 import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
+import com.cplerings.core.domain.design.crafting.CraftingRequestHistory;
 import com.cplerings.core.domain.design.crafting.CraftingRequestStatus;
 import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.request.CustomRequestHistory;
 import com.cplerings.core.domain.design.request.CustomRequestStatus;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
 import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
+import com.cplerings.core.domain.ring.RingHistory;
 import com.cplerings.core.domain.ring.RingStatus;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.domain.shared.valueobject.Money;
@@ -95,10 +99,19 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
         if (input.status() == ACraftingRequestStatus.REJECTED) {
             firstCraftingRequest.setComment(input.firstCommentCrafting());
             secondCraftingRequest.setComment(input.secondCommentCrafting());
+            firstCraftingRequest.setCraftingRequestStatus(CraftingRequestStatus.REJECTED);
+            secondCraftingRequest.setCraftingRequestStatus(CraftingRequestStatus.REJECTED);
             List<CraftingRequest> craftingRequests = new ArrayList<>();
             craftingRequests.add(firstCraftingRequest);
             craftingRequests.add(secondCraftingRequest);
             List<CraftingRequest> craftingRequestUpdated = dataSource.saveCraftingRequests(craftingRequests);
+            craftingRequestUpdated.forEach(x -> {
+                CraftingRequestHistory craftingRequestHistory = CraftingRequestHistory.builder()
+                        .craftingRequest(x)
+                        .status(CraftingRequestStatus.REJECTED)
+                        .build();
+                dataSource.save(craftingRequestHistory);
+            });
             return mapper.toOutput(null, craftingRequestUpdated.get(0), craftingRequestUpdated.get(0));
         }
 
@@ -117,6 +130,13 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
         craftingRequests.add(firstCraftingRequest);
         craftingRequests.add(secondCraftingRequest);
         List<CraftingRequest> craftingRequestUpdated = dataSource.saveCraftingRequests(craftingRequests);
+        craftingRequestUpdated.forEach(x -> {
+            CraftingRequestHistory craftingRequestHistory = CraftingRequestHistory.builder()
+                    .craftingRequest(x)
+                    .status(CraftingRequestStatus.REJECTED)
+                    .build();
+            dataSource.save(craftingRequestHistory);
+        });
         return craftingRequestUpdated;
     }
 
@@ -147,6 +167,11 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                 .metalSpecification(firstCraftingRequest.getMetalSpecification())
                 .build();
         firstRing = dataSource.save(firstRing);
+        RingHistory firstRingHistory = RingHistory.builder()
+                .ring(firstRing)
+                .status(RingStatus.NOT_AVAIL)
+                .build();
+        dataSource.save(firstRingHistory);
 
         final RingDiamond firstRingDiamond = RingDiamond.builder()
                 .ring(firstRing)
@@ -166,6 +191,11 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                 .metalSpecification(secondCraftingRequest.getMetalSpecification())
                 .build();
         secondRing = dataSource.save(secondRing);
+        RingHistory secondRingHistory = RingHistory.builder()
+                .ring(firstRing)
+                .status(RingStatus.NOT_AVAIL)
+                .build();
+        dataSource.save(secondRingHistory);
 
         final RingDiamond secondRingDiamond = RingDiamond.builder()
                 .ring(secondRing)
@@ -207,6 +237,11 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                 .totalPrice(totalPrice)
                 .build();
         CustomOrder customOrderCreated = dataSource.saveCustomOrder(customOrder);
+        CustomOrderHistory customOrderHistory = CustomOrderHistory.builder()
+                .customOrder(customOrderCreated)
+                .status(CustomOrderStatus.PENDING)
+                .build();
+        dataSource.save(customOrderHistory);
         return customOrderCreated;
     }
 
@@ -231,7 +266,13 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                 .filter(x -> x.getCustomRequest().getStatus() == CustomRequestStatus.APPROVED).findFirst().get();
         CustomRequest customRequest = designCustomRequest.getCustomRequest();
         customRequest.setStatus(CustomRequestStatus.COMPLETED);
-        dataSource.save(customRequest);
+        CustomRequest customRequestUpdated = dataSource.save(customRequest);
+
+        CustomRequestHistory customRequestHistory = CustomRequestHistory.builder()
+                .status(CustomRequestStatus.COMPLETED)
+                .customRequest(customRequestUpdated)
+                .build();
+        dataSource.save(customRequestHistory);
     }
 
     private void createCraftingStages(CustomOrder customOrderCreated) {

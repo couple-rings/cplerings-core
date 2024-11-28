@@ -6,12 +6,16 @@ import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
+import com.cplerings.core.domain.design.crafting.CraftingRequestHistory;
 import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.request.CustomRequestHistory;
 import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
+import com.cplerings.core.domain.ring.RingHistory;
 
 import java.util.Collection;
 import java.util.List;
@@ -39,8 +43,6 @@ public interface AcceptCraftingRequestDataSource {
 
     void save(CustomDesign customDesign);
 
-    void save(CustomRequest customRequest);
-
     Ring save(Ring ring);
 
     Collection<Diamond> getUnusedDiamondsFromSpecsAndBranch(Collection<Long> diamondSpecIds, Long branchId);
@@ -50,4 +52,14 @@ public interface AcceptCraftingRequestDataSource {
     RingDiamond save(RingDiamond ringDiamond);
 
     Diamond save(Diamond diamond);
+
+    CustomRequest save(CustomRequest customRequest);
+
+    CustomRequestHistory save(CustomRequestHistory customRequestHistory);
+
+    CraftingRequestHistory save(CraftingRequestHistory craftingRequestHistory);
+
+    CustomOrderHistory save(CustomOrderHistory customOrderHistory);
+
+    RingHistory save(RingHistory ringHistory);
 }
