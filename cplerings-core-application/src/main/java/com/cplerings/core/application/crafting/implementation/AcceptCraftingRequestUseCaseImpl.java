@@ -18,6 +18,7 @@ import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.crafting.CraftingStageStatus;
 import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
+import com.cplerings.core.domain.design.crafting.CraftingRequestHistory;
 import com.cplerings.core.domain.design.crafting.CraftingRequestStatus;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.CustomRequestHistory;
@@ -96,10 +97,19 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
         if (input.status() == ACraftingRequestStatus.REJECTED) {
             firstCraftingRequest.setComment(input.firstCommentCrafting());
             secondCraftingRequest.setComment(input.secondCommentCrafting());
+            firstCraftingRequest.setCraftingRequestStatus(CraftingRequestStatus.REJECTED);
+            secondCraftingRequest.setCraftingRequestStatus(CraftingRequestStatus.REJECTED);
             List<CraftingRequest> craftingRequests = new ArrayList<>();
             craftingRequests.add(firstCraftingRequest);
             craftingRequests.add(secondCraftingRequest);
             List<CraftingRequest> craftingRequestUpdated = dataSource.saveCraftingRequests(craftingRequests);
+            craftingRequestUpdated.forEach(x -> {
+                CraftingRequestHistory craftingRequestHistory = CraftingRequestHistory.builder()
+                        .craftingRequest(x)
+                        .status(CraftingRequestStatus.REJECTED)
+                        .build();
+                dataSource.save(craftingRequestHistory);
+            });
             return mapper.toOutput(null, craftingRequestUpdated.get(0), craftingRequestUpdated.get(0));
         }
 
@@ -118,6 +128,13 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
         craftingRequests.add(firstCraftingRequest);
         craftingRequests.add(secondCraftingRequest);
         List<CraftingRequest> craftingRequestUpdated = dataSource.saveCraftingRequests(craftingRequests);
+        craftingRequestUpdated.forEach(x -> {
+            CraftingRequestHistory craftingRequestHistory = CraftingRequestHistory.builder()
+                    .craftingRequest(x)
+                    .status(CraftingRequestStatus.REJECTED)
+                    .build();
+            dataSource.save(craftingRequestHistory);
+        });
         return craftingRequestUpdated;
     }
 

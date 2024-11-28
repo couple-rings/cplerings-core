@@ -6,6 +6,7 @@ import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
+import com.cplerings.core.domain.design.crafting.CraftingRequestHistory;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.CustomRequestHistory;
 import com.cplerings.core.domain.diamond.Diamond;
@@ -53,4 +54,6 @@ public interface AcceptCraftingRequestDataSource {
     CustomRequest save(CustomRequest customRequest);
 
     CustomRequestHistory save(CustomRequestHistory customRequestHistory);
+
+    CraftingRequestHistory save(CraftingRequestHistory craftingRequestHistory);
 }

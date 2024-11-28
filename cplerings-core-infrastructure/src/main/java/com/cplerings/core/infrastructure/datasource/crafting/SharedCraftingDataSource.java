@@ -45,6 +45,7 @@ import com.cplerings.core.domain.design.QDesign;
 import com.cplerings.core.domain.design.QDesignMetalSpecification;
 import com.cplerings.core.domain.design.QDesignVersion;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
+import com.cplerings.core.domain.design.crafting.CraftingRequestHistory;
 import com.cplerings.core.domain.design.crafting.CraftingRequestStatus;
 import com.cplerings.core.domain.design.crafting.QCraftingRequest;
 import com.cplerings.core.domain.design.request.CustomRequest;
@@ -74,6 +75,7 @@ import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.AgreementRepository;
 import com.cplerings.core.infrastructure.repository.ContractRepository;
+import com.cplerings.core.infrastructure.repository.CraftingRequestHistoryRepository;
 import com.cplerings.core.infrastructure.repository.CraftingRequestRepository;
 import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
 import com.cplerings.core.infrastructure.repository.CustomDesignRepository;
@@ -140,6 +142,7 @@ public class SharedCraftingDataSource extends AbstractDataSource
     private final DesignVersionRepository designVersionRepository;
     private final DesignRepository designRepository;
     private final CustomRequestHistoryRepository customRequestHistoryRepository;
+    private final CraftingRequestHistoryRepository craftingRequestHistoryRepository;
 
     @Override
     public Optional<Account> getAccountByCustomerId(Long customerId) {
@@ -256,6 +259,12 @@ public class SharedCraftingDataSource extends AbstractDataSource
                 .from(Q_BRANCH)
                 .where(Q_BRANCH.id.eq(branchId))
                 .fetchOne());
+    }
+
+    @Override
+    public CraftingRequestHistory save(CraftingRequestHistory craftingRequestHistory) {
+        updateAuditor(craftingRequestHistory);
+        return craftingRequestHistoryRepository.save(craftingRequestHistory);
     }
 
     @Override

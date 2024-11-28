@@ -13,6 +13,7 @@ import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
+import com.cplerings.core.domain.design.crafting.CraftingRequestHistory;
 import com.cplerings.core.domain.design.crafting.CraftingRequestStatus;
 import com.cplerings.core.domain.diamond.DiamondSpecification;
 import com.cplerings.core.domain.metal.MetalSpecification;
@@ -101,6 +102,12 @@ public class CreateCraftingRequestUseCaseImpl extends AbstractUseCase<CreateCraf
                 .branch(branch)
                 .build();
         CraftingRequest craftingRequestCreated = dataSource.save(craftingRequest);
+        CraftingRequestHistory craftingRequestHistory = CraftingRequestHistory.builder()
+                .craftingRequest(craftingRequestCreated)
+                .status(CraftingRequestStatus.PENDING)
+                .build();
+        dataSource.save(craftingRequestHistory);
+
         return aCreateCraftingRequestMapper.toOutput(craftingRequestCreated);
     }
 }
