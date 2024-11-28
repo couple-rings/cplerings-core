@@ -15,6 +15,7 @@ import com.cplerings.core.domain.crafting.CraftingStageStatus;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.CustomOrderStatus;
+import com.cplerings.core.domain.order.TransportOrderHistory;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.payment.PaymentReceiverType;
@@ -88,7 +89,13 @@ public class ProcessCraftingStageDepositUseCaseImpl extends AbstractUseCase<Paym
                         .status(TransportStatus.PENDING)
                         .receiverPhone(transportationAddress.getReceiverPhone())
                         .build();
-                dataSource.save(transportationOrder);
+                TransportationOrder transportationOrderCreated = dataSource.save(transportationOrder);
+
+                TransportOrderHistory transportOrderHistory = TransportOrderHistory.builder()
+                        .transportationOrder(transportationOrderCreated)
+                        .status(TransportStatus.PENDING)
+                        .build();
+                dataSource.save(transportOrderHistory);
             }
             final Agreement agreement = Agreement.builder()
                     .customer(customOrder.getCustomer())

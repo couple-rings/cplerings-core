@@ -63,6 +63,7 @@ import com.cplerings.core.domain.metal.MetalSpecification;
 import com.cplerings.core.domain.metal.QMetalSpecification;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
+import com.cplerings.core.domain.order.TransportOrderHistory;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.ring.QRingDiamond;
@@ -92,6 +93,7 @@ import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
 import com.cplerings.core.infrastructure.repository.RingDiamondRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
+import com.cplerings.core.infrastructure.repository.TransportOrderHistoryRepository;
 import com.cplerings.core.infrastructure.repository.TransportationAddressRepository;
 import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -146,6 +148,7 @@ public class SharedCraftingDataSource extends AbstractDataSource
     private final CustomRequestHistoryRepository customRequestHistoryRepository;
     private final CraftingRequestHistoryRepository craftingRequestHistoryRepository;
     private final CustomOrderHistoryRepository customOrderHistoryRepository;
+    private final TransportOrderHistoryRepository transportOrderHistoryRepository;
 
     @Override
     public Optional<Account> getAccountByCustomerId(Long customerId) {
@@ -274,6 +277,12 @@ public class SharedCraftingDataSource extends AbstractDataSource
     public CustomOrderHistory save(CustomOrderHistory customOrderHistory) {
         updateAuditor(customOrderHistory);
         return customOrderHistoryRepository.save(customOrderHistory);
+    }
+
+    @Override
+    public TransportOrderHistory save(TransportOrderHistory transportOrderHistory) {
+        updateAuditor(transportOrderHistory);
+        return transportOrderHistoryRepository.save(transportOrderHistory);
     }
 
     @Override

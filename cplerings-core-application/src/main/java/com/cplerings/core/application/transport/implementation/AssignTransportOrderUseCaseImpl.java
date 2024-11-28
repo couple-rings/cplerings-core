@@ -15,6 +15,7 @@ import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.CustomOrderStatus;
+import com.cplerings.core.domain.order.TransportOrderHistory;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
 
@@ -50,6 +51,12 @@ public class AssignTransportOrderUseCaseImpl extends AbstractUseCase<AssignTrans
         transportationOrder.setStatus(TransportStatus.WAITING);
         transportationOrder.setTransporter(transporter);
         TransportationOrder transportationOrderAssigned = assignTransportOrderDataSource.save(transportationOrder);
+
+        TransportOrderHistory transportOrderHistory = TransportOrderHistory.builder()
+                .transportationOrder(transportationOrderAssigned)
+                .status(TransportStatus.WAITING)
+                .build();
+        assignTransportOrderDataSource.save(transportOrderHistory);
 
         CustomOrder customOrder = transportationOrder.getCustomOrder();
         customOrder.setStatus(CustomOrderStatus.DELIVERING);

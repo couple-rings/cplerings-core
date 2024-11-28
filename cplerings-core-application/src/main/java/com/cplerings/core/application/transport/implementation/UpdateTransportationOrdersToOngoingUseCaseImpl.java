@@ -12,6 +12,7 @@ import com.cplerings.core.application.transport.input.UpdateTransportationOrders
 import com.cplerings.core.application.transport.mapper.AUpdateTransportationOrdersToOngoingMapper;
 import com.cplerings.core.application.transport.output.UpdateTransportationOrdersToOngoingOutput;
 import com.cplerings.core.application.transport.output.data.TransportationOrderList;
+import com.cplerings.core.domain.order.TransportOrderHistory;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
 
@@ -41,7 +42,15 @@ public class UpdateTransportationOrdersToOngoingUseCaseImpl extends AbstractUseC
             transportationOrder.setStatus(TransportStatus.ON_GOING);
         });
         List<TransportationOrder> transportationOrdersUpdated = updateTransportationOrdersToOngoingDataSource.updateToOngoing(transportationOrders);
+        transportationOrdersUpdated.forEach(x -> {
+            TransportOrderHistory transportOrderHistory = TransportOrderHistory.builder()
+                    .transportationOrder(x)
+                    .status(TransportStatus.ON_GOING)
+                    .build();
+            updateTransportationOrdersToOngoingDataSource.save(transportOrderHistory);
+        });
         TransportationOrderList transportationOrdersList = TransportationOrderList.builder().transportationOrders(transportationOrdersUpdated).build();
+
         return aUpdateTransportationOrdersToOngoingMapper.toOutput(transportationOrdersList);
     }
 }

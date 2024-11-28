@@ -12,6 +12,7 @@ import com.cplerings.core.application.transport.output.UpdateTransportationOrder
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.CustomOrderStatus;
+import com.cplerings.core.domain.order.TransportOrderHistory;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
 
@@ -38,23 +39,32 @@ public class UpdateTransportationOrderStatusUseCaseImpl extends AbstractUseCase<
         TransportationOrder transportationOrder = updateTransportationOrderStatusDataSource.getTransportationOrderById(input.transportationOrderId())
                 .orElse(null);
         validator.validateAndStopExecution(transportationOrder != null, UpdateTransportationOrderStatusErrorCode.INVALID_TRANSPORTATION_ORDER_ID);
-
+        TransportOrderHistory transportOrderHistory = null;
         switch (input.status()) {
             case DELIVERING: {
                 validator.validateAndStopExecution(transportationOrder.getStatus() == TransportStatus.ON_GOING, UpdateTransportationOrderStatusErrorCode.INVALID_STATUS);
                 transportationOrder.setStatus(TransportStatus.DELIVERING);
+                transportOrderHistory = TransportOrderHistory.builder()
+                        .status(TransportStatus.DELIVERING)
+                        .build();
                 break;
             }
 
             case WAITING: {
                 validator.validateAndStopExecution(transportationOrder.getStatus() == TransportStatus.DELIVERING, UpdateTransportationOrderStatusErrorCode.INVALID_STATUS);
                 transportationOrder.setStatus(TransportStatus.WAITING);
+                transportOrderHistory = TransportOrderHistory.builder()
+                        .status(TransportStatus.WAITING)
+                        .build();
                 break;
             }
 
             case REJECTED: {
                 validator.validateAndStopExecution(transportationOrder.getStatus() == TransportStatus.DELIVERING, UpdateTransportationOrderStatusErrorCode.INVALID_STATUS);
                 transportationOrder.setStatus(TransportStatus.REJECTED);
+                transportOrderHistory = TransportOrderHistory.builder()
+                        .status(TransportStatus.REJECTED)
+                        .build();
                 CustomOrder customOrder = transportationOrder.getCustomOrder();
                 customOrder.setStatus(CustomOrderStatus.COMPLETED);
                 CustomOrder customOrderUpdated = updateTransportationOrderStatusDataSource.save(customOrder);
@@ -69,6 +79,9 @@ public class UpdateTransportationOrderStatusUseCaseImpl extends AbstractUseCase<
             case COMPLETED: {
                 validator.validateAndStopExecution(transportationOrder.getStatus() == TransportStatus.DELIVERING, UpdateTransportationOrderStatusErrorCode.INVALID_STATUS);
                 transportationOrder.setStatus(TransportStatus.COMPLETED);
+                transportOrderHistory = TransportOrderHistory.builder()
+                        .status(TransportStatus.COMPLETED)
+                        .build();
                 CustomOrder customOrder = transportationOrder.getCustomOrder();
                 customOrder.setStatus(CustomOrderStatus.COMPLETED);
                 CustomOrder customOrderUpdated = updateTransportationOrderStatusDataSource.save(customOrder);
@@ -83,7 +96,9 @@ public class UpdateTransportationOrderStatusUseCaseImpl extends AbstractUseCase<
             default:
                 validator.validateAndStopExecution(false, UpdateTransportationOrderStatusErrorCode.WRONG_STATUS);
         }
-        updateTransportationOrderStatusDataSource.save(transportationOrder);
+        TransportationOrder transportationOrderUpdated = updateTransportationOrderStatusDataSource.save(transportationOrder);
+        transportOrderHistory.setTransportationOrder(transportationOrderUpdated);
+        updateTransportationOrderStatusDataSource.save(transportOrderHistory);
 
         return aUpdateTransportationOrderStatusMapper.toOutput(transportationOrder);
     }
