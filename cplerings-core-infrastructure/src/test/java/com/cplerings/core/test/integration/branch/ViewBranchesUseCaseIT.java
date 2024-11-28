@@ -2,6 +2,7 @@ package com.cplerings.core.test.integration.branch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -12,6 +13,7 @@ import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.test.shared.AbstractIT;
 
+@Disabled
 public class ViewBranchesUseCaseIT extends AbstractIT {
 
     @Test

@@ -145,6 +145,7 @@ public class SharedCustomRequestDataSource extends AbstractDataSource implements
                 case PENDING -> booleanExpressionBuilder.and(Q_CUSTOM_REQUEST.status.eq(CustomRequestStatus.PENDING));
                 case APPROVED -> booleanExpressionBuilder.and(Q_CUSTOM_REQUEST.status.eq(CustomRequestStatus.APPROVED));
                 case REJECTED -> booleanExpressionBuilder.and(Q_CUSTOM_REQUEST.status.eq(CustomRequestStatus.REJECTED));
+                case COMPLETED -> booleanExpressionBuilder.and(Q_CUSTOM_REQUEST.status.eq(CustomRequestStatus.COMPLETED));
             }
         }
         if (input.getCustomerId() != null) {
