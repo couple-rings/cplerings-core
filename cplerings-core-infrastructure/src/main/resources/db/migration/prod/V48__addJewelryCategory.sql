@@ -1,0 +1,8 @@
+INSERT INTO tbl_jewelry_category (jewelry_category_id, created_at, create_by, modified_at, modified_by, state,
+                                  opt_version, name, description)
+VALUES (nextval('jewelry_category_seq'), current_timestamp, 'CoupleRings',
+        current_timestamp, 'CoupleRings', 'ACTIVE', 0, 'Dây chuyền',
+        'Khám phá bộ sưu tập dây chuyền tuyệt đẹp của chúng tôi, được thiết kế để tôn lên vẻ thanh lịch cho mọi phong cách. Từ dây mảnh tinh tế đến những mẫu nổi bật ấn tượng, mỗi sản phẩm đều được chế tác tỉ mỉ từ các chất liệu cao cấp như vàng, bạc và bạch kim. Với điểm nhấn độc đáo từ đá quý, mặt dây chuyền và các thiết kế tinh xảo, dây chuyền của chúng tôi phù hợp cho cả trang phục hàng ngày lẫn những dịp đặc biệt. Hãy khám phá các kiểu dáng đa dạng như vòng cổ sát, chuỗi hạt thanh lịch, hay mặt dây chuyền đầy cuốn hút. Dành tặng bản thân hoặc làm quà tặng ý nghĩa, dây chuyền của chúng tôi là sự kết hợp hoàn hảo giữa phong cách và đẳng cấp.'),
+       (nextval('jewelry_category_seq'), current_timestamp, 'CoupleRings',
+        current_timestamp, 'CoupleRings', 'ACTIVE', 0, 'Vòng tay',
+        'Tô điểm cho phong cách của bạn với bộ sưu tập vòng tay cao cấp của chúng tôi. Được chế tác từ các chất liệu chất lượng như vàng, bạc, bạch kim và da, mỗi thiết kế mang đậm dấu ấn của sự tinh tế và sáng tạo. Vòng tay được trang trí với đá quý, ngọc trai hoặc các chi tiết chạm khắc tinh xảo, phù hợp với mọi phong cách, từ đơn giản hàng ngày đến sang trọng cho những dịp đặc biệt. Đây không chỉ là phụ kiện mà còn là cách thể hiện cá tính và gu thẩm mỹ của bạn. Bộ sưu tập của chúng tôi còn là lựa chọn lý tưởng để làm quà tặng, mang lại niềm vui và ý nghĩa cho những người thân yêu. Khám phá ngay vòng tay hoàn hảo dành cho bạn!');
