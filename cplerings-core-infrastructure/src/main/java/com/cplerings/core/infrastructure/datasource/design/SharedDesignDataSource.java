@@ -11,13 +11,16 @@ import com.cplerings.core.application.design.datasource.CreateDesignSessionDataS
 import com.cplerings.core.application.design.datasource.CreateDesignVersionDataSource;
 import com.cplerings.core.application.design.datasource.DetermineDesignVersionDataSource;
 import com.cplerings.core.application.design.datasource.ProcessDesignSessionPaymentDataSource;
+import com.cplerings.core.application.design.datasource.ViewDesignCollectionsDataSource;
 import com.cplerings.core.application.design.datasource.ViewDesignDataSource;
 import com.cplerings.core.application.design.datasource.ViewDesignSessionsLeftDataSource;
 import com.cplerings.core.application.design.datasource.ViewDesignVersionDataSource;
 import com.cplerings.core.application.design.datasource.ViewDesignVersionsDataSource;
 import com.cplerings.core.application.design.datasource.ViewDesignsDataSource;
+import com.cplerings.core.application.design.datasource.result.DesignCollections;
 import com.cplerings.core.application.design.datasource.result.DesignVersions;
 import com.cplerings.core.application.design.datasource.result.Designs;
+import com.cplerings.core.application.design.input.ViewDesignCollectionsInput;
 import com.cplerings.core.application.design.input.ViewDesignVersionsInput;
 import com.cplerings.core.application.design.input.ViewDesignsInput;
 import com.cplerings.core.common.pagination.PaginationUtils;
@@ -44,7 +47,6 @@ import com.cplerings.core.domain.file.QImage;
 import com.cplerings.core.domain.jewelry.JewelryCategory;
 import com.cplerings.core.domain.jewelry.QJewelryCategory;
 import com.cplerings.core.domain.payment.PaymentReceiver;
-import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.domain.shared.valueobject.DesignSize;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
@@ -67,7 +69,7 @@ import lombok.RequiredArgsConstructor;
 public class SharedDesignDataSource extends AbstractDataSource
         implements CreateDesignSessionDataSource, ProcessDesignSessionPaymentDataSource, CheckRemainingDesignSessionDataSource,
         CreateDesignVersionDataSource, ViewDesignVersionDataSource, ViewDesignVersionsDataSource, DetermineDesignVersionDataSource,
-        ViewDesignSessionsLeftDataSource, ViewDesignDataSource, CreateDesignDataSource, ViewDesignsDataSource {
+        ViewDesignSessionsLeftDataSource, ViewDesignDataSource, CreateDesignDataSource, ViewDesignsDataSource, ViewDesignCollectionsDataSource {
 
     private static final QDesign Q_DESIGN = QDesign.design;
     private static final QDesignVersion Q_DESIGN_VERSION = QDesignVersion.designVersion;
@@ -349,6 +351,23 @@ public class SharedDesignDataSource extends AbstractDataSource
         List<Design> designs = query.limit(input.getPageSize()).offset(offset).fetch();
         return Designs.builder()
                 .designs(designs)
+                .count(count)
+                .page(input.getPage())
+                .pageSize(input.getPageSize())
+                .build();
+    }
+
+    @Override
+    public DesignCollections getDesignCollections(ViewDesignCollectionsInput input) {
+        var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
+        BlazeJPAQuery<DesignCollection> query = createQuery()
+                .select(Q_DESIGN_COLLECTION)
+                .from(Q_DESIGN_COLLECTION);
+
+        long count = query.distinct().fetchCount();
+        List<DesignCollection> designCollections = query.limit(input.getPageSize()).offset(offset).fetch();
+        return DesignCollections.builder()
+                .designCollections(designCollections)
                 .count(count)
                 .page(input.getPage())
                 .pageSize(input.getPageSize())
