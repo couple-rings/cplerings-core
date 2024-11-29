@@ -11,6 +11,7 @@ import com.cplerings.core.domain.jewelry.Jewelry;
                 ADesignMapper.class,
                 WeightMapper.class,
                 DesignSizeMapper.class,
+                MoneyMapper.class
         })
 public interface AJewelryMapper {
 
