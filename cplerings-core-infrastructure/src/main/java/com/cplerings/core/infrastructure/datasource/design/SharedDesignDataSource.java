@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.design.datasource.CheckRemainingDesignSessionDataSource;
+import com.cplerings.core.application.design.datasource.CreateDesignDataSource;
 import com.cplerings.core.application.design.datasource.CreateDesignSessionDataSource;
 import com.cplerings.core.application.design.datasource.CreateDesignVersionDataSource;
 import com.cplerings.core.application.design.datasource.DetermineDesignVersionDataSource;
@@ -21,8 +22,10 @@ import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.domain.design.Design;
+import com.cplerings.core.domain.design.DesignCollection;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.QDesign;
+import com.cplerings.core.domain.design.QDesignCollection;
 import com.cplerings.core.domain.design.QDesignVersion;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.QCustomRequest;
@@ -34,12 +37,15 @@ import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.file.QDocument;
 import com.cplerings.core.domain.file.QImage;
+import com.cplerings.core.domain.jewelry.JewelryCategory;
+import com.cplerings.core.domain.jewelry.QJewelryCategory;
 import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
+import com.cplerings.core.infrastructure.repository.DesignRepository;
 import com.cplerings.core.infrastructure.repository.DesignSessionRepository;
 import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
 import com.cplerings.core.infrastructure.repository.DocumentRepository;
@@ -56,7 +62,7 @@ import lombok.RequiredArgsConstructor;
 public class SharedDesignDataSource extends AbstractDataSource
         implements CreateDesignSessionDataSource, ProcessDesignSessionPaymentDataSource, CheckRemainingDesignSessionDataSource,
         CreateDesignVersionDataSource, ViewDesignVersionDataSource, ViewDesignVersionsDataSource, DetermineDesignVersionDataSource,
-        ViewDesignSessionsLeftDataSource, ViewDesignDataSource {
+        ViewDesignSessionsLeftDataSource, ViewDesignDataSource, CreateDesignDataSource {
 
     private static final QDesign Q_DESIGN = QDesign.design;
     private static final QDesignVersion Q_DESIGN_VERSION = QDesignVersion.designVersion;
@@ -66,6 +72,8 @@ public class SharedDesignDataSource extends AbstractDataSource
     private static final QDocument Q_DOCUMENT = QDocument.document;
     private static final QImage Q_IMAGE = QImage.image;
     private static final QDesignSession Q_DESIGN_SESSION = QDesignSession.designSession;
+    private static final QJewelryCategory Q_JEWELRY_CATEGORY = QJewelryCategory.jewelryCategory;
+    private static final QDesignCollection Q_DESIGN_COLLECTION = QDesignCollection.designCollection;
 
     private final DesignSessionRepository designSessionRepository;
     private final AccountRepository accountRepository;
@@ -74,6 +82,7 @@ public class SharedDesignDataSource extends AbstractDataSource
     private final DesignVersionRepository designVersionRepository;
     private final DocumentRepository documentRepository;
     private final ImageRepository imageRepository;
+    private final DesignRepository designRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -273,5 +282,35 @@ public class SharedDesignDataSource extends AbstractDataSource
                 .from(Q_DESIGN)
                 .where(Q_DESIGN.id.eq(designId))
                 .fetchFirst());
+    }
+
+    @Override
+    public Optional<JewelryCategory> getJewelryCategoryById(Long id) {
+        return Optional.ofNullable(createQuery().select(Q_JEWELRY_CATEGORY)
+                .from(Q_JEWELRY_CATEGORY)
+                .where(Q_JEWELRY_CATEGORY.id.eq(id))
+                .fetchFirst());
+    }
+
+    @Override
+    public Optional<Document> getBlueprintById(Long id) {
+        return Optional.ofNullable(createQuery().select(Q_DOCUMENT)
+                .from(Q_DOCUMENT)
+                .where(Q_DOCUMENT.id.eq(id))
+                .fetchFirst());
+    }
+
+    @Override
+    public Optional<DesignCollection> getDesignCollectionById(Long id) {
+        return Optional.ofNullable(createQuery().select(Q_DESIGN_COLLECTION)
+                .from(Q_DESIGN_COLLECTION)
+                .where(Q_DESIGN_COLLECTION.id.eq(id))
+                .fetchFirst());
+    }
+
+    @Override
+    public Design save(Design design) {
+        updateAuditor(design);
+        return designRepository.save(design);
     }
 }
