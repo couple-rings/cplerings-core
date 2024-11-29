@@ -171,4 +171,9 @@ public final class APIConstant {
         crafting ring
      */
     public static final String CRAFTING_RING_PATH = "/crafting/rings";
+
+    /*
+        jewelries' paths
+     */
+    public static final String JEWELRIES_PATH = "/jewelries";
 }

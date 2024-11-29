@@ -72,6 +72,7 @@ public class SecurityConfiguration {
         handleTransportationAddressAPI(localHttp);
         handleDiamondAPI(localHttp);
         handleCraftingRingAPI(localHttp);
+        handleJewelryAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
                 .denyAll());
         return localHttp.build();
@@ -305,6 +306,11 @@ public class SecurityConfiguration {
     private void handleCraftingRingAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.CRAFTING_RING_PATH))
                         .hasAuthority(RoleConstant.ROLE_STAFF));
+    }
+
+    private void handleJewelryAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.JEWELRIES_PATH))
+                .hasAuthority(RoleConstant.ROLE_MANAGER));
     }
 
     private String resolvePath(String path) {
