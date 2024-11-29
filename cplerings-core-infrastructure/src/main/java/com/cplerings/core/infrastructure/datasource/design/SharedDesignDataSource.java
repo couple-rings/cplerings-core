@@ -15,14 +15,18 @@ import com.cplerings.core.application.design.datasource.ViewDesignDataSource;
 import com.cplerings.core.application.design.datasource.ViewDesignSessionsLeftDataSource;
 import com.cplerings.core.application.design.datasource.ViewDesignVersionDataSource;
 import com.cplerings.core.application.design.datasource.ViewDesignVersionsDataSource;
+import com.cplerings.core.application.design.datasource.ViewDesignsDataSource;
 import com.cplerings.core.application.design.datasource.result.DesignVersions;
+import com.cplerings.core.application.design.datasource.result.Designs;
 import com.cplerings.core.application.design.input.ViewDesignVersionsInput;
+import com.cplerings.core.application.design.input.ViewDesignsInput;
 import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.DesignCollection;
+import com.cplerings.core.domain.design.DesignStatus;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.QDesign;
 import com.cplerings.core.domain.design.QDesignCollection;
@@ -41,6 +45,7 @@ import com.cplerings.core.domain.jewelry.JewelryCategory;
 import com.cplerings.core.domain.jewelry.QJewelryCategory;
 import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.shared.State;
+import com.cplerings.core.domain.shared.valueobject.DesignSize;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
@@ -62,7 +67,7 @@ import lombok.RequiredArgsConstructor;
 public class SharedDesignDataSource extends AbstractDataSource
         implements CreateDesignSessionDataSource, ProcessDesignSessionPaymentDataSource, CheckRemainingDesignSessionDataSource,
         CreateDesignVersionDataSource, ViewDesignVersionDataSource, ViewDesignVersionsDataSource, DetermineDesignVersionDataSource,
-        ViewDesignSessionsLeftDataSource, ViewDesignDataSource, CreateDesignDataSource {
+        ViewDesignSessionsLeftDataSource, ViewDesignDataSource, CreateDesignDataSource, ViewDesignsDataSource {
 
     private static final QDesign Q_DESIGN = QDesign.design;
     private static final QDesignVersion Q_DESIGN_VERSION = QDesignVersion.designVersion;
@@ -312,5 +317,41 @@ public class SharedDesignDataSource extends AbstractDataSource
     public Design save(Design design) {
         updateAuditor(design);
         return designRepository.save(design);
+    }
+
+    @Override
+    public Designs getDesigns(ViewDesignsInput input) {
+        var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
+        BlazeJPAQuery<Design> query = createQuery()
+                .select(Q_DESIGN)
+                .from(Q_DESIGN);
+        final BooleanExpressionBuilder booleanExpressionBuilder = createBooleanExpressionBuilder();
+
+        if (input.getDesignCollectionId() != null) {
+            booleanExpressionBuilder.and(Q_DESIGN.designCollection.id.eq(input.getDesignCollectionId()));
+        }
+
+        if (input.getSize() != null) {
+            booleanExpressionBuilder.and(Q_DESIGN.size.eq(DesignSize.create(input.getSize())));
+        }
+
+        if (input.getStatus() != null) {
+            switch (input.getStatus()) {
+                case AVAILABLE -> booleanExpressionBuilder.and(Q_DESIGN.status.eq(DesignStatus.AVAILABLE));
+                case UNAVAILABLE -> booleanExpressionBuilder.and(Q_DESIGN.status.eq(DesignStatus.UNAVAILABLE));
+                case USED -> booleanExpressionBuilder.and(Q_DESIGN.status.eq(DesignStatus.USED));
+            }
+        }
+        final BooleanExpression predicate = booleanExpressionBuilder.build();
+        query.where(predicate);
+
+        long count = query.distinct().fetchCount();
+        List<Design> designs = query.limit(input.getPageSize()).offset(offset).fetch();
+        return Designs.builder()
+                .designs(designs)
+                .count(count)
+                .page(input.getPage())
+                .pageSize(input.getPageSize())
+                .build();
     }
 }
