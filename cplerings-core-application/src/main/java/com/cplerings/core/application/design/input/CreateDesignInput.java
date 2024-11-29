@@ -9,5 +9,5 @@ import lombok.Builder;
 @Builder
 public record CreateDesignInput(Long collectionId, Long jewelryCategoryId, BigDecimal metalWeight, String description,
                                 Long blueprintId, ADesignCharacteristic characteristic, Integer size,
-                                Integer sideDiamond) {
+                                Integer sideDiamond, String name) {
 }

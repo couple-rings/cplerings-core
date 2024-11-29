@@ -10,8 +10,9 @@ import com.cplerings.core.application.design.input.CreateDesignInput;
 import com.cplerings.core.application.design.output.CreateDesignOutput;
 import com.cplerings.core.application.shared.entity.design.ADesign;
 import com.cplerings.core.application.shared.mapper.ADesignMapper;
+import com.cplerings.core.common.mapper.SpringMapperConfiguration;
 
-@Mapper(config = APIMapper.class,
+@Mapper(config = SpringMapperConfiguration.class,
 uses = {
         ADesignMapper.class,
 })

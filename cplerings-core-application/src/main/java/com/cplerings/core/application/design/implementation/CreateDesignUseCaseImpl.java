@@ -12,6 +12,7 @@ import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.DesignCharacteristic;
 import com.cplerings.core.domain.design.DesignCollection;
+import com.cplerings.core.domain.design.DesignStatus;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.jewelry.JewelryCategory;
 import com.cplerings.core.domain.shared.valueobject.DesignSize;
@@ -37,6 +38,7 @@ public class CreateDesignUseCaseImpl extends AbstractUseCase<CreateDesignInput, 
         validator.validate(input.characteristic() != null, CreateDesignErrorCode.CHARACTERISTIC_REQUIRED);
         validator.validate(input.size() != null, CreateDesignErrorCode.SIZE_REQUIRED);
         validator.validate(input.sideDiamond() != null, CreateDesignErrorCode.SIZE_DIAMOND_REQUIRED);
+        validator.validate(input.name() != null, CreateDesignErrorCode.NAME_REQUIRED);
         validator.clearAndThrowErrorCodes();
         validator.validate(input.collectionId() > 0, CreateDesignErrorCode.COLLECTION_ID_WRONG_INTEGER);
         validator.validate(input.jewelryCategoryId() > 0, CreateDesignErrorCode.JEWELRY_CATEGORY_ID_WRONG_INTEGER);
@@ -64,6 +66,8 @@ public class CreateDesignUseCaseImpl extends AbstractUseCase<CreateDesignInput, 
                 .sideDiamondsCount(input.sideDiamond())
                 .metalWeight(Weight.create(input.metalWeight()))
                 .size(DesignSize.create(input.size()))
+                .name(input.name())
+                .status(DesignStatus.AVAILABLE)
                 .build();
         switch (input.characteristic()) {
             case ANDROGYNOUS -> design.setCharacteristic(DesignCharacteristic.ANDROGYNOUS);
