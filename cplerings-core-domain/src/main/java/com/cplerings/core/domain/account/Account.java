@@ -7,6 +7,7 @@ import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
+import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.Auditor;
@@ -61,11 +62,12 @@ public class Account extends AbstractEntity implements Auditor {
     @Column(name = "username", length = 50, unique = true, nullable = false)
     private String username;
 
-    @Column(name = "phone", length = 10, unique = true)
+    @Column(name = "phone", length = 10)
     private String phone;
 
-    @Column(name = "avatar", unique = true)
-    private String avatar;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "avatar_id")
+    private Image avatar;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
@@ -83,6 +85,10 @@ public class Account extends AbstractEntity implements Auditor {
 
     @OneToOne(mappedBy = "customer")
     private SpouseAccount spouse;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "staff_position", length = DatabaseConstant.DEFAULT_ENUM_LENGTH)
+    private StaffPosition staffPosition;
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     private Set<DesignSession> designSessions;
