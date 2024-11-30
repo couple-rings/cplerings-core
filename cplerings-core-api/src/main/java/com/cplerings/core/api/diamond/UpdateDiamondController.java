@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cplerings.core.api.diamond.mapper.APIUpdateDiamondMapper;
 import com.cplerings.core.api.diamond.request.UpdateDiamondRequest;
 import com.cplerings.core.api.diamond.request.data.UpdateDiamondRequestData;
 import com.cplerings.core.api.diamond.response.UpdateDiamondResponse;
@@ -13,6 +14,7 @@ import com.cplerings.core.api.shared.AbstractController;
 import com.cplerings.core.api.shared.mapper.APIMapper;
 import com.cplerings.core.api.shared.openapi.DiamondTag;
 import com.cplerings.core.api.shared.openapi.ErrorAPIResponse;
+import com.cplerings.core.application.diamond.UpdateDiamondUseCase;
 import com.cplerings.core.application.diamond.input.UpdateDiamondInput;
 import com.cplerings.core.application.diamond.output.UpdateDiamondOutput;
 import com.cplerings.core.application.shared.entity.design.ADiamond;
@@ -28,14 +30,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RestController
 public class UpdateDiamondController extends AbstractController<UpdateDiamondInput, UpdateDiamondOutput, ADiamond, UpdateDiamondRequest, UpdateDiamondResponse> {
+
+    private final UpdateDiamondUseCase useCase;
+    private final APIUpdateDiamondMapper apiUpdateDiamondMapper;
+
     @Override
     protected UseCase<UpdateDiamondInput, UpdateDiamondOutput> getUseCase() {
-        return null;
+        return useCase;
     }
 
     @Override
     protected APIMapper<UpdateDiamondInput, UpdateDiamondOutput, ADiamond, UpdateDiamondRequest, UpdateDiamondResponse> getMapper() {
-        return null;
+        return apiUpdateDiamondMapper;
     }
 
     @PutMapping(APIConstant.SINGLE_DIAMOND_PATH)
