@@ -55,5 +55,7 @@ public class ViewCustomDesignUseCaseIT extends AbstractIT {
 
         final CustomDesignData customDesignData = responseBody.getData();
         assertThat(customDesignData).isNotNull();
+        assertThat(customDesignData.customDesign().getSpouse()).isNotNull();
+        assertThat(customDesignData.customDesign().getSpouse().getCustomerId()).isNotNull();
     }
 }

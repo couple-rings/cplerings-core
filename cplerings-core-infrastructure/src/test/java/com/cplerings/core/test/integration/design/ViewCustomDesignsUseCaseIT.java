@@ -68,5 +68,8 @@ class ViewCustomDesignsUseCaseIT extends AbstractIT {
         assertThat(customDesigns.getPageSize()).isEqualTo(1);
         assertThat(customDesigns.getItems()).hasSize(1);
         assertThat(customDesigns.getTotalPages()).isEqualTo(1);
+        assertThat(customDesigns.getItems()).hasSize(1).allSatisfy(x -> {
+           assertThat(x.getSpouse().getCustomerId()).isNotNull();
+        });
     }
 }

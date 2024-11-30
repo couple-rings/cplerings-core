@@ -5,11 +5,11 @@ import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
 
-import com.cplerings.core.application.design.output.CreateCustomDesignOutput;
 import com.cplerings.core.application.design.output.ViewCustomDesignOutput;
 import com.cplerings.core.application.shared.entity.design.ACustomDesign;
 import com.cplerings.core.application.shared.entity.design.ADiamondSpecification;
 import com.cplerings.core.application.shared.entity.design.AMetalSpecification;
+import com.cplerings.core.application.shared.mapper.ASpouseMapper;
 import com.cplerings.core.application.shared.mapper.DesignSizeMapper;
 import com.cplerings.core.application.shared.mapper.MoneyMapper;
 import com.cplerings.core.application.shared.mapper.WeightMapper;
@@ -25,7 +25,8 @@ import com.cplerings.core.domain.metal.MetalSpecification;
         uses = {
                 WeightMapper.class,
                 DesignSizeMapper.class,
-                MoneyMapper.class
+                MoneyMapper.class,
+                ASpouseMapper.class
         }
 )
 public interface AViewCustomDesignMapper {
