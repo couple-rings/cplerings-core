@@ -12,6 +12,7 @@ import com.cplerings.core.application.design.datasource.CreateCustomRequestDataS
 import com.cplerings.core.application.design.input.CreateCustomRequestInput;
 import com.cplerings.core.application.design.mapper.ACreateCustomRequestMapper;
 import com.cplerings.core.application.design.output.CreateCustomRequestOutput;
+import com.cplerings.core.application.shared.service.configuration.ConfigurationService;
 import com.cplerings.core.application.shared.service.security.CurrentUser;
 import com.cplerings.core.application.shared.service.security.SecurityService;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
@@ -20,6 +21,7 @@ import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.common.number.NumberUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.Role;
+import com.cplerings.core.domain.configuration.Configuration;
 import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.DesignStatus;
 import com.cplerings.core.domain.design.DesignVersion;
@@ -44,6 +46,7 @@ public class CreateCustomRequestUseCaseImpl extends AbstractUseCase<CreateCustom
     private final CreateCustomRequestDataSource dataSource;
     private final ACreateCustomRequestMapper mapper;
     private final SecurityService securityService;
+    private final ConfigurationService configurationService;
 
     @Override
     protected void validateInput(UseCaseValidator validator, CreateCustomRequestInput input) {
@@ -73,6 +76,7 @@ public class CreateCustomRequestUseCaseImpl extends AbstractUseCase<CreateCustom
         CustomRequest customRequest = CustomRequest.builder()
                 .customer(customer)
                 .status(CustomRequestStatus.PENDING)
+                .designFee(configurationService.getDesignFee())
                 .build();
         customRequest = dataSource.save(customRequest);
         CustomRequestHistory customRequestHistory = CustomRequestHistory.builder()
