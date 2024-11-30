@@ -11,6 +11,7 @@ import com.cplerings.core.application.design.output.DetermineDesignVersionOutput
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
+import com.cplerings.core.common.temporal.TemporalUtils;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.DesignVersionOwner;
 import com.cplerings.core.domain.design.session.DesignSession;
@@ -57,6 +58,8 @@ public class DetermineDesignVersionUseCaseImpl extends AbstractUseCase<Determine
             case SELF -> maleDesignVersion.setOwner(DesignVersionOwner.SELF);
             case PARTNER -> maleDesignVersion.setOwner(DesignVersionOwner.PARTNER);
         }
+        femaleDesignVersion.setAcceptedAt(TemporalUtils.getCurrentInstantUTC());
+        maleDesignVersion.setAcceptedAt(TemporalUtils.getCurrentInstantUTC());
         DesignVersion femaleDesignVersionUpdated = determineDesignVersionDataSource.acceptDesignVersion(femaleDesignVersion);
         DesignVersion maleDesignVersionUpdated = determineDesignVersionDataSource.acceptDesignVersion(maleDesignVersion);
         List<DesignVersion> femaleDesignVersions = determineDesignVersionDataSource.getDesignVersionRemainingByDesignId(femaleDesignVersion.getDesign().getId() ,femaleDesignVersionUpdated.getId());
