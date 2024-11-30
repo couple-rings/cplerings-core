@@ -1,17 +1,15 @@
 package com.cplerings.core.domain.design.request;
 
+import java.util.Set;
+
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.account.Account;
-import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.shared.AbstractEntity;
+import com.cplerings.core.domain.shared.valueobject.Money;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -24,8 +22,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-
-import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -58,6 +59,10 @@ public class CustomRequest extends AbstractEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "staff_id")
     private Account staff;
+
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "design_fee", precision = 12, scale = 3, nullable = false))
+    private Money designFee;
 
     @OneToMany(mappedBy = "customRequest", fetch = FetchType.LAZY)
     private Set<DesignCustomRequest> designCustomRequests;

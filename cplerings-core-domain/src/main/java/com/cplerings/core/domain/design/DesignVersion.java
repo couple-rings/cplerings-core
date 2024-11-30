@@ -1,5 +1,7 @@
 package com.cplerings.core.domain.design;
 
+import java.time.Instant;
+
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.file.Document;
@@ -78,4 +80,7 @@ public class DesignVersion extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "owner", length = DatabaseConstant.DEFAULT_ENUM_LENGTH)
     private DesignVersionOwner owner;
+
+    @Column(name = "accepted_at")
+    private Instant acceptedAt;
 }
