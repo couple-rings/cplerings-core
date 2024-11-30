@@ -1,18 +1,19 @@
 package com.cplerings.core.application.shared.entity.design.request;
 
+import java.io.Serializable;
+import java.time.Instant;
+import java.util.Collection;
+import java.util.Set;
+
 import com.cplerings.core.application.shared.entity.account.AAccount;
 import com.cplerings.core.application.shared.entity.design.ADesign;
-import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.shared.valueobject.Money;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -28,4 +29,6 @@ public class ACustomRequest implements Serializable {
     private AAccount staff;
     private Set<ADesign> designs;
     private Collection<ACustomRequestHistory> customRequestHistories;
+    private Instant createdAt;
+    private Money designFee;
 }
