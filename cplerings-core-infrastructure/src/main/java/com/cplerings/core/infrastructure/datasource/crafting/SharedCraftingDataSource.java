@@ -36,6 +36,7 @@ import com.cplerings.core.domain.configuration.Configuration;
 import com.cplerings.core.domain.configuration.QConfiguration;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
+import com.cplerings.core.domain.crafting.CraftingStageHistory;
 import com.cplerings.core.domain.crafting.QCraftingStage;
 import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.Design;
@@ -80,6 +81,7 @@ import com.cplerings.core.infrastructure.repository.AgreementRepository;
 import com.cplerings.core.infrastructure.repository.ContractRepository;
 import com.cplerings.core.infrastructure.repository.CraftingRequestHistoryRepository;
 import com.cplerings.core.infrastructure.repository.CraftingRequestRepository;
+import com.cplerings.core.infrastructure.repository.CraftingStageHistoryRepository;
 import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
 import com.cplerings.core.infrastructure.repository.CustomDesignRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderHistoryRepository;
@@ -152,6 +154,7 @@ public class SharedCraftingDataSource extends AbstractDataSource
     private final CustomOrderHistoryRepository customOrderHistoryRepository;
     private final TransportOrderHistoryRepository transportOrderHistoryRepository;
     private final RingHistoryRepository ringHistoryRepository;
+    private final CraftingStageHistoryRepository craftingStageHistoryRepository;
 
     @Override
     public Optional<Account> getAccountByCustomerId(Long customerId) {
@@ -295,6 +298,12 @@ public class SharedCraftingDataSource extends AbstractDataSource
     }
 
     @Override
+    public CraftingStageHistory save(CraftingStageHistory craftingStageHistory) {
+        updateAuditor(craftingStageHistory);
+        return craftingStageHistoryRepository.save(craftingStageHistory);
+    }
+
+    @Override
     public Optional<Spouse> getSpouseById(Long id) {
         return Optional.ofNullable(createQuery().select(Q_SPOUSE)
                 .from(Q_SPOUSE)
@@ -349,9 +358,9 @@ public class SharedCraftingDataSource extends AbstractDataSource
     }
 
     @Override
-    public void saveStages(List<CraftingStage> craftingStages) {
+    public List<CraftingStage> saveStages(List<CraftingStage> craftingStages) {
         craftingStages.forEach(this::updateAuditor);
-        craftingStageRepository.saveAll(craftingStages);
+        return craftingStageRepository.saveAll(craftingStages);
     }
 
     @Override

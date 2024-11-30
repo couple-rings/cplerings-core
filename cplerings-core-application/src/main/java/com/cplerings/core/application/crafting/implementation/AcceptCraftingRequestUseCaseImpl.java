@@ -15,6 +15,7 @@ import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.domain.configuration.Configuration;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
+import com.cplerings.core.domain.crafting.CraftingStageHistory;
 import com.cplerings.core.domain.crafting.CraftingStageStatus;
 import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.design.crafting.CraftingRequest;
@@ -298,6 +299,13 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
         craftingStages.add(firstStage);
         craftingStages.add(secondStage);
         craftingStages.add(thirdStage);
-        dataSource.saveStages(craftingStages);
+        List<CraftingStage> craftingStagesCreated = dataSource.saveStages(craftingStages);
+        craftingStagesCreated.forEach(stage -> {
+            CraftingStageHistory craftingStageHistory = CraftingStageHistory.builder()
+                    .status(CraftingStageStatus.PENDING)
+                    .craftingStage(stage)
+                    .build();
+            dataSource.save(craftingStageHistory);
+        });
     }
 }
