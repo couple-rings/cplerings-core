@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.diamond.datasource.CreateDiamondDataSource;
+import com.cplerings.core.application.diamond.datasource.UpdateDiamondDataSource;
 import com.cplerings.core.application.diamond.datasource.ViewDiamondSpecificationDataSource;
 import com.cplerings.core.application.diamond.datasource.ViewDiamondsDataSource;
 import com.cplerings.core.application.diamond.datasource.result.DiamondSpecifications;
@@ -18,6 +19,7 @@ import com.cplerings.core.domain.diamond.DiamondSpecification;
 import com.cplerings.core.domain.diamond.QDiamond;
 import com.cplerings.core.domain.diamond.QDiamondSpecification;
 import com.cplerings.core.domain.file.Document;
+import com.cplerings.core.domain.file.QDocument;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
@@ -32,10 +34,12 @@ import lombok.RequiredArgsConstructor;
 @DataSource
 @RequiredArgsConstructor
 public class SharedDiamondDataSource extends AbstractDataSource
-        implements ViewDiamondSpecificationDataSource, CreateDiamondDataSource, ViewDiamondsDataSource {
+        implements ViewDiamondSpecificationDataSource, CreateDiamondDataSource, ViewDiamondsDataSource,
+                    UpdateDiamondDataSource {
 
     private static final QDiamondSpecification Q_DIAMOND_SPECIFICATION = QDiamondSpecification.diamondSpecification;
     private static final QDiamond Q_DIAMOND = QDiamond.diamond;
+    private static final QDocument Q_DOCUMENT = QDocument.document;
 
     private final DocumentRepository documentRepository;
     private final DiamondSpecificationRepository diamondSpecificationRepository;
@@ -71,6 +75,43 @@ public class SharedDiamondDataSource extends AbstractDataSource
     @Override
     public Optional<Branch> findBranchById(Long branchId) {
         return branchRepository.findById(branchId);
+    }
+
+    @Override
+    public Optional<Diamond> getDiamondById(Long id) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_DIAMOND)
+                .from(Q_DIAMOND)
+                .where(Q_DIAMOND.id.eq(id))
+                .fetchFirst());
+    }
+
+    @Override
+    public Optional<DiamondSpecification> getDiamondSpecById(Long id) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_DIAMOND_SPECIFICATION)
+                .from(Q_DIAMOND_SPECIFICATION)
+                .where(Q_DIAMOND_SPECIFICATION.id.eq(id))
+                .fetchFirst());
+    }
+
+    @Override
+    public Optional<Diamond> getDiamondByGiaReportNumberAndNotEqualTheDiamondId(String giaReportNumber, Long diamondId) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_DIAMOND)
+                .from(Q_DIAMOND)
+                .where(Q_DIAMOND.giaReportNumber.eq(giaReportNumber)
+                        .and(Q_DIAMOND.id.ne(diamondId)))
+                .fetchFirst());
+    }
+
+    @Override
+    public Optional<Document> getDocumentById(Long id) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_DOCUMENT)
+                .from(Q_DOCUMENT)
+                .where(Q_DOCUMENT.id.eq(id))
+                .fetchFirst());
     }
 
     @Override

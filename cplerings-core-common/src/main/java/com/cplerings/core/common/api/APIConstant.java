@@ -167,6 +167,7 @@ public final class APIConstant {
         Diamond paths
      */
     public static final String DIAMONDS_PATH = "/diamonds";
+    public static final String SINGLE_DIAMOND_PATH = DIAMONDS_PATH + "/{diamondId}";
 
     /*
         crafting ring

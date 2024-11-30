@@ -81,8 +81,11 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
 
         if (input.status() == ACraftingRequestStatus.ACCEPTED) {
             List<CraftingRequest> craftingRequests = acceptCraftingRequests(input, firstCraftingRequest, secondCraftingRequest);
-
-            List<Ring> rings = createRings(validator, firstCraftingRequest, secondCraftingRequest);
+            Configuration configuration = dataSource.getConfigurationForSideDiamond();
+            double sideDiamondPrice = Double.parseDouble(configuration.getValue());
+            Money firstRingPrice = calculationTotalPriceService.calculationTotalPrice(firstCraftingRequest.getMetalSpecification().getPricePerUnit(), firstCraftingRequest.getDiamondSpecification().getPrice(), firstCraftingRequest.getCustomDesign().getMetalWeight().getWeightValue(), firstCraftingRequest.getCustomDesign().getSideDiamondsCount(), sideDiamondPrice);
+            Money secondRingPrice = calculationTotalPriceService.calculationTotalPrice(secondCraftingRequest.getMetalSpecification().getPricePerUnit(), secondCraftingRequest.getDiamondSpecification().getPrice(), secondCraftingRequest.getCustomDesign().getMetalWeight().getWeightValue(), secondCraftingRequest.getCustomDesign().getSideDiamondsCount(), sideDiamondPrice);
+            List<Ring> rings = createRings(validator, firstCraftingRequest, secondCraftingRequest, firstRingPrice, secondRingPrice);
 
             Contract contract = createContract();
 
@@ -141,7 +144,7 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
         return craftingRequestUpdated;
     }
 
-    private List<Ring> createRings(UseCaseValidator validator, CraftingRequest firstCraftingRequest, CraftingRequest secondCraftingRequest) {
+    private List<Ring> createRings(UseCaseValidator validator, CraftingRequest firstCraftingRequest, CraftingRequest secondCraftingRequest, Money firstRingPrice, Money secondRingPrice) {
         final Collection<Long> diamondSpecIds = new HashSet<>();
         diamondSpecIds.add(firstCraftingRequest.getDiamondSpecification().getId());
         diamondSpecIds.add(secondCraftingRequest.getDiamondSpecification().getId());
@@ -166,6 +169,7 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                 .fingerSize(firstCraftingRequest.getFingerSize())
                 .engraving(firstCraftingRequest.getEngraving())
                 .metalSpecification(firstCraftingRequest.getMetalSpecification())
+                .price(firstRingPrice)
                 .build();
         firstRing = dataSource.save(firstRing);
         RingHistory firstRingHistory = RingHistory.builder()
@@ -190,6 +194,7 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                 .fingerSize(secondCraftingRequest.getFingerSize())
                 .engraving(secondCraftingRequest.getEngraving())
                 .metalSpecification(secondCraftingRequest.getMetalSpecification())
+                .price(secondRingPrice)
                 .build();
         secondRing = dataSource.save(secondRing);
         RingHistory secondRingHistory = RingHistory.builder()

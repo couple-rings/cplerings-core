@@ -12,6 +12,7 @@ import com.cplerings.core.application.shared.entity.design.AMetalSpecification;
 import com.cplerings.core.application.shared.entity.file.ADocument;
 import com.cplerings.core.application.shared.entity.spouse.ASpouse;
 import com.cplerings.core.domain.ring.RingStatus;
+import com.cplerings.core.domain.shared.valueobject.Money;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,4 +41,5 @@ public class ARing implements Serializable {
     private Instant createdAt;
     private ABranch branch;
     private Collection<ARingHistory> ringHistories;
+    private Money price;
 }

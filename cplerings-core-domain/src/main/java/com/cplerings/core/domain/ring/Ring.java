@@ -7,8 +7,11 @@ import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.metal.MetalSpecification;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.shared.AbstractEntity;
+import com.cplerings.core.domain.shared.valueobject.Money;
 import com.cplerings.core.domain.spouse.Spouse;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Embedded;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -80,6 +83,10 @@ public class Ring extends AbstractEntity {
 
     @Column(name = "engraving", length = DatabaseConstant.DEFAULT_ENGRAVING_LENGTH)
     private String engraving;
+
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "total_price", precision = 12, scale = 3, nullable = false))
+    private Money price;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "custom_design_id", nullable = false)
