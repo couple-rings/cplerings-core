@@ -1,9 +1,7 @@
 package com.cplerings.core.application.shared.entity.crafting;
 
+import java.io.Serializable;
 import java.time.Instant;
-import java.util.Collection;
-
-import com.cplerings.core.application.shared.entity.file.AImage;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,16 +14,9 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ACraftingStage {
+public class ACraftingStageHistory implements Serializable {
 
     private Long id;
-    private String name;
-    private Long customOrderId;
-    private Integer progress;
-    private Instant completionDate;
-    private AImage image;
     private ACraftingStageStatus status;
-    private Collection<ACraftingStageHistory> craftingStageHistories;
     private Instant createdAt;
-
 }

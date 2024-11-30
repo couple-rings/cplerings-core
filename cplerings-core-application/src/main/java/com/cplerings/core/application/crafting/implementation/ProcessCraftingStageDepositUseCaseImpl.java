@@ -11,6 +11,7 @@ import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.crafting.CraftingStage;
+import com.cplerings.core.domain.crafting.CraftingStageHistory;
 import com.cplerings.core.domain.crafting.CraftingStageStatus;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
@@ -58,6 +59,11 @@ public class ProcessCraftingStageDepositUseCaseImpl extends AbstractUseCase<Paym
         validator.validateAndStopExecution(craftingStage.getStatus() == CraftingStageStatus.PENDING, ProcessCraftingStageDepositErrorCode.CRAFTING_STAGE_NOT_PENDING);
         craftingStage.setStatus(CraftingStageStatus.PAID);
         craftingStage = dataSource.save(craftingStage);
+        CraftingStageHistory craftingStageHistory = CraftingStageHistory.builder()
+                .craftingStage(craftingStage)
+                .status(CraftingStageStatus.PAID)
+                .build();
+        dataSource.save(craftingStageHistory);
         final Set<CraftingStage> craftingStages = new HashSet<>(craftingStage.getCustomOrder().getCraftingStages());
         final CraftingStage firstCraftingStage = craftingStages.stream()
                 .min(Comparator.comparing(CraftingStage::getProgress))

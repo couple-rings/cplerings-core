@@ -1,6 +1,7 @@
 package com.cplerings.core.application.crafting.datasource;
 
 import com.cplerings.core.domain.crafting.CraftingStage;
+import com.cplerings.core.domain.crafting.CraftingStageHistory;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.TransportOrderHistory;
@@ -24,4 +25,6 @@ public interface ProcessCraftingStageDepositDataSource {
     CustomOrderHistory save(CustomOrderHistory customOrderHistory);
 
     TransportOrderHistory save(TransportOrderHistory transportOrderHistory);
+
+    CraftingStageHistory save(CraftingStageHistory craftingStageHistory);
 }
