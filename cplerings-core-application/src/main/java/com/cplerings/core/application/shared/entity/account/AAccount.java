@@ -1,6 +1,7 @@
 package com.cplerings.core.application.shared.entity.account;
 
 import com.cplerings.core.application.shared.entity.branch.ABranch;
+import com.cplerings.core.application.shared.entity.file.AImage;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +23,7 @@ public class AAccount implements Serializable {
     private String email;
     private String username;
     private String phone;
-    private String avatar;
+    private AImage avatar;
     private ARole role;
     private Instant createdAt;
     private ABranch branch;

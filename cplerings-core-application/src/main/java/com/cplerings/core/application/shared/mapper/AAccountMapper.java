@@ -11,6 +11,7 @@ import org.mapstruct.Mapper;
         uses = {
                 AEnumMapper.class,
                 ABranchMapper.class,
+                AImageMapper.class,
         }
 )
 public interface AAccountMapper {
