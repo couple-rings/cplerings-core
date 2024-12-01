@@ -36,6 +36,7 @@ public final class APIConstant {
     public static final String USERS_PATH = ACCOUNTS_PATH + "/users";
     public static final String STAFFS_PATH = ACCOUNTS_PATH + "/staffs";
     public static final String GET_RANDOM_STAFF_PATH = STAFFS_PATH + "/random";
+    public static final String GET_DESIGN_STAFFS_PATH = STAFFS_PATH + "/designers";
 
 
     /*
