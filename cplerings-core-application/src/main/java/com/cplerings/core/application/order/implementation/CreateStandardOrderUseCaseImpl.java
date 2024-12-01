@@ -2,6 +2,7 @@ package com.cplerings.core.application.order.implementation;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import com.cplerings.core.application.order.CreateStandardOrderUseCase;
@@ -58,7 +59,7 @@ public class CreateStandardOrderUseCaseImpl extends AbstractUseCase<CreateStanda
             validator.validateAndStopExecution(jewelry != null, CreateStandardOrderErrorCode.JEWELERY_NOT_FOUND);
             jewelries.add(jewelry);
         });
-        BigDecimal totalPrice = null;
+        BigDecimal totalPrice = BigDecimal.valueOf(0);
         jewelries.forEach(x -> {
             var eachJewelryPrice = calculationTotalPriceService.calculationTotalPrice(x.getMetalSpecification().getPricePerUnit(), x.getDiamond().getDiamondSpecification().getPrice(), x.getDesign().getMetalWeight().getWeightValue(), 0, 0);
             BigDecimal decimalPrice = eachJewelryPrice.getAmount();
@@ -83,12 +84,13 @@ public class CreateStandardOrderUseCaseImpl extends AbstractUseCase<CreateStanda
                     .build();
             standardOrderItems.add(standardOrderItem);
         });
-        createStandardOrderDataSource.saveItems(standardOrderItems);
+        List<StandardOrderItem> items = createStandardOrderDataSource.saveItems(standardOrderItems);
         jewelries.forEach(x -> {
             x.setStatus(JewelryStatus.UNAVAILABLE);
         });
         createStandardOrderDataSource.saveJewelries(jewelries);
-
+        standardOrderCreated.setStandardOrderItems(new HashSet<>(items));
+        createStandardOrderDataSource.save(standardOrderCreated);
         if (input.transportationAddressId() != null) {
             TransportationAddress transportationAddress = createStandardOrderDataSource.getAddressById(input.transportationAddressId())
                     .orElse(null);

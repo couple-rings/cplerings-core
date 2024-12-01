@@ -5,8 +5,8 @@ import java.time.Instant;
 import java.util.Collection;
 
 import com.cplerings.core.application.shared.entity.account.AAccount;
+import com.cplerings.core.application.shared.entity.jewelry.AJewelry;
 import com.cplerings.core.domain.jewelry.Jewelry;
-import com.cplerings.core.domain.order.StandardOrderHistory;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
 import lombok.AllArgsConstructor;
@@ -26,8 +26,8 @@ public class AStandardOrder implements Serializable {
     private AAccount customer;
     private Money totalPrice;
     private AStandardOrderStatus status;
-    private Collection<StandardOrderHistory> standardOrderHistories;
+    private Collection<AStandardOrderHistory> standardOrderHistories;
     private Collection<ATransportationOrder> transportationOrders;
-    private Collection<Jewelry> jewelries;
+    private Collection<AJewelry> jewelries;
     private Instant createdAt;
 }

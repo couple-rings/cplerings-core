@@ -8,6 +8,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+import com.cplerings.core.application.shared.entity.jewelry.AJewelry;
 import com.cplerings.core.application.shared.entity.order.AStandardOrder;
 import com.cplerings.core.common.mapper.SpringMapperConfiguration;
 import com.cplerings.core.domain.jewelry.Jewelry;
@@ -26,9 +27,11 @@ public interface AStandardOrderMapper {
     AStandardOrder toAStandardOrder(StandardOrder standardOrder);
 
     @Named("mapJewelries")
-    default Collection<Jewelry> mapJewelries(Set<StandardOrderItem> items) {
+    default Collection<AJewelry> mapJewelries(Set<StandardOrderItem> items) {
         return items.stream()
-                .map(StandardOrderItem::getJewelry)
+                .map(item -> toAJewelry(item.getJewelry()))
                 .collect(Collectors.toList());
     }
+
+    AJewelry toAJewelry(Jewelry jewelry);
 }

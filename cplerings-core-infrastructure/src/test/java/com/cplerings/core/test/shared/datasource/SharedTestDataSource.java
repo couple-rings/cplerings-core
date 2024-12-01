@@ -19,6 +19,7 @@ import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.file.Image;
+import com.cplerings.core.domain.jewelry.Jewelry;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.order.status.TransportationNote;
@@ -47,6 +48,7 @@ import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
 import com.cplerings.core.infrastructure.repository.DiamondRepository;
 import com.cplerings.core.infrastructure.repository.DocumentRepository;
 import com.cplerings.core.infrastructure.repository.ImageRepository;
+import com.cplerings.core.infrastructure.repository.JewelryRepository;
 import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
 import com.cplerings.core.infrastructure.repository.PaymentRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
@@ -100,6 +102,7 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private final ImageRepository imageRepository;
     private final TransportationNoteRepository transportationNoteRepository;
     private final CustomRequestHistoryRepository customRequestHistoryRepository;
+    private final JewelryRepository jewelryRepository;
 
     @Override
     public Payment save(Payment payment) {
@@ -261,6 +264,12 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     public CustomRequestHistory save(CustomRequestHistory customRequestHistory) {
         updateAuditor(customRequestHistory);
         return customRequestHistoryRepository.save(customRequestHistory);
+    }
+
+    @Override
+    public Jewelry save(Jewelry jewelry) {
+        updateAuditor(jewelry);
+        return jewelryRepository.save(jewelry);
     }
 
     @Override
