@@ -122,7 +122,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.JEWELERS_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.GET_RANDOM_STAFF_PATH))
-                        .hasAuthority(RoleConstant.ROLE_SERVICE));
+                        .hasAuthority(RoleConstant.ROLE_SERVICE))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.GET_DESIGN_STAFFS_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_MANAGER, RoleConstant.ROLE_STAFF));
     }
 
     private void handleDevelopmentAPI(HttpSecurity localHttp) throws Exception {

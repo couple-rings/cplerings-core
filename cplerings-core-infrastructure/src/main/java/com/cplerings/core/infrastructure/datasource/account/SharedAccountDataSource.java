@@ -2,6 +2,12 @@ package com.cplerings.core.infrastructure.datasource.account;
 
 import static com.querydsl.jpa.JPAExpressions.select;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import com.blazebit.persistence.querydsl.BlazeJPAQuery;
+import com.cplerings.core.application.account.datasource.GetDesignStaffsDataSource;
 import com.cplerings.core.application.account.datasource.GetRandomStaffDataSource;
 import com.cplerings.core.application.account.datasource.RegisterCustomerDataSource;
 import com.cplerings.core.application.account.datasource.RequestResetPasswordDataSource;
@@ -12,11 +18,14 @@ import com.cplerings.core.application.account.datasource.ViewCurrentProfileDataS
 import com.cplerings.core.application.account.datasource.ViewJewelersUseDataSource;
 import com.cplerings.core.application.account.datasource.ViewTransportersDataSource;
 import com.cplerings.core.application.account.datasource.ViewUsersDataSource;
+import com.cplerings.core.application.account.datasource.result.DesignStaffsResult;
 import com.cplerings.core.application.account.datasource.result.Jewelers;
 import com.cplerings.core.application.account.datasource.result.Transporters;
 import com.cplerings.core.application.account.datasource.result.Users;
+import com.cplerings.core.application.account.input.GetDesignStaffsInput;
 import com.cplerings.core.application.account.input.ViewJewelersInput;
 import com.cplerings.core.application.account.input.ViewTransportersInput;
+import com.cplerings.core.application.shared.entity.account.ADesignStaff;
 import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountPasswordReset;
@@ -26,6 +35,10 @@ import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.account.QAccountPasswordReset;
 import com.cplerings.core.domain.account.QAccountVerification;
 import com.cplerings.core.domain.account.Role;
+import com.cplerings.core.domain.account.StaffPosition;
+import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.design.request.CustomRequestStatus;
+import com.cplerings.core.domain.design.request.QCustomRequest;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
@@ -33,26 +46,21 @@ import com.cplerings.core.infrastructure.repository.AccountPasswordResetReposito
 import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.infrastructure.repository.AccountVerificationRepository;
 import com.cplerings.core.infrastructure.repository.SpouseAccountRepository;
-
-import lombok.RequiredArgsConstructor;
-
-import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.querydsl.core.types.dsl.Expressions;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 @DataSource
 @RequiredArgsConstructor
 public class SharedAccountDataSource extends AbstractDataSource
         implements RegisterCustomerDataSource, VerifyCustomerDataSource, RequestResetPasswordDataSource,
         ResetPasswordDataSource, ViewAccountDataSource, ViewCurrentProfileDataSource, ViewTransportersDataSource,
-        ViewJewelersUseDataSource, ViewUsersDataSource, GetRandomStaffDataSource {
+        ViewJewelersUseDataSource, ViewUsersDataSource, GetRandomStaffDataSource, GetDesignStaffsDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QAccountVerification Q_ACCOUNT_VERIFICATION = QAccountVerification.accountVerification;
     private static final QAccountPasswordReset Q_ACCOUNT_PASSWORD_RESET = QAccountPasswordReset.accountPasswordReset;
+    private static final QCustomRequest Q_CUSTOM_REQUEST = QCustomRequest.customRequest;
 
     private final AccountRepository accountRepository;
     private final AccountVerificationRepository accountVerificationRepository;
@@ -201,5 +209,34 @@ public class SharedAccountDataSource extends AbstractDataSource
                         .and(Q_ACCOUNT.state.eq(State.ACTIVE)))
                 .orderBy(Expressions.numberTemplate(Double.class, "function('random')").asc())
                 .fetchFirst());
+    }
+
+    @Override
+    public DesignStaffsResult getDesignStaffs(GetDesignStaffsInput input) {
+        var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
+        BlazeJPAQuery<Account> query = createQuery()
+                .select(Q_ACCOUNT)
+                .from(Q_ACCOUNT)
+                .where(Q_ACCOUNT.branch.id.eq(input.getBranchId())
+                        .and(Q_ACCOUNT.role.eq(Role.STAFF))
+                        .and(Q_ACCOUNT.staffPosition.eq(StaffPosition.DESIGNER)));
+        long count = query.distinct().fetchCount();
+        List<Account> staffs = query.limit(input.getPageSize()).offset(offset).fetch();
+        return DesignStaffsResult.builder()
+                .staffs(staffs)
+                .count(count)
+                .page(input.getPage())
+                .pageSize(input.getPageSize())
+                .build();
+    }
+
+    @Override
+    public Long calculateNoOfHandleCustomRequest(ADesignStaff staff) {
+        BlazeJPAQuery<CustomRequest> query = createQuery()
+                .select(Q_CUSTOM_REQUEST)
+                .from(Q_CUSTOM_REQUEST)
+                .where(Q_CUSTOM_REQUEST.staff.id.eq(staff.getId())
+                        .and(Q_CUSTOM_REQUEST.status.eq(CustomRequestStatus.APPROVED)));
+        return query.distinct().fetchCount();
     }
 }
