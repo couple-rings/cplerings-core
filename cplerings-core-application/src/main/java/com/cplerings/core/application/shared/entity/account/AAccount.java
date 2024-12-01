@@ -1,5 +1,8 @@
 package com.cplerings.core.application.shared.entity.account;
 
+import java.io.Serializable;
+import java.time.Instant;
+
 import com.cplerings.core.application.shared.entity.branch.ABranch;
 import com.cplerings.core.application.shared.entity.file.AImage;
 
@@ -8,9 +11,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.io.Serializable;
-import java.time.Instant;
 
 @Getter
 @Setter
@@ -27,4 +27,5 @@ public class AAccount implements Serializable {
     private ARole role;
     private Instant createdAt;
     private ABranch branch;
+    private AStaffPosition staffPosition;
 }
