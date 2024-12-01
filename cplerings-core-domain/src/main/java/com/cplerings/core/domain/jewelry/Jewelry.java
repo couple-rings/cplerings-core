@@ -6,8 +6,10 @@ import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.metal.MetalSpecification;
+import com.cplerings.core.domain.order.StandardOrderItem;
 import com.cplerings.core.domain.shared.AbstractEntity;
 
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +31,7 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import java.time.Instant;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -76,4 +79,7 @@ public class Jewelry extends AbstractEntity {
 
     @Column(name = "maintenance_expired_date")
     private Instant maintenanceExpiredDate;
+
+    @OneToMany(mappedBy = "jewelry", fetch = FetchType.LAZY)
+    private Set<StandardOrderItem> standardOrderItems;
 }

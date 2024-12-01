@@ -17,6 +17,7 @@ import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.file.Image;
+import com.cplerings.core.domain.jewelry.Jewelry;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.order.status.TransportationNote;
@@ -92,4 +93,6 @@ public interface TestDataSource {
     TransportationNote save(TransportationNote transportationNote);
 
     CustomRequestHistory save(CustomRequestHistory customRequestHistory);
+
+    Jewelry save(Jewelry jewelry);
 }

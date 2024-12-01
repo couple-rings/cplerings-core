@@ -4,6 +4,7 @@ import java.util.Set;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.shared.AbstractOrderEntity;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
@@ -20,6 +21,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -59,4 +61,14 @@ public class StandardOrder extends AbstractOrderEntity {
 
     @OneToMany(mappedBy = "standardOrder", fetch = FetchType.LAZY)
     private Set<StandardOrderHistory> standardOrderHistories;
+
+    @OneToMany(mappedBy = "standardOrder", fetch = FetchType.LAZY)
+    private Set<TransportationOrder> transportationOrders;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transportation_address_id")
+    private TransportationAddress transportationAddress;
+
+    @OneToMany(mappedBy = "standardOrder", fetch = FetchType.LAZY)
+    private Set<StandardOrderItem> standardOrderItems;
 }
