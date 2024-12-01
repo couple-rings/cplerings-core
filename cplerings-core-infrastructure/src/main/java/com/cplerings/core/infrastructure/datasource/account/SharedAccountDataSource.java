@@ -25,7 +25,9 @@ import com.cplerings.core.application.account.datasource.result.Users;
 import com.cplerings.core.application.account.input.GetDesignStaffsInput;
 import com.cplerings.core.application.account.input.ViewJewelersInput;
 import com.cplerings.core.application.account.input.ViewTransportersInput;
+import com.cplerings.core.application.account.output.result.JewelersOutputResult;
 import com.cplerings.core.application.shared.entity.account.ADesignStaff;
+import com.cplerings.core.application.shared.entity.account.AJeweler;
 import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountPasswordReset;
@@ -39,6 +41,9 @@ import com.cplerings.core.domain.account.StaffPosition;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.CustomRequestStatus;
 import com.cplerings.core.domain.design.request.QCustomRequest;
+import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.CustomOrderStatus;
+import com.cplerings.core.domain.order.QCustomOrder;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
@@ -61,6 +66,7 @@ public class SharedAccountDataSource extends AbstractDataSource
     private static final QAccountVerification Q_ACCOUNT_VERIFICATION = QAccountVerification.accountVerification;
     private static final QAccountPasswordReset Q_ACCOUNT_PASSWORD_RESET = QAccountPasswordReset.accountPasswordReset;
     private static final QCustomRequest Q_CUSTOM_REQUEST = QCustomRequest.customRequest;
+    private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
 
     private final AccountRepository accountRepository;
     private final AccountVerificationRepository accountVerificationRepository;
@@ -189,6 +195,16 @@ public class SharedAccountDataSource extends AbstractDataSource
                 .page(input.getPage())
                 .pageSize(input.getPageSize())
                 .build();
+    }
+
+    @Override
+    public Long calculateNoOfHandleCustomOrder(AJeweler jeweler) {
+        BlazeJPAQuery<CustomOrder> query = createQuery()
+                .select(Q_CUSTOM_ORDER)
+                .from(Q_CUSTOM_ORDER)
+                .where(Q_CUSTOM_ORDER.jeweler.id.eq(jeweler.getId())
+                        .and(Q_CUSTOM_ORDER.status.eq(CustomOrderStatus.IN_PROGRESS)));
+        return query.distinct().fetchCount();
     }
 
     @Override

@@ -7,6 +7,8 @@ import com.cplerings.core.application.account.input.ViewJewelersInput;
 import com.cplerings.core.application.account.mapper.AViewJewelersMapper;
 import com.cplerings.core.application.account.output.ViewJewelersOutput;
 import com.cplerings.core.application.account.output.ViewTransportersOutput;
+import com.cplerings.core.application.account.output.result.DesignStaffsOutputResult;
+import com.cplerings.core.application.account.output.result.JewelersOutputResult;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
@@ -30,6 +32,10 @@ public class ViewJewelersUseCaseImpl extends AbstractUseCase<ViewJewelersInput, 
     @Override
     protected ViewJewelersOutput internalExecute(UseCaseValidator validator, ViewJewelersInput input) {
         var result = viewJewelersUseDataSource.getJewelers(input);
-        return aViewJewelersMapper.toOutput(result);
+        JewelersOutputResult jewelersOutputResult = aViewJewelersMapper.toJewelers(result);
+        jewelersOutputResult.getJewelers().forEach(x -> {
+            x.setNumberOfHandleCustomOrder(viewJewelersUseDataSource.calculateNoOfHandleCustomOrder(x));
+        });
+        return aViewJewelersMapper.toOutput(jewelersOutputResult);
     }
 }
