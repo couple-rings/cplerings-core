@@ -35,6 +35,7 @@ import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.account.QAccountPasswordReset;
 import com.cplerings.core.domain.account.QAccountVerification;
 import com.cplerings.core.domain.account.Role;
+import com.cplerings.core.domain.account.StaffPosition;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.CustomRequestStatus;
 import com.cplerings.core.domain.design.request.QCustomRequest;
@@ -217,7 +218,8 @@ public class SharedAccountDataSource extends AbstractDataSource
                 .select(Q_ACCOUNT)
                 .from(Q_ACCOUNT)
                 .where(Q_ACCOUNT.branch.id.eq(input.getBranchId())
-                        .and(Q_ACCOUNT.role.eq(Role.STAFF)));
+                        .and(Q_ACCOUNT.role.eq(Role.STAFF))
+                        .and(Q_ACCOUNT.staffPosition.eq(StaffPosition.DESIGNER)));
         long count = query.distinct().fetchCount();
         List<Account> staffs = query.limit(input.getPageSize()).offset(offset).fetch();
         return DesignStaffsResult.builder()
