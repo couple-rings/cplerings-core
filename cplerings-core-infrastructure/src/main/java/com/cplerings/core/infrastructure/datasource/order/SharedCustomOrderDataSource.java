@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.order.datasource.AssignJewelerToCustomOrderDataSource;
+import com.cplerings.core.application.order.datasource.CreateStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrdersDataSource;
 import com.cplerings.core.application.order.datasource.result.CustomOrders;
@@ -12,27 +13,50 @@ import com.cplerings.core.application.order.input.ViewCustomOrdersInput;
 import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
+import com.cplerings.core.domain.address.QTransportationAddress;
+import com.cplerings.core.domain.address.TransportationAddress;
+import com.cplerings.core.domain.jewelry.Jewelry;
+import com.cplerings.core.domain.jewelry.QJewelry;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.order.QCustomOrder;
+import com.cplerings.core.domain.order.StandardOrder;
+import com.cplerings.core.domain.order.StandardOrderHistory;
+import com.cplerings.core.domain.order.StandardOrderItem;
+import com.cplerings.core.domain.order.TransportOrderHistory;
+import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.CustomOrderHistoryRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
+import com.cplerings.core.infrastructure.repository.JewelryRepository;
+import com.cplerings.core.infrastructure.repository.StandardOrderHistoryRepository;
+import com.cplerings.core.infrastructure.repository.StandardOrderItemRepository;
+import com.cplerings.core.infrastructure.repository.StandardOrderRepository;
+import com.cplerings.core.infrastructure.repository.TransportOrderHistoryRepository;
+import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @DataSource
-public class SharedCustomOrderDataSource extends AbstractDataSource implements ViewCustomOrdersDataSource, ViewCustomOrderDataSource, AssignJewelerToCustomOrderDataSource {
+public class SharedCustomOrderDataSource extends AbstractDataSource implements ViewCustomOrdersDataSource, ViewCustomOrderDataSource, AssignJewelerToCustomOrderDataSource, CreateStandardOrderDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QAccount Q_ACCOUNT = QAccount.account;
+    private static final QJewelry Q_JEWELRY = QJewelry.jewelry;
+    private static final QTransportationAddress Q_TRANSPORTATION_ADDRESS = QTransportationAddress.transportationAddress;
 
     private final CustomOrderRepository customOrderRepository;
     private final CustomOrderHistoryRepository customOrderHistoryRepository;
+    private final StandardOrderRepository standardOrderRepository;
+    private final StandardOrderHistoryRepository standardOrderHistoryRepository;
+    private final JewelryRepository jewelryRepository;
+    private final StandardOrderItemRepository standardOrderItemRepository;
+    private final TransportationOrderRepository transportationOrderRepository;
+    private final TransportOrderHistoryRepository transportOrderHistoryRepository;
 
     @Override
     public CustomOrders getCustomOrders(ViewCustomOrdersInput input) {
@@ -115,5 +139,68 @@ public class SharedCustomOrderDataSource extends AbstractDataSource implements V
     public CustomOrderHistory save(CustomOrderHistory customOrderHistory) {
         updateAuditor(customOrderHistory);
         return customOrderHistoryRepository.save(customOrderHistory);
+    }
+
+    @Override
+    public Optional<Account> getCustomerById(Long id) {
+        return Optional.ofNullable(createQuery().
+                select(Q_ACCOUNT)
+                .from(Q_ACCOUNT)
+                .where(Q_ACCOUNT.id.eq(id))
+                .fetchFirst());
+    }
+
+    @Override
+    public Optional<Jewelry> getJewelryById(Long id) {
+        return Optional.ofNullable(createQuery().
+                select(Q_JEWELRY)
+                .from(Q_JEWELRY)
+                .where(Q_JEWELRY.id.eq(id))
+                .fetchFirst());
+    }
+
+    @Override
+    public StandardOrder save(StandardOrder order) {
+        updateAuditor(order);
+        return standardOrderRepository.save(order);
+    }
+
+    @Override
+    public StandardOrderHistory save(StandardOrderHistory history) {
+        updateAuditor(history);
+        return standardOrderHistoryRepository.save(history);
+    }
+
+    @Override
+    public List<Jewelry> saveJewelries(List<Jewelry> jewelries) {
+        jewelries.forEach(this::updateAuditor);
+        return jewelryRepository.saveAll(jewelries);
+    }
+
+    @Override
+    public List<StandardOrderItem> saveItems(List<StandardOrderItem> items) {
+        items.forEach(this::updateAuditor);
+        return standardOrderItemRepository.saveAll(items);
+    }
+
+    @Override
+    public Optional<TransportationAddress> getAddressById(Long id) {
+        return Optional.ofNullable(createQuery().
+                select(Q_TRANSPORTATION_ADDRESS)
+                .from(Q_TRANSPORTATION_ADDRESS)
+                .where(Q_TRANSPORTATION_ADDRESS.id.eq(id))
+                .fetchFirst());
+    }
+
+    @Override
+    public TransportationOrder save(TransportationOrder order) {
+        updateAuditor(order);
+        return transportationOrderRepository.save(order);
+    }
+
+    @Override
+    public TransportOrderHistory save(TransportOrderHistory history) {
+        updateAuditor(history);
+        return transportOrderHistoryRepository.save(history);
     }
 }

@@ -59,9 +59,13 @@ public class TransportationOrder extends AbstractOrderEntity {
     @Column(name = "delivery_address", nullable = false)
     private String deliveryAddress;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "custom_order_id")
     private CustomOrder customOrder;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "standard_order_id")
+    private StandardOrder standardOrder;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "transporter_id")
