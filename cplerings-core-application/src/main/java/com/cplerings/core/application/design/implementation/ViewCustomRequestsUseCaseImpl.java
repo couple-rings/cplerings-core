@@ -31,7 +31,7 @@ public class ViewCustomRequestsUseCaseImpl extends AbstractUseCase<ViewCustomReq
         validator.validate(input.getPageSize() > 0, INVALID_PAGE_SIZE);
 
         if (input.getStatus() != null) {
-            validator.validateAndStopExecution(input.getStatus() == ACustomRequestStatus.PENDING || input.getStatus() == ACustomRequestStatus.APPROVED || input.getStatus() == ACustomRequestStatus.REJECTED, ViewCustomRequestsErrorCode.INVALID_STATUS);
+            validator.validateAndStopExecution(input.getStatus() == ACustomRequestStatus.PENDING || input.getStatus() == ACustomRequestStatus.APPROVED || input.getStatus() == ACustomRequestStatus.REJECTED || input.getStatus() == ACustomRequestStatus.COMPLETED, ViewCustomRequestsErrorCode.INVALID_STATUS);
         }
 
         if (input.getCustomerId() != null) {
