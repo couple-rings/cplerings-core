@@ -3,6 +3,8 @@ package com.cplerings.core.test.integration.crafting;
 import static com.cplerings.core.application.crafting.error.DepositCraftingStageErrorCode.PREVIOUS_STAGE_NOT_PAID;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.math.BigDecimal;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +13,19 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import com.cplerings.core.api.crafting.data.CraftingStagePaymentLinkData;
 import com.cplerings.core.api.crafting.request.DepositCraftingStageRequest;
 import com.cplerings.core.api.crafting.response.DepositCraftingStageResponse;
+import com.cplerings.core.api.payment.request.VNPayPaymentRequest;
 import com.cplerings.core.api.shared.AbstractResponse;
+import com.cplerings.core.application.payment.datasource.ProcessVNPayPaymentDataSource;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.crafting.CraftingStageStatus;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.payment.Payment;
+import com.cplerings.core.domain.payment.PaymentReceiverType;
+import com.cplerings.core.domain.payment.PaymentStatus;
+import com.cplerings.core.domain.payment.PaymentType;
+import com.cplerings.core.domain.shared.valueobject.Money;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.infrastructure.repository.CraftingStageRepository;
 import com.cplerings.core.test.shared.AbstractIT;
@@ -26,6 +35,9 @@ import com.cplerings.core.test.shared.helper.JWTTestHelper;
 import com.cplerings.core.test.shared.order.CustomOrderTestHelper;
 
 public class DepositCraftingStageUseCaseIT extends AbstractIT {
+
+    private static final String PAYMENT_FOLDER = "data/integration/payment";
+    private static final String VNPAY_WEBHOOK_RESULT = "/vnpay-webhook-result.json";
 
     @Autowired
     private TestDataSource testDataSource;
@@ -46,15 +58,31 @@ public class DepositCraftingStageUseCaseIT extends AbstractIT {
 
     private CraftingStage secondCraftingStage;
 
+    @Autowired
+    private ProcessVNPayPaymentDataSource processVNPayPaymentDataSource;
+
     @BeforeEach
     void setUpCustomOrderAndCraftingStages() {
         CustomOrder customOrder = customOrderTestHelper.createCustomOrder();
+        final VNPayPaymentRequest request = getTestDataLoader(PAYMENT_FOLDER).loadAsObject(VNPAY_WEBHOOK_RESULT, VNPayPaymentRequest.class);
+        Payment payment = Payment.builder()
+                .status(PaymentStatus.PENDING)
+                .type(PaymentType.VNPAY)
+                .description(request.getVnp_OrderInfo())
+                .secureHash("DummyHash")
+                .amount(Money.create(BigDecimal.valueOf(request.getVnp_Amount()))
+                        .divide(BigDecimal.valueOf(100)))
+                .id(Long.valueOf(request.getVnp_TxnRef()))
+                .paymentReceiverType(PaymentReceiverType.CRAFT_STAGE)
+                .build();
+        payment = processVNPayPaymentDataSource.save(payment);
 
         CraftingStage firstCraftingStageLocal = CraftingStage.builder()
                 .customOrder(customOrder)
                 .status(CraftingStageStatus.PENDING)
                 .name("Stage 1")
                 .progress(30)
+                .payment(payment)
                 .build();
         this.firstCraftingStage = testDataSource.save(firstCraftingStageLocal);
 

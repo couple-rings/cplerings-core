@@ -43,6 +43,7 @@ public class CustomOrderTestHelper {
                 .customDesign(customDesignSpouse.customDesign().get(0))
                 .fingerSize(15)
                 .metalSpecification(metalSpecificationRepository.getReferenceById(1L))
+                .price(Money.create(BigDecimal.valueOf(1000)))
                 .build();
         Ring firstRingCreated = testDataSource.save(firstRing);
         Ring secondRing = Ring.builder()
@@ -54,6 +55,7 @@ public class CustomOrderTestHelper {
                 .customDesign(customDesignSpouse.customDesign().get(1))
                 .fingerSize(16)
                 .metalSpecification(metalSpecificationRepository.getReferenceById(11L))
+                .price(Money.create(BigDecimal.valueOf(1000)))
                 .build();
         Ring secondRingCreated = testDataSource.save(secondRing);
         Contract contract = Contract.builder().build();
@@ -81,6 +83,7 @@ public class CustomOrderTestHelper {
                 .customDesign(customDesignSpouse.customDesign().get(0))
                 .fingerSize(15)
                 .metalSpecification(metalSpecificationRepository.getReferenceById(1L))
+                .price(Money.create(BigDecimal.valueOf(1000)))
                 .build();
         Ring firstRingCreated = testDataSource.save(firstRing);
         Ring secondRing = Ring.builder()
@@ -92,6 +95,7 @@ public class CustomOrderTestHelper {
                 .customDesign(customDesignSpouse.customDesign().get(1))
                 .fingerSize(16)
                 .metalSpecification(metalSpecificationRepository.getReferenceById(11L))
+                .price(Money.create(BigDecimal.valueOf(1000)))
                 .build();
         Ring secondRingCreated = testDataSource.save(secondRing);
         Contract contract = Contract.builder().build();

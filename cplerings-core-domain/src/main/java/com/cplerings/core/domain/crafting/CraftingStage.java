@@ -67,7 +67,7 @@ public class CraftingStage extends AbstractEntity {
     @Column(name = "crafting_stage_status")
     private CraftingStageStatus status;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id")
     private Payment payment;
 

@@ -91,9 +91,7 @@ public interface TestDataSource {
 
     CustomRequestHistory save(CustomRequestHistory customRequestHistory);
 
-<<<<<<< HEAD
     Jewelry save(Jewelry jewelry);
-=======
+
     DesignSessionPayment save(DesignSessionPayment designSessionPayment);
->>>>>>> 40d785d1 (Update code)
 }
