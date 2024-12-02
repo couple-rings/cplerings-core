@@ -6,6 +6,7 @@ import java.util.Set;
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.shared.AbstractEntity;
 
 import jakarta.persistence.Column;
@@ -65,6 +66,10 @@ public class CraftingStage extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "crafting_stage_status")
     private CraftingStageStatus status;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
 
     @OneToMany(mappedBy = "craftingStage", fetch = FetchType.LAZY)
     private Set<CraftingStageHistory> craftingStageHistories;

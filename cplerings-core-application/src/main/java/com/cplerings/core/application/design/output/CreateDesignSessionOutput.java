@@ -1,5 +1,5 @@
 package com.cplerings.core.application.design.output;
 
-public record CreateDesignSessionOutput(String paymentLink) {
+public record CreateDesignSessionOutput(Long paymentId, String paymentLink) {
 
 }

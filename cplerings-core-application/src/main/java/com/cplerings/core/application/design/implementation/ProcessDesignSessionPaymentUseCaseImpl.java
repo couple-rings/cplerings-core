@@ -1,67 +1,56 @@
 package com.cplerings.core.application.design.implementation;
 
-import com.cplerings.core.application.design.ProcessDesignSessionPaymentUseCase;
-import com.cplerings.core.application.design.datasource.ProcessDesignSessionPaymentDataSource;
-import com.cplerings.core.application.design.error.ProcessDesignSessionPaymentErrorCode;
-import com.cplerings.core.application.payment.error.PaymentErrorCode;
-import com.cplerings.core.application.payment.input.PaymentReceiverInput;
-import com.cplerings.core.application.shared.output.NoOutput;
-import com.cplerings.core.application.shared.usecase.AbstractUseCase;
-import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
-import com.cplerings.core.application.shared.usecase.UseCaseValidator;
-import com.cplerings.core.domain.account.Account;
-import com.cplerings.core.domain.account.AccountStatus;
-import com.cplerings.core.domain.design.session.DesignSession;
-import com.cplerings.core.domain.design.session.DesignSessionStatus;
-import com.cplerings.core.domain.payment.PaymentReceiverType;
-
-import lombok.RequiredArgsConstructor;
-
-import org.apache.commons.lang3.StringUtils;
+import static com.cplerings.core.application.design.error.ProcessDesignSessionPaymentErrorCode.ACCOUNT_NOT_ACTIVE;
+import static com.cplerings.core.application.design.error.ProcessDesignSessionPaymentErrorCode.DESIGN_SESSION_PAYMENT_NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
+import com.cplerings.core.application.design.ProcessDesignSessionPaymentUseCase;
+import com.cplerings.core.application.design.datasource.ProcessDesignSessionPaymentDataSource;
+import com.cplerings.core.application.payment.error.PaymentErrorCode;
+import com.cplerings.core.application.payment.input.PaymentSuccessfulResultInput;
+import com.cplerings.core.application.shared.output.NoOutput;
+import com.cplerings.core.application.shared.usecase.AbstractUseCase;
+import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
+import com.cplerings.core.application.shared.usecase.UseCaseValidator;
+import com.cplerings.core.domain.account.AccountStatus;
+import com.cplerings.core.domain.design.session.DesignSession;
+import com.cplerings.core.domain.design.session.DesignSessionStatus;
+import com.cplerings.core.domain.payment.DesignSessionPayment;
+
+import lombok.RequiredArgsConstructor;
+
 @UseCaseImplementation
 @RequiredArgsConstructor
-public class ProcessDesignSessionPaymentUseCaseImpl extends AbstractUseCase<PaymentReceiverInput, NoOutput>
+public class ProcessDesignSessionPaymentUseCaseImpl extends AbstractUseCase<PaymentSuccessfulResultInput, NoOutput>
         implements ProcessDesignSessionPaymentUseCase {
 
     private static final int MAX_DESIGN_SESSIONS = 3;
 
-    private final ProcessDesignSessionPaymentDataSource processDesignSessionPaymentDataSource;
+    private final ProcessDesignSessionPaymentDataSource dataSource;
 
     @Override
-    protected void validateInput(UseCaseValidator validator, PaymentReceiverInput input) {
+    protected void validateInput(UseCaseValidator validator, PaymentSuccessfulResultInput input) {
         super.validateInput(validator, input);
-        validator.validate(input.paymentReceiver() != null, PaymentErrorCode.PAYMENT_RECEIVER_REQUIRED);
-        validator.validate(input.paymentReceiver().getReceiverType() == PaymentReceiverType.DESIGN_FEE, PaymentErrorCode.INVALID_PAYMENT_RECEIVER_TYPE);
-        validator.validate(StringUtils.isNotBlank(input.paymentReceiver().getReceiverId()), PaymentErrorCode.INVALID_PAYMENT_RECEIVER_ID);
+        validator.validate(input.payment() != null, PaymentErrorCode.PAYMENT_REQUIRED);
     }
 
     @Override
-    protected NoOutput internalExecute(UseCaseValidator validator, PaymentReceiverInput input) {
-        long accountId = -1;
-        try {
-            accountId = Long.parseLong(input.paymentReceiver().getReceiverId());
-        } catch (NumberFormatException e) {
-            validator.validateAndStopExecution(false, ProcessDesignSessionPaymentErrorCode.INVALID_ACCOUNT_ID);
-        }
-        Account account = processDesignSessionPaymentDataSource.getAccountById(accountId)
-                .orElse(null);
-        validator.validateAndStopExecution(account != null, ProcessDesignSessionPaymentErrorCode.ACCOUNT_WITH_ID_NOT_FOUND);
-        validator.validateAndStopExecution(account.getStatus() == AccountStatus.ACTIVE, ProcessDesignSessionPaymentErrorCode.ACCOUNT_NOT_ACTIVE);
-        final UUID designSessionId = UUID.randomUUID();
+    protected NoOutput internalExecute(UseCaseValidator validator, PaymentSuccessfulResultInput input) {
+        final DesignSessionPayment designSessionPayment = input.payment().getDesignSessionPayment();
+        validator.validateAndStopExecution(designSessionPayment != null, DESIGN_SESSION_PAYMENT_NOT_FOUND);
+        validator.validateAndStopExecution(designSessionPayment.getCustomer().getStatus() == AccountStatus.ACTIVE, ACCOUNT_NOT_ACTIVE);
         final Collection<DesignSession> designSessions = new ArrayList<>();
         for (int i = 0; i < MAX_DESIGN_SESSIONS; i++) {
             designSessions.add(DesignSession.builder()
-                    .sessionId(designSessionId)
-                    .customer(account)
+                    .sessionId(designSessionPayment.getDesignSessionId())
+                    .customer(designSessionPayment.getCustomer())
                     .status(DesignSessionStatus.UNUSED)
                     .build());
         }
-        processDesignSessionPaymentDataSource.saveAll(designSessions);
+        dataSource.saveAll(designSessions);
         return NoOutput.INSTANCE;
     }
 }

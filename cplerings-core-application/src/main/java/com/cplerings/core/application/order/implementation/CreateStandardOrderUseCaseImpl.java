@@ -61,7 +61,7 @@ public class CreateStandardOrderUseCaseImpl extends AbstractUseCase<CreateStanda
         });
         BigDecimal totalPrice = BigDecimal.valueOf(0);
         jewelries.forEach(x -> {
-            var eachJewelryPrice = calculationTotalPriceService.calculationTotalPrice(x.getMetalSpecification().getPricePerUnit(), x.getDiamond().getDiamondSpecification().getPrice(), x.getDesign().getMetalWeight().getWeightValue(), 0, 0);
+            var eachJewelryPrice = calculationTotalPriceService.calculationTotalPrice(x.getMetalSpecification().getPricePerUnit(), null, x.getDesign().getMetalWeight().getWeightValue(), 0, 0);
             BigDecimal decimalPrice = eachJewelryPrice.getAmount();
             totalPrice.add(decimalPrice);
         });

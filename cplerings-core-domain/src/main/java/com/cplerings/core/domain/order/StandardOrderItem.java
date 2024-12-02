@@ -1,7 +1,10 @@
 package com.cplerings.core.domain.order;
 
 import com.cplerings.core.common.database.DatabaseConstant;
+import com.cplerings.core.domain.branch.Branch;
+import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.jewelry.Jewelry;
+import com.cplerings.core.domain.metal.MetalSpecification;
 import com.cplerings.core.domain.shared.AbstractEntity;
 
 import lombok.AllArgsConstructor;
@@ -42,7 +45,19 @@ public class StandardOrderItem extends AbstractEntity {
     @JoinColumn(name = "standard_order_id")
     private StandardOrder standardOrder;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "jewelry_id")
     private Jewelry jewelry;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "metal_spec_id")
+    private MetalSpecification metalSpecification;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "design_id")
+    private Design design;
 }

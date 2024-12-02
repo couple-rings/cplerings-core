@@ -1,10 +1,15 @@
 package com.cplerings.core.application.crafting.implementation;
 
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
 import com.cplerings.core.application.crafting.ProcessCraftingStageDepositUseCase;
 import com.cplerings.core.application.crafting.datasource.ProcessCraftingStageDepositDataSource;
 import com.cplerings.core.application.crafting.error.ProcessCraftingStageDepositErrorCode;
 import com.cplerings.core.application.payment.error.PaymentErrorCode;
-import com.cplerings.core.application.payment.input.PaymentReceiverInput;
+import com.cplerings.core.application.payment.input.PaymentSuccessfulResultInput;
 import com.cplerings.core.application.shared.output.NoOutput;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
@@ -19,42 +24,25 @@ import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.order.TransportOrderHistory;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
-import com.cplerings.core.domain.payment.PaymentReceiverType;
 import com.cplerings.core.domain.spouse.Agreement;
 
 import lombok.RequiredArgsConstructor;
 
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-
 @UseCaseImplementation
 @RequiredArgsConstructor
-public class ProcessCraftingStageDepositUseCaseImpl extends AbstractUseCase<PaymentReceiverInput, NoOutput> implements ProcessCraftingStageDepositUseCase {
+public class ProcessCraftingStageDepositUseCaseImpl extends AbstractUseCase<PaymentSuccessfulResultInput, NoOutput> implements ProcessCraftingStageDepositUseCase {
 
     private final ProcessCraftingStageDepositDataSource dataSource;
 
     @Override
-    protected void validateInput(UseCaseValidator validator, PaymentReceiverInput input) {
+    protected void validateInput(UseCaseValidator validator, PaymentSuccessfulResultInput input) {
         super.validateInput(validator, input);
-        validator.validate(input.paymentReceiver() != null, PaymentErrorCode.PAYMENT_RECEIVER_REQUIRED);
-        validator.validate(input.paymentReceiver().getReceiverType() == PaymentReceiverType.CRAFT_STAGE, PaymentErrorCode.INVALID_PAYMENT_RECEIVER_TYPE);
-        validator.validate(StringUtils.isNotBlank(input.paymentReceiver().getReceiverId()), PaymentErrorCode.INVALID_PAYMENT_RECEIVER_ID);
+        validator.validate(input.payment() != null, PaymentErrorCode.PAYMENT_REQUIRED);
     }
 
     @Override
-    protected NoOutput internalExecute(UseCaseValidator validator, PaymentReceiverInput input) {
-        long craftingStageId = -1;
-        try {
-            craftingStageId = Long.parseLong(input.paymentReceiver().getReceiverId());
-        } catch (NumberFormatException e) {
-            validator.validateAndStopExecution(false, ProcessCraftingStageDepositErrorCode.INVALID_CRAFTING_STAGE_ID);
-        }
-        CraftingStage craftingStage = dataSource.findById(craftingStageId)
-                .orElse(null);
+    protected NoOutput internalExecute(UseCaseValidator validator, PaymentSuccessfulResultInput input) {
+        CraftingStage craftingStage = input.payment().getCraftingStage();
         validator.validateAndStopExecution(craftingStage != null, ProcessCraftingStageDepositErrorCode.CRAFTING_STAGE_NOT_FOUND);
         validator.validateAndStopExecution(craftingStage.getStatus() == CraftingStageStatus.PENDING, ProcessCraftingStageDepositErrorCode.CRAFTING_STAGE_NOT_PENDING);
         craftingStage.setStatus(CraftingStageStatus.PAID);
@@ -69,7 +57,7 @@ public class ProcessCraftingStageDepositUseCaseImpl extends AbstractUseCase<Paym
                 .min(Comparator.comparing(CraftingStage::getProgress))
                 .orElse(null);
         validator.validateAndStopExecution(firstCraftingStage != null, ProcessCraftingStageDepositErrorCode.NO_CRAFTING_STAGES_IN_CUSTOM_ORDER);
-        if (Objects.equals(firstCraftingStage.getId(), craftingStageId)) {
+        if (Objects.equals(firstCraftingStage.getId(), craftingStage.getId())) {
             final CustomOrder customOrder = craftingStage.getCustomOrder();
             customOrder.setStatus(CustomOrderStatus.WAITING);
             CustomOrder customOrderUpdated = dataSource.save(customOrder);
@@ -84,7 +72,7 @@ public class ProcessCraftingStageDepositUseCaseImpl extends AbstractUseCase<Paym
                 .max(Comparator.comparing(CraftingStage::getProgress))
                 .orElse(null);
         validator.validateAndStopExecution(finalCraftingStage != null, ProcessCraftingStageDepositErrorCode.NO_CRAFTING_STAGES_IN_CUSTOM_ORDER);
-        if (Objects.equals(finalCraftingStage.getId(), craftingStageId)) {
+        if (Objects.equals(finalCraftingStage.getId(), craftingStage.getId())) {
             final CustomOrder customOrder = craftingStage.getCustomOrder();
             final TransportationAddress transportationAddress = customOrder.getTransportationAddress();
             if (transportationAddress != null) {

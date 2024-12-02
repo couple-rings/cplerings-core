@@ -6,12 +6,19 @@ import com.cplerings.core.api.payment.request.VNPayPaymentRequest;
 import com.cplerings.core.application.payment.datasource.ProcessVNPayPaymentDataSource;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.common.payment.VNPayUtils;
+import com.cplerings.core.common.temporal.TemporalUtils;
+import com.cplerings.core.domain.crafting.CraftingStage;
+import com.cplerings.core.domain.crafting.CraftingStageStatus;
+import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.payment.Payment;
+import com.cplerings.core.domain.payment.PaymentReceiverType;
 import com.cplerings.core.domain.payment.PaymentStatus;
 import com.cplerings.core.domain.payment.PaymentType;
 import com.cplerings.core.domain.payment.transaction.VNPayTransaction;
 import com.cplerings.core.domain.shared.valueobject.Money;
 import com.cplerings.core.test.shared.AbstractIT;
+import com.cplerings.core.test.shared.datasource.TestDataSource;
+import com.cplerings.core.test.shared.order.CustomOrderTestHelper;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +35,16 @@ class ProcessVNPayPaymentUseCaseIT extends AbstractIT {
     @Autowired
     private ProcessVNPayPaymentDataSource processVNPayPaymentDataSource;
 
+    @Autowired
+    private CustomOrderTestHelper customOrderTestHelper;
+
+    @Autowired
+    private TestDataSource testDataSource;
+
     @Test
     void givenVNPay_whenReturnPaymentResultThroughWebhook() {
+        CustomOrder customOrder = customOrderTestHelper.createCustomOrder();
+
         final VNPayPaymentRequest request = getTestDataLoader(PAYMENT_FOLDER).loadAsObject(VNPAY_WEBHOOK_RESULT, VNPayPaymentRequest.class);
         Payment payment = Payment.builder()
                 .status(PaymentStatus.PENDING)
@@ -39,9 +54,18 @@ class ProcessVNPayPaymentUseCaseIT extends AbstractIT {
                 .amount(Money.create(BigDecimal.valueOf(request.getVnp_Amount()))
                         .divide(BigDecimal.valueOf(100)))
                 .id(Long.valueOf(request.getVnp_TxnRef()))
+                .paymentReceiverType(PaymentReceiverType.CRAFT_STAGE)
                 .build();
         payment = processVNPayPaymentDataSource.save(payment);
-
+        CraftingStage craftingStage = CraftingStage.builder()
+                .name("test")
+                .completionDate(TemporalUtils.getCurrentInstantUTC())
+                .customOrder(customOrder)
+                .payment(payment)
+                .progress(50)
+                .status(CraftingStageStatus.PENDING)
+                .build();
+        testDataSource.save(craftingStage);
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(APIConstant.VNPAY_PATH)
                 .method(RequestBuilder.Method.GET)

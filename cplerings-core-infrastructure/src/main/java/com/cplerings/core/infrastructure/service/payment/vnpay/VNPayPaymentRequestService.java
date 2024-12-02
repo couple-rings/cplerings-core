@@ -10,6 +10,7 @@ import com.cplerings.core.common.payment.VNPayConstant;
 import com.cplerings.core.common.payment.VNPayUtils;
 import com.cplerings.core.common.temporal.TemporalUtils;
 import com.cplerings.core.domain.payment.Payment;
+import com.cplerings.core.domain.payment.PaymentReceiverType;
 import com.cplerings.core.domain.payment.PaymentStatus;
 import com.cplerings.core.domain.payment.PaymentType;
 import com.cplerings.core.infrastructure.service.payment.datasource.VNPayPaymentServiceDataSource;
@@ -62,6 +63,10 @@ public class VNPayPaymentRequestService extends AbstractVNPayPaymentService impl
                 .description(paymentInfo.getDescription())
                 .status(PaymentStatus.PENDING)
                 .build();
+        switch (paymentInfo.getReceiverType()) {
+            case DESIGN_FEE -> payment.setPaymentReceiverType(PaymentReceiverType.DESIGN_FEE);
+            case CRAFT_STAGE -> payment.setPaymentReceiverType(PaymentReceiverType.CRAFT_STAGE);
+        }
         payment = vnPayPaymentServiceDataSource.save(payment);
         final Map<String, Object> paymentQueries = createQueriesWithoutSecureHash(paymentInfo, payment.getId());
         final String secureHash = PaymentUtils.hashQueriesWithSHA512(paymentQueries, secretKey);
@@ -71,6 +76,7 @@ public class VNPayPaymentRequestService extends AbstractVNPayPaymentService impl
                 VNPayConstant.VNP_SECURE_HASH,
                 secureHash);
         payment.setSecureHash(secureHash);
+        payment.setPaymentReceiverType(paymentInfo.getReceiverType());
         payment = vnPayPaymentServiceDataSource.save(payment);
         return PaymentRequest.builder()
                 .paymentLink(paymentURL)

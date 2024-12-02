@@ -314,7 +314,7 @@ public class SecurityConfiguration {
 
     private void handleCraftingRingAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.CRAFTING_RING_PATH))
-                        .hasAuthority(RoleConstant.ROLE_STAFF));
+                        .hasAuthority(RoleConstant.ROLE_CUSTOMER));
     }
 
     private void handleJewelryAPI(HttpSecurity localHttp) throws Exception {

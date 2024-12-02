@@ -5,7 +5,6 @@ import java.time.Instant;
 
 import com.cplerings.core.application.shared.entity.branch.ABranch;
 import com.cplerings.core.application.shared.entity.design.ADesign;
-import com.cplerings.core.application.shared.entity.design.ADiamond;
 import com.cplerings.core.application.shared.entity.design.AMetalSpecification;
 import com.cplerings.core.application.shared.entity.file.ADocument;
 
@@ -23,7 +22,6 @@ import lombok.Setter;
 public class AJewelry implements Serializable {
 
     private Long id;
-    private ADiamond diamond;
     private AMetalSpecification metalSpecification;
     private ADesign design;
     private ABranch branch;

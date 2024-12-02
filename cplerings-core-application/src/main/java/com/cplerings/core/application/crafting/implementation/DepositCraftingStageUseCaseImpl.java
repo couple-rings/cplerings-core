@@ -8,6 +8,13 @@ import static com.cplerings.core.application.crafting.error.DepositCraftingStage
 import static com.cplerings.core.application.crafting.error.DepositCraftingStageErrorCode.PREVIOUS_STAGE_NOT_PAID;
 import static com.cplerings.core.application.crafting.error.DepositCraftingStageErrorCode.TRANSPORT_ADDRESS_NOT_FOUND;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Comparator;
+import java.util.Objects;
+
+import org.apache.commons.lang3.ObjectUtils;
+
 import com.cplerings.core.application.crafting.DepositCraftingStageUseCase;
 import com.cplerings.core.application.crafting.datasource.DepositCraftingStageDataSource;
 import com.cplerings.core.application.crafting.input.DepositCraftingStageInput;
@@ -24,18 +31,10 @@ import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.crafting.CraftingStageStatus;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderStatus;
-import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.payment.PaymentReceiverType;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
 import lombok.RequiredArgsConstructor;
-
-import org.apache.commons.lang3.ObjectUtils;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Comparator;
-import java.util.Objects;
 
 @UseCaseImplementation
 @RequiredArgsConstructor
@@ -72,14 +71,10 @@ public class DepositCraftingStageUseCaseImpl extends AbstractUseCase<DepositCraf
         final PaymentRequest paymentRequest = paymentRequestService.requestPayment(PaymentInfo.builder()
                 .amount(calculateAmount(craftingStage))
                 .description("Payment for crafting stage " + craftingStage.getId())
-                .build());
-        final PaymentReceiver paymentReceiver = PaymentReceiver.builder()
                 .receiverType(PaymentReceiverType.CRAFT_STAGE)
-                .receiverId(String.valueOf(craftingStage.getId()))
-                .payment(paymentRequest.getPayment())
-                .build();
-        dataSource.save(paymentReceiver);
+                .build());
         return DepositCraftingStageOutput.builder()
+                .paymentId(paymentRequest.getPayment().getId())
                 .paymentLink(paymentRequest.getPaymentLink())
                 .build();
     }

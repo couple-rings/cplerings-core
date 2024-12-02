@@ -3,6 +3,6 @@ package com.cplerings.core.api.design.data;
 import lombok.Builder;
 
 @Builder
-public record DesignSessionPayment(String paymentLink) {
+public record DesignSessionPaymentData(Long paymentId, String paymentLink) {
 
 }
