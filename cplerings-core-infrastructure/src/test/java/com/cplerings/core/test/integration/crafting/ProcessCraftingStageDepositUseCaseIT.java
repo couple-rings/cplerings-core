@@ -42,6 +42,7 @@ class ProcessCraftingStageDepositUseCaseIT extends AbstractIT {
 
     private static final String PAYMENT_FOLDER = "data/integration/payment";
     private static final String VNPAY_WEBHOOK_RESULT = "/vnpay-webhook-result.json";
+    private static final String VNPAY_WEBHOOK_RESULT2 = "/vnpay-webhook-result2.json";
 
     @MockBean
     private PaymentVerificationService<VNPayPaymentInput> paymentVerificationService;
@@ -80,6 +81,8 @@ class ProcessCraftingStageDepositUseCaseIT extends AbstractIT {
 
     private Payment payment;
 
+    private Payment payment2;
+
     @BeforeEach
     public void loadPaymentResult() {
         when(paymentVerificationService.paymentIsValid(any(VNPayPaymentInput.class))).thenReturn(true);
@@ -99,6 +102,22 @@ class ProcessCraftingStageDepositUseCaseIT extends AbstractIT {
                 .paymentReceiverType(PaymentReceiverType.CRAFT_STAGE)
                 .build();
         this.payment = testDataSource.save(paymentLocal);
+
+        final TestDataLoader testDataLoader2 = TestDataLoader.builder()
+                .folder(PAYMENT_FOLDER)
+                .objectMapper(objectMapper)
+                .build();
+        this.request = testDataLoader2.loadAsObject(VNPAY_WEBHOOK_RESULT2, VNPayPaymentRequest.class);
+
+        Payment paymentLocal2 = Payment.builder()
+                .type(PaymentType.VNPAY)
+                .amount(Money.create(BigDecimal.valueOf(request.getVnp_Amount())))
+                .status(PaymentStatus.PENDING)
+                .secureHash(request.getVnp_SecureHash())
+                .description(request.getVnp_OrderInfo())
+                .paymentReceiverType(PaymentReceiverType.CRAFT_STAGE)
+                .build();
+        this.payment2 = testDataSource.save(paymentLocal2);
 
         populateCraftingStage();
     }
@@ -120,7 +139,7 @@ class ProcessCraftingStageDepositUseCaseIT extends AbstractIT {
                 .status(CraftingStageStatus.PENDING)
                 .name("Stage 2")
                 .progress(100)
-                .payment(payment)
+                .payment(payment2)
                 .build();
         this.secondCraftingStage = testDataSource.save(secondCraftingStageLocal);
     }
