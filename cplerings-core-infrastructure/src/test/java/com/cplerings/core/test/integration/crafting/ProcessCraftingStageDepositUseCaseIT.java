@@ -83,8 +83,70 @@ class ProcessCraftingStageDepositUseCaseIT extends AbstractIT {
 
     private Payment payment2;
 
-    @BeforeEach
-    public void loadPaymentResult() {
+    private void populateCraftingStage() {
+        this.customOrder = customOrderTestHelper.createCustomOrder();
+
+        CraftingStage firstCraftingStageLocal = CraftingStage.builder()
+                .customOrder(this.customOrder)
+                .status(CraftingStageStatus.PENDING)
+                .name("Stage 1")
+                .progress(30)
+                .payment(payment)
+                .build();
+        this.firstCraftingStage = testDataSource.save(firstCraftingStageLocal);
+
+        CraftingStage secondCraftingStageLocal = CraftingStage.builder()
+                .customOrder(this.customOrder)
+                .status(CraftingStageStatus.PENDING)
+                .name("Stage 2")
+                .progress(100)
+                .payment(payment2)
+                .build();
+        this.secondCraftingStage = testDataSource.save(secondCraftingStageLocal);
+    }
+
+    @Test
+    void givenPayment_whenProcessFirstCraftingStageDeposit() {
+        when(paymentVerificationService.paymentIsValid(any(VNPayPaymentInput.class))).thenReturn(true);
+        final TestDataLoader testDataLoader = TestDataLoader.builder()
+                .folder(PAYMENT_FOLDER)
+                .objectMapper(objectMapper)
+                .build();
+        VNPayPaymentRequest request = testDataLoader.loadAsObject(VNPAY_WEBHOOK_RESULT, VNPayPaymentRequest.class);
+
+        Payment paymentLocal = Payment.builder()
+                .type(PaymentType.VNPAY)
+                .amount(Money.create(BigDecimal.valueOf(request.getVnp_Amount())))
+                .status(PaymentStatus.PENDING)
+                .secureHash(request.getVnp_SecureHash())
+                .description(request.getVnp_OrderInfo())
+                .paymentReceiverType(PaymentReceiverType.CRAFT_STAGE)
+                .build();
+        Payment payment = testDataSource.save(paymentLocal);
+
+        CustomOrder customOrder = customOrderTestHelper.createCustomOrder();
+
+        CraftingStage firstCraftingStageLocal = CraftingStage.builder()
+                .customOrder(customOrder)
+                .status(CraftingStageStatus.PENDING)
+                .name("Stage 1")
+                .progress(30)
+                .payment(payment)
+                .build();
+        CraftingStage firstCraftingStage = testDataSource.save(firstCraftingStageLocal);
+        final WebTestClient.ResponseSpec response = requestBuilder()
+                .path(APIConstant.VNPAY_PATH)
+                .method(RequestBuilder.Method.GET)
+                .query(request)
+                .send();
+
+        thenResponseIsOk(response);
+        final Long customOrderId = thenCraftingStageStatusIsPaid(firstCraftingStage.getId());
+        thenCustomOrderStatusIsWaiting(customOrderId);
+    }
+
+    @Test
+    void givenPayment_whenProcessNotFirstCraftingStageDeposit() {
         when(paymentVerificationService.paymentIsValid(any(VNPayPaymentInput.class))).thenReturn(true);
 
         final TestDataLoader testDataLoader = TestDataLoader.builder()
@@ -120,45 +182,7 @@ class ProcessCraftingStageDepositUseCaseIT extends AbstractIT {
         this.payment2 = testDataSource.save(paymentLocal2);
 
         populateCraftingStage();
-    }
 
-    private void populateCraftingStage() {
-        this.customOrder = customOrderTestHelper.createCustomOrder();
-
-        CraftingStage firstCraftingStageLocal = CraftingStage.builder()
-                .customOrder(this.customOrder)
-                .status(CraftingStageStatus.PENDING)
-                .name("Stage 1")
-                .progress(30)
-                .payment(payment)
-                .build();
-        this.firstCraftingStage = testDataSource.save(firstCraftingStageLocal);
-
-        CraftingStage secondCraftingStageLocal = CraftingStage.builder()
-                .customOrder(this.customOrder)
-                .status(CraftingStageStatus.PENDING)
-                .name("Stage 2")
-                .progress(100)
-                .payment(payment2)
-                .build();
-        this.secondCraftingStage = testDataSource.save(secondCraftingStageLocal);
-    }
-
-    @Test
-    void givenPayment_whenProcessFirstCraftingStageDeposit() {
-        final WebTestClient.ResponseSpec response = requestBuilder()
-                .path(APIConstant.VNPAY_PATH)
-                .method(RequestBuilder.Method.GET)
-                .query(request)
-                .send();
-
-        thenResponseIsOk(response);
-        final Long customOrderId = thenCraftingStageStatusIsPaid(firstCraftingStage.getId());
-        thenCustomOrderStatusIsWaiting(customOrderId);
-    }
-
-    @Test
-    void givenPayment_whenProcessNotFirstCraftingStageDeposit() {
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(APIConstant.VNPAY_PATH)
                 .method(RequestBuilder.Method.GET)
@@ -171,6 +195,42 @@ class ProcessCraftingStageDepositUseCaseIT extends AbstractIT {
 
     @Test
     void givenPayment_whenProcessFinalCraftingStageDepositWithTransportAddress() {
+        when(paymentVerificationService.paymentIsValid(any(VNPayPaymentInput.class))).thenReturn(true);
+
+        final TestDataLoader testDataLoader = TestDataLoader.builder()
+                .folder(PAYMENT_FOLDER)
+                .objectMapper(objectMapper)
+                .build();
+        this.request = testDataLoader.loadAsObject(VNPAY_WEBHOOK_RESULT, VNPayPaymentRequest.class);
+
+        Payment paymentLocal = Payment.builder()
+                .type(PaymentType.VNPAY)
+                .amount(Money.create(BigDecimal.valueOf(request.getVnp_Amount())))
+                .status(PaymentStatus.PENDING)
+                .secureHash(request.getVnp_SecureHash())
+                .description(request.getVnp_OrderInfo())
+                .paymentReceiverType(PaymentReceiverType.CRAFT_STAGE)
+                .build();
+        this.payment = testDataSource.save(paymentLocal);
+
+        final TestDataLoader testDataLoader2 = TestDataLoader.builder()
+                .folder(PAYMENT_FOLDER)
+                .objectMapper(objectMapper)
+                .build();
+        this.request = testDataLoader2.loadAsObject(VNPAY_WEBHOOK_RESULT2, VNPayPaymentRequest.class);
+
+        Payment paymentLocal2 = Payment.builder()
+                .type(PaymentType.VNPAY)
+                .amount(Money.create(BigDecimal.valueOf(request.getVnp_Amount())))
+                .status(PaymentStatus.PENDING)
+                .secureHash(request.getVnp_SecureHash())
+                .description(request.getVnp_OrderInfo())
+                .paymentReceiverType(PaymentReceiverType.CRAFT_STAGE)
+                .build();
+        this.payment2 = testDataSource.save(paymentLocal2);
+
+        populateCraftingStage();
+
         final CustomOrder localCustomOrder = customOrderRepository.findById(customOrder.getId())
                 .orElse(null);
         assertThat(localCustomOrder).isNotNull();

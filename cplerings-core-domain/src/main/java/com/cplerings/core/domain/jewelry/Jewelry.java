@@ -51,10 +51,6 @@ public class Jewelry extends AbstractEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "diamond_id")
-    private Diamond diamond;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "metal_specification_id")
     private MetalSpecification metalSpecification;
 
