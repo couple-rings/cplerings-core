@@ -3,6 +3,11 @@ package com.cplerings.core.test.integration.crafting;
 import static com.cplerings.core.application.crafting.error.DepositCraftingStageErrorCode.PREVIOUS_STAGE_NOT_PAID;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.WebTestClient;
+
 import com.cplerings.core.api.crafting.data.CraftingStagePaymentLinkData;
 import com.cplerings.core.api.crafting.request.DepositCraftingStageRequest;
 import com.cplerings.core.api.crafting.response.DepositCraftingStageResponse;
@@ -19,11 +24,6 @@ import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
 import com.cplerings.core.test.shared.order.CustomOrderTestHelper;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.reactive.server.WebTestClient;
 
 public class DepositCraftingStageUseCaseIT extends AbstractIT {
 
@@ -50,21 +50,21 @@ public class DepositCraftingStageUseCaseIT extends AbstractIT {
     void setUpCustomOrderAndCraftingStages() {
         CustomOrder customOrder = customOrderTestHelper.createCustomOrder();
 
-        CraftingStage firstCraftingStage = CraftingStage.builder()
+        CraftingStage firstCraftingStageLocal = CraftingStage.builder()
                 .customOrder(customOrder)
                 .status(CraftingStageStatus.PENDING)
                 .name("Stage 1")
                 .progress(30)
                 .build();
-        this.firstCraftingStage = testDataSource.save(firstCraftingStage);
+        this.firstCraftingStage = testDataSource.save(firstCraftingStageLocal);
 
-        CraftingStage secondCraftingStage = CraftingStage.builder()
+        CraftingStage secondCraftingStageLocal = CraftingStage.builder()
                 .customOrder(customOrder)
                 .status(CraftingStageStatus.PENDING)
                 .name("Stage 2")
                 .progress(100)
                 .build();
-        this.secondCraftingStage = testDataSource.save(secondCraftingStage);
+        this.secondCraftingStage = testDataSource.save(secondCraftingStageLocal);
     }
 
     @Test
@@ -147,6 +147,7 @@ public class DepositCraftingStageUseCaseIT extends AbstractIT {
                 .isNotNull()
                 .isExactlyInstanceOf(CraftingStagePaymentLinkData.class);
         assertThat(responseBody.getData().paymentLink()).isNotBlank();
+        assertThat(responseBody.getData().paymentId()).isNotNull();
     }
 
     private void thenTransportationAddressIsAdded(Long craftingStageId) {

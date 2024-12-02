@@ -1,15 +1,11 @@
 package com.cplerings.core.domain.payment;
 
 import com.cplerings.core.common.database.DatabaseConstant;
+import com.cplerings.core.domain.crafting.CraftingStage;
+import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.payment.transaction.VNPayTransaction;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.valueobject.Money;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -22,6 +18,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -57,6 +58,19 @@ public class Payment extends AbstractEntity {
     @Column(name = "secure_hash", length = DatabaseConstant.DEFAULT_PAYMENT_SECURE_HASH_LENGTH, nullable = false)
     private String secureHash;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_receiver_type", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
+    private PaymentReceiverType paymentReceiverType;
+
     @OneToOne(mappedBy = "payment")
     private VNPayTransaction vnPayTransaction;
+
+    @OneToOne(mappedBy = "payment")
+    private CustomRequest customRequest;
+
+    @OneToOne(mappedBy = "payment")
+    private CraftingStage craftingStage;
+
+    @OneToOne(mappedBy = "payment")
+    private DesignSessionPayment designSessionPayment;
 }

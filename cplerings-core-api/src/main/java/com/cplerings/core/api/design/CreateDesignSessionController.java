@@ -1,6 +1,6 @@
 package com.cplerings.core.api.design;
 
-import com.cplerings.core.api.design.data.DesignSessionPayment;
+import com.cplerings.core.api.design.data.DesignSessionPaymentData;
 import com.cplerings.core.api.design.mapper.APICreateDesignSessionMapper;
 import com.cplerings.core.api.design.response.CreateDesignSessionResponse;
 import com.cplerings.core.api.shared.AbstractController;
@@ -27,7 +27,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RestController
 @RequiredArgsConstructor
-public class CreateDesignSessionController extends AbstractController<NoInput, CreateDesignSessionOutput, DesignSessionPayment, NoRequest, CreateDesignSessionResponse> {
+public class CreateDesignSessionController extends AbstractController<NoInput, CreateDesignSessionOutput, DesignSessionPaymentData, NoRequest, CreateDesignSessionResponse> {
 
     private final CreateDesignSessionUseCase createDesignSessionUseCase;
     private final APICreateDesignSessionMapper apiCreateDesignSessionMapper;
@@ -54,7 +54,7 @@ public class CreateDesignSessionController extends AbstractController<NoInput, C
     }
 
     @Override
-    protected APIMapper<NoInput, CreateDesignSessionOutput, DesignSessionPayment, NoRequest, CreateDesignSessionResponse> getMapper() {
+    protected APIMapper<NoInput, CreateDesignSessionOutput, DesignSessionPaymentData, NoRequest, CreateDesignSessionResponse> getMapper() {
         return apiCreateDesignSessionMapper;
     }
 }

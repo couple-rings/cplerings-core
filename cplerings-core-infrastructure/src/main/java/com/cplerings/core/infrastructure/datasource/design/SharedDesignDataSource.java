@@ -46,22 +46,20 @@ import com.cplerings.core.domain.file.QDocument;
 import com.cplerings.core.domain.file.QImage;
 import com.cplerings.core.domain.jewelry.JewelryCategory;
 import com.cplerings.core.domain.jewelry.QJewelryCategory;
-import com.cplerings.core.domain.payment.PaymentReceiver;
+import com.cplerings.core.domain.payment.DesignSessionPayment;
 import com.cplerings.core.domain.shared.valueobject.DesignSize;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
 import com.cplerings.core.infrastructure.repository.DesignRepository;
+import com.cplerings.core.infrastructure.repository.DesignSessionPaymentRepository;
 import com.cplerings.core.infrastructure.repository.DesignSessionRepository;
 import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
 import com.cplerings.core.infrastructure.repository.DocumentRepository;
 import com.cplerings.core.infrastructure.repository.ImageRepository;
-import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 
 @DataSource
@@ -84,15 +82,12 @@ public class SharedDesignDataSource extends AbstractDataSource
 
     private final DesignSessionRepository designSessionRepository;
     private final AccountRepository accountRepository;
-    private final PaymentReceiverRepository paymentReceiverRepository;
     private final CustomRequestRepository customRequestRepository;
     private final DesignVersionRepository designVersionRepository;
     private final DocumentRepository documentRepository;
     private final ImageRepository imageRepository;
     private final DesignRepository designRepository;
-
-    @PersistenceContext
-    private EntityManager entityManager;
+    private final DesignSessionPaymentRepository designSessionPaymentRepository;
 
     @Override
     public Optional<Account> getAccountByEmail(String email) {
@@ -105,14 +100,9 @@ public class SharedDesignDataSource extends AbstractDataSource
     }
 
     @Override
-    public PaymentReceiver save(PaymentReceiver paymentReceiver) {
-        updateAuditor(paymentReceiver);
-        return paymentReceiverRepository.save(paymentReceiver);
-    }
-
-    @Override
-    public Optional<Account> getAccountById(Long accountId) {
-        return accountRepository.findById(accountId);
+    public DesignSessionPayment save(DesignSessionPayment designSessionPayment) {
+        updateAuditor(designSessionPayment);
+        return designSessionPaymentRepository.save(designSessionPayment);
     }
 
     @Override
@@ -279,8 +269,7 @@ public class SharedDesignDataSource extends AbstractDataSource
 
     @Override
     public DesignVersion acceptDesignVersion(DesignVersion designVersion) {
-        updateAuditor(designVersion);
-        return designVersionRepository.save(designVersion);
+        return save(designVersion);
     }
 
     @Override

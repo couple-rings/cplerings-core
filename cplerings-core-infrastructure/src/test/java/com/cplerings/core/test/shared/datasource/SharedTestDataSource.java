@@ -1,5 +1,10 @@
 package com.cplerings.core.test.shared.datasource;
 
+import java.util.Collection;
+import java.util.Optional;
+
+import org.springframework.boot.test.context.TestComponent;
+
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountVerification;
 import com.cplerings.core.domain.account.QAccount;
@@ -23,8 +28,8 @@ import com.cplerings.core.domain.jewelry.Jewelry;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.order.status.TransportationNote;
+import com.cplerings.core.domain.payment.DesignSessionPayment;
 import com.cplerings.core.domain.payment.Payment;
-import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.spouse.Agreement;
 import com.cplerings.core.domain.spouse.QAgreement;
@@ -43,13 +48,17 @@ import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.cplerings.core.infrastructure.repository.CustomRequestHistoryRepository;
 import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
 import com.cplerings.core.infrastructure.repository.DesignCustomRequestRepository;
+import com.cplerings.core.infrastructure.repository.DesignSessionPaymentRepository;
 import com.cplerings.core.infrastructure.repository.DesignSessionRepository;
 import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
 import com.cplerings.core.infrastructure.repository.DiamondRepository;
 import com.cplerings.core.infrastructure.repository.DocumentRepository;
 import com.cplerings.core.infrastructure.repository.ImageRepository;
+<<<<<<< HEAD
 import com.cplerings.core.infrastructure.repository.JewelryRepository;
 import com.cplerings.core.infrastructure.repository.PaymentReceiverRepository;
+=======
+>>>>>>> 40d785d1 (Update code)
 import com.cplerings.core.infrastructure.repository.PaymentRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
 import com.cplerings.core.infrastructure.repository.SpouseAccountRepository;
@@ -62,11 +71,6 @@ import com.cplerings.core.test.shared.entity.order.DummyOrderRepository;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.boot.test.context.TestComponent;
-
-import java.util.Collection;
-import java.util.Optional;
-
 @TestComponent
 @RequiredArgsConstructor
 public class SharedTestDataSource extends AbstractDataSource implements TestDataSource {
@@ -77,7 +81,6 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private static final QAgreement Q_AGREEMENT = QAgreement.agreement;
 
     private final PaymentRepository paymentRepository;
-    private final PaymentReceiverRepository paymentReceiverRepository;
     private final DesignSessionRepository designSessionRepository;
     private final SpouseRepository spouseRepository;
     private final SpouseAccountRepository spouseAccountRepository;
@@ -102,18 +105,16 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private final ImageRepository imageRepository;
     private final TransportationNoteRepository transportationNoteRepository;
     private final CustomRequestHistoryRepository customRequestHistoryRepository;
+<<<<<<< HEAD
     private final JewelryRepository jewelryRepository;
+=======
+    private final DesignSessionPaymentRepository designSessionPaymentRepository;
+>>>>>>> 40d785d1 (Update code)
 
     @Override
     public Payment save(Payment payment) {
         updateAuditor(payment);
         return paymentRepository.save(payment);
-    }
-
-    @Override
-    public PaymentReceiver save(PaymentReceiver paymentReceiver) {
-        updateAuditor(paymentReceiver);
-        return paymentReceiverRepository.save(paymentReceiver);
     }
 
     @Override
@@ -267,9 +268,15 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     }
 
     @Override
+<<<<<<< HEAD
     public Jewelry save(Jewelry jewelry) {
         updateAuditor(jewelry);
         return jewelryRepository.save(jewelry);
+=======
+    public DesignSessionPayment save(DesignSessionPayment designSessionPayment) {
+        updateAuditor(designSessionPayment);
+        return designSessionPaymentRepository.save(designSessionPayment);
+>>>>>>> 40d785d1 (Update code)
     }
 
     @Override

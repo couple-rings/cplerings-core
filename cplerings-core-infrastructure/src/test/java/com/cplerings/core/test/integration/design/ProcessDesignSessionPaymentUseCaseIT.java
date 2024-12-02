@@ -4,14 +4,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.UUID;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.reactive.server.WebTestClient;
+
 import com.cplerings.core.api.payment.request.VNPayPaymentRequest;
 import com.cplerings.core.application.payment.input.VNPayPaymentInput;
 import com.cplerings.core.application.shared.service.payment.PaymentVerificationService;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.design.session.DesignSession;
+import com.cplerings.core.domain.payment.DesignSessionPayment;
 import com.cplerings.core.domain.payment.Payment;
-import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.payment.PaymentReceiverType;
 import com.cplerings.core.domain.payment.PaymentStatus;
 import com.cplerings.core.domain.payment.PaymentType;
@@ -22,17 +32,7 @@ import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.TestDataLoader;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.reactive.server.WebTestClient;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.math.BigDecimal;
-import java.util.Collection;
 
 class ProcessDesignSessionPaymentUseCaseIT extends AbstractIT {
 
@@ -72,6 +72,7 @@ class ProcessDesignSessionPaymentUseCaseIT extends AbstractIT {
                 .status(PaymentStatus.PENDING)
                 .secureHash(request.getVnp_SecureHash())
                 .description(request.getVnp_OrderInfo())
+                .paymentReceiverType(PaymentReceiverType.DESIGN_FEE)
                 .build();
         payment = testDataSource.save(payment);
 
@@ -79,12 +80,12 @@ class ProcessDesignSessionPaymentUseCaseIT extends AbstractIT {
                 .orElse(null);
         assertThat(account).isNotNull();
 
-        final PaymentReceiver paymentReceiver = PaymentReceiver.builder()
+        final DesignSessionPayment designSessionPayment = DesignSessionPayment.builder()
+                .customer(account)
                 .payment(payment)
-                .receiverType(PaymentReceiverType.DESIGN_FEE)
-                .receiverId(String.valueOf(account.getId()))
+                .designSessionId(UUID.randomUUID())
                 .build();
-        testDataSource.save(paymentReceiver);
+        testDataSource.save(designSessionPayment);
     }
 
     @Test

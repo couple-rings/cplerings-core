@@ -1,6 +1,8 @@
 package com.cplerings.core.test.shared.datasource;
 
-import com.cplerings.core.application.transport.datasource.result.TransportationAddresses;
+import java.util.Collection;
+import java.util.Optional;
+
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountVerification;
 import com.cplerings.core.domain.address.TransportationAddress;
@@ -21,22 +23,17 @@ import com.cplerings.core.domain.jewelry.Jewelry;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.order.status.TransportationNote;
+import com.cplerings.core.domain.payment.DesignSessionPayment;
 import com.cplerings.core.domain.payment.Payment;
-import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.spouse.Agreement;
 import com.cplerings.core.domain.spouse.Spouse;
 import com.cplerings.core.domain.spouse.SpouseAccount;
 import com.cplerings.core.test.shared.entity.order.DummyOrder;
 
-import java.util.Collection;
-import java.util.Optional;
-
 public interface TestDataSource {
 
     Payment save(Payment payment);
-
-    PaymentReceiver save(PaymentReceiver paymentReceiver);
 
     DesignSession save(DesignSession designSession);
 
@@ -94,5 +91,9 @@ public interface TestDataSource {
 
     CustomRequestHistory save(CustomRequestHistory customRequestHistory);
 
+<<<<<<< HEAD
     Jewelry save(Jewelry jewelry);
+=======
+    DesignSessionPayment save(DesignSessionPayment designSessionPayment);
+>>>>>>> 40d785d1 (Update code)
 }

@@ -11,7 +11,7 @@ import com.cplerings.core.application.crafting.ProcessCraftingStageDepositUseCas
 import com.cplerings.core.application.design.ProcessDesignSessionPaymentUseCase;
 import com.cplerings.core.application.payment.ProcessVNPayPaymentUseCase;
 import com.cplerings.core.application.payment.datasource.ProcessVNPayPaymentDataSource;
-import com.cplerings.core.application.payment.input.PaymentReceiverInput;
+import com.cplerings.core.application.payment.input.PaymentSuccessfulResultInput;
 import com.cplerings.core.application.payment.input.VNPayPaymentInput;
 import com.cplerings.core.application.payment.output.VNPayPaymentOutput;
 import com.cplerings.core.application.shared.errorcode.ErrorCodes;
@@ -24,7 +24,6 @@ import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.common.either.Either;
 import com.cplerings.core.common.payment.VNPayConstant;
 import com.cplerings.core.domain.payment.Payment;
-import com.cplerings.core.domain.payment.PaymentReceiver;
 import com.cplerings.core.domain.payment.PaymentStatus;
 import com.cplerings.core.domain.payment.transaction.VNPayTransaction;
 
@@ -94,15 +93,10 @@ public class ProcessVNPayPaymentUseCaseImpl extends AbstractUseCase<VNPayPayment
     }
 
     private void handlePaymentReceiver(UseCaseValidator validator, Payment payment) {
-        final PaymentReceiver paymentReceiver = processVNPayPaymentDataSource.findPaymentReceiverByPaymentId(payment.getId())
-                .orElse(null);
-        if (paymentReceiver == null) {
-            return;
-        }
-        final PaymentReceiverInput input = PaymentReceiverInput.builder()
-                .paymentReceiver(paymentReceiver)
+        final PaymentSuccessfulResultInput input = PaymentSuccessfulResultInput.builder()
+                .payment(payment)
                 .build();
-        switch (paymentReceiver.getReceiverType()) {
+        switch (payment.getPaymentReceiverType()) {
             case DESIGN_FEE -> {
                 final Either<NoOutput, ErrorCodes> result = processDesignSessionPaymentUseCase.execute(input);
                 validator.validateAndStopExecution(result.isLeft(), PAYMENT_RECEIVER_HANDLER_FAILED);

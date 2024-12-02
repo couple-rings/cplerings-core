@@ -71,6 +71,7 @@ public class VNPayPaymentRequestService extends AbstractVNPayPaymentService impl
                 VNPayConstant.VNP_SECURE_HASH,
                 secureHash);
         payment.setSecureHash(secureHash);
+        payment.setPaymentReceiverType(paymentInfo.getReceiverType());
         payment = vnPayPaymentServiceDataSource.save(payment);
         return PaymentRequest.builder()
                 .paymentLink(paymentURL)
