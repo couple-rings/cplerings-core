@@ -43,7 +43,6 @@ class CreateJewelryUseCaseIT extends AbstractIT {
         CreateJewelryRequest request = CreateJewelryRequest.builder()
                 .designId(1L)
                 .branchId(1L)
-                .diamondId(1L)
                 .metalSpecId(1L)
                 .build();
         Diamond diamond = Diamond.builder()

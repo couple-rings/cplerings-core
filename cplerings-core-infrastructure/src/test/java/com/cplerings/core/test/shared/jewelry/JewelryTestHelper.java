@@ -24,12 +24,10 @@ public class JewelryTestHelper {
     private final TestDataSource testDataSource;
 
     public Jewelry createJewelry() {
-        Diamond diamond = diamondTestHelper.createDiamond();
         Jewelry jewelry = Jewelry.builder()
                 .status(JewelryStatus.AVAILABLE)
                 .design(designRepository.getReferenceById(1L))
                 .metalSpecification(metalSpecificationRepository.getReferenceById(1L))
-                .diamond(diamond)
                 .branch(branchRepository.getReferenceById(1L))
                 .build();
         return testDataSource.save(jewelry);
