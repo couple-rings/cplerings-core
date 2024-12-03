@@ -374,6 +374,10 @@ public class SharedDesignDataSource extends AbstractDataSource
         if (input.getCategoryId() != null) {
             booleanExpressionBuilder.and(Q_DESIGN.jewelryCategory.id.eq(input.getCategoryId()));
         }
+
+        if (input.getName() != null) {
+            booleanExpressionBuilder.and(Q_DESIGN.name.toLowerCase().contains(input.getName().toLowerCase()));
+        }
         final BooleanExpression predicate = booleanExpressionBuilder.build();
         query.where(predicate);
 

@@ -22,6 +22,7 @@ public class ViewDesignsInput extends AbstractPaginatedInput {
     private Long categoryId;
     private Long metalSpecId;
     private ADesignCharacteristic characteristic;
+    private String name;
 
     public static Builder builder() {
         return new Builder();
@@ -37,6 +38,7 @@ public class ViewDesignsInput extends AbstractPaginatedInput {
         private Long categoryId;
         private Long metalSpecId;
         private ADesignCharacteristic characteristic;
+        private String name;
 
         public Builder status(ADesignStatus status) {
             this.status = status;
@@ -68,6 +70,11 @@ public class ViewDesignsInput extends AbstractPaginatedInput {
             return self();
         }
 
+        public Builder name(String name) {
+            this.name = name;
+            return self();
+        }
+
         @Override
         public ViewDesignsInput build() {
             final ViewDesignsInput input = super.build();
@@ -77,6 +84,7 @@ public class ViewDesignsInput extends AbstractPaginatedInput {
             input.setCategoryId(categoryId);
             input.setMetalSpecId(metalSpecId);
             input.setCharacteristic(characteristic);
+            input.setName(name);
             return input;
         }
 

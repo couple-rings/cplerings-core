@@ -320,6 +320,8 @@ public class SecurityConfiguration {
     private void handleJewelryAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.JEWELRIES_CATEGORIES_PATH))
                         .permitAll())
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.JEWELRIES_PATH))
+                        .permitAll())
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.JEWELRIES_PATH))
                         .hasAuthority(RoleConstant.ROLE_MANAGER))
         ;
