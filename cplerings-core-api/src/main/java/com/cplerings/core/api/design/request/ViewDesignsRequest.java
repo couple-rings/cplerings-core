@@ -23,4 +23,5 @@ public class ViewDesignsRequest extends AbstractPaginatedRequest {
     private Long categoryId;
     private Long metalSpecId;
     private ADesignCharacteristic characteristic;
+    private String name;
 }
