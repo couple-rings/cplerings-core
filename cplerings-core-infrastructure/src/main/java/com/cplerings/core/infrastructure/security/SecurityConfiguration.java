@@ -266,7 +266,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.PUT, resolvePath(APIConstant.UPDATE_TRANSPORTATION_ORDER_STATUS))
                         .hasAnyAuthority(RoleConstant.ROLE_TRANSPORTER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.ASSIGN_CUSTOM_ORDER_TO_JEWELER_PATH))
-                        .hasAnyAuthority(RoleConstant.ROLE_JEWELER))
+                        .hasAnyAuthority(RoleConstant.ROLE_STAFF))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VIEW_TRANSPORTATION_ORDER_BY_CUSTOM_ORDER_ID))
                         .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VIEW_TRANSPORTATION_ORDER_DETAIL))
