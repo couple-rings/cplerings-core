@@ -36,5 +36,5 @@ public class ADesign implements Serializable {
     private Instant createdAt;
     private AState state;
     private ADesignStatus status;
-    private AJewelryCategory jewelryCategory;
+    private AJewelryCategoryWithNotDesign jewelryCategory;
 }
