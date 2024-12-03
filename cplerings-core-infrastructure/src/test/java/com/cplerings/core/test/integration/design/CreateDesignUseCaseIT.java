@@ -1,14 +1,18 @@
 package com.cplerings.core.test.integration.design;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.cplerings.core.api.design.request.CreateDesignRequest;
+import com.cplerings.core.api.design.request.data.MetalSpecRequestData;
 import com.cplerings.core.api.design.response.CreateDesignResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.application.shared.entity.design.ADesign;
@@ -35,6 +39,12 @@ class CreateDesignUseCaseIT extends AbstractIT {
                 .url("test")
                 .build();
         Document blueprintCreated = testDataSource.save(document);
+        List<MetalSpecRequestData> metalSpecsRequestData = new ArrayList<>();
+        MetalSpecRequestData metalSpecRequestData = MetalSpecRequestData.builder()
+                .metalSpecId(1L)
+                .imageId(1L)
+                .build();
+        metalSpecsRequestData.add(metalSpecRequestData);
         CreateDesignRequest request = CreateDesignRequest.builder()
                 .jewelryCategoryId(1L)
                 .blueprintId(blueprintCreated.getId())
@@ -45,6 +55,7 @@ class CreateDesignUseCaseIT extends AbstractIT {
                 .description("test")
                 .collectionId(1L)
                 .name("Test")
+                .metalSpec(metalSpecsRequestData)
                 .build();
 
         final WebTestClient.ResponseSpec response = requestBuilder()
@@ -71,5 +82,6 @@ class CreateDesignUseCaseIT extends AbstractIT {
                 .isNotNull()
                 .isExactlyInstanceOf(ADesign.class);
         assertThat(responseBody.getData().getCharacteristic()).isNotNull();
+        assertThat(responseBody.getData().getDesignMetalSpecifications()).isNotNull();
     }
 }

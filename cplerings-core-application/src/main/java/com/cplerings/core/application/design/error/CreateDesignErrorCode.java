@@ -26,6 +26,9 @@ public enum CreateDesignErrorCode implements ErrorCode {
     BLUEPRINT_NOT_FOUND("016", "createDesign.error.bluePrintNotFound", Type.BUSINESS),
     JEWELRY_CATEGORY_ID_NOT_FOUND("017", "createDesign.error.jewelryCategoryNotFound", Type.BUSINESS),
     NAME_REQUIRED("018", "createDesign.error.nameRequired", Type.VALIDATION),
+    METAL_SPEC_DATA_REQUIRED("019", "createDesign.error.metalSpecDataRequired", Type.VALIDATION),
+    ONE_OF_METAL_SPEC_NOT_FOUND("020", "createDesign.error.oneOfMetalSpecNotFound", Type.BUSINESS),
+    ONE_OF_IMAGE_NOT_FOUND("021", "createDesign.error.oneOfImageNotFound", Type.BUSINESS),
     ;
 
     private final String code;

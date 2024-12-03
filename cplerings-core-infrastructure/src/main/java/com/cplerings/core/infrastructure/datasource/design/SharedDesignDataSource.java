@@ -29,6 +29,7 @@ import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.DesignCollection;
+import com.cplerings.core.domain.design.DesignMetalSpecification;
 import com.cplerings.core.domain.design.DesignStatus;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.QDesign;
@@ -46,12 +47,16 @@ import com.cplerings.core.domain.file.QDocument;
 import com.cplerings.core.domain.file.QImage;
 import com.cplerings.core.domain.jewelry.JewelryCategory;
 import com.cplerings.core.domain.jewelry.QJewelryCategory;
+import com.cplerings.core.domain.metal.MetalSpecification;
+import com.cplerings.core.domain.metal.QMetalSpecification;
 import com.cplerings.core.domain.payment.DesignSessionPayment;
 import com.cplerings.core.domain.shared.valueobject.DesignSize;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
+import com.cplerings.core.infrastructure.repository.CustomDesignMetalSpecificationRepository;
 import com.cplerings.core.infrastructure.repository.CustomRequestRepository;
+import com.cplerings.core.infrastructure.repository.DesignMetalSpecificationRepository;
 import com.cplerings.core.infrastructure.repository.DesignRepository;
 import com.cplerings.core.infrastructure.repository.DesignSessionPaymentRepository;
 import com.cplerings.core.infrastructure.repository.DesignSessionRepository;
@@ -79,6 +84,7 @@ public class SharedDesignDataSource extends AbstractDataSource
     private static final QDesignSession Q_DESIGN_SESSION = QDesignSession.designSession;
     private static final QJewelryCategory Q_JEWELRY_CATEGORY = QJewelryCategory.jewelryCategory;
     private static final QDesignCollection Q_DESIGN_COLLECTION = QDesignCollection.designCollection;
+    private static final QMetalSpecification Q_METAL_SPECIFICATION = QMetalSpecification.metalSpecification;
 
     private final DesignSessionRepository designSessionRepository;
     private final AccountRepository accountRepository;
@@ -88,6 +94,7 @@ public class SharedDesignDataSource extends AbstractDataSource
     private final ImageRepository imageRepository;
     private final DesignRepository designRepository;
     private final DesignSessionPaymentRepository designSessionPaymentRepository;
+    private final DesignMetalSpecificationRepository designMetalSpecificationRepository;
 
     @Override
     public Optional<Account> getAccountByEmail(String email) {
@@ -189,6 +196,12 @@ public class SharedDesignDataSource extends AbstractDataSource
                 .from(Q_IMAGE)
                 .where(Q_IMAGE.id.eq(imageId))
                 .fetchOne());
+    }
+
+    @Override
+    public DesignMetalSpecification save(DesignMetalSpecification metalSpecification) {
+        updateAuditor(metalSpecification);
+        return designMetalSpecificationRepository.save(metalSpecification);
     }
 
     @Override
@@ -308,6 +321,14 @@ public class SharedDesignDataSource extends AbstractDataSource
     public Design save(Design design) {
         updateAuditor(design);
         return designRepository.save(design);
+    }
+
+    @Override
+    public Optional<MetalSpecification> getMetalSpecificationById(Long id) {
+        return Optional.ofNullable(createQuery().select(Q_METAL_SPECIFICATION)
+                .from(Q_METAL_SPECIFICATION)
+                .where(Q_METAL_SPECIFICATION.id.eq(id))
+                .fetchFirst());
     }
 
     @Override
