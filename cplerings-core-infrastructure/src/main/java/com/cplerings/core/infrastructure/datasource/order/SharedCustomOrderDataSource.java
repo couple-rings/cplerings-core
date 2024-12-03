@@ -203,4 +203,18 @@ public class SharedCustomOrderDataSource extends AbstractDataSource implements V
         updateAuditor(history);
         return transportOrderHistoryRepository.save(history);
     }
+
+    @Override
+    public Optional<Jewelry> getJewelry(Long branchId, Long designId, Long metalSpecId) {
+        return Optional.ofNullable(createQuery().
+                select(Q_JEWELRY)
+                .from(Q_JEWELRY)
+                .leftJoin(Q_JEWELRY.design).fetchJoin()
+                .leftJoin(Q_JEWELRY.metalSpecification).fetchJoin()
+                .leftJoin(Q_JEWELRY.branch).fetchJoin()
+                .where(Q_JEWELRY.design.id.eq(designId)
+                        .and(Q_JEWELRY.metalSpecification.id.eq(metalSpecId))
+                        .and(Q_JEWELRY.branch.id.eq(branchId)))
+                .fetchFirst());
+    }
 }

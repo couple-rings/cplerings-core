@@ -31,4 +31,6 @@ public interface CreateStandardOrderDataSource {
     TransportationOrder save(TransportationOrder order);
 
     TransportOrderHistory save(TransportOrderHistory history);
+
+    Optional<Jewelry> getJewelry(Long branchId, Long designId, Long metalSpecId);
 }

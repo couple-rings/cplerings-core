@@ -11,6 +11,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.cplerings.core.api.order.data.StandardOrderData;
 import com.cplerings.core.api.order.request.CreateStandardOrderRequest;
+import com.cplerings.core.api.order.request.data.MetalSpecDesignIds;
 import com.cplerings.core.api.order.response.CreateStandardOrderResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.application.shared.entity.order.AStandardOrderStatus;
@@ -32,10 +33,15 @@ class CreateStandardOrderUseCaseIT extends AbstractIT {
     void givenCustomer_whenCreateStandardOrderUseCase() {
         jewelryTestHelper.createJewelry();
         String token = jwtTestHelper.generateToken(AccountTestConstant.CUSTOMER_EMAIL);
-        List<Long> jewelryIds = new ArrayList<>();
-        jewelryIds.add(1L);
+        MetalSpecDesignIds metalSpecDesignIds = MetalSpecDesignIds.builder()
+                .metalSpecId(1L)
+                .designId(1L)
+                .build();
+        List<MetalSpecDesignIds> metalSpecDesignIds1 = new ArrayList<>();
+        metalSpecDesignIds1.add(metalSpecDesignIds);
         CreateStandardOrderRequest request = CreateStandardOrderRequest.builder()
-                .jewelryIds(jewelryIds)
+                .branchId(1L)
+                .metalSpecDesignIds(metalSpecDesignIds1)
                 .customerId(1L)
                 .build();
         final WebTestClient.ResponseSpec response = requestBuilder()
