@@ -31,7 +31,10 @@ import com.cplerings.core.domain.file.QImage;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.QCustomOrder;
+import com.cplerings.core.domain.order.QStandardOrder;
 import com.cplerings.core.domain.order.QTransportationOrder;
+import com.cplerings.core.domain.order.StandardOrder;
+import com.cplerings.core.domain.order.StandardOrderHistory;
 import com.cplerings.core.domain.order.TransportOrderHistory;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
@@ -43,6 +46,8 @@ import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.CustomOrderHistoryRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
+import com.cplerings.core.infrastructure.repository.StandardOrderHistoryRepository;
+import com.cplerings.core.infrastructure.repository.StandardOrderRepository;
 import com.cplerings.core.infrastructure.repository.TransportOrderHistoryRepository;
 import com.cplerings.core.infrastructure.repository.TransportationNoteRepository;
 import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
@@ -68,12 +73,15 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
     private static final QBranch SECOND_Q_BRANCH = new QBranch("secondBranch");
     private static final QImage Q_IMAGE = QImage.image;
     private static final QTransportationNote Q_TRANSPORTATION_NOTE = QTransportationNote.transportationNote;
+    private static final QStandardOrder Q_STANDARD_ORDER = QStandardOrder.standardOrder;
 
     private final TransportationOrderRepository transportationOrderRepository;
     private final CustomOrderRepository customOrderRepository;
     private final TransportationNoteRepository transportationNoteRepository;
     private final CustomOrderHistoryRepository customOrderHistoryRepository;
     private final TransportOrderHistoryRepository transportOrderHistoryRepository;
+    private final StandardOrderRepository standardOrderRepository;
+    private final StandardOrderHistoryRepository standardOrderHistoryRepository;
 
     @Override
     public Optional<Account> getTransporterById(Long transporterId) {
@@ -91,6 +99,7 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
                 .select(Q_TRANSPORTATION_ORDER)
                 .from(Q_TRANSPORTATION_ORDER)
                 .leftJoin(Q_TRANSPORTATION_ORDER.customOrder, Q_CUSTOM_ORDER).fetchJoin()
+                .leftJoin(Q_TRANSPORTATION_ORDER.standardOrder, Q_STANDARD_ORDER).fetchJoin()
                 .where(Q_TRANSPORTATION_ORDER.id.eq(transportationOrderId))
                 .fetchOne());
     }
@@ -117,6 +126,18 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
     public TransportOrderHistory save(TransportOrderHistory transportOrderHistory) {
         updateAuditor(transportOrderHistory);
         return transportOrderHistoryRepository.save(transportOrderHistory);
+    }
+
+    @Override
+    public StandardOrder save(StandardOrder standardOrder) {
+        updateAuditor(standardOrder);
+        return standardOrderRepository.save(standardOrder);
+    }
+
+    @Override
+    public StandardOrderHistory save(StandardOrderHistory standardOrderHistory) {
+        updateAuditor(standardOrderHistory);
+        return standardOrderHistoryRepository.save(standardOrderHistory);
     }
 
     @Override
