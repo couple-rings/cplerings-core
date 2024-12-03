@@ -19,7 +19,7 @@ import com.cplerings.core.test.shared.datasource.TestDataSource;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
 import com.cplerings.core.test.shared.order.CustomOrderTestHelper;
 
-public class AssignJewelerToCustomOrderUseCaseIT extends AbstractIT {
+class AssignJewelerToCustomOrderUseCaseIT extends AbstractIT {
 
     @Autowired
     private JWTTestHelper jwtTestHelper;
@@ -36,7 +36,7 @@ public class AssignJewelerToCustomOrderUseCaseIT extends AbstractIT {
         customOrder.setStatus(CustomOrderStatus.WAITING);
         customOrder.setJeweler(null);
         testDataSource.save(customOrder);
-        String token = jwtTestHelper.generateToken(AccountTestConstant.JEWELER_EMAIL);
+        String token = jwtTestHelper.generateToken(AccountTestConstant.STAFF_EMAIL);
         AssignJewelerToCustomOrderRequestData request = AssignJewelerToCustomOrderRequestData.builder()
                 .jewelerId(41L)
                 .build();
