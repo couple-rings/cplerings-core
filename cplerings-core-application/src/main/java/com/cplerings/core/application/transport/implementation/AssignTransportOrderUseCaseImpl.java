@@ -15,6 +15,9 @@ import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.CustomOrderStatus;
+import com.cplerings.core.domain.order.StandardOrder;
+import com.cplerings.core.domain.order.StandardOrderHistory;
+import com.cplerings.core.domain.order.StandardOrderStatus;
 import com.cplerings.core.domain.order.TransportOrderHistory;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
@@ -58,14 +61,28 @@ public class AssignTransportOrderUseCaseImpl extends AbstractUseCase<AssignTrans
                 .build();
         assignTransportOrderDataSource.save(transportOrderHistory);
 
-        CustomOrder customOrder = transportationOrder.getCustomOrder();
-        customOrder.setStatus(CustomOrderStatus.DELIVERING);
-        CustomOrder customOrderUpdated = assignTransportOrderDataSource.save(customOrder);
-        CustomOrderHistory customOrderHistory = CustomOrderHistory.builder()
-                .customOrder(customOrderUpdated)
-                .status(CustomOrderStatus.DELIVERING)
-                .build();
-        assignTransportOrderDataSource.save(customOrderHistory);
+        if (transportationOrder.getCustomOrder() != null) {
+            CustomOrder customOrder = transportationOrder.getCustomOrder();
+            customOrder.setStatus(CustomOrderStatus.DELIVERING);
+            CustomOrder customOrderUpdated = assignTransportOrderDataSource.save(customOrder);
+            CustomOrderHistory customOrderHistory = CustomOrderHistory.builder()
+                    .customOrder(customOrderUpdated)
+                    .status(CustomOrderStatus.DELIVERING)
+                    .build();
+            assignTransportOrderDataSource.save(customOrderHistory);
+        }
+
+        if (transportationOrder.getStandardOrder() != null) {
+            StandardOrder standardOrder = transportationOrder.getStandardOrder();
+            standardOrder.setStatus(StandardOrderStatus.DELIVERING);
+            standardOrder = assignTransportOrderDataSource.save(standardOrder);
+            StandardOrderHistory standardOrderHistory = StandardOrderHistory.builder()
+                    .status(StandardOrderStatus.DELIVERING)
+                    .standardOrder(standardOrder)
+                    .build();
+            assignTransportOrderDataSource.save(standardOrderHistory);
+        }
+
         return aAssignTransportOrderMapper.toOutput(transportationOrderAssigned);
     }
 }
