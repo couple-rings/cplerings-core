@@ -22,4 +22,16 @@ public class CalculationTotalPriceServiceImpl implements CalculationTotalPriceSe
                 .multiply(BigDecimal.valueOf(1.3));
         return Money.create(ringPrice);
     }
+
+    @Override
+    public Money calculationPriceForJewelry(Money metalPrice, BigDecimal metalWeight, int sideDiamondCount, BigDecimal sideDiamondPrice) {
+        BigDecimal ringPrice = (metalPrice
+                .getAmount()
+                .multiply(BigDecimal.valueOf(3.75))
+                .multiply(metalWeight)
+                .add(BigDecimal.valueOf(sideDiamondCount)
+                        .multiply(sideDiamondPrice)))
+                .multiply(BigDecimal.valueOf(1.3));
+        return Money.create(ringPrice);
+    }
 }

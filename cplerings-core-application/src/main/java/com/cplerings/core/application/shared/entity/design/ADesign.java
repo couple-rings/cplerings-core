@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.util.Collection;
 
 import com.cplerings.core.application.shared.entity.file.ADocument;
+import com.cplerings.core.application.shared.entity.jewelry.AJewelryCategory;
 import com.cplerings.core.application.shared.entity.shared.AState;
 
 import lombok.AllArgsConstructor;
@@ -35,4 +36,5 @@ public class ADesign implements Serializable {
     private Instant createdAt;
     private AState state;
     private ADesignStatus status;
+    private AJewelryCategory jewelryCategory;
 }

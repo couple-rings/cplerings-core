@@ -7,4 +7,6 @@ import java.math.BigDecimal;
 public interface CalculationTotalPriceService {
 
     Money calculationTotalPrice(Money metalPrice, Money diamondSpecPrice, BigDecimal metalWeight, int sideDiamondCount, double sideDiamondPrice);
+
+    Money calculationPriceForJewelry(Money metalPrice, BigDecimal metalWeight, int sideDiamondCount, BigDecimal sideDiamondPrice);
 }
