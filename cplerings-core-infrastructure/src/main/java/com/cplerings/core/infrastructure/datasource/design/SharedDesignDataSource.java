@@ -28,6 +28,7 @@ import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.domain.design.Design;
+import com.cplerings.core.domain.design.DesignCharacteristic;
 import com.cplerings.core.domain.design.DesignCollection;
 import com.cplerings.core.domain.design.DesignMetalSpecification;
 import com.cplerings.core.domain.design.DesignStatus;
@@ -336,9 +337,12 @@ public class SharedDesignDataSource extends AbstractDataSource
         var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
         BlazeJPAQuery<Design> query = createQuery()
                 .select(Q_DESIGN)
-                .from(Q_DESIGN);
+                .from(Q_DESIGN)
+                .leftJoin(Q_DESIGN.designCollection).fetchJoin()
+                .leftJoin(Q_DESIGN.designMetalSpecifications).fetchJoin()
+                .leftJoin(Q_DESIGN.jewelryCategory).fetchJoin();
         final BooleanExpressionBuilder booleanExpressionBuilder = createBooleanExpressionBuilder();
-
+        booleanExpressionBuilder.and(Q_DESIGN.jewelryCategory.id.isNotNull());
         if (input.getDesignCollectionId() != null) {
             booleanExpressionBuilder.and(Q_DESIGN.designCollection.id.eq(input.getDesignCollectionId()));
         }
@@ -353,6 +357,22 @@ public class SharedDesignDataSource extends AbstractDataSource
                 case UNAVAILABLE -> booleanExpressionBuilder.and(Q_DESIGN.status.eq(DesignStatus.UNAVAILABLE));
                 case USED -> booleanExpressionBuilder.and(Q_DESIGN.status.eq(DesignStatus.USED));
             }
+        }
+
+        if (input.getMetalSpecId() != null) {
+            booleanExpressionBuilder.and(Q_DESIGN.designMetalSpecifications.any().id.eq(input.getMetalSpecId()));
+        }
+
+        if (input.getCharacteristic() != null) {
+            switch (input.getCharacteristic()) {
+                case ANDROGYNOUS -> booleanExpressionBuilder.and(Q_DESIGN.characteristic.eq(DesignCharacteristic.ANDROGYNOUS));
+                case FEMININE -> booleanExpressionBuilder.and(Q_DESIGN.characteristic.eq(DesignCharacteristic.FEMININE));
+                case MASCULINE -> booleanExpressionBuilder.and(Q_DESIGN.characteristic.eq(DesignCharacteristic.MASCULINE));
+            }
+        }
+
+        if (input.getCategoryId() != null) {
+            booleanExpressionBuilder.and(Q_DESIGN.jewelryCategory.id.eq(input.getCategoryId()));
         }
         final BooleanExpression predicate = booleanExpressionBuilder.build();
         query.where(predicate);

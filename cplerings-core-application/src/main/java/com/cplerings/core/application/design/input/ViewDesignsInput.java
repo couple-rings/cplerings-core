@@ -1,5 +1,6 @@
 package com.cplerings.core.application.design.input;
 
+import com.cplerings.core.application.shared.entity.design.ADesignCharacteristic;
 import com.cplerings.core.application.shared.entity.design.ADesignStatus;
 import com.cplerings.core.application.shared.pagination.AbstractPaginatedInput;
 
@@ -18,6 +19,9 @@ public class ViewDesignsInput extends AbstractPaginatedInput {
     private ADesignStatus status;
     private Integer size;
     private Long designCollectionId;
+    private Long categoryId;
+    private Long metalSpecId;
+    private ADesignCharacteristic characteristic;
 
     public static Builder builder() {
         return new Builder();
@@ -30,6 +34,9 @@ public class ViewDesignsInput extends AbstractPaginatedInput {
         private ADesignStatus status;
         private Integer size;
         private Long designCollectionId;
+        private Long categoryId;
+        private Long metalSpecId;
+        private ADesignCharacteristic characteristic;
 
         public Builder status(ADesignStatus status) {
             this.status = status;
@@ -46,12 +53,30 @@ public class ViewDesignsInput extends AbstractPaginatedInput {
             return self();
         }
 
+        public Builder categoryId(Long categoryId) {
+            this.categoryId = categoryId;
+            return self();
+        }
+
+        public Builder metalSpecId(Long metalSpecId) {
+            this.metalSpecId = metalSpecId;
+            return self();
+        }
+
+        public Builder characteristic(ADesignCharacteristic characteristic) {
+            this.characteristic = characteristic;
+            return self();
+        }
+
         @Override
         public ViewDesignsInput build() {
             final ViewDesignsInput input = super.build();
             input.setSize(size);
             input.setStatus(status);
             input.setDesignCollectionId(designCollectionId);
+            input.setCategoryId(categoryId);
+            input.setMetalSpecId(metalSpecId);
+            input.setCharacteristic(characteristic);
             return input;
         }
 

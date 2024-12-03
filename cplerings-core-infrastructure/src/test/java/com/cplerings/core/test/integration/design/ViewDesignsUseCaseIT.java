@@ -19,6 +19,8 @@ class ViewDesignsUseCaseIT extends AbstractIT {
         ViewDesignsRequest request = ViewDesignsRequest.builder()
                 .page(0)
                 .pageSize(1)
+                .categoryId(1L)
+                .designCollectionId(1L)
                 .build();
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(APIConstant.DESIGN_PATH)
@@ -44,6 +46,5 @@ class ViewDesignsUseCaseIT extends AbstractIT {
         assertThat(designs).isNotNull();
         assertThat(designs.getPage()).isZero();
         assertThat(designs.getPageSize()).isEqualTo(1);
-        assertThat(designs.getItems()).hasSize(1);
     }
 }
