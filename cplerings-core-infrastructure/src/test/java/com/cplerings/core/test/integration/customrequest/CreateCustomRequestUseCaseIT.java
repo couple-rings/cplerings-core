@@ -4,12 +4,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cplerings.core.api.design.request.CreateCustomRequestRequest;
 import com.cplerings.core.api.design.response.CreateCustomRequestResponse;
+import com.cplerings.core.api.payment.request.VNPayPaymentRequest;
 import com.cplerings.core.api.shared.AbstractResponse;
+import com.cplerings.core.application.payment.datasource.ProcessVNPayPaymentDataSource;
 import com.cplerings.core.application.shared.entity.design.request.ACustomRequest;
 import com.cplerings.core.application.shared.entity.design.request.ACustomRequestStatus;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.crafting.CraftingStage;
+import com.cplerings.core.domain.crafting.CraftingStageStatus;
 import com.cplerings.core.domain.design.DesignVersion;
+import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.payment.Payment;
+import com.cplerings.core.domain.payment.PaymentReceiverType;
+import com.cplerings.core.domain.payment.PaymentStatus;
+import com.cplerings.core.domain.payment.PaymentType;
+import com.cplerings.core.domain.shared.valueobject.Money;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.infrastructure.repository.DesignRepository;
 import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
@@ -20,15 +30,21 @@ import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 class CreateCustomRequestUseCaseIT extends AbstractIT {
+
+    private static final String PAYMENT_FOLDER = "data/integration/payment";
+    private static final String VNPAY_WEBHOOK_RESULT = "/vnpay-webhook-result.json";
+
 
     @Autowired
     private AccountRepository accountRepository;
@@ -51,6 +67,25 @@ class CreateCustomRequestUseCaseIT extends AbstractIT {
     @Autowired
     private JWTTestHelper jwtTestHelper;
 
+    @Autowired
+    private ProcessVNPayPaymentDataSource processVNPayPaymentDataSource;
+
+    @BeforeEach
+    void setUpCustomOrderAndCraftingStages() {
+        final VNPayPaymentRequest request = getTestDataLoader(PAYMENT_FOLDER).loadAsObject(VNPAY_WEBHOOK_RESULT, VNPayPaymentRequest.class);
+        Payment payment = Payment.builder()
+                .status(PaymentStatus.PENDING)
+                .type(PaymentType.VNPAY)
+                .description(request.getVnp_OrderInfo())
+                .secureHash("DummyHash")
+                .amount(Money.create(BigDecimal.valueOf(request.getVnp_Amount()))
+                        .divide(BigDecimal.valueOf(100)))
+                .id(Long.valueOf(request.getVnp_TxnRef()))
+                .paymentReceiverType(PaymentReceiverType.DESIGN_FEE)
+                .build();
+        processVNPayPaymentDataSource.save(payment);
+    }
+
     @Test
     void givenStaff_whenCreateCustomRequest() {
         final Account customer = accountRepository.findByEmail(AccountTestConstant.CUSTOMER_EMAIL)
@@ -60,6 +95,7 @@ class CreateCustomRequestUseCaseIT extends AbstractIT {
         final CreateCustomRequestRequest request = CreateCustomRequestRequest.builder()
                 .customerId(customer.getId())
                 .designIds(Set.of(1L, 11L))
+                .paymentId(1L)
                 .build();
 
         final String token = jwtTestHelper.generateToken(AccountTestConstant.STAFF_EMAIL);
@@ -78,6 +114,7 @@ class CreateCustomRequestUseCaseIT extends AbstractIT {
     void givenCustomer_whenCreateCustomRequest() {
         final CreateCustomRequestRequest request = CreateCustomRequestRequest.builder()
                 .designIds(Set.of(1L, 11L))
+                .paymentId(1L)
                 .build();
 
         final String token = jwtTestHelper.generateToken(AccountTestConstant.CUSTOMER_EMAIL);
@@ -123,6 +160,7 @@ class CreateCustomRequestUseCaseIT extends AbstractIT {
         final CreateCustomRequestRequest request = CreateCustomRequestRequest.builder()
                 .customerId(customer.getId())
                 .designIds(Set.of(1L, 11L))
+                .paymentId(1L)
                 .build();
 
         final String token = jwtTestHelper.generateToken(AccountTestConstant.STAFF_EMAIL);

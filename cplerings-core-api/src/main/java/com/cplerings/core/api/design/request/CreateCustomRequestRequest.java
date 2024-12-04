@@ -20,4 +20,6 @@ public class CreateCustomRequestRequest {
 
     @Builder.Default
     private Set<Long> designIds = new HashSet<>();
+
+    private Long paymentId;
 }
