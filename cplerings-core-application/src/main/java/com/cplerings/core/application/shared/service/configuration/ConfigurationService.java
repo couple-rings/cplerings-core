@@ -1,5 +1,7 @@
 package com.cplerings.core.application.shared.service.configuration;
 
+import java.math.BigDecimal;
+
 import com.cplerings.core.domain.shared.valueobject.Money;
 
 public interface ConfigurationService {
@@ -15,4 +17,6 @@ public interface ConfigurationService {
     Integer getCraftingStageProgress3();
 
     Integer getMaximumMaintenanceDuration();
+
+    Double getPriceApplicationRatio();
 }

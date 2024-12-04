@@ -12,7 +12,7 @@ $$
                                        opt_version, key, value, status)
         VALUES (nextval('configuration_seq'), current_timestamp, 'CoupleRings',
                 current_timestamp, 'CoupleRings', 'ACTIVE', 0, 'SDPR',
-                350000.000, 'ACTIVE');
+                130000.000, 'ACTIVE');
 
         -- CSP1
         IF EXISTS(SELECT 1 FROM tbl_configuration WHERE key LIKE 'CSP1') THEN

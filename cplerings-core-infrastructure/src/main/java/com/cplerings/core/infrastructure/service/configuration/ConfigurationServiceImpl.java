@@ -51,6 +51,11 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         return getConfiguration(ConfigurationKey.MMAD.getKey(), Integer.class);
     }
 
+    @Override
+    public Double getPriceApplicationRatio() {
+        return getConfiguration(ConfigurationKey.PARA.getKey(), Double.class);
+    }
+
     private <T> T getConfiguration(String key, Class<T> clazz) {
         if (StringUtils.isEmpty(key) || clazz == null) {
             throw new IllegalArgumentException("key or clazz is null");
