@@ -8,8 +8,11 @@ import com.cplerings.core.application.order.datasource.AssignJewelerToCustomOrde
 import com.cplerings.core.application.order.datasource.CreateStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrdersDataSource;
+import com.cplerings.core.application.order.datasource.ViewStandardOrdersDataSource;
 import com.cplerings.core.application.order.datasource.result.CustomOrders;
+import com.cplerings.core.application.order.datasource.result.StandardOrders;
 import com.cplerings.core.application.order.input.ViewCustomOrdersInput;
+import com.cplerings.core.application.order.input.ViewStandardOrdersInput;
 import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
@@ -21,9 +24,12 @@ import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.order.QCustomOrder;
+import com.cplerings.core.domain.order.QStandardOrder;
+import com.cplerings.core.domain.order.QStandardOrderItem;
 import com.cplerings.core.domain.order.StandardOrder;
 import com.cplerings.core.domain.order.StandardOrderHistory;
 import com.cplerings.core.domain.order.StandardOrderItem;
+import com.cplerings.core.domain.order.StandardOrderStatus;
 import com.cplerings.core.domain.order.TransportOrderHistory;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
@@ -42,12 +48,14 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @DataSource
-public class SharedCustomOrderDataSource extends AbstractDataSource implements ViewCustomOrdersDataSource, ViewCustomOrderDataSource, AssignJewelerToCustomOrderDataSource, CreateStandardOrderDataSource {
+public class SharedCustomOrderDataSource extends AbstractDataSource implements ViewCustomOrdersDataSource, ViewCustomOrderDataSource, AssignJewelerToCustomOrderDataSource, CreateStandardOrderDataSource, ViewStandardOrdersDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QJewelry Q_JEWELRY = QJewelry.jewelry;
     private static final QTransportationAddress Q_TRANSPORTATION_ADDRESS = QTransportationAddress.transportationAddress;
+    private static final QStandardOrder Q_STANDARD_ORDER = QStandardOrder.standardOrder;
+    private static final QStandardOrderItem Q_STANDARD_ORDER_ITEM = QStandardOrderItem.standardOrderItem;
 
     private final CustomOrderRepository customOrderRepository;
     private final CustomOrderHistoryRepository customOrderHistoryRepository;
@@ -70,7 +78,8 @@ public class SharedCustomOrderDataSource extends AbstractDataSource implements V
             switch (input.getStatus()) {
                 case PENDING -> booleanExpressionBuilder.and(Q_CUSTOM_ORDER.status.eq(CustomOrderStatus.PENDING));
                 case WAITING -> booleanExpressionBuilder.and(Q_CUSTOM_ORDER.status.eq(CustomOrderStatus.WAITING));
-                case IN_PROGRESS -> booleanExpressionBuilder.and(Q_CUSTOM_ORDER.status.eq(CustomOrderStatus.IN_PROGRESS));
+                case IN_PROGRESS ->
+                        booleanExpressionBuilder.and(Q_CUSTOM_ORDER.status.eq(CustomOrderStatus.IN_PROGRESS));
                 case DELIVERING -> booleanExpressionBuilder.and(Q_CUSTOM_ORDER.status.eq(CustomOrderStatus.DELIVERING));
                 case DONE -> booleanExpressionBuilder.and(Q_CUSTOM_ORDER.status.eq(CustomOrderStatus.DONE));
                 case CANCELED -> booleanExpressionBuilder.and(Q_CUSTOM_ORDER.status.eq(CustomOrderStatus.CANCELED));
@@ -216,5 +225,48 @@ public class SharedCustomOrderDataSource extends AbstractDataSource implements V
                         .and(Q_JEWELRY.metalSpecification.id.eq(metalSpecId))
                         .and(Q_JEWELRY.branch.id.eq(branchId)))
                 .fetchFirst());
+    }
+
+    @Override
+    public StandardOrders getStandardOrders(ViewStandardOrdersInput input) {
+        var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
+        BlazeJPAQuery<StandardOrder> query = createQuery()
+                .select(Q_STANDARD_ORDER)
+                .from(Q_STANDARD_ORDER)
+                .leftJoin(Q_STANDARD_ORDER.customer).fetchJoin()
+                .leftJoin(Q_STANDARD_ORDER.standardOrderItems).fetchJoin();
+
+        final BooleanExpressionBuilder booleanExpressionBuilder = createBooleanExpressionBuilder();
+        if (input.getStatus() != null) {
+            switch (input.getStatus()) {
+                case PENDING -> booleanExpressionBuilder.and(Q_STANDARD_ORDER.status.eq(StandardOrderStatus.PENDING));
+                case DELIVERING ->
+                        booleanExpressionBuilder.and(Q_STANDARD_ORDER.status.eq(StandardOrderStatus.DELIVERING));
+                case COMPLETED ->
+                        booleanExpressionBuilder.and(Q_STANDARD_ORDER.status.eq(StandardOrderStatus.COMPLETED));
+                case CANCELLED ->
+                        booleanExpressionBuilder.and(Q_STANDARD_ORDER.status.eq(StandardOrderStatus.CANCELLED));
+                case PAID -> booleanExpressionBuilder.and(Q_STANDARD_ORDER.status.eq(StandardOrderStatus.PAID));
+            }
+        }
+        if (input.getCustomerId() != null) {
+            booleanExpressionBuilder.and(Q_STANDARD_ORDER.customer.id.eq(input.getCustomerId()));
+        }
+
+        if (input.getBranchId() != null) {
+            booleanExpressionBuilder.and(Q_STANDARD_ORDER.standardOrderItems.any().branch.id.eq(input.getBranchId()));
+        }
+
+        final BooleanExpression predicate = booleanExpressionBuilder.build();
+        query.where(predicate);
+
+        long count = query.distinct().fetchCount();
+        List<StandardOrder> standardOrders = query.limit(input.getPageSize()).offset(offset).fetch();
+        return StandardOrders.builder()
+                .standardOrders(standardOrders)
+                .count(count)
+                .page(input.getPage())
+                .pageSize(input.getPageSize())
+                .build();
     }
 }
