@@ -5,6 +5,7 @@ import java.util.Set;
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.address.TransportationAddress;
+import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.shared.AbstractOrderEntity;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
@@ -58,6 +59,10 @@ public class StandardOrder extends AbstractOrderEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
     private StandardOrderStatus status;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
 
     @OneToMany(mappedBy = "standardOrder", fetch = FetchType.LAZY)
     private Set<StandardOrderHistory> standardOrderHistories;
