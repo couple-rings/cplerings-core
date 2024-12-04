@@ -6,6 +6,7 @@ import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.CustomRequestHistory;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
+import com.cplerings.core.domain.payment.Payment;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -27,4 +28,6 @@ public interface CreateCustomRequestDataSource {
     Collection<DesignVersion> saveAll(Collection<DesignVersion> oldDesignVersions);
 
     CustomRequestHistory saveCustomRequestHistory(CustomRequestHistory customRequestHistory);
+
+    Payment getPaymentById(Long paymentId);
 }

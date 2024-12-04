@@ -268,17 +268,18 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
     }
 
     private void completeCustomRequest(CraftingRequest firstCraftingRequest) {
-        DesignCustomRequest designCustomRequest = firstCraftingRequest.getCustomDesign().getDesignVersion().getDesign().getDesignCustomRequests().stream()
-                .filter(x -> x.getCustomRequest().getStatus() == CustomRequestStatus.APPROVED).findFirst().get();
-        CustomRequest customRequest = designCustomRequest.getCustomRequest();
-        customRequest.setStatus(CustomRequestStatus.COMPLETED);
-        CustomRequest customRequestUpdated = dataSource.save(customRequest);
-
-        CustomRequestHistory customRequestHistory = CustomRequestHistory.builder()
-                .status(CustomRequestStatus.COMPLETED)
-                .customRequest(customRequestUpdated)
-                .build();
-        dataSource.save(customRequestHistory);
+        if (firstCraftingRequest.getCustomDesign().getDesignVersion().getVersionNumber() != 0) {
+            DesignCustomRequest designCustomRequest = firstCraftingRequest.getCustomDesign().getDesignVersion().getDesign().getDesignCustomRequests().stream()
+                    .filter(x -> x.getCustomRequest().getStatus() == CustomRequestStatus.APPROVED).findFirst().get();
+            CustomRequest customRequest = designCustomRequest.getCustomRequest();
+            customRequest.setStatus(CustomRequestStatus.COMPLETED);
+            CustomRequest customRequestUpdated = dataSource.save(customRequest);
+            CustomRequestHistory customRequestHistory = CustomRequestHistory.builder()
+                    .status(CustomRequestStatus.COMPLETED)
+                    .customRequest(customRequestUpdated)
+                    .build();
+            dataSource.save(customRequestHistory);
+        }
     }
 
     private void createCraftingStages(CustomOrder customOrderCreated) {

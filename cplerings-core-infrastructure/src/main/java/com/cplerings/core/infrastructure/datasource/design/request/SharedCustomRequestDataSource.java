@@ -23,6 +23,8 @@ import com.cplerings.core.domain.design.request.QCustomRequest;
 import com.cplerings.core.domain.design.request.QDesignCustomRequest;
 import com.cplerings.core.domain.design.session.DesignSession;
 import com.cplerings.core.domain.design.session.QDesignSession;
+import com.cplerings.core.domain.payment.Payment;
+import com.cplerings.core.domain.payment.QPayment;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
@@ -53,6 +55,7 @@ public class SharedCustomRequestDataSource extends AbstractDataSource implements
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QDesignVersion Q_DESIGN_VERSION = QDesignVersion.designVersion;
     private static final QDesignSession Q_DESIGN_SESSION = QDesignSession.designSession;
+    private static final QPayment Q_PAYMENT = QPayment.payment;
 
     private final DesignRepository designRepository;
     private final AccountRepository accountRepository;
@@ -157,6 +160,14 @@ public class SharedCustomRequestDataSource extends AbstractDataSource implements
     public CustomRequestHistory saveCustomRequestHistory(CustomRequestHistory customRequestHistory) {
         updateAuditor(customRequestHistory);
         return customRequestHistoryRepository.save(customRequestHistory);
+    }
+
+    @Override
+    public Payment getPaymentById(Long paymentId) {
+        return createQuery().select(Q_PAYMENT)
+                .from(Q_PAYMENT)
+                .where(Q_PAYMENT.id.eq(paymentId))
+                .fetchFirst();
     }
 
     @Override

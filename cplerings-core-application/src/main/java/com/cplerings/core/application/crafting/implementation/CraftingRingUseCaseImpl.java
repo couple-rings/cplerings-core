@@ -112,7 +112,7 @@ public class CraftingRingUseCaseImpl extends AbstractUseCase<CraftingRingInput, 
 
         // Create Crafting request
         createCraftingRequest(selfCustomDesign, customer, input.self().engraving(), selfnerMetalSpecification, selfDiamondSpecification, branch, input.self().fingerSize());
-        createCraftingRequest(partnerCustomDesign, customer, input.self().engraving(), partnernerMetalSpecification, partnerDiamondSpecification, branch, input.partner().fingerSize());
+        createCraftingRequest(partnerCustomDesign, customer, input.partner().engraving(), partnernerMetalSpecification, partnerDiamondSpecification, branch, input.partner().fingerSize());
 
         selfDesign.setStatus(DesignStatus.UNAVAILABLE);
         partnerDesign.setStatus(DesignStatus.UNAVAILABLE);

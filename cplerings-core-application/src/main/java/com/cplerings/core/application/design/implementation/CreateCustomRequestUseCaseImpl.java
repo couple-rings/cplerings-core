@@ -29,6 +29,7 @@ import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.CustomRequestHistory;
 import com.cplerings.core.domain.design.request.CustomRequestStatus;
 import com.cplerings.core.domain.design.request.DesignCustomRequest;
+import com.cplerings.core.domain.payment.Payment;
 
 import lombok.RequiredArgsConstructor;
 
@@ -73,10 +74,12 @@ public class CreateCustomRequestUseCaseImpl extends AbstractUseCase<CreateCustom
         validator.validateAndStopExecution(CollectionUtils.size(designs) == 2, DESIGN_NOT_AVAILABLE);
         designs.forEach(design -> design.setStatus(DesignStatus.UNAVAILABLE));
         designs = dataSource.saveDesigns(designs);
+        Payment payment = dataSource.getPaymentById(input.getPaymentId());
         CustomRequest customRequest = CustomRequest.builder()
                 .customer(customer)
                 .status(CustomRequestStatus.PENDING)
                 .designFee(configurationService.getDesignFee())
+                .payment(payment)
                 .build();
         customRequest = dataSource.save(customRequest);
         CustomRequestHistory customRequestHistory = CustomRequestHistory.builder()
