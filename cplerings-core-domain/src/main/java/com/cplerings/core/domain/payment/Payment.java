@@ -3,6 +3,7 @@ package com.cplerings.core.domain.payment;
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.design.request.CustomRequest;
+import com.cplerings.core.domain.order.StandardOrder;
 import com.cplerings.core.domain.payment.transaction.VNPayTransaction;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.valueobject.Money;
@@ -73,4 +74,7 @@ public class Payment extends AbstractEntity {
 
     @OneToOne(mappedBy = "payment")
     private DesignSessionPayment designSessionPayment;
+
+    @OneToOne(mappedBy = "payment")
+    private StandardOrder standardOrder;
 }

@@ -49,6 +49,7 @@ public class SharedPaymentDataSource extends AbstractDataSource
                 .leftJoin(Q_PAYMENT.customRequest)
                 .leftJoin(Q_PAYMENT.designSessionPayment)
                 .leftJoin(Q_PAYMENT.craftingStage)
+                .leftJoin(Q_PAYMENT.standardOrder)
                 .where(Q_PAYMENT.id.eq(paymentId))
                 .fetchFirst());
     }
