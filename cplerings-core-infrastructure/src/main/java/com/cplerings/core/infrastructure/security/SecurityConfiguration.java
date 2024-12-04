@@ -329,7 +329,9 @@ public class SecurityConfiguration {
 
     private void handleStandardOrderAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.STANDARD_ORDER_PATH))
-                .hasAuthority(RoleConstant.ROLE_CUSTOMER));
+                .hasAuthority(RoleConstant.ROLE_CUSTOMER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.STANDARD_ORDER_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER));
     }
 
     private String resolvePath(String path) {

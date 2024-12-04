@@ -26,6 +26,7 @@ import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.jewelry.Jewelry;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.StandardOrder;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.order.status.TransportationNote;
 import com.cplerings.core.domain.payment.DesignSessionPayment;
@@ -59,6 +60,7 @@ import com.cplerings.core.infrastructure.repository.PaymentRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
 import com.cplerings.core.infrastructure.repository.SpouseAccountRepository;
 import com.cplerings.core.infrastructure.repository.SpouseRepository;
+import com.cplerings.core.infrastructure.repository.StandardOrderRepository;
 import com.cplerings.core.infrastructure.repository.TransportationAddressRepository;
 import com.cplerings.core.infrastructure.repository.TransportationNoteRepository;
 import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
@@ -103,6 +105,7 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private final CustomRequestHistoryRepository customRequestHistoryRepository;
     private final JewelryRepository jewelryRepository;
     private final DesignSessionPaymentRepository designSessionPaymentRepository;
+    private final StandardOrderRepository standardOrderRepository;
 
     @Override
     public Payment save(Payment payment) {
@@ -270,6 +273,12 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     public DesignSessionPayment save(DesignSessionPayment designSessionPayment) {
         updateAuditor(designSessionPayment);
         return designSessionPaymentRepository.save(designSessionPayment);
+    }
+
+    @Override
+    public StandardOrder save(StandardOrder standardOrder) {
+        updateAuditor(standardOrder);
+        return standardOrderRepository.save(standardOrder);
     }
 
     @Override

@@ -21,6 +21,7 @@ import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.jewelry.Jewelry;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.StandardOrder;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.order.status.TransportationNote;
 import com.cplerings.core.domain.payment.DesignSessionPayment;
@@ -94,4 +95,6 @@ public interface TestDataSource {
     Jewelry save(Jewelry jewelry);
 
     DesignSessionPayment save(DesignSessionPayment designSessionPayment);
+
+    StandardOrder save(StandardOrder standardOrder);
 }
