@@ -37,6 +37,11 @@ public enum ConfigurationKey {
      * Maximum maintenance duration
      */
     MMAD("MMAD"),
+
+    /**
+     * Price Application Ratio
+     */
+    PARA("PARA"),
     ;
 
     private final String key;

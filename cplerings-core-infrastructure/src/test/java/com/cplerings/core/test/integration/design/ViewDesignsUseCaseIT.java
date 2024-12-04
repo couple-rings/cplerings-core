@@ -21,6 +21,7 @@ class ViewDesignsUseCaseIT extends AbstractIT {
                 .pageSize(1)
                 .categoryId(1L)
                 .designCollectionId(1L)
+                .metalSpecId(1L)
                 .build();
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(APIConstant.DESIGN_PATH)

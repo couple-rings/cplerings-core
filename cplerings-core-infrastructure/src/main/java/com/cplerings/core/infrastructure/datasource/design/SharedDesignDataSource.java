@@ -35,6 +35,7 @@ import com.cplerings.core.domain.design.DesignStatus;
 import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.design.QDesign;
 import com.cplerings.core.domain.design.QDesignCollection;
+import com.cplerings.core.domain.design.QDesignMetalSpecification;
 import com.cplerings.core.domain.design.QDesignVersion;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.QCustomRequest;
@@ -86,6 +87,7 @@ public class SharedDesignDataSource extends AbstractDataSource
     private static final QJewelryCategory Q_JEWELRY_CATEGORY = QJewelryCategory.jewelryCategory;
     private static final QDesignCollection Q_DESIGN_COLLECTION = QDesignCollection.designCollection;
     private static final QMetalSpecification Q_METAL_SPECIFICATION = QMetalSpecification.metalSpecification;
+    private static final QDesignMetalSpecification Q_DESIGN_METAL_SPECIFICATION = QDesignMetalSpecification.designMetalSpecification;
 
     private final DesignSessionRepository designSessionRepository;
     private final AccountRepository accountRepository;
@@ -339,7 +341,8 @@ public class SharedDesignDataSource extends AbstractDataSource
                 .select(Q_DESIGN)
                 .from(Q_DESIGN)
                 .leftJoin(Q_DESIGN.designCollection).fetchJoin()
-                .leftJoin(Q_DESIGN.designMetalSpecifications).fetchJoin()
+                .leftJoin(Q_DESIGN.designMetalSpecifications, Q_DESIGN_METAL_SPECIFICATION).fetchJoin()
+                .leftJoin(Q_DESIGN_METAL_SPECIFICATION.metalSpecification).fetchJoin()
                 .leftJoin(Q_DESIGN.jewelryCategory).fetchJoin();
         final BooleanExpressionBuilder booleanExpressionBuilder = createBooleanExpressionBuilder();
         booleanExpressionBuilder.and(Q_DESIGN.jewelryCategory.id.isNotNull());
@@ -360,7 +363,7 @@ public class SharedDesignDataSource extends AbstractDataSource
         }
 
         if (input.getMetalSpecId() != null) {
-            booleanExpressionBuilder.and(Q_DESIGN.designMetalSpecifications.any().id.eq(input.getMetalSpecId()));
+            booleanExpressionBuilder.and(Q_DESIGN_METAL_SPECIFICATION.metalSpecification.id.eq(input.getMetalSpecId()));
         }
 
         if (input.getCharacteristic() != null) {
