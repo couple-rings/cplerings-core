@@ -159,7 +159,9 @@ public class SecurityConfiguration {
 
     private void handlePaymentAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VNPAY_PATH))
-                .permitAll());
+                .permitAll())
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.PAYMENT_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER));
     }
 
     private void handleDesignAPI(HttpSecurity localHttp) throws Exception {
