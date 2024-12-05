@@ -186,5 +186,6 @@ public final class APIConstant {
      */
     public static final String STANDARD_ORDER_PATH = "/standard-orders";
     public static final String PAY_STANDARD_ORDER_PATH = STANDARD_ORDER_PATH + "/payment";
+    public static final String SINGLE_STANDARD_ORDER_PATH = STANDARD_ORDER_PATH + "/{standardOrderId}";
 }
 

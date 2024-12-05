@@ -28,6 +28,6 @@ public class AStandardOrder implements Serializable {
     private AStandardOrderStatus status;
     private Collection<AStandardOrderHistory> standardOrderHistories;
     private Collection<ATransportationOrder> transportationOrders;
-    private Collection<AJewelry> jewelries;
+    private Collection<AStandardOrderItem> standardOrderItems;
     private Instant createdAt;
 }

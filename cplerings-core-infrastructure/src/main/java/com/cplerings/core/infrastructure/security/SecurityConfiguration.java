@@ -333,7 +333,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.STANDARD_ORDER_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.PAY_STANDARD_ORDER_PATH))
-                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER));
+                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.SINGLE_STANDARD_ORDER_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER));
     }
 
     private String resolvePath(String path) {

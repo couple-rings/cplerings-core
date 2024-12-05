@@ -69,6 +69,5 @@ class CreateStandardOrderUseCaseIT extends AbstractIT {
         assertThat(standardOrder.standardOrder()).isNotNull();
         assertThat(standardOrder.standardOrder().getStatus()).isEqualByComparingTo(AStandardOrderStatus.PENDING);
         assertThat(standardOrder.standardOrder().getTotalPrice()).isNotEqualTo(0);
-        assertThat(standardOrder.standardOrder().getJewelries()).isNotNull();
     }
 }
