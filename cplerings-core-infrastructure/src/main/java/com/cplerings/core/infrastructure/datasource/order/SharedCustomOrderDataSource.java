@@ -11,6 +11,7 @@ import com.cplerings.core.application.order.datasource.PayStandardOrderDataSourc
 import com.cplerings.core.application.order.datasource.ProcessPayStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrdersDataSource;
+import com.cplerings.core.application.order.datasource.ViewStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewStandardOrdersDataSource;
 import com.cplerings.core.application.order.datasource.data.JewelrySearchInfo;
 import com.cplerings.core.application.order.datasource.result.CustomOrders;
@@ -57,7 +58,7 @@ import lombok.RequiredArgsConstructor;
 public class SharedCustomOrderDataSource extends AbstractDataSource
         implements ViewCustomOrdersDataSource, ViewCustomOrderDataSource, AssignJewelerToCustomOrderDataSource,
         CreateStandardOrderDataSource, ViewStandardOrdersDataSource, PayStandardOrderDataSource,
-        ProcessPayStandardOrderDataSource {
+        ProcessPayStandardOrderDataSource, ViewStandardOrderDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QAccount Q_ACCOUNT = QAccount.account;
@@ -325,5 +326,16 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
     public List<StandardOrderItem> save(Collection<StandardOrderItem> standardOrderItems) {
         standardOrderItems.forEach(this::updateAuditor);
         return standardOrderItemRepository.saveAll(standardOrderItems);
+    }
+
+    @Override
+    public Optional<StandardOrder> getStandardOrderById(Long id) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_STANDARD_ORDER)
+                .from(Q_STANDARD_ORDER)
+                .leftJoin(Q_STANDARD_ORDER.standardOrderItems, Q_STANDARD_ORDER_ITEM).fetchJoin()
+                .leftJoin(Q_STANDARD_ORDER_ITEM.jewelry).fetchJoin()
+                .where(Q_STANDARD_ORDER.id.eq(id))
+                .fetchFirst());
     }
 }
