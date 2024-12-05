@@ -7,8 +7,14 @@ import static com.cplerings.core.application.payment.error.PaymentErrorCode.RESU
 import static com.cplerings.core.application.payment.error.PaymentErrorCode.SECURE_HASH_REQUIRED;
 import static com.cplerings.core.application.payment.error.PaymentErrorCode.TERMINAL_CODE_REQUIRED;
 
+import java.math.BigDecimal;
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.cplerings.core.application.crafting.ProcessCraftingStageDepositUseCase;
 import com.cplerings.core.application.design.ProcessDesignSessionPaymentUseCase;
+import com.cplerings.core.application.order.ProcessPayStandardOrderUseCase;
 import com.cplerings.core.application.payment.ProcessVNPayPaymentUseCase;
 import com.cplerings.core.application.payment.datasource.ProcessVNPayPaymentDataSource;
 import com.cplerings.core.application.payment.input.PaymentSuccessfulResultInput;
@@ -29,11 +35,6 @@ import com.cplerings.core.domain.payment.transaction.VNPayTransaction;
 
 import lombok.RequiredArgsConstructor;
 
-import org.apache.commons.lang3.StringUtils;
-
-import java.math.BigDecimal;
-import java.util.Optional;
-
 @UseCaseImplementation
 @RequiredArgsConstructor
 public class ProcessVNPayPaymentUseCaseImpl extends AbstractUseCase<VNPayPaymentInput, VNPayPaymentOutput>
@@ -44,6 +45,7 @@ public class ProcessVNPayPaymentUseCaseImpl extends AbstractUseCase<VNPayPayment
     private final APaymentStatusMapper aPaymentStatusMapper;
     private final ProcessDesignSessionPaymentUseCase processDesignSessionPaymentUseCase;
     private final ProcessCraftingStageDepositUseCase processCraftingStageDepositUseCase;
+    private final ProcessPayStandardOrderUseCase processPayStandardOrderUseCase;
 
     @Override
     protected void validateInput(UseCaseValidator validator, VNPayPaymentInput input) {
@@ -103,6 +105,10 @@ public class ProcessVNPayPaymentUseCaseImpl extends AbstractUseCase<VNPayPayment
             }
             case CRAFT_STAGE -> {
                 final Either<NoOutput, ErrorCodes> result = processCraftingStageDepositUseCase.execute(input);
+                validator.validateAndStopExecution(result.isLeft(), PAYMENT_RECEIVER_HANDLER_FAILED);
+            }
+            case STANDARD -> {
+                final Either<NoOutput, ErrorCodes> result = processPayStandardOrderUseCase.execute(input);
                 validator.validateAndStopExecution(result.isLeft(), PAYMENT_RECEIVER_HANDLER_FAILED);
             }
             default -> validator.validateAndStopExecution(false, PAYMENT_WITH_ID_NOT_FOUND);

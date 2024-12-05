@@ -66,6 +66,7 @@ public class VNPayPaymentRequestService extends AbstractVNPayPaymentService impl
         switch (paymentInfo.getReceiverType()) {
             case DESIGN_FEE -> payment.setPaymentReceiverType(PaymentReceiverType.DESIGN_FEE);
             case CRAFT_STAGE -> payment.setPaymentReceiverType(PaymentReceiverType.CRAFT_STAGE);
+            case STANDARD -> payment.setPaymentReceiverType(PaymentReceiverType.STANDARD);
         }
         payment = vnPayPaymentServiceDataSource.save(payment);
         final Map<String, Object> paymentQueries = createQueriesWithoutSecureHash(paymentInfo, payment.getId());

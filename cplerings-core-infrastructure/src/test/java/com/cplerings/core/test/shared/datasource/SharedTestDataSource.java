@@ -26,6 +26,8 @@ import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.jewelry.Jewelry;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.QStandardOrder;
+import com.cplerings.core.domain.order.QStandardOrderItem;
 import com.cplerings.core.domain.order.StandardOrder;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.order.status.TransportationNote;
@@ -77,6 +79,8 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QBranch Q_BRANCH = QBranch.branch;
     private static final QAgreement Q_AGREEMENT = QAgreement.agreement;
+    private static final QStandardOrder Q_STANDARD_ORDER = QStandardOrder.standardOrder;
+    private static final QStandardOrderItem Q_STANDARD_ORDER_ITEM = QStandardOrderItem.standardOrderItem;
 
     private final PaymentRepository paymentRepository;
     private final DesignSessionRepository designSessionRepository;
@@ -279,6 +283,16 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     public StandardOrder save(StandardOrder standardOrder) {
         updateAuditor(standardOrder);
         return standardOrderRepository.save(standardOrder);
+    }
+
+    @Override
+    public StandardOrder getStandardOrderById(Long id) {
+        return createQuery().select(Q_STANDARD_ORDER)
+                .from(Q_STANDARD_ORDER)
+                .leftJoin(Q_STANDARD_ORDER.standardOrderItems, Q_STANDARD_ORDER_ITEM).fetchJoin()
+                .leftJoin(Q_STANDARD_ORDER_ITEM.jewelry).fetchJoin()
+                .where(Q_STANDARD_ORDER.id.eq(id))
+                .fetchFirst();
     }
 
     @Override
