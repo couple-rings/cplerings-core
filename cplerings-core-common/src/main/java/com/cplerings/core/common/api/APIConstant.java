@@ -57,6 +57,7 @@ public final class APIConstant {
      */
     public static final String PAYMENTS_PATH = "/payments";
     public static final String VNPAY_PATH = PAYMENTS_PATH + "/vnpay";
+    public static final String PAYMENT_PATH = PAYMENTS_PATH + "/{paymentId}";
 
     /*
         Design's paths
