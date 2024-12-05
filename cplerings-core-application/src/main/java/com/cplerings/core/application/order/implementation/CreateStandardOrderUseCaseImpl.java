@@ -62,11 +62,16 @@ public class CreateStandardOrderUseCaseImpl extends AbstractUseCase<CreateStanda
         });
         BigDecimal totalPrice = BigDecimal.valueOf(0);
         BigDecimal sideDiamondPrice = configurationService.getSideDiamondPrice().getAmount();
-        jewelries.forEach(x -> {
-            var eachJewelryPrice = calculationTotalPriceService.calculationPriceForJewelry(x.getMetalSpecification().getPricePerUnit(), x.getDesign().getMetalWeight().getWeightValue(), x.getDesign().getSideDiamondsCount(), sideDiamondPrice);
+        for (var jewelry : jewelries) {
+            var eachJewelryPrice = calculationTotalPriceService.calculationPriceForJewelry(
+                    jewelry.getMetalSpecification().getPricePerUnit(),
+                    jewelry.getDesign().getMetalWeight().getWeightValue(),
+                    jewelry.getDesign().getSideDiamondsCount(),
+                    sideDiamondPrice
+            );
             BigDecimal decimalPrice = eachJewelryPrice.getAmount();
-            totalPrice.add(decimalPrice);
-        });
+            totalPrice = totalPrice.add(decimalPrice);
+        }
         StandardOrder standardOrder = StandardOrder.builder()
                 .status(StandardOrderStatus.PENDING)
                 .customer(customer)
