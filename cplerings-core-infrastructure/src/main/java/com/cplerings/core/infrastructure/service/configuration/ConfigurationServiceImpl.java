@@ -79,6 +79,9 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         if (Objects.equals(clazz, Integer.class)) {
             return (T) Integer.valueOf(Integer.parseInt(value));
         }
+        if (Objects.equals(clazz, Double.class)) {
+            return (T) Double.valueOf(Double.parseDouble(value));
+        }
         throw new IllegalArgumentException("Unsupported type: " + clazz);
     }
 }
