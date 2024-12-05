@@ -14,6 +14,7 @@ public enum PayStandardOrderErrorCode implements ErrorCode {
     INVALID_STANDARD_ORDER_ID("003", "payStandardOrder.error.invalidStandardOrderId", ErrorCode.Type.VALIDATION),
     STANDARD_ORDER_NOT_FOUND("004", "payStandardOrder.error.standardOrderNotFound", ErrorCode.Type.VALIDATION),
     JEWELRY_NOT_IN_STOCK("005", "payStandardOrder.error.jewelryNotInStock", Type.BUSINESS),
+    ADDRESS_NOT_FOUND("006", "payStandardOrder.error.transportationAddressNotFound", Type.BUSINESS),
     ;
 
     private final String code;

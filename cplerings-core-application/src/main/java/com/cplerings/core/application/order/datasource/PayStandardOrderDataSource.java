@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.Optional;
 
 import com.cplerings.core.application.order.datasource.data.JewelrySearchInfo;
+import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.jewelry.Jewelry;
 import com.cplerings.core.domain.order.StandardOrder;
 import com.cplerings.core.domain.order.StandardOrderItem;
+import com.cplerings.core.domain.order.TransportOrderHistory;
+import com.cplerings.core.domain.order.TransportationOrder;
 
 public interface PayStandardOrderDataSource {
 
@@ -20,4 +23,10 @@ public interface PayStandardOrderDataSource {
     List<StandardOrderItem> save(Collection<StandardOrderItem> standardOrderItems);
 
     StandardOrder save(StandardOrder standardOrder);
+
+    Optional<TransportationAddress> getTransportationAddressById(Long transportationAddressId);
+
+    TransportationOrder save(TransportationOrder transportationOrder);
+
+    TransportOrderHistory save(TransportOrderHistory transportOrderHistory);
 }

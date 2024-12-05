@@ -184,6 +184,14 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
     }
 
     @Override
+    public Optional<TransportationAddress> getTransportationAddressById(Long transportationAddressId) {
+        return Optional.ofNullable(createQuery().select(Q_TRANSPORTATION_ADDRESS)
+                .from(Q_TRANSPORTATION_ADDRESS)
+                .where(Q_TRANSPORTATION_ADDRESS.id.eq(transportationAddressId))
+                .fetchFirst());
+    }
+
+    @Override
     public StandardOrderHistory save(StandardOrderHistory history) {
         updateAuditor(history);
         return standardOrderHistoryRepository.save(history);

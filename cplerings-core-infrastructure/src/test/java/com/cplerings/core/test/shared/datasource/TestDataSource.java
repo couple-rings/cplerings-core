@@ -97,4 +97,6 @@ public interface TestDataSource {
     DesignSessionPayment save(DesignSessionPayment designSessionPayment);
 
     StandardOrder save(StandardOrder standardOrder);
+
+    StandardOrder getStandardOrderById(Long id);
 }

@@ -1,5 +1,6 @@
 package com.cplerings.core.application.order.implementation;
 
+import static com.cplerings.core.application.order.error.PayStandardOrderErrorCode.ADDRESS_NOT_FOUND;
 import static com.cplerings.core.application.order.error.PayStandardOrderErrorCode.INVALID_STANDARD_ORDER_ID;
 import static com.cplerings.core.application.order.error.PayStandardOrderErrorCode.JEWELRY_NOT_IN_STOCK;
 import static com.cplerings.core.application.order.error.PayStandardOrderErrorCode.STANDARD_ORDER_ID_REQUIRED;
@@ -26,10 +27,14 @@ import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.common.number.NumberUtils;
+import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.jewelry.Jewelry;
 import com.cplerings.core.domain.jewelry.JewelryStatus;
 import com.cplerings.core.domain.order.StandardOrder;
 import com.cplerings.core.domain.order.StandardOrderItem;
+import com.cplerings.core.domain.order.TransportOrderHistory;
+import com.cplerings.core.domain.order.TransportStatus;
+import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.payment.PaymentReceiverType;
 
 import lombok.Builder;
@@ -110,7 +115,27 @@ public class PayStandardOrderUseCaseImpl extends AbstractUseCase<PayStandardOrde
                 .description("Standard Order " + standardOrder.getOrderNo())
                 .build());
         standardOrder.setPayment(paymentRequest.getPayment());
-        dataSource.save(standardOrder);
+        StandardOrder standardOrderCreated = dataSource.save(standardOrder);
+
+        // Create TransportationOrder
+        if (input.transportationAddressId() != null) {
+            TransportationAddress address = dataSource.getTransportationAddressById(input.transportationAddressId())
+                    .orElse(null);
+            validator.validateAndStopExecution(address != null, ADDRESS_NOT_FOUND);
+            TransportationOrder transportationOrder = TransportationOrder.builder()
+                    .status(TransportStatus.PENDING)
+                    .receiverName(address.getReceiverName())
+                    .receiverPhone(address.getReceiverPhone())
+                    .deliveryAddress(address.getAddressAsString())
+                    .standardOrder(standardOrderCreated)
+                    .build();
+            transportationOrder = dataSource.save(transportationOrder);
+            TransportOrderHistory transportOrderHistory = TransportOrderHistory.builder()
+                    .transportationOrder(transportationOrder)
+                    .status(TransportStatus.PENDING)
+                    .build();
+            dataSource.save(transportOrderHistory);
+        }
 
         return PayStandardOrderOutput.builder()
                 .paymentId(paymentRequest.getPayment().getId())
