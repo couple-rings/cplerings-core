@@ -57,8 +57,8 @@ public class GetPaymentController extends AbstractController<GetPaymentInput, Ge
             )
     )
     @ErrorAPIResponse
-    public ResponseEntity<Object> viewDesign(@PathVariable("payemntId") Long payemntId) {
-        GetPaymentRequest request = new GetPaymentRequest(payemntId);
+    public ResponseEntity<Object> view(@PathVariable("paymentId") Long paymentId) {
+        GetPaymentRequest request = GetPaymentRequest.builder().paymentId(paymentId).build();
         return handleRequest(request);
     }
 }
