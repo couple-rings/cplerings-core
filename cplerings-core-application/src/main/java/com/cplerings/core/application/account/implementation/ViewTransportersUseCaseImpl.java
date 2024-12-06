@@ -6,6 +6,7 @@ import com.cplerings.core.application.account.error.ViewTransportersErrorCode;
 import com.cplerings.core.application.account.input.ViewTransportersInput;
 import com.cplerings.core.application.account.mapper.AViewTransportersMapper;
 import com.cplerings.core.application.account.output.ViewTransportersOutput;
+import com.cplerings.core.application.account.output.result.TransportersOutputResult;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
@@ -29,6 +30,10 @@ public class ViewTransportersUseCaseImpl extends AbstractUseCase<ViewTransporter
     @Override
     protected ViewTransportersOutput internalExecute(UseCaseValidator validator, ViewTransportersInput input) {
         var result = viewTransportersDataSource.getTransporters(input);
-        return aViewTransportersMapper.toOutput(result);
+        TransportersOutputResult transportersOutputResult = aViewTransportersMapper.toTransporters(result);
+        transportersOutputResult.getTransporters().forEach(x -> {
+            x.setNumberOfHandleTransportOrder(viewTransportersDataSource.calculateNoOfHandleTransportationOrders(x));
+        });
+        return aViewTransportersMapper.toOutput(transportersOutputResult);
     }
 }

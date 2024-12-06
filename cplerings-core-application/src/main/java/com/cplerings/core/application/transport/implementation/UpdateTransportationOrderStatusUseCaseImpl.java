@@ -53,11 +53,11 @@ public class UpdateTransportationOrderStatusUseCaseImpl extends AbstractUseCase<
                 break;
             }
 
-            case WAITING: {
+            case REDELIVERING: {
                 validator.validateAndStopExecution(transportationOrder.getStatus() == TransportStatus.DELIVERING, UpdateTransportationOrderStatusErrorCode.INVALID_STATUS);
-                transportationOrder.setStatus(TransportStatus.WAITING);
+                transportationOrder.setStatus(TransportStatus.REDELIVERING);
                 transportOrderHistory = TransportOrderHistory.builder()
-                        .status(TransportStatus.WAITING)
+                        .status(TransportStatus.REDELIVERING)
                         .build();
                 break;
             }

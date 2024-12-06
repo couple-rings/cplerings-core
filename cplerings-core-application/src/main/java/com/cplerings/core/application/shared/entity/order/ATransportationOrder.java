@@ -7,7 +7,6 @@ import com.cplerings.core.application.shared.entity.account.AAccount;
 import com.cplerings.core.application.shared.entity.file.AImage;
 import com.cplerings.core.application.shared.entity.transport.ATransportationNote;
 import com.cplerings.core.application.shared.entity.transport.ATransportationOrderStatus;
-import com.cplerings.core.domain.order.TransportStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +27,7 @@ public class ATransportationOrder implements Serializable {
     private String receiverPhone;
     private String deliveryAddress;
     private ACustomOrder customOrder;
+    private AStandardOrder standardOrder;
     private AAccount transporter;
     private String orderNo;
     private Collection<ATransportationNote> transportationNotes;

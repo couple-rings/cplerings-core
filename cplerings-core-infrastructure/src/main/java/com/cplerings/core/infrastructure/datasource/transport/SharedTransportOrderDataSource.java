@@ -191,6 +191,8 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
                         booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.COMPLETED));
                 case REJECTED ->
                         booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.REJECTED));
+                case REDELIVERING ->
+                        booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.REDELIVERING));
             }
         }
         final BooleanExpression predicate = booleanExpressionBuilder.build();
