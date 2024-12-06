@@ -46,11 +46,13 @@ public class SharedPaymentDataSource extends AbstractDataSource
     public Optional<Payment> findPaymentByIdWithVNPayTransaction(Long paymentId) {
         return Optional.ofNullable(createQuery().select(Q_PAYMENT)
                 .from(Q_PAYMENT)
-                .leftJoin(Q_PAYMENT.vnPayTransaction)
-                .leftJoin(Q_PAYMENT.customRequest)
-                .leftJoin(Q_PAYMENT.designSessionPayment)
-                .leftJoin(Q_PAYMENT.craftingStage)
-                .leftJoin(Q_PAYMENT.standardOrder)
+                .leftJoin(Q_PAYMENT.vnPayTransaction).fetchJoin()
+                .leftJoin(Q_PAYMENT.customRequest).fetchJoin()
+                .leftJoin(Q_PAYMENT.designSessionPayment).fetchJoin()
+                .leftJoin(Q_PAYMENT.craftingStage).fetchJoin()
+                .leftJoin(Q_PAYMENT.craftingStage.customOrder).fetchJoin()
+                .leftJoin(Q_PAYMENT.craftingStage.customOrder.craftingStages).fetchJoin()
+                .leftJoin(Q_PAYMENT.standardOrder).fetchJoin()
                 .where(Q_PAYMENT.id.eq(paymentId))
                 .fetchFirst());
     }

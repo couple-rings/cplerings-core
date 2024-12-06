@@ -73,7 +73,7 @@ public class ProcessVNPayPaymentUseCaseImpl extends AbstractUseCase<VNPayPayment
             default -> PaymentStatus.FAILED;
         });
         payment.setStatus(paymentStatus);
-        processVNPayPaymentDataSource.save(payment);
+        payment = processVNPayPaymentDataSource.save(payment);
         if (paymentIsSuccessful) {
             final VNPayTransaction vnPayTransaction = VNPayTransaction.builder()
                     .payDate(input.getPayDate())
