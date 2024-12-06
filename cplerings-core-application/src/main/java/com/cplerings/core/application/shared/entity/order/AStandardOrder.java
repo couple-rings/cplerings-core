@@ -28,6 +28,7 @@ public class AStandardOrder implements Serializable {
     private AStandardOrderStatus status;
     private Collection<AStandardOrderHistory> standardOrderHistories;
     private Collection<AStandardOrderItem> standardOrderItems;
+    private Collection<ATransportOrderWithoutStandard> transportationOrders;
     private String orderNo;
     private Instant createdAt;
 }
