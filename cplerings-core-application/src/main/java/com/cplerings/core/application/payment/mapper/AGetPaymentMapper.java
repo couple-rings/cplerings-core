@@ -3,6 +3,7 @@ package com.cplerings.core.application.payment.mapper;
 import org.mapstruct.Mapper;
 
 import com.cplerings.core.application.payment.output.GetPaymentOutput;
+import com.cplerings.core.application.shared.mapper.ACraftingMapper;
 import com.cplerings.core.application.shared.mapper.DesignSizeMapper;
 import com.cplerings.core.application.shared.mapper.MoneyMapper;
 import com.cplerings.core.application.shared.mapper.WeightMapper;
@@ -13,7 +14,8 @@ import com.cplerings.core.domain.payment.Payment;
 uses = {
         WeightMapper.class,
         MoneyMapper.class,
-        DesignSizeMapper.class
+        DesignSizeMapper.class,
+        ACraftingMapper.class,
 })
 public interface AGetPaymentMapper {
 

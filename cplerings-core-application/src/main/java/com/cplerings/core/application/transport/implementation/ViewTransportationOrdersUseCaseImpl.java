@@ -37,7 +37,8 @@ public class ViewTransportationOrdersUseCaseImpl extends AbstractUseCase<ViewTra
         var result = viewTransportationOrdersDataSource.getTransportationOrders(input);
         if (input.getStatus() == ATransportationOrderStatus.PENDING) {
             result.getTransportationOrders().forEach(transportationOrder -> {
-                validator.validateAndStopExecution(transportationOrder.getCustomOrder().getStatus() == CustomOrderStatus.DONE, ViewTransportationOrdersErrorCode.NOT_DONE_CUSTOM_ORDER);
+                if (transportationOrder.getCustomOrder() != null)
+                    validator.validateAndStopExecution(transportationOrder.getCustomOrder().getStatus() == CustomOrderStatus.DONE, ViewTransportationOrdersErrorCode.NOT_DONE_CUSTOM_ORDER);
             });
         }
         return viewTransportationOrdersMapper.toOutput(result);

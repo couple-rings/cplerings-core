@@ -1,5 +1,11 @@
 package com.cplerings.core.infrastructure.service.configuration;
 
+import java.math.BigDecimal;
+import java.util.Objects;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+
 import com.cplerings.core.application.shared.service.configuration.ConfigurationKey;
 import com.cplerings.core.application.shared.service.configuration.ConfigurationService;
 import com.cplerings.core.domain.configuration.Configuration;
@@ -8,12 +14,6 @@ import com.cplerings.core.domain.shared.valueobject.Money;
 import com.cplerings.core.infrastructure.service.configuration.datasource.ConfigurationServiceDataSource;
 
 import lombok.RequiredArgsConstructor;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -54,6 +54,26 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     @Override
     public Double getPriceApplicationRatio() {
         return getConfiguration(ConfigurationKey.PARA.getKey(), Double.class);
+    }
+
+    @Override
+    public Money getCraftingFee() {
+        return getConfiguration(ConfigurationKey.CRFE.getKey(), Money.class);
+    }
+
+    @Override
+    public Money getShippingFee() {
+        return getConfiguration(ConfigurationKey.SHFE.getKey(), Money.class);
+    }
+
+    @Override
+    public Double getRefundPercentage() {
+        return getConfiguration(ConfigurationKey.REFU.getKey(), Double.class);
+    }
+
+    @Override
+    public Double getResellPercentage() {
+        return getConfiguration(ConfigurationKey.RESE.getKey(), Double.class);
     }
 
     private <T> T getConfiguration(String key, Class<T> clazz) {

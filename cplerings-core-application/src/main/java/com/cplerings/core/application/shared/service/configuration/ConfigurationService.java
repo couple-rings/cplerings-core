@@ -19,4 +19,12 @@ public interface ConfigurationService {
     Integer getMaximumMaintenanceDuration();
 
     Double getPriceApplicationRatio();
+
+    Money getCraftingFee();
+
+    Money getShippingFee();
+
+    Double getRefundPercentage();
+
+    Double getResellPercentage();
 }
