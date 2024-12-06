@@ -252,7 +252,7 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
                 .select(Q_STANDARD_ORDER)
                 .from(Q_STANDARD_ORDER)
                 .leftJoin(Q_STANDARD_ORDER.customer).fetchJoin()
-                .leftJoin(Q_STANDARD_ORDER.standardOrderItems, Q_STANDARD_ORDER_ITEM).fetchJoin();
+                .leftJoin(Q_STANDARD_ORDER.standardOrderItems).fetchJoin();
 
         final BooleanExpressionBuilder booleanExpressionBuilder = createBooleanExpressionBuilder();
         if (input.getStatus() != null) {
@@ -272,7 +272,7 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
         }
 
         if (input.getBranchId() != null) {
-            booleanExpressionBuilder.and(Q_STANDARD_ORDER_ITEM.branch.id.eq(input.getBranchId()));
+            booleanExpressionBuilder.and(Q_STANDARD_ORDER.standardOrderItems.any().branch.id.eq(input.getBranchId()));
         }
 
         final BooleanExpression predicate = booleanExpressionBuilder.build();
