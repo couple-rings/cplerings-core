@@ -338,7 +338,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.PAY_STANDARD_ORDER_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.SINGLE_STANDARD_ORDER_PATH))
-                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER));
+                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.PUT, resolvePath(APIConstant.CANCEL_STANDARD_ORDER_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER));
     }
 
     private void handleConfigurationAPI(HttpSecurity localHttp) throws Exception {
