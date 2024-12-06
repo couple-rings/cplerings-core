@@ -6,7 +6,10 @@ import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.jewelry.Jewelry;
 import com.cplerings.core.domain.metal.MetalSpecification;
 import com.cplerings.core.domain.shared.AbstractEntity;
+import com.cplerings.core.domain.shared.valueobject.Money;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Embedded;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -60,4 +63,8 @@ public class StandardOrderItem extends AbstractEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "design_id")
     private Design design;
+
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "price", precision = 12, scale = 3, nullable = false))
+    private Money price;
 }

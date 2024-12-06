@@ -6,6 +6,7 @@ import com.cplerings.core.application.shared.entity.branch.ABranch;
 import com.cplerings.core.application.shared.entity.design.ADesign;
 import com.cplerings.core.application.shared.entity.design.AMetalSpecification;
 import com.cplerings.core.application.shared.entity.jewelry.AJewelry;
+import com.cplerings.core.domain.shared.valueobject.Money;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,4 +26,5 @@ public class AStandardOrderItem implements Serializable {
     private ABranch branch;
     private ADesign design;
     private AMetalSpecification metalSpecification;
+    private Money price;
 }
