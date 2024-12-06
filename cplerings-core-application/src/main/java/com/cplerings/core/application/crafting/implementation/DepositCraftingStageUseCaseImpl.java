@@ -73,6 +73,8 @@ public class DepositCraftingStageUseCaseImpl extends AbstractUseCase<DepositCraf
                 .description("Payment for crafting stage " + craftingStage.getId())
                 .receiverType(PaymentReceiverType.CRAFT_STAGE)
                 .build());
+        craftingStage.setPayment(paymentRequest.getPayment());
+        dataSource.save(craftingStage);
         return DepositCraftingStageOutput.builder()
                 .paymentId(paymentRequest.getPayment().getId())
                 .paymentLink(paymentRequest.getPaymentLink())

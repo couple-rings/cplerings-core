@@ -13,4 +13,6 @@ public interface DepositCraftingStageDataSource {
     Optional<TransportationAddress> findTransportAddressById(Long transportAddressId);
 
     CustomOrder save(CustomOrder customOrder);
+
+    CraftingStage save(CraftingStage craftingStage);
 }
