@@ -32,6 +32,7 @@ import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.QCustomOrder;
 import com.cplerings.core.domain.order.QStandardOrder;
+import com.cplerings.core.domain.order.QStandardOrderItem;
 import com.cplerings.core.domain.order.QTransportationOrder;
 import com.cplerings.core.domain.order.StandardOrder;
 import com.cplerings.core.domain.order.StandardOrderHistory;
@@ -74,6 +75,7 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
     private static final QImage Q_IMAGE = QImage.image;
     private static final QTransportationNote Q_TRANSPORTATION_NOTE = QTransportationNote.transportationNote;
     private static final QStandardOrder Q_STANDARD_ORDER = QStandardOrder.standardOrder;
+    private static final QStandardOrderItem Q_STANDARD_ORDER_ITEM = QStandardOrderItem.standardOrderItem;
 
     private final TransportationOrderRepository transportationOrderRepository;
     private final CustomOrderRepository customOrderRepository;
@@ -161,6 +163,8 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
                 .select(Q_TRANSPORTATION_ORDER)
                 .from(Q_TRANSPORTATION_ORDER)
                 .leftJoin(Q_TRANSPORTATION_ORDER.customOrder, Q_CUSTOM_ORDER).fetchJoin()
+                .leftJoin(Q_TRANSPORTATION_ORDER.standardOrder, Q_STANDARD_ORDER).fetchJoin()
+                .leftJoin(Q_STANDARD_ORDER.standardOrderItems, Q_STANDARD_ORDER_ITEM).fetchJoin()
                 .leftJoin(Q_CUSTOM_ORDER.firstRing, FIRST_Q_RING).fetchJoin()
                 .leftJoin(Q_CUSTOM_ORDER.secondRing, SECOND_Q_RING).fetchJoin()
                 .leftJoin(FIRST_Q_RING.branch, FIRST_Q_BRANCH).fetchJoin()
@@ -172,6 +176,7 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
 
         if (input.getBranchId() != null) {
             booleanExpressionBuilder.and(FIRST_Q_RING.branch.id.eq(input.getBranchId()));
+            booleanExpressionBuilder.or(Q_STANDARD_ORDER_ITEM.branch.id.eq(input.getBranchId()));
         }
 
         if (input.getStatus() != null) {

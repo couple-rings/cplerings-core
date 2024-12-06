@@ -42,6 +42,26 @@ public enum ConfigurationKey {
      * Price Application Ratio
      */
     PARA("PARA"),
+
+    /**
+     * CRFE
+     */
+    CRFE("CRFE"),
+
+    /**
+     * SHFE
+     */
+    SHFE("SHFE"),
+
+    /**
+     * REFU
+     */
+    REFU("REFU"),
+
+    /**
+     * RESE
+     */
+    RESE("RESE"),
     ;
 
     private final String key;
