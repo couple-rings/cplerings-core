@@ -2,6 +2,7 @@ package com.cplerings.core.application.order.implementation;
 
 import com.cplerings.core.application.order.CancelStandardOrderUseCase;
 import com.cplerings.core.application.order.datasource.CancelStandardOrderDataSource;
+import com.cplerings.core.application.order.error.CancelStandardOrderErrorCode;
 import com.cplerings.core.application.order.input.CancelStandardOrderInput;
 import com.cplerings.core.application.order.mapper.ACancelStandardOrderMapper;
 import com.cplerings.core.application.order.output.CancelStandardOrderOutput;
@@ -25,8 +26,8 @@ public class CancelStandardOrderUseCaseImpl extends AbstractUseCase<CancelStanda
     protected CancelStandardOrderOutput internalExecute(UseCaseValidator validator, CancelStandardOrderInput input) {
         StandardOrder standardOrder = cancelStandardOrderDataSource.getStandardOrderById(input.standardOrderId())
                 .orElse(null);
-        validator.validateAndStopExecution(standardOrder != null, STANDARD_ORDER_NOT_FOUND);
-        validator.validateAndStopExecution(standardOrder.getStatus() == StandardOrderStatus.PENDING, STANDARD_ORDER_WRONG_STATUS_FOR_CANCEL);
+        validator.validateAndStopExecution(standardOrder != null, CancelStandardOrderErrorCode.STANDARD_ORDER_NOT_FOUND);
+        validator.validateAndStopExecution(standardOrder.getStatus() == StandardOrderStatus.PENDING, CancelStandardOrderErrorCode.STANDARD_ORDER_WRONG_STATUS_FOR_CANCEL);
         standardOrder.setStatus(StandardOrderStatus.CANCELLED);
         standardOrder = cancelStandardOrderDataSource.save(standardOrder);
         StandardOrderHistory standardOrderHistory = StandardOrderHistory.builder()
