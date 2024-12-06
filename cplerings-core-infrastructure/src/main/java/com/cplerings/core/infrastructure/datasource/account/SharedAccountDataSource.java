@@ -28,6 +28,7 @@ import com.cplerings.core.application.account.input.ViewTransportersInput;
 import com.cplerings.core.application.account.output.result.JewelersOutputResult;
 import com.cplerings.core.application.shared.entity.account.ADesignStaff;
 import com.cplerings.core.application.shared.entity.account.AJeweler;
+import com.cplerings.core.application.shared.entity.account.ATransporter;
 import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountPasswordReset;
@@ -44,6 +45,9 @@ import com.cplerings.core.domain.design.request.QCustomRequest;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.order.QCustomOrder;
+import com.cplerings.core.domain.order.QTransportationOrder;
+import com.cplerings.core.domain.order.TransportStatus;
+import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
@@ -67,6 +71,7 @@ public class SharedAccountDataSource extends AbstractDataSource
     private static final QAccountPasswordReset Q_ACCOUNT_PASSWORD_RESET = QAccountPasswordReset.accountPasswordReset;
     private static final QCustomRequest Q_CUSTOM_REQUEST = QCustomRequest.customRequest;
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
+    private static final QTransportationOrder Q_TRANSPORTATION_ORDER = QTransportationOrder.transportationOrder;
 
     private final AccountRepository accountRepository;
     private final AccountVerificationRepository accountVerificationRepository;
@@ -177,6 +182,19 @@ public class SharedAccountDataSource extends AbstractDataSource
                 .page(input.getPage())
                 .pageSize(input.getPageSize())
                 .build();
+    }
+
+    @Override
+    public Long calculateNoOfHandleTransportationOrders(ATransporter transporter) {
+        BlazeJPAQuery<TransportationOrder> query = createQuery()
+                .select(Q_TRANSPORTATION_ORDER)
+                .from(Q_TRANSPORTATION_ORDER)
+                .where(Q_TRANSPORTATION_ORDER.transporter.id.eq(transporter.getId())
+                        .and(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.WAITING))
+                        .or(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.ON_GOING))
+                        .or(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.DELIVERING))
+                        .or(Q_TRANSPORTATION_ORDER.status.eq(TransportStatus.REDELIVERING)));
+        return query.distinct().fetchCount();
     }
 
     @Override
