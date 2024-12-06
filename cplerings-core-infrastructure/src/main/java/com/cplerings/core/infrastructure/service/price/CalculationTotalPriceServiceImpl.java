@@ -19,6 +19,8 @@ public class CalculationTotalPriceServiceImpl implements CalculationTotalPriceSe
     @Override
     public Money calculationTotalPrice(Money metalPrice, Money diamondSpecPrice, BigDecimal metalWeight, int sideDiamondCount, double sideDiamondPrice) {
         Double priceApplicationRatio = configurationService.getPriceApplicationRatio();
+        Money shippingFee = configurationService.getShippingFee();
+        Money craftingFee = configurationService.getCraftingFee();
 
         BigDecimal ringPrice = (metalPrice
                 .getAmount()
@@ -26,7 +28,9 @@ public class CalculationTotalPriceServiceImpl implements CalculationTotalPriceSe
                 .multiply(metalWeight)
                 .add(diamondSpecPrice.getAmount())
                 .add(BigDecimal.valueOf(sideDiamondCount)
-                        .multiply(BigDecimal.valueOf(sideDiamondPrice))))
+                        .multiply(BigDecimal.valueOf(sideDiamondPrice)))
+                .add(craftingFee.getAmount())
+                .add(shippingFee.getAmount()))
                 .multiply(BigDecimal.valueOf(priceApplicationRatio));
         return Money.create(ringPrice);
     }
@@ -34,13 +38,15 @@ public class CalculationTotalPriceServiceImpl implements CalculationTotalPriceSe
     @Override
     public Money calculationPriceForJewelry(Money metalPrice, BigDecimal metalWeight, int sideDiamondCount, BigDecimal sideDiamondPrice) {
         Double priceApplicationRatio = configurationService.getPriceApplicationRatio();
+        Money shippingFee = configurationService.getShippingFee();
 
         BigDecimal ringPrice = (metalPrice
                 .getAmount()
                 .multiply(BigDecimal.valueOf(3.75))
                 .multiply(metalWeight)
                 .add(BigDecimal.valueOf(sideDiamondCount)
-                        .multiply(sideDiamondPrice)))
+                        .multiply(sideDiamondPrice))
+                .add(shippingFee.getAmount()))
                 .multiply(BigDecimal.valueOf(priceApplicationRatio));
         return Money.create(ringPrice);
     }
