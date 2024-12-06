@@ -13,6 +13,7 @@ import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.domain.jewelry.Jewelry;
 import com.cplerings.core.domain.jewelry.JewelryStatus;
 import com.cplerings.core.domain.order.StandardOrder;
+import com.cplerings.core.domain.order.StandardOrderHistory;
 import com.cplerings.core.domain.order.StandardOrderItem;
 import com.cplerings.core.domain.order.StandardOrderStatus;
 
@@ -41,7 +42,13 @@ public class ProcessPayStandardOrderUseCaseImpl extends AbstractUseCase<PaymentS
         jewelries.forEach(jewelry -> jewelry.setStatus(JewelryStatus.PURCHASED));
         dataSource.saveJewelries(jewelries);
         standardOrder.setStatus(StandardOrderStatus.PAID);
-        dataSource.save(standardOrder);
+        StandardOrder standardOrderCreated = dataSource.save(standardOrder);
+
+        StandardOrderHistory standardOrderHistory = StandardOrderHistory.builder()
+                .standardOrder(standardOrderCreated)
+                .status(StandardOrderStatus.PAID)
+                .build();
+        dataSource.save(standardOrderHistory);
         return NoOutput.INSTANCE;
     }
 }

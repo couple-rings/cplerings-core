@@ -91,6 +91,13 @@ public class CreateStandardOrderUseCaseImpl extends AbstractUseCase<CreateStanda
                     .branch(x.getBranch())
                     .metalSpecification(x.getMetalSpecification())
                     .build();
+            var eachJewelryPrice = calculationTotalPriceService.calculationPriceForJewelry(
+                    x.getMetalSpecification().getPricePerUnit(),
+                    x.getDesign().getMetalWeight().getWeightValue(),
+                    x.getDesign().getSideDiamondsCount(),
+                    sideDiamondPrice
+            );
+            standardOrderItem.setPrice(eachJewelryPrice);
             standardOrderItems.add(standardOrderItem);
         });
         List<StandardOrderItem> items = createStandardOrderDataSource.saveItems(standardOrderItems);
