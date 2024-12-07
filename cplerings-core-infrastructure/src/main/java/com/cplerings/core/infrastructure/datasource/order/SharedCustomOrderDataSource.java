@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.order.datasource.AssignJewelerToCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.CancelStandardOrderDataSource;
+import com.cplerings.core.application.order.datasource.CompleteOrderDataSource;
 import com.cplerings.core.application.order.datasource.CreateStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.PayStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.ProcessPayStandardOrderDataSource;
@@ -59,7 +60,7 @@ import lombok.RequiredArgsConstructor;
 public class SharedCustomOrderDataSource extends AbstractDataSource
         implements ViewCustomOrdersDataSource, ViewCustomOrderDataSource, AssignJewelerToCustomOrderDataSource,
         CreateStandardOrderDataSource, ViewStandardOrdersDataSource, PayStandardOrderDataSource,
-        ProcessPayStandardOrderDataSource, ViewStandardOrderDataSource, CancelStandardOrderDataSource {
+        ProcessPayStandardOrderDataSource, ViewStandardOrderDataSource, CancelStandardOrderDataSource, CompleteOrderDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QAccount Q_ACCOUNT = QAccount.account;

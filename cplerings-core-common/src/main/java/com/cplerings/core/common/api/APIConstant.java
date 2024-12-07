@@ -194,5 +194,11 @@ public final class APIConstant {
        Configurations' paths
     */
     public static final String CONFIGURATIONS_PATH = "/configurations";
+
+    /*
+       Orders' paths
+    */
+    public static final String ORDERS_PATH = "/orders";
+    public static final String COMPLETE_ORDER_PATH = ORDERS_PATH + "/complete";
 }
 
