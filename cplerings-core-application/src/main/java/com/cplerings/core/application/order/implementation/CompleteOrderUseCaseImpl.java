@@ -39,6 +39,7 @@ public class CompleteOrderUseCaseImpl extends AbstractUseCase<CompleteOrderInput
             CustomOrder customOrder = completeOrderDataSource.getCustomOrderById(input.orderId())
                     .orElse(null);
             validator.validateAndStopExecution(customOrder != null, CompleteOrderErrorCode.CUSTOM_ORDER_NOTFOUND);
+            validator.validateAndStopExecution(customOrder.getStatus() == CustomOrderStatus.DONE, CompleteOrderErrorCode.CUSTOM_ORDER_HAS_NOT_BEEN_DONE);
             customOrder.setStatus(CustomOrderStatus.COMPLETED);
             CustomOrder customOrderUpdated = completeOrderDataSource.save(customOrder);
             CustomOrderHistory customOrderHistory = CustomOrderHistory.builder()
@@ -51,6 +52,7 @@ public class CompleteOrderUseCaseImpl extends AbstractUseCase<CompleteOrderInput
             StandardOrder standardOrder = completeOrderDataSource.getStandardOrderById(input.orderId())
                     .orElse(null);
             validator.validateAndStopExecution(standardOrder != null, CompleteOrderErrorCode.STANDARD_ORDER_NOT_FOUND);
+            validator.validateAndStopExecution(standardOrder.getStatus() == StandardOrderStatus.PAID, CompleteOrderErrorCode.STANDARD_ORDER_HAS_NOT_BEEN_PAID);
             standardOrder.setStatus(StandardOrderStatus.COMPLETED);
             standardOrder = completeOrderDataSource.save(standardOrder);
             StandardOrderHistory standardOrderHistory = StandardOrderHistory.builder()

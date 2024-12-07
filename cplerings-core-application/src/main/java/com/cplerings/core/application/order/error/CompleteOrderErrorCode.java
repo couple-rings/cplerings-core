@@ -14,6 +14,8 @@ public enum CompleteOrderErrorCode implements ErrorCode {
     ORDER_ID_WRONG_INTEGER("004", "completeOrder.error.orderIdWrongInteger", Type.VALIDATION),
     CUSTOM_ORDER_NOTFOUND("005", "completeOrder.error.customOrderNotFound", Type.BUSINESS),
     STANDARD_ORDER_NOT_FOUND("006", "completeOrder.error.standardOrderNotFound", Type.BUSINESS),
+    CUSTOM_ORDER_HAS_NOT_BEEN_DONE("007", "completeOrder.error.customOrderHasNotBeenDone", Type.BUSINESS),
+    STANDARD_ORDER_HAS_NOT_BEEN_PAID("008", "completeOrder.error.standardOrderHasNotBeenPaid", Type.BUSINESS),
     ;
 
     private final String code;
