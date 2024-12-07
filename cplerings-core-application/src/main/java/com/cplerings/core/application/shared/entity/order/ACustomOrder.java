@@ -35,4 +35,5 @@ public class ACustomOrder implements Serializable {
     private String orderNo;
     private Instant createdAt;
     private Collection<ACustomOrderHistory> customOrderHistories;
+    private ARefundInfo refund;
 }
