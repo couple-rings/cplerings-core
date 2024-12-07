@@ -36,4 +36,13 @@ public class StandardOrderTestHelper {
                 .build();
         return testDataSource.save(standardOrder);
     }
+
+    public StandardOrder createCompleteStandardOrder() {
+        StandardOrder standardOrder = StandardOrder.builder()
+                .totalPrice(Money.create(BigDecimal.valueOf(100)))
+                .status(StandardOrderStatus.COMPLETED)
+                .customer(accountRepository.getReferenceById(1L))
+                .build();
+        return testDataSource.save(standardOrder);
+    }
 }
