@@ -21,6 +21,6 @@ import jakarta.persistence.MappedSuperclass;
 public abstract class AbstractOrderEntity extends AbstractEntity {
 
     @OrderNoGeneratorType
-    @Column(name = "order_no", length = DatabaseConstant.DEFAULT_ORDER_NO_LENGTH, nullable = false, updatable = false)
+    @Column(name = "order_no", length = DatabaseConstant.DEFAULT_ENTITY_NO_LENGTH, nullable = false, updatable = false)
     private String orderNo;
 }

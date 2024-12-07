@@ -3,7 +3,6 @@ package com.cplerings.core.application.shared.entity.ring;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Collection;
-import java.util.Set;
 
 import com.cplerings.core.application.shared.entity.branch.ABranch;
 import com.cplerings.core.application.shared.entity.design.ACustomDesign;
@@ -42,4 +41,5 @@ public class ARing implements Serializable {
     private ABranch branch;
     private Collection<ARingHistory> ringHistories;
     private Money price;
+    private String productNo;
 }

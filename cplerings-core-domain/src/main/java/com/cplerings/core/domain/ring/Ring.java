@@ -1,24 +1,21 @@
 package com.cplerings.core.domain.ring;
 
+import java.time.Instant;
+import java.util.Set;
+
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.metal.MetalSpecification;
 import com.cplerings.core.domain.order.CustomOrder;
-import com.cplerings.core.domain.shared.AbstractEntity;
+import com.cplerings.core.domain.shared.AbstractProductEntity;
 import com.cplerings.core.domain.shared.valueobject.Money;
 import com.cplerings.core.domain.spouse.Spouse;
 
 import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Embedded;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -32,9 +29,11 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-
-import java.time.Instant;
-import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -43,7 +42,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "tbl_ring")
-public class Ring extends AbstractEntity {
+public class Ring extends AbstractProductEntity {
 
     private static final String RING_SEQUENCE = "ring_seq";
 

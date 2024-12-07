@@ -1,20 +1,15 @@
 package com.cplerings.core.domain.jewelry;
 
+import java.time.Instant;
+import java.util.Set;
+
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.design.Design;
-import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.metal.MetalSpecification;
 import com.cplerings.core.domain.order.StandardOrderItem;
-import com.cplerings.core.domain.shared.AbstractEntity;
-
-import jakarta.persistence.OneToMany;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import com.cplerings.core.domain.shared.AbstractProductEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,12 +21,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-
-import java.time.Instant;
-import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -40,7 +38,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "tbl_jewelry")
-public class Jewelry extends AbstractEntity {
+public class Jewelry extends AbstractProductEntity {
 
     private static final String JEWELRY_SEQUENCE = "jewelry_seq";
 
