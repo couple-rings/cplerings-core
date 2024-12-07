@@ -12,6 +12,7 @@ import com.cplerings.core.application.order.datasource.CreateStandardOrderDataSo
 import com.cplerings.core.application.order.datasource.GetCustomOrderByOrderNoDataSource;
 import com.cplerings.core.application.order.datasource.PayStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.ProcessPayStandardOrderDataSource;
+import com.cplerings.core.application.order.datasource.RefundStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrdersDataSource;
 import com.cplerings.core.application.order.datasource.ViewStandardOrderDataSource;
@@ -26,6 +27,8 @@ import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.address.QTransportationAddress;
 import com.cplerings.core.domain.address.TransportationAddress;
+import com.cplerings.core.domain.file.Image;
+import com.cplerings.core.domain.file.QImage;
 import com.cplerings.core.domain.jewelry.Jewelry;
 import com.cplerings.core.domain.jewelry.JewelryStatus;
 import com.cplerings.core.domain.jewelry.QJewelry;
@@ -41,12 +44,14 @@ import com.cplerings.core.domain.order.StandardOrderItem;
 import com.cplerings.core.domain.order.StandardOrderStatus;
 import com.cplerings.core.domain.order.TransportOrderHistory;
 import com.cplerings.core.domain.order.TransportationOrder;
+import com.cplerings.core.domain.refund.Refund;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.CustomOrderHistoryRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.cplerings.core.infrastructure.repository.JewelryRepository;
+import com.cplerings.core.infrastructure.repository.RefundRepository;
 import com.cplerings.core.infrastructure.repository.StandardOrderHistoryRepository;
 import com.cplerings.core.infrastructure.repository.StandardOrderItemRepository;
 import com.cplerings.core.infrastructure.repository.StandardOrderRepository;
@@ -62,7 +67,7 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
         implements ViewCustomOrdersDataSource, ViewCustomOrderDataSource, AssignJewelerToCustomOrderDataSource,
         CreateStandardOrderDataSource, ViewStandardOrdersDataSource, PayStandardOrderDataSource,
         ProcessPayStandardOrderDataSource, ViewStandardOrderDataSource, CancelStandardOrderDataSource, CompleteOrderDataSource,
-        GetCustomOrderByOrderNoDataSource {
+        GetCustomOrderByOrderNoDataSource, RefundStandardOrderDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QAccount Q_ACCOUNT = QAccount.account;
@@ -70,6 +75,7 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
     private static final QTransportationAddress Q_TRANSPORTATION_ADDRESS = QTransportationAddress.transportationAddress;
     private static final QStandardOrder Q_STANDARD_ORDER = QStandardOrder.standardOrder;
     private static final QStandardOrderItem Q_STANDARD_ORDER_ITEM = QStandardOrderItem.standardOrderItem;
+    private static final QImage Q_IMAGE = QImage.image;
 
     private final CustomOrderRepository customOrderRepository;
     private final CustomOrderHistoryRepository customOrderHistoryRepository;
@@ -79,6 +85,7 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
     private final StandardOrderItemRepository standardOrderItemRepository;
     private final TransportationOrderRepository transportationOrderRepository;
     private final TransportOrderHistoryRepository transportOrderHistoryRepository;
+    private final RefundRepository refundRepository;
 
     @Override
     public CustomOrders getCustomOrders(ViewCustomOrdersInput input) {
@@ -349,6 +356,47 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
                 .select(Q_CUSTOM_ORDER)
                 .from(Q_CUSTOM_ORDER)
                 .where(Q_CUSTOM_ORDER.orderNo.toLowerCase().eq(orderNo.toLowerCase()))
+                .fetchFirst());
+    }
+
+    @Override
+    public Optional<StandardOrder> getStandardOrderWithOrderItem(Long id) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_STANDARD_ORDER)
+                .from(Q_STANDARD_ORDER)
+                .leftJoin(Q_STANDARD_ORDER.standardOrderItems, Q_STANDARD_ORDER_ITEM).fetchJoin()
+                .leftJoin(Q_STANDARD_ORDER_ITEM.jewelry).fetchJoin()
+                .where(Q_STANDARD_ORDER.id.eq(id))
+                .fetchFirst());
+    }
+
+    @Override
+    public Jewelry save(Jewelry jewelry) {
+        updateAuditor(jewelry);
+        return jewelryRepository.save(jewelry);
+    }
+
+    @Override
+    public Refund save(Refund refund) {
+        updateAuditor(refund);
+        return refundRepository.save(refund);
+    }
+
+    @Override
+    public Optional<Account> getStaffById(Long id) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_ACCOUNT)
+                .from(Q_ACCOUNT)
+                .where(Q_ACCOUNT.id.eq(id))
+                .fetchFirst());
+    }
+
+    @Override
+    public Optional<Image> getImageById(Long id) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_IMAGE)
+                .from(Q_IMAGE)
+                .where(Q_IMAGE.id.eq(id))
                 .fetchFirst());
     }
 }

@@ -190,6 +190,7 @@ public final class APIConstant {
     public static final String PAY_STANDARD_ORDER_PATH = STANDARD_ORDER_PATH + "/payment";
     public static final String SINGLE_STANDARD_ORDER_PATH = STANDARD_ORDER_PATH + "/{standardOrderId}";
     public static final String CANCEL_STANDARD_ORDER_PATH = SINGLE_STANDARD_ORDER_PATH + "/cancel";
+    public static final String REFUND_STANDARD_ORDER_PATH = SINGLE_STANDARD_ORDER_PATH + "/refund";
 
     /*
        Configurations' paths
