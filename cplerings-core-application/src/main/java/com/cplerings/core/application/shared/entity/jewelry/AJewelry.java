@@ -28,4 +28,5 @@ public class AJewelry implements Serializable {
     private Instant purchaseDate;
     private AJewelryStatus status;
     private ADocument maintenanceDocument;
+    private String productNo;
 }

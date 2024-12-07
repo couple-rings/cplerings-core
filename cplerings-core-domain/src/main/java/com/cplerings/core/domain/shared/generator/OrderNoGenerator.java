@@ -14,7 +14,7 @@ public final class OrderNoGenerator implements BeforeExecutionGenerator {
     @Override
     public Object generate(SharedSessionContractImplementor session, Object owner, Object currentValue, EventType eventType) {
         if (owner instanceof AbstractOrderEntity entity && entity.getId() != null) {
-            return String.format("%0" + DatabaseConstant.DEFAULT_ORDER_NO_LENGTH + "d", entity.getId());
+            return String.format("%0" + DatabaseConstant.DEFAULT_ENTITY_NO_LENGTH + "d", entity.getId());
         }
         throw new IllegalStateException("Entity should be " + AbstractOrderEntity.class.getSimpleName() + " and with non-null ID");
     }

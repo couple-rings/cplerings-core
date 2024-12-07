@@ -68,6 +68,8 @@ import com.cplerings.core.infrastructure.repository.TransportationNoteRepository
 import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
 import com.cplerings.core.test.shared.entity.order.DummyOrder;
 import com.cplerings.core.test.shared.entity.order.DummyOrderRepository;
+import com.cplerings.core.test.shared.entity.product.DummyProduct;
+import com.cplerings.core.test.shared.entity.product.DummyProductRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -110,6 +112,7 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private final JewelryRepository jewelryRepository;
     private final DesignSessionPaymentRepository designSessionPaymentRepository;
     private final StandardOrderRepository standardOrderRepository;
+    private final DummyProductRepository dummyProductRepository;
 
     @Override
     public Payment save(Payment payment) {
@@ -293,6 +296,12 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
                 .leftJoin(Q_STANDARD_ORDER_ITEM.jewelry).fetchJoin()
                 .where(Q_STANDARD_ORDER.id.eq(id))
                 .fetchFirst();
+    }
+
+    @Override
+    public DummyProduct save(DummyProduct dummyProduct) {
+        updateAuditor(dummyProduct);
+        return dummyProductRepository.save(dummyProduct);
     }
 
     @Override

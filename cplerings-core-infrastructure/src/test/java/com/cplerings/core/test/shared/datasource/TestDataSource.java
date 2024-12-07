@@ -31,6 +31,7 @@ import com.cplerings.core.domain.spouse.Agreement;
 import com.cplerings.core.domain.spouse.Spouse;
 import com.cplerings.core.domain.spouse.SpouseAccount;
 import com.cplerings.core.test.shared.entity.order.DummyOrder;
+import com.cplerings.core.test.shared.entity.product.DummyProduct;
 
 public interface TestDataSource {
 
@@ -99,4 +100,6 @@ public interface TestDataSource {
     StandardOrder save(StandardOrder standardOrder);
 
     StandardOrder getStandardOrderById(Long id);
+
+    DummyProduct save(DummyProduct dummyProduct);
 }
