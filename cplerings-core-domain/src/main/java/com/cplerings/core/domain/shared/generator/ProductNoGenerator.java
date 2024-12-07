@@ -15,7 +15,7 @@ public class ProductNoGenerator implements BeforeExecutionGenerator {
 
     @Override
     public Object generate(SharedSessionContractImplementor sharedSessionContractImplementor, Object owner, Object currentValue, EventType eventType) {
-        if (owner instanceof AbstractOrderEntity entity && entity.getId() != null) {
+        if (owner instanceof AbstractProductEntity entity && entity.getId() != null) {
             return String.format("%0" + DatabaseConstant.DEFAULT_ENTITY_NO_LENGTH + "d", entity.getId());
         }
         throw new IllegalStateException("Entity should be " + AbstractProductEntity.class.getSimpleName() + " and with non-null ID");

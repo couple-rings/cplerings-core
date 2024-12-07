@@ -10,5 +10,5 @@ CREATE TABLE tbl_dummy_product
     state            VARCHAR(12)                 NOT NULL,
     opt_version      INTEGER                     NOT NULL,
     product_no       VARCHAR(8)                  NOT NULL,
-    CONSTRAINT pk_tbl_dummy_order PRIMARY KEY (dummy_product_id)
+    CONSTRAINT pk_tbl_dummy_product PRIMARY KEY (dummy_product_id)
 );
