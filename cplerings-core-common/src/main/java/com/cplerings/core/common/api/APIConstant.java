@@ -191,6 +191,7 @@ public final class APIConstant {
     public static final String SINGLE_STANDARD_ORDER_PATH = STANDARD_ORDER_PATH + "/{standardOrderId}";
     public static final String CANCEL_STANDARD_ORDER_PATH = SINGLE_STANDARD_ORDER_PATH + "/cancel";
     public static final String REFUND_STANDARD_ORDER_PATH = SINGLE_STANDARD_ORDER_PATH + "/refund";
+    public static final String VIEW_A_STANDARD_ORDER_BY_ORDER_NO_PATH = STANDARD_ORDER_PATH + "/orderNo/{orderNo}";
 
     /*
        Configurations' paths
