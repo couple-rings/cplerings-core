@@ -8,6 +8,7 @@ import com.cplerings.core.api.shared.AbstractController;
 import com.cplerings.core.api.shared.mapper.APIMapper;
 import com.cplerings.core.api.shared.openapi.ErrorAPIResponse;
 import com.cplerings.core.api.shared.openapi.MetalSpecificationTag;
+import com.cplerings.core.api.shared.openapi.OrderTag;
 import com.cplerings.core.api.transport.data.TransportationNotesData;
 import com.cplerings.core.api.transport.mapper.APIViewTransportationNotesMapper;
 import com.cplerings.core.api.transport.request.ViewTransportationNotesRequest;
@@ -42,7 +43,7 @@ public class ViewTransportationNotesController extends AbstractController<ViewTr
     }
 
     @GetMapping(APIConstant.TRANSPORTATION_NOTE_PATH)
-    @MetalSpecificationTag
+    @OrderTag
     @Operation(summary = "View transportation notes")
     @ApiResponse(
             description = "View transportation notes information",
