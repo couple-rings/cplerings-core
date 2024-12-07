@@ -21,6 +21,7 @@ public enum RefundStandardOrderErrorCode implements ErrorCode {
     WRONG_STATUS_FOR_REFUNDED("011", "refundStandardOrder.error.wrongStatusForRefunded", Type.BUSINESS),
     STAFF_NOT_FOUND("012", "refundStandardOrder.error.staffNotFound", Type.BUSINESS),
     IMAGE_NOT_FOUND("013", "refundStandardOrder.error.imageNotFound", Type.BUSINESS),
+    REFUND_METHOD_REQUIRED("014", "refundStandardOrder.error.refundMethodRequired", Type.VALIDATION),
     ;
 
     private final String code;

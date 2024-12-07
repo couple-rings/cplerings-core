@@ -56,7 +56,7 @@ public class RefundStandardOrderController extends AbstractController<RefundStan
             )
     )
     @ErrorAPIResponse
-    public ResponseEntity<Object> view(@PathVariable("standardOrderId") Long standardOrderId, @RequestBody RefundStandardOrderRequestData refundStandardOrderRequestData) {
+    public ResponseEntity<Object> refund(@PathVariable("standardOrderId") Long standardOrderId, @RequestBody RefundStandardOrderRequestData refundStandardOrderRequestData) {
         RefundStandardOrderRequest request = RefundStandardOrderRequest.builder()
                 .standardOrderId(standardOrderId)
                 .refundStandardOrderRequestData(refundStandardOrderRequestData)

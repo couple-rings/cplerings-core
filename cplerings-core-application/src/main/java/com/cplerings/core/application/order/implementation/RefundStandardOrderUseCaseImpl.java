@@ -21,6 +21,7 @@ import com.cplerings.core.domain.jewelry.JewelryStatus;
 import com.cplerings.core.domain.order.StandardOrder;
 import com.cplerings.core.domain.order.StandardOrderStatus;
 import com.cplerings.core.domain.refund.Refund;
+import com.cplerings.core.domain.refund.RefundMethod;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,7 @@ public class RefundStandardOrderUseCaseImpl extends AbstractUseCase<RefundStanda
         validator.validate(input.refundStandardOrderRequestData().reason() != null, RefundStandardOrderErrorCode.REASON_REQUIRED);
         validator.validate(input.refundStandardOrderRequestData().staffId() != null, RefundStandardOrderErrorCode.STAFF_ID_REQUIRED);
         validator.validate(input.refundStandardOrderRequestData().proofImageId() != null, RefundStandardOrderErrorCode.IMAGE_ID_REQUIRED);
+        validator.validate(input.refundStandardOrderRequestData().refundMethod() != null, RefundStandardOrderErrorCode.REFUND_METHOD_REQUIRED);
         validator.clearAndThrowErrorCodes();
         validator.validate(input.standardOrderId() > 0, RefundStandardOrderErrorCode.STANDARD_ORDER_ID_WRONG_INTEGER);
         validator.validate(input.refundStandardOrderRequestData().staffId() > 0, RefundStandardOrderErrorCode.STAFF_ID_WRONG_INTEGER);
@@ -74,7 +76,12 @@ public class RefundStandardOrderUseCaseImpl extends AbstractUseCase<RefundStanda
                 .standardOrder(standardOrder)
                 .amount(Money.create(amount))
                 .proofImage(proofImage)
+                .reason(input.refundStandardOrderRequestData().reason())
                 .build();
+        switch (input.refundStandardOrderRequestData().refundMethod()) {
+            case CASH -> refund.setMethod(RefundMethod.CASH);
+            case TRANSFER -> refund.setMethod(RefundMethod.TRANSFER);
+        }
         refund = refundStandardOrderDataSource.save(refund);
         return aRefundStandardOrderMapper.toOutput(refund);
     }
