@@ -2,9 +2,11 @@ package com.cplerings.core.domain.order;
 
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.PushNotification;
 import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
+import com.cplerings.core.domain.refund.Refund;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.shared.AbstractOrderEntity;
 import com.cplerings.core.domain.shared.valueobject.Money;
@@ -91,4 +93,7 @@ public class CustomOrder extends AbstractOrderEntity {
 
     @OneToMany(mappedBy = "customOrder", fetch = FetchType.LAZY)
     private Set<CustomOrderHistory> customOrderHistories;
+
+    @OneToOne(mappedBy = "customOrder")
+    private Refund refund;
 }

@@ -6,6 +6,7 @@ import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.payment.Payment;
+import com.cplerings.core.domain.refund.Refund;
 import com.cplerings.core.domain.shared.AbstractOrderEntity;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
@@ -76,4 +77,7 @@ public class StandardOrder extends AbstractOrderEntity {
 
     @OneToMany(mappedBy = "standardOrder", fetch = FetchType.LAZY)
     private Set<StandardOrderItem> standardOrderItems;
+
+    @OneToOne(mappedBy = "standardOrder")
+    private Refund refund;
 }

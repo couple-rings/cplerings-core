@@ -31,4 +31,5 @@ public class AStandardOrder implements Serializable {
     private Collection<ATransportOrderWithoutStandard> transportationOrders;
     private String orderNo;
     private Instant createdAt;
+    private ARefundInfo refund;
 }
