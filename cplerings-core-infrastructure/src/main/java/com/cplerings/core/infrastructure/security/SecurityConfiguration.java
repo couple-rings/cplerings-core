@@ -281,6 +281,10 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.TRANSPORTATION_NOTE_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_TRANSPORTER, RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.PUT, resolvePath(APIConstant.COMPLETE_ORDER_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_STAFF))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.PUT, resolvePath(APIConstant.COMPLETE_ORDER_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_STAFF))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VIEW_A_CUSTOM_ORDER_BY_ORDER_NO_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_STAFF));
     }
 

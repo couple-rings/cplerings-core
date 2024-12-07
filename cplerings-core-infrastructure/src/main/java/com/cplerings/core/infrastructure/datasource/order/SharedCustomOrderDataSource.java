@@ -9,6 +9,7 @@ import com.cplerings.core.application.order.datasource.AssignJewelerToCustomOrde
 import com.cplerings.core.application.order.datasource.CancelStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.CompleteOrderDataSource;
 import com.cplerings.core.application.order.datasource.CreateStandardOrderDataSource;
+import com.cplerings.core.application.order.datasource.GetCustomOrderByOrderNoDataSource;
 import com.cplerings.core.application.order.datasource.PayStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.ProcessPayStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrderDataSource;
@@ -60,7 +61,8 @@ import lombok.RequiredArgsConstructor;
 public class SharedCustomOrderDataSource extends AbstractDataSource
         implements ViewCustomOrdersDataSource, ViewCustomOrderDataSource, AssignJewelerToCustomOrderDataSource,
         CreateStandardOrderDataSource, ViewStandardOrdersDataSource, PayStandardOrderDataSource,
-        ProcessPayStandardOrderDataSource, ViewStandardOrderDataSource, CancelStandardOrderDataSource, CompleteOrderDataSource {
+        ProcessPayStandardOrderDataSource, ViewStandardOrderDataSource, CancelStandardOrderDataSource, CompleteOrderDataSource,
+        GetCustomOrderByOrderNoDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QAccount Q_ACCOUNT = QAccount.account;
@@ -338,6 +340,15 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
                 .leftJoin(Q_STANDARD_ORDER.standardOrderItems, Q_STANDARD_ORDER_ITEM).fetchJoin()
                 .leftJoin(Q_STANDARD_ORDER_ITEM.jewelry).fetchJoin()
                 .where(Q_STANDARD_ORDER.id.eq(id))
+                .fetchFirst());
+    }
+
+    @Override
+    public Optional<CustomOrder> getCustomOrderByOrderNo(String orderNo) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_CUSTOM_ORDER)
+                .from(Q_CUSTOM_ORDER)
+                .where(Q_CUSTOM_ORDER.orderNo.toLowerCase().eq(orderNo.toLowerCase()))
                 .fetchFirst());
     }
 }
