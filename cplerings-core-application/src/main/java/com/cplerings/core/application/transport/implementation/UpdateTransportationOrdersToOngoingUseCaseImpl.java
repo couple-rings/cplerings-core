@@ -36,7 +36,7 @@ public class UpdateTransportationOrdersToOngoingUseCaseImpl extends AbstractUseC
         List<TransportationOrder> transportationOrders = updateTransportationOrdersToOngoingDataSource.getTransportationOrders(input.transportationOrderIds());
         for (var transportationOrder : transportationOrders) {
             validator.validateAndStopExecution(transportationOrder != null, UpdateTransportationOrdersToOngoingErrorCode.ONE_OF_THE_IDS_IS_INVALID);
-            validator.validateAndStopExecution(transportationOrder.getStatus() == TransportStatus.WAITING, UpdateTransportationOrdersToOngoingErrorCode.ONE_OF_THE_TRANSPORTATIONS_IS_NOT_WAITING);
+            validator.validateAndStopExecution(transportationOrder.getStatus() == TransportStatus.WAITING || transportationOrder.getStatus() == TransportStatus.REDELIVERING, UpdateTransportationOrdersToOngoingErrorCode.ONE_OF_THE_TRANSPORTATIONS_IS_NOT_WAITING);
         }
         transportationOrders.forEach(transportationOrder -> {
             transportationOrder.setStatus(TransportStatus.ON_GOING);
