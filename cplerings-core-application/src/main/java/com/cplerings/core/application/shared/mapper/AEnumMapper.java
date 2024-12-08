@@ -8,6 +8,8 @@ import com.cplerings.core.application.shared.entity.design.ADiamondColor;
 import com.cplerings.core.application.shared.entity.design.ADiamondShape;
 import com.cplerings.core.application.shared.entity.design.AMetalColor;
 import com.cplerings.core.application.shared.entity.design.request.ACustomRequestStatus;
+import com.cplerings.core.application.shared.entity.order.ACustomOrderStatus;
+import com.cplerings.core.application.shared.entity.order.ARefundMethod;
 import com.cplerings.core.common.mapper.SpringMapperConfiguration;
 import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.domain.crafting.CraftingStageStatus;
@@ -17,6 +19,8 @@ import com.cplerings.core.domain.diamond.DiamondClarity;
 import com.cplerings.core.domain.diamond.DiamondColor;
 import com.cplerings.core.domain.diamond.DiamondShape;
 import com.cplerings.core.domain.metal.MetalColor;
+import com.cplerings.core.domain.order.CustomOrderStatus;
+import com.cplerings.core.domain.refund.RefundMethod;
 
 import org.mapstruct.Mapper;
 
@@ -38,4 +42,10 @@ public interface AEnumMapper {
     ACraftingStageStatus toCraftingStageStatus(CraftingStageStatus craftingStageStatus);
 
     ARole toRole(Role role);
+
+    ARefundMethod toRefundMethod(RefundMethod refundMethod);
+
+    RefundMethod toRefundMethod(ARefundMethod refundMethod);
+
+    ACustomOrderStatus toCustomOrderStatus(CustomOrderStatus customOrderStatus);
 }

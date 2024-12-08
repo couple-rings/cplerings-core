@@ -1,11 +1,11 @@
 package com.cplerings.core.infrastructure.repository;
 
-import com.cplerings.core.domain.account.Account;
-import com.cplerings.core.domain.account.AccountStatus;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.AccountStatus;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
