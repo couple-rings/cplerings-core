@@ -27,6 +27,7 @@ import com.cplerings.core.domain.order.status.TransportationNote;
 import com.cplerings.core.domain.payment.DesignSessionPayment;
 import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.ring.Ring;
+import com.cplerings.core.domain.ring.RingDiamond;
 import com.cplerings.core.domain.spouse.Agreement;
 import com.cplerings.core.domain.spouse.Spouse;
 import com.cplerings.core.domain.spouse.SpouseAccount;
@@ -102,4 +103,6 @@ public interface TestDataSource {
     StandardOrder getStandardOrderById(Long id);
 
     DummyProduct save(DummyProduct dummyProduct);
+
+    RingDiamond save(RingDiamond ringDiamond);
 }

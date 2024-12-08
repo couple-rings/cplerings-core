@@ -10,6 +10,7 @@ import com.cplerings.core.api.order.data.CustomOrderData;
 import com.cplerings.core.api.order.request.data.AssignJewelerToCustomOrderRequestData;
 import com.cplerings.core.api.order.response.AssignJewelerToCustomOrderResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
+import com.cplerings.core.application.shared.entity.order.ACustomOrderStatus;
 import com.cplerings.core.common.api.APIConstant;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderStatus;
@@ -63,6 +64,6 @@ class AssignJewelerToCustomOrderUseCaseIT extends AbstractIT {
         final CustomOrderData customOrderData = responseBody.getData();
         assertThat(customOrderData).isNotNull();
         assertThat(customOrderData.customOrder().getJeweler()).isNotNull();
-        assertThat(customOrderData.customOrder().getStatus()).isEqualByComparingTo(CustomOrderStatus.IN_PROGRESS);
+        assertThat(customOrderData.customOrder().getStatus()).isEqualByComparingTo(ACustomOrderStatus.IN_PROGRESS);
     }
 }

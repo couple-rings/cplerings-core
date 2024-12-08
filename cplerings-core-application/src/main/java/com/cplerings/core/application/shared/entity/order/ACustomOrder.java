@@ -31,7 +31,7 @@ public class ACustomOrder implements Serializable {
     private AAccount jeweler;
     private AContract contract;
     private Money totalPrice;
-    private CustomOrderStatus status;
+    private ACustomOrderStatus status;
     private String orderNo;
     private Instant createdAt;
     private Collection<ACustomOrderHistory> customOrderHistories;

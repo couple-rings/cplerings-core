@@ -14,15 +14,5 @@ import com.cplerings.core.domain.order.StandardOrder;
         })
 public interface AStandardOrderMapper {
 
-    //    @Mapping(source = "standardOrderItems", target = "jewelries", qualifiedByName = "mapJewelries")
     AStandardOrder toAStandardOrder(StandardOrder standardOrder);
-
-//    @Named("mapJewelries")
-//    default Collection<AJewelry> mapJewelries(Set<StandardOrderItem> items) {
-//        return items.stream()
-//                .map(item -> toAJewelry(item.getJewelry()))
-//                .collect(Collectors.toList());
-//    }
-//
-//    AJewelry toAJewelry(Jewelry jewelry);
 }

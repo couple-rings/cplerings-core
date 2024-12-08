@@ -34,6 +34,7 @@ import com.cplerings.core.domain.order.status.TransportationNote;
 import com.cplerings.core.domain.payment.DesignSessionPayment;
 import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.ring.Ring;
+import com.cplerings.core.domain.ring.RingDiamond;
 import com.cplerings.core.domain.spouse.Agreement;
 import com.cplerings.core.domain.spouse.QAgreement;
 import com.cplerings.core.domain.spouse.Spouse;
@@ -59,6 +60,7 @@ import com.cplerings.core.infrastructure.repository.DocumentRepository;
 import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.infrastructure.repository.JewelryRepository;
 import com.cplerings.core.infrastructure.repository.PaymentRepository;
+import com.cplerings.core.infrastructure.repository.RingDiamondRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
 import com.cplerings.core.infrastructure.repository.SpouseAccountRepository;
 import com.cplerings.core.infrastructure.repository.SpouseRepository;
@@ -113,6 +115,7 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private final DesignSessionPaymentRepository designSessionPaymentRepository;
     private final StandardOrderRepository standardOrderRepository;
     private final DummyProductRepository dummyProductRepository;
+    private final RingDiamondRepository ringDiamondRepository;
 
     @Override
     public Payment save(Payment payment) {
@@ -302,6 +305,12 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     public DummyProduct save(DummyProduct dummyProduct) {
         updateAuditor(dummyProduct);
         return dummyProductRepository.save(dummyProduct);
+    }
+
+    @Override
+    public RingDiamond save(RingDiamond ringDiamond) {
+        updateAuditor(ringDiamond);
+        return ringDiamondRepository.save(ringDiamond);
     }
 
     @Override

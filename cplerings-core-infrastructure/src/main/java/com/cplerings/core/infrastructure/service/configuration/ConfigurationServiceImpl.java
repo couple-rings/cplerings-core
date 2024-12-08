@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.cplerings.core.application.shared.service.configuration.ConfigurationKey;
 import com.cplerings.core.application.shared.service.configuration.ConfigurationService;
 import com.cplerings.core.domain.configuration.Configuration;
-import com.cplerings.core.domain.configuration.ConfigurationStatus;
 import com.cplerings.core.domain.shared.valueobject.Money;
 import com.cplerings.core.infrastructure.service.configuration.datasource.ConfigurationServiceDataSource;
 
@@ -82,7 +81,6 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         }
         final Configuration configuration = configurationServiceDataSource.getConfigurations()
                 .stream()
-                .filter(c -> StringUtils.equals(c.getKey(), key) && c.getStatus() == ConfigurationStatus.ACTIVE)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Cannot find configuration for " + key));
         return mapResult(configuration.getValue(), clazz);

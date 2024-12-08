@@ -11,6 +11,7 @@ import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.Auditor;
+import com.cplerings.core.domain.spouse.Agreement;
 import com.cplerings.core.domain.spouse.SpouseAccount;
 
 import jakarta.persistence.JoinColumn;
@@ -114,6 +115,9 @@ public class Account extends AbstractEntity implements Auditor {
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     private Set<CraftingRequest> craftingRequests;
+
+    @OneToOne(mappedBy = "customer")
+    private Agreement agreement;
 
     @Override
     public String getAuditorName() {

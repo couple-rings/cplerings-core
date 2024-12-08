@@ -75,6 +75,7 @@ public class SecurityConfiguration {
         handleJewelryAPI(localHttp);
         handleStandardOrderAPI(localHttp);
         handleConfigurationAPI(localHttp);
+        handleCustomOrderAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
                 .denyAll());
         return localHttp.build();
@@ -160,7 +161,7 @@ public class SecurityConfiguration {
 
     private void handlePaymentAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.VNPAY_PATH))
-                .permitAll())
+                        .permitAll())
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.PAYMENT_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER));
     }
@@ -356,6 +357,11 @@ public class SecurityConfiguration {
     private void handleConfigurationAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.CONFIGURATIONS_PATH))
                 .permitAll());
+    }
+
+    private void handleCustomOrderAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.REFUND_CUSTOM_ORDER_PATH))
+                .hasAuthority(RoleConstant.ROLE_STAFF));
     }
 
     private String resolvePath(String path) {

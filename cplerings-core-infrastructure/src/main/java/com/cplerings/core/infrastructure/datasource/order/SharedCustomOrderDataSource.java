@@ -13,6 +13,7 @@ import com.cplerings.core.application.order.datasource.GetCustomOrderByOrderNoDa
 import com.cplerings.core.application.order.datasource.GetStandardOrderByOrderNoDataSource;
 import com.cplerings.core.application.order.datasource.PayStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.ProcessPayStandardOrderDataSource;
+import com.cplerings.core.application.order.datasource.RefundCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.RefundStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrdersDataSource;
@@ -25,9 +26,13 @@ import com.cplerings.core.application.order.input.ViewCustomOrdersInput;
 import com.cplerings.core.application.order.input.ViewStandardOrdersInput;
 import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.AccountStatus;
 import com.cplerings.core.domain.account.QAccount;
+import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.domain.address.QTransportationAddress;
 import com.cplerings.core.domain.address.TransportationAddress;
+import com.cplerings.core.domain.design.Design;
+import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.file.QImage;
 import com.cplerings.core.domain.jewelry.Jewelry;
@@ -46,13 +51,22 @@ import com.cplerings.core.domain.order.StandardOrderStatus;
 import com.cplerings.core.domain.order.TransportOrderHistory;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.refund.Refund;
+import com.cplerings.core.domain.ring.Ring;
+import com.cplerings.core.domain.ring.RingDiamond;
 import com.cplerings.core.domain.shared.State;
+import com.cplerings.core.domain.spouse.Agreement;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
+import com.cplerings.core.infrastructure.repository.AccountRepository;
+import com.cplerings.core.infrastructure.repository.AgreementRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderHistoryRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
+import com.cplerings.core.infrastructure.repository.DesignRepository;
+import com.cplerings.core.infrastructure.repository.DiamondRepository;
 import com.cplerings.core.infrastructure.repository.JewelryRepository;
 import com.cplerings.core.infrastructure.repository.RefundRepository;
+import com.cplerings.core.infrastructure.repository.RingDiamondRepository;
+import com.cplerings.core.infrastructure.repository.RingRepository;
 import com.cplerings.core.infrastructure.repository.StandardOrderHistoryRepository;
 import com.cplerings.core.infrastructure.repository.StandardOrderItemRepository;
 import com.cplerings.core.infrastructure.repository.StandardOrderRepository;
@@ -68,7 +82,8 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
         implements ViewCustomOrdersDataSource, ViewCustomOrderDataSource, AssignJewelerToCustomOrderDataSource,
         CreateStandardOrderDataSource, ViewStandardOrdersDataSource, PayStandardOrderDataSource,
         ProcessPayStandardOrderDataSource, ViewStandardOrderDataSource, CancelStandardOrderDataSource, CompleteOrderDataSource,
-        GetCustomOrderByOrderNoDataSource, RefundStandardOrderDataSource, GetStandardOrderByOrderNoDataSource {
+        GetCustomOrderByOrderNoDataSource, RefundStandardOrderDataSource, GetStandardOrderByOrderNoDataSource,
+        RefundCustomOrderDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QAccount Q_ACCOUNT = QAccount.account;
@@ -87,6 +102,12 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
     private final TransportationOrderRepository transportationOrderRepository;
     private final TransportOrderHistoryRepository transportOrderHistoryRepository;
     private final RefundRepository refundRepository;
+    private final AccountRepository accountRepository;
+    private final RingRepository ringRepository;
+    private final DesignRepository designRepository;
+    private final AgreementRepository agreementRepository;
+    private final RingDiamondRepository ringDiamondRepository;
+    private final DiamondRepository diamondRepository;
 
     @Override
     public CustomOrders getCustomOrders(ViewCustomOrdersInput input) {
@@ -156,6 +177,12 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
         return Optional.ofNullable(createQuery()
                 .select(Q_CUSTOM_ORDER)
                 .from(Q_CUSTOM_ORDER)
+                .leftJoin(Q_CUSTOM_ORDER.customer).fetchJoin()
+                .leftJoin(Q_CUSTOM_ORDER.customer.agreement).fetchJoin()
+                .leftJoin(Q_CUSTOM_ORDER.firstRing).fetchJoin()
+                .leftJoin(Q_CUSTOM_ORDER.secondRing).fetchJoin()
+                .leftJoin(Q_CUSTOM_ORDER.firstRing.ringDiamonds).fetchJoin()
+                .leftJoin(Q_CUSTOM_ORDER.secondRing.ringDiamonds).fetchJoin()
                 .where(Q_CUSTOM_ORDER.id.eq(customOrderId))
                 .fetchOne());
     }
@@ -167,9 +194,56 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
     }
 
     @Override
+    public Optional<Account> findStaffById(Long staffId) {
+        return Optional.ofNullable(createQuery().select(Q_ACCOUNT)
+                .from(Q_ACCOUNT)
+                .where(Q_ACCOUNT.id.eq(staffId)
+                        .and(Q_ACCOUNT.role.eq(Role.STAFF))
+                        .and(Q_ACCOUNT.status.eq(AccountStatus.ACTIVE))
+                        .and(Q_ACCOUNT.state.eq(State.ACTIVE)))
+                .fetchFirst());
+    }
+
+    @Override
+    public Optional<Image> findImageById(Long imageId) {
+        return Optional.ofNullable(createQuery().select(Q_IMAGE)
+                .from(Q_IMAGE)
+                .where(Q_IMAGE.id.eq(imageId)
+                        .and(Q_IMAGE.state.eq(State.ACTIVE)))
+                .fetchFirst());
+    }
+
+    @Override
     public CustomOrderHistory save(CustomOrderHistory customOrderHistory) {
         updateAuditor(customOrderHistory);
         return customOrderHistoryRepository.save(customOrderHistory);
+    }
+
+    @Override
+    public List<Ring> saveRings(Collection<Ring> rings) {
+        rings.forEach(this::updateAuditor);
+        return ringRepository.saveAll(rings);
+    }
+
+    @Override
+    public List<Design> saveDesigns(Collection<Design> designs) {
+        designs.forEach(this::updateAuditor);
+        return designRepository.saveAll(designs);
+    }
+
+    @Override
+    public void delete(Agreement agreement) {
+        agreementRepository.delete(agreement);
+    }
+
+    @Override
+    public void deleteRingDiamonds(Collection<RingDiamond> ringDiamonds) {
+        ringDiamondRepository.deleteAll(ringDiamonds);
+    }
+
+    @Override
+    public void saveDiamonds(Collection<Diamond> diamonds) {
+        diamondRepository.deleteAll(diamonds);
     }
 
     @Override
@@ -330,8 +404,7 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
 
     @Override
     public List<Jewelry> save(List<Jewelry> jewelries) {
-        jewelries.forEach(this::updateAuditor);
-        return jewelryRepository.saveAll(jewelries);
+        return saveJewelries(jewelries);
     }
 
     @Override
@@ -408,5 +481,10 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
                 .from(Q_STANDARD_ORDER)
                 .where(Q_STANDARD_ORDER.orderNo.toLowerCase().eq(orderNo.toLowerCase()))
                 .fetchFirst());
+    }
+
+    @Override
+    public Optional<CustomOrder> findCustomOrderById(Long customOrderId) {
+        return getCustomOrderById(customOrderId);
     }
 }

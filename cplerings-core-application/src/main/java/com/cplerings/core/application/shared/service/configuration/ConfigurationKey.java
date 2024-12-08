@@ -44,22 +44,22 @@ public enum ConfigurationKey {
     PARA("PARA"),
 
     /**
-     * CRFE
+     * Crafting fee
      */
     CRFE("CRFE"),
 
     /**
-     * SHFE
+     * Shipping fee
      */
     SHFE("SHFE"),
 
     /**
-     * REFU
+     * Refund
      */
     REFU("REFU"),
 
     /**
-     * RESE
+     * Resell
      */
     RESE("RESE"),
     ;
