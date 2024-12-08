@@ -81,6 +81,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         }
         final Configuration configuration = configurationServiceDataSource.getConfigurations()
                 .stream()
+                .filter(config -> StringUtils.equals(config.getKey(), key))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Cannot find configuration for " + key));
         return mapResult(configuration.getValue(), clazz);

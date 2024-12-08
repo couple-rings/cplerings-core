@@ -15,24 +15,13 @@ import static com.cplerings.core.application.order.error.RefundCustomOrderErrorC
 import static com.cplerings.core.application.order.error.RefundCustomOrderErrorCode.STAFF_ID_REQUIRED;
 import static com.cplerings.core.application.order.error.RefundCustomOrderErrorCode.STAFF_NOT_FOUND;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.cplerings.core.application.order.RefundCustomOrderUseCase;
 import com.cplerings.core.application.order.datasource.RefundCustomOrderDataSource;
 import com.cplerings.core.application.order.input.RefundCustomOrderInput;
 import com.cplerings.core.application.order.input.data.RefundDetail;
 import com.cplerings.core.application.order.output.RefundCustomOrderOutput;
 import com.cplerings.core.application.shared.mapper.AEnumMapper;
-import com.cplerings.core.application.shared.mapper.ARefundMapper;
+import com.cplerings.core.application.shared.mapper.ARefundInfoMapper;
 import com.cplerings.core.application.shared.service.configuration.ConfigurationService;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
@@ -58,6 +47,17 @@ import com.cplerings.core.domain.spouse.Agreement;
 
 import lombok.RequiredArgsConstructor;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @UseCaseImplementation
 @RequiredArgsConstructor
 public class RefundCustomOrderUseCaseImpl extends AbstractUseCase<RefundCustomOrderInput, RefundCustomOrderOutput>
@@ -65,7 +65,7 @@ public class RefundCustomOrderUseCaseImpl extends AbstractUseCase<RefundCustomOr
 
     private final RefundCustomOrderDataSource dataSource;
     private final AEnumMapper aEnumMapper;
-    private final ARefundMapper aRefundMapper;
+    private final ARefundInfoMapper aRefundInfoMapper;
     private final ConfigurationService configurationService;
 
     @Override
@@ -150,7 +150,7 @@ public class RefundCustomOrderUseCaseImpl extends AbstractUseCase<RefundCustomOr
         dataSource.save(customOrderHistory);
 
         return RefundCustomOrderOutput.builder()
-                .refundInfo(aRefundMapper.toRefundInfo(refund))
+                .refundInfo(aRefundInfoMapper.toRefundInfo(refund))
                 .build();
     }
 

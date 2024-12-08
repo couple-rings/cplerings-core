@@ -1,6 +1,5 @@
 package com.cplerings.core.application.shared.mapper;
 
-import com.cplerings.core.application.shared.entity.order.ARefund;
 import com.cplerings.core.application.shared.entity.order.ARefundInfo;
 import com.cplerings.core.common.mapper.SpringMapperConfiguration;
 import com.cplerings.core.domain.refund.Refund;
@@ -12,14 +11,11 @@ import org.mapstruct.Mapper;
         uses = {
                 AEnumMapper.class,
                 MoneyMapper.class,
-                AImageMapper.class,
-                ARefundMapper.class,
                 AAccountMapper.class,
-                AStandardOrderMapper.class,
-                AOrderMapper.class,
+                AImageMapper.class,
         }
 )
-public interface ARefundMapper {
+public interface ARefundInfoMapper {
 
-    ARefund toRefund(Refund refund);
+    ARefundInfo toRefundInfo(Refund refund);
 }

@@ -24,7 +24,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -74,10 +73,6 @@ public class CreateCraftingRequestUseCaseImpl extends AbstractUseCase<CreateCraf
                     .filter(craftingRequest -> craftingRequest.getCraftingRequestStatus() == CraftingRequestStatus.PENDING)
                     .collect(Collectors.toSet());
             validator.validateAndStopExecution(previousCraftingRequests.size() <= 2, CreateCraftingRequestErrorCode.MAX_ALLOWED_CRAFTING_REQUESTS_EXCEEDED);
-            customer.getCraftingRequests()
-                    .stream()
-                    .findFirst()
-                    .ifPresent(firstCraftingRequest -> validator.validateAndStopExecution(Objects.equals(firstCraftingRequest.getBranch().getId(), input.branchId()), CreateCraftingRequestErrorCode.DIFFERENT_BRANCH_ID_FROM_PREVIOUS_CRAFTING_REQUEST));
         }
         Branch branch = dataSource.getBranchById(input.branchId())
                 .orElse(null);

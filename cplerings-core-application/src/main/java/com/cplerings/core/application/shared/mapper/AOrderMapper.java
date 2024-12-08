@@ -1,12 +1,12 @@
 package com.cplerings.core.application.shared.mapper;
 
-import org.mapstruct.Mapper;
-
 import com.cplerings.core.application.shared.entity.order.ACustomOrder;
 import com.cplerings.core.application.shared.entity.order.ACustomOrderHistory;
 import com.cplerings.core.common.mapper.SpringMapperConfiguration;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
+
+import org.mapstruct.Mapper;
 
 @Mapper(
         config = SpringMapperConfiguration.class,
@@ -16,7 +16,7 @@ import com.cplerings.core.domain.order.CustomOrderHistory;
                 AAccountMapper.class,
                 AContractMapper.class,
                 MoneyMapper.class,
-                ARefundMapper.class,
+                ARefundInfoMapper.class,
         }
 )
 public interface AOrderMapper {

@@ -1,12 +1,9 @@
 package com.cplerings.core.test.shared.order;
 
 import com.cplerings.core.common.temporal.TemporalUtils;
-import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderStatus;
-import com.cplerings.core.domain.order.StandardOrder;
-import com.cplerings.core.domain.order.StandardOrderStatus;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
 import com.cplerings.core.domain.ring.RingStatus;
@@ -19,7 +16,6 @@ import com.cplerings.core.test.shared.datasource.TestDataSource;
 import com.cplerings.core.test.shared.design.CustomDesignSpouse;
 import com.cplerings.core.test.shared.design.CustomDesignTestHelper;
 import com.cplerings.core.test.shared.diamond.DiamondTestHelper;
-import com.cplerings.core.test.shared.helper.BranchTestHelper;
 import com.cplerings.core.test.shared.helper.FileTestHelper;
 
 import lombok.RequiredArgsConstructor;
@@ -134,11 +130,11 @@ public class CustomOrderTestHelper {
                 .metalSpecification(metalSpecificationRepository.getReferenceById(1L))
                 .price(Money.create(BigDecimal.valueOf(1000)))
                 .build();
-        Ring firstRingCreated = testDataSource.save(firstRing);
+        firstRing = testDataSource.save(firstRing);
 
         final RingDiamond firstRingDiamond = RingDiamond.builder()
                 .ring(firstRing)
-                .diamond(diamondTestHelper.createDiamond())
+                .diamond(diamondTestHelper.createNewDiamond())
                 .build();
         testDataSource.save(firstRingDiamond);
 
@@ -153,11 +149,11 @@ public class CustomOrderTestHelper {
                 .metalSpecification(metalSpecificationRepository.getReferenceById(11L))
                 .price(Money.create(BigDecimal.valueOf(1000)))
                 .build();
-        Ring secondRingCreated = testDataSource.save(secondRing);
+        secondRing = testDataSource.save(secondRing);
 
         final RingDiamond secondRingDiamond = RingDiamond.builder()
                 .ring(secondRing)
-                .diamond(diamondTestHelper.createDiamond())
+                .diamond(diamondTestHelper.createNewDiamond())
                 .build();
         testDataSource.save(secondRingDiamond);
 
@@ -178,8 +174,8 @@ public class CustomOrderTestHelper {
                 .totalPrice(Money.create(BigDecimal.valueOf(120000)))
                 .customer(accountRepository.getReferenceById(1L))
                 .status(CustomOrderStatus.COMPLETED)
-                .firstRing(firstRingCreated)
-                .secondRing(secondRingCreated)
+                .firstRing(firstRing)
+                .secondRing(secondRing)
                 .contract(contractCreated)
                 .jeweler(accountRepository.getReferenceById(41L))
                 .build();
