@@ -22,6 +22,7 @@ import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.jewelry.Jewelry;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.StandardOrder;
+import com.cplerings.core.domain.order.StandardOrderItem;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.order.status.TransportationNote;
 import com.cplerings.core.domain.payment.DesignSessionPayment;
@@ -105,4 +106,6 @@ public interface TestDataSource {
     DummyProduct save(DummyProduct dummyProduct);
 
     RingDiamond save(RingDiamond ringDiamond);
+
+    StandardOrderItem save(StandardOrderItem standardOrderItem);
 }

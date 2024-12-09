@@ -1,10 +1,5 @@
 package com.cplerings.core.infrastructure.datasource.order;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-
-import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.order.datasource.AssignJewelerToCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.CancelStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.CompleteOrderDataSource;
@@ -72,9 +67,15 @@ import com.cplerings.core.infrastructure.repository.StandardOrderItemRepository;
 import com.cplerings.core.infrastructure.repository.StandardOrderRepository;
 import com.cplerings.core.infrastructure.repository.TransportOrderHistoryRepository;
 import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
-import com.querydsl.core.types.dsl.BooleanExpression;
 
 import lombok.RequiredArgsConstructor;
+
+import com.blazebit.persistence.querydsl.BlazeJPAQuery;
+import com.querydsl.core.types.dsl.BooleanExpression;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @DataSource
@@ -400,6 +401,7 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
                         .and(Q_JEWELRY.metalSpecification.id.eq(jewelrySearchInfo.metalSpecificationId()))
                         .and(Q_JEWELRY.status.eq(JewelryStatus.AVAILABLE))
                         .and(Q_JEWELRY.state.eq(State.ACTIVE)))
+                .limit(jewelrySearchInfo.count())
                 .fetch();
     }
 

@@ -2,14 +2,6 @@ package com.cplerings.core.test.integration.order;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.math.BigDecimal;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.reactive.server.WebTestClient;
-
-import com.cplerings.core.api.crafting.data.CraftingStagePaymentLinkData;
 import com.cplerings.core.api.order.data.StandardOrderPaymentLinkData;
 import com.cplerings.core.api.order.request.PayStandardOrderRequest;
 import com.cplerings.core.api.order.response.PayStandardOrderResponse;
@@ -28,6 +20,13 @@ import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
 import com.cplerings.core.test.shared.order.StandardOrderTestHelper;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.WebTestClient;
+
+import java.math.BigDecimal;
 
 class PayStandardOrderUseCaseIT extends AbstractIT {
 
@@ -50,7 +49,8 @@ class PayStandardOrderUseCaseIT extends AbstractIT {
 
     @BeforeEach
     void setUpCustomOrderAndCraftingStages() {
-        StandardOrder standardOrder = standardOrderTestHelper.createStandardOrder();
+        StandardOrder standardOrder = standardOrderTestHelper.createStandardOrderWithJewelries();
+
         final VNPayPaymentRequest request = getTestDataLoader(PAYMENT_FOLDER).loadAsObject(VNPAY_WEBHOOK_RESULT, VNPayPaymentRequest.class);
         Payment payment = Payment.builder()
                 .status(PaymentStatus.PENDING)
@@ -62,6 +62,7 @@ class PayStandardOrderUseCaseIT extends AbstractIT {
                 .id(Long.valueOf(request.getVnp_TxnRef()))
                 .paymentReceiverType(PaymentReceiverType.STANDARD)
                 .build();
+
         payment = processVNPayPaymentDataSource.save(payment);
         standardOrder.setPayment(payment);
         this.standardOrder = testDataSource.save(standardOrder);
@@ -75,7 +76,7 @@ class PayStandardOrderUseCaseIT extends AbstractIT {
                 .authorizationHeader(token)
                 .method(AbstractIT.RequestBuilder.Method.POST)
                 .body(PayStandardOrderRequest.builder()
-                        .standardOrderId(1L)
+                        .standardOrderId(standardOrder.getId())
                         .build())
                 .send();
 
