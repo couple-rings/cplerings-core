@@ -327,7 +327,8 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
                 .leftJoin(Q_JEWELRY.branch).fetchJoin()
                 .where(Q_JEWELRY.design.id.eq(designId)
                         .and(Q_JEWELRY.metalSpecification.id.eq(metalSpecId))
-                        .and(Q_JEWELRY.branch.id.eq(branchId)))
+                        .and(Q_JEWELRY.branch.id.eq(branchId))
+                        .and(Q_JEWELRY.status.eq(JewelryStatus.AVAILABLE)))
                 .fetchFirst());
     }
 

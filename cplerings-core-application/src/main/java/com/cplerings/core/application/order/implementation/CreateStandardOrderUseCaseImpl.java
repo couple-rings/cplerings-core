@@ -57,7 +57,7 @@ public class CreateStandardOrderUseCaseImpl extends AbstractUseCase<CreateStanda
         input.metalSpecDesignIds().forEach(x -> {
             Jewelry jewelry = createStandardOrderDataSource.getJewelry(input.branchId(), x.designId(), x.metalSpecId())
                     .orElse(null);
-            validator.validateAndStopExecution(jewelry != null && jewelry.getStatus() == JewelryStatus.AVAILABLE, CreateStandardOrderErrorCode.JEWELRY_NOT_VALID);
+            validator.validateAndStopExecution(jewelry != null, CreateStandardOrderErrorCode.JEWELRY_NOT_VALID);
             jewelries.add(jewelry);
         });
         BigDecimal totalPrice = BigDecimal.valueOf(0);
