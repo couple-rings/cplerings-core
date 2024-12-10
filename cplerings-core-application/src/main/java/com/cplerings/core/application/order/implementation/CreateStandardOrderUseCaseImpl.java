@@ -1,12 +1,19 @@
 package com.cplerings.core.application.order.implementation;
 
+import static com.cplerings.core.application.order.error.PayStandardOrderErrorCode.JEWELRY_NOT_IN_STOCK;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.cplerings.core.application.order.CreateStandardOrderUseCase;
 import com.cplerings.core.application.order.datasource.CreateStandardOrderDataSource;
+import com.cplerings.core.application.order.datasource.data.JewelrySearchInfo;
 import com.cplerings.core.application.order.error.CreateStandardOrderErrorCode;
 import com.cplerings.core.application.order.input.CreateStandardOrderInput;
 import com.cplerings.core.application.order.mapper.ACreateStandardOrderMapper;
@@ -18,13 +25,13 @@ import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.jewelry.Jewelry;
-import com.cplerings.core.domain.jewelry.JewelryStatus;
 import com.cplerings.core.domain.order.StandardOrder;
 import com.cplerings.core.domain.order.StandardOrderHistory;
 import com.cplerings.core.domain.order.StandardOrderItem;
 import com.cplerings.core.domain.order.StandardOrderStatus;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 
 @UseCaseImplementation
@@ -53,7 +60,34 @@ public class CreateStandardOrderUseCaseImpl extends AbstractUseCase<CreateStanda
         Account customer = createStandardOrderDataSource.getCustomerById(input.customerId())
                 .orElse(null);
         validator.validateAndStopExecution(customer != null, CreateStandardOrderErrorCode.CUSTOMER_NOT_FOUND);
+
+        final Map<JewelryGroup, Integer> jewelryGroups = new HashMap<>();
+        for (var item : input.metalSpecDesignIds()) {
+            final JewelryGroup jewelryGroup = JewelryGroup.builder()
+                    .metalSpecificationId(item.metalSpecId())
+                    .designId(item.designId())
+                    .branchId(input.branchId())
+                    .build();
+            if (jewelryGroups.containsKey(jewelryGroup)) {
+                jewelryGroups.computeIfPresent(jewelryGroup, (key, value) -> value + 1);
+            } else {
+                jewelryGroups.put(jewelryGroup, 1);
+            }
+        }
+        final Collection<JewelrySearchInfo> jewelrySearchInfos = jewelryGroups.entrySet()
+                .stream()
+                .map(entry -> JewelrySearchInfo.builder()
+                        .branchId(entry.getKey().branchId())
+                        .metalSpecificationId(entry.getKey().metalSpecificationId())
+                        .designId(entry.getKey().designId())
+                        .count(entry.getValue())
+                        .build())
+                .collect(Collectors.toSet());
         List<Jewelry> jewelries = new ArrayList<>();
+        for (JewelrySearchInfo info : jewelrySearchInfos) {
+            final List<Jewelry> jewelriesSearch = createStandardOrderDataSource.getJewelries(info);
+            validator.validateAndStopExecution(jewelriesSearch.size() == info.count(), JEWELRY_NOT_IN_STOCK);
+        }
         input.metalSpecDesignIds().forEach(x -> {
             Jewelry jewelry = createStandardOrderDataSource.getJewelry(input.branchId(), x.designId(), x.metalSpecId())
                     .orElse(null);
@@ -105,5 +139,10 @@ public class CreateStandardOrderUseCaseImpl extends AbstractUseCase<CreateStanda
         createStandardOrderDataSource.save(standardOrderCreated);
 
         return aCreateStandardOrderMapper.toOutput(standardOrderCreated);
+    }
+
+    @Builder
+    private record JewelryGroup(Long metalSpecificationId, Long designId, Long branchId) {
+
     }
 }

@@ -3,6 +3,7 @@ package com.cplerings.core.application.order.datasource;
 import java.util.List;
 import java.util.Optional;
 
+import com.cplerings.core.application.order.datasource.data.JewelrySearchInfo;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.jewelry.Jewelry;
@@ -33,4 +34,6 @@ public interface CreateStandardOrderDataSource {
     TransportOrderHistory save(TransportOrderHistory history);
 
     Optional<Jewelry> getJewelry(Long branchId, Long designId, Long metalSpecId);
+
+    List<Jewelry> getJewelries(JewelrySearchInfo jewelrySearchInfo);
 }
