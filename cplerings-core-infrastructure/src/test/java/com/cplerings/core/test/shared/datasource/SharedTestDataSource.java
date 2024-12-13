@@ -1,5 +1,10 @@
 package com.cplerings.core.test.shared.datasource;
 
+import java.util.Collection;
+import java.util.Optional;
+
+import org.springframework.boot.test.context.TestComponent;
+
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountVerification;
 import com.cplerings.core.domain.account.QAccount;
@@ -29,6 +34,7 @@ import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.order.status.TransportationNote;
 import com.cplerings.core.domain.payment.DesignSessionPayment;
 import com.cplerings.core.domain.payment.Payment;
+import com.cplerings.core.domain.refund.Refund;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
 import com.cplerings.core.domain.spouse.Agreement;
@@ -56,6 +62,7 @@ import com.cplerings.core.infrastructure.repository.DocumentRepository;
 import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.infrastructure.repository.JewelryRepository;
 import com.cplerings.core.infrastructure.repository.PaymentRepository;
+import com.cplerings.core.infrastructure.repository.RefundRepository;
 import com.cplerings.core.infrastructure.repository.RingDiamondRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
 import com.cplerings.core.infrastructure.repository.SpouseAccountRepository;
@@ -71,11 +78,6 @@ import com.cplerings.core.test.shared.entity.product.DummyProduct;
 import com.cplerings.core.test.shared.entity.product.DummyProductRepository;
 
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.boot.test.context.TestComponent;
-
-import java.util.Collection;
-import java.util.Optional;
 
 @TestComponent
 @RequiredArgsConstructor
@@ -119,6 +121,7 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private final DummyProductRepository dummyProductRepository;
     private final RingDiamondRepository ringDiamondRepository;
     private final StandardOrderItemRepository standardOrderItemRepository;
+    private final RefundRepository refundRepository;
 
     @Override
     public Payment save(Payment payment) {
@@ -320,6 +323,12 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     public StandardOrderItem save(StandardOrderItem standardOrderItem) {
         updateAuditor(standardOrderItem);
         return standardOrderItemRepository.save(standardOrderItem);
+    }
+
+    @Override
+    public Refund save(Refund refund) {
+        updateAuditor(refund);
+        return refundRepository.save(refund);
     }
 
     @Override

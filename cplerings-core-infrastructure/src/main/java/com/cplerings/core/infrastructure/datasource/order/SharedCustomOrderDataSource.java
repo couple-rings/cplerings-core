@@ -1,5 +1,10 @@
 package com.cplerings.core.infrastructure.datasource.order;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.order.datasource.AssignJewelerToCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.CancelStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.CompleteOrderDataSource;
@@ -12,12 +17,15 @@ import com.cplerings.core.application.order.datasource.RefundCustomOrderDataSour
 import com.cplerings.core.application.order.datasource.RefundStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrdersDataSource;
+import com.cplerings.core.application.order.datasource.ViewRefundOrdersDataSource;
 import com.cplerings.core.application.order.datasource.ViewStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewStandardOrdersDataSource;
 import com.cplerings.core.application.order.datasource.data.JewelrySearchInfo;
 import com.cplerings.core.application.order.datasource.result.CustomOrders;
+import com.cplerings.core.application.order.datasource.result.Refunds;
 import com.cplerings.core.application.order.datasource.result.StandardOrders;
 import com.cplerings.core.application.order.input.ViewCustomOrdersInput;
+import com.cplerings.core.application.order.input.ViewRefundOrdersInput;
 import com.cplerings.core.application.order.input.ViewStandardOrdersInput;
 import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
@@ -45,6 +53,7 @@ import com.cplerings.core.domain.order.StandardOrderItem;
 import com.cplerings.core.domain.order.StandardOrderStatus;
 import com.cplerings.core.domain.order.TransportOrderHistory;
 import com.cplerings.core.domain.order.TransportationOrder;
+import com.cplerings.core.domain.refund.QRefund;
 import com.cplerings.core.domain.refund.Refund;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
@@ -67,15 +76,9 @@ import com.cplerings.core.infrastructure.repository.StandardOrderItemRepository;
 import com.cplerings.core.infrastructure.repository.StandardOrderRepository;
 import com.cplerings.core.infrastructure.repository.TransportOrderHistoryRepository;
 import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
-
-import lombok.RequiredArgsConstructor;
-
-import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @DataSource
@@ -84,7 +87,7 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
         CreateStandardOrderDataSource, ViewStandardOrdersDataSource, PayStandardOrderDataSource,
         ProcessPayStandardOrderDataSource, ViewStandardOrderDataSource, CancelStandardOrderDataSource, CompleteOrderDataSource,
         GetCustomOrderByOrderNoDataSource, RefundStandardOrderDataSource, GetStandardOrderByOrderNoDataSource,
-        RefundCustomOrderDataSource {
+        RefundCustomOrderDataSource, ViewRefundOrdersDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QAccount Q_ACCOUNT = QAccount.account;
@@ -93,6 +96,7 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
     private static final QStandardOrder Q_STANDARD_ORDER = QStandardOrder.standardOrder;
     private static final QStandardOrderItem Q_STANDARD_ORDER_ITEM = QStandardOrderItem.standardOrderItem;
     private static final QImage Q_IMAGE = QImage.image;
+    private static final QRefund Q_REFUND = QRefund.refund;
 
     private final CustomOrderRepository customOrderRepository;
     private final CustomOrderHistoryRepository customOrderHistoryRepository;
@@ -489,5 +493,30 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
     @Override
     public Optional<CustomOrder> findCustomOrderById(Long customOrderId) {
         return getCustomOrderById(customOrderId);
+    }
+
+    @Override
+    public Refunds getRefunds(ViewRefundOrdersInput input) {
+        var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
+        BlazeJPAQuery<Refund> query = createQuery()
+                .select(Q_REFUND)
+                .from(Q_REFUND);
+        final BooleanExpressionBuilder booleanExpressionBuilder = createBooleanExpressionBuilder();
+
+        if (input.getStaffId() != null) {
+            booleanExpressionBuilder.and(Q_REFUND.staff.id.eq(input.getStaffId()));
+        }
+
+        final BooleanExpression predicate = booleanExpressionBuilder.build();
+        query.where(predicate);
+
+        long count = query.distinct().fetchCount();
+        List<Refund> refunds = query.limit(input.getPageSize()).offset(offset).fetch();
+        return Refunds.builder()
+                .refunds(refunds)
+                .count(count)
+                .page(input.getPage())
+                .pageSize(input.getPageSize())
+                .build();
     }
 }
