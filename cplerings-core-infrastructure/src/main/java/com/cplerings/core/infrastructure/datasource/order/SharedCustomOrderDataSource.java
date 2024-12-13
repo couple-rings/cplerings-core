@@ -190,6 +190,7 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
                 .leftJoin(Q_CUSTOM_ORDER.secondRing).fetchJoin()
                 .leftJoin(Q_CUSTOM_ORDER.firstRing.ringDiamonds).fetchJoin()
                 .leftJoin(Q_CUSTOM_ORDER.secondRing.ringDiamonds).fetchJoin()
+                .leftJoin(Q_CUSTOM_ORDER.transportationOrders).fetchJoin()
                 .where(Q_CUSTOM_ORDER.id.eq(customOrderId))
                 .fetchOne());
     }

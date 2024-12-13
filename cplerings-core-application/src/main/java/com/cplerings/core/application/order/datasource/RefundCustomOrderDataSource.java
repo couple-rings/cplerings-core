@@ -10,6 +10,7 @@ import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
+import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.refund.Refund;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
@@ -38,4 +39,6 @@ public interface RefundCustomOrderDataSource {
     void deleteRingDiamonds(Collection<RingDiamond> ringDiamonds);
 
     void saveDiamonds(Collection<Diamond> diamonds);
+
+    TransportationOrder save(TransportationOrder transportationOrder);
 }

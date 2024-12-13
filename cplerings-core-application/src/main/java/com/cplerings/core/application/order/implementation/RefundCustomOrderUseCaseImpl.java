@@ -36,7 +36,9 @@ import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.CustomOrderStatus;
+import com.cplerings.core.domain.order.StandardOrderStatus;
 import com.cplerings.core.domain.order.TransportStatus;
+import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.refund.Refund;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
@@ -56,6 +58,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @UseCaseImplementation
@@ -92,7 +95,7 @@ public class RefundCustomOrderUseCaseImpl extends AbstractUseCase<RefundCustomOr
         CustomOrder customOrder = dataSource.findCustomOrderById(input.customOrderId())
                 .orElse(null);
         validator.validateAndStopExecution(customOrder != null, CUSTOM_ORDER_NOT_FOUND);
-        validator.validateAndStopExecution(customOrder.getStatus() == CustomOrderStatus.COMPLETED, CUSTOM_ORDER_NOT_COMPLETED);
+        validator.validateAndStopExecution(customOrder.getStatus() == CustomOrderStatus.COMPLETED || customOrder.getStatus() == CustomOrderStatus.DONE, CUSTOM_ORDER_NOT_COMPLETED);
         validator.validateAndStopExecution(customOrderIsReceived(customOrder), CUSTOM_ORDER_NOT_RECEIVED_BY_CUSTOMER);
 
         final RefundDetail refundDetail = input.refundDetail();
@@ -103,7 +106,13 @@ public class RefundCustomOrderUseCaseImpl extends AbstractUseCase<RefundCustomOr
         final Image proofImage = dataSource.findImageById(refundDetail.proofImageId())
                 .orElse(null);
         validator.validateAndStopExecution(proofImage != null, PROOF_IMAGE_NOT_FOUND);
-
+        if (customOrder.getStatus() == CustomOrderStatus.DONE && customOrder.getTransportationOrders() != null) {
+            Set<TransportationOrder> transportationOrders = customOrder.getTransportationOrders();
+            for (var transportationOrder : transportationOrders) {
+                transportationOrder.setState(State.INACTIVE);
+                dataSource.save(transportationOrder);
+            }
+        }
         customOrder.setStatus(CustomOrderStatus.REFUNDED);
         customOrder = dataSource.save(customOrder);
 

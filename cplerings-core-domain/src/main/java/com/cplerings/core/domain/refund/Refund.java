@@ -17,6 +17,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -53,7 +54,7 @@ public class Refund extends AbstractEntity {
     @AttributeOverride(name = "amount", column = @Column(name = "price", precision = 12, scale = 3, nullable = false))
     private Money amount;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "staff_id")
     private Account staff;
 
