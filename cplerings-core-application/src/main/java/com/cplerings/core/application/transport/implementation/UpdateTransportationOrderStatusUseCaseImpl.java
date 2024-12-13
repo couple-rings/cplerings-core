@@ -92,7 +92,7 @@ public class UpdateTransportationOrderStatusUseCaseImpl extends AbstractUseCase<
             }
 
             case COMPLETED: {
-                validator.validateAndStopExecution(transportationOrder.getStatus() == TransportStatus.DELIVERING, UpdateTransportationOrderStatusErrorCode.INVALID_STATUS);
+                validator.validateAndStopExecution(transportationOrder.getStatus() == TransportStatus.DELIVERING || transportationOrder.getStatus() == TransportStatus.REJECTED, UpdateTransportationOrderStatusErrorCode.INVALID_STATUS);
                 transportationOrder.setStatus(TransportStatus.COMPLETED);
                 transportOrderHistory = TransportOrderHistory.builder()
                         .status(TransportStatus.COMPLETED)
