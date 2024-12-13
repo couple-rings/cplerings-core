@@ -170,6 +170,7 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
                 .leftJoin(FIRST_Q_RING.branch, FIRST_Q_BRANCH).fetchJoin()
                 .leftJoin(SECOND_Q_RING.branch, SECOND_Q_BRANCH).fetchJoin();
         final BooleanExpressionBuilder booleanExpressionBuilder = createBooleanExpressionBuilder();
+        booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.state.eq(State.ACTIVE));
         if (input.getTransporterId() != null) {
             booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.transporter.id.eq(input.getTransporterId()));
         }
@@ -244,7 +245,8 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
         return Optional.ofNullable(createQuery()
                 .select(Q_TRANSPORTATION_ORDER)
                 .from(Q_TRANSPORTATION_ORDER)
-                .where(Q_TRANSPORTATION_ORDER.id.eq(id))
+                .where(Q_TRANSPORTATION_ORDER.id.eq(id)
+                        .and(Q_TRANSPORTATION_ORDER.state.eq(State.ACTIVE)))
                 .fetchFirst());
     }
 
