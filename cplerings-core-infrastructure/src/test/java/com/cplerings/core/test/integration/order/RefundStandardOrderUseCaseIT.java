@@ -12,6 +12,9 @@ import com.cplerings.core.api.order.response.RefundStandardOrderResponse;
 import com.cplerings.core.api.shared.AbstractResponse;
 import com.cplerings.core.application.shared.entity.order.ARefundMethod;
 import com.cplerings.core.common.api.APIConstant;
+import com.cplerings.core.domain.order.TransportationOrder;
+import com.cplerings.core.domain.shared.State;
+import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
 import com.cplerings.core.test.shared.AbstractIT;
 import com.cplerings.core.test.shared.account.AccountTestConstant;
 import com.cplerings.core.test.shared.helper.JWTTestHelper;
@@ -28,7 +31,7 @@ class RefundStandardOrderUseCaseIT extends AbstractIT {
     @Test
     void givenStaff_whenRefundStandardOrder() {
         final String token = jwtTestHelper.generateToken(AccountTestConstant.STAFF_EMAIL);
-        standardOrderTestHelper.createCompleteStandardOrder();
+        standardOrderTestHelper.createPaidStandardOrder();
         RefundStandardOrderRequestData refundStandardOrderRequestData = RefundStandardOrderRequestData.builder()
                 .staffId(21L)
                 .reason("test")

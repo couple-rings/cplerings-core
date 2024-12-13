@@ -125,8 +125,7 @@ public class SharedDiamondDataSource extends AbstractDataSource
         var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
         BlazeJPAQuery<Diamond> query = createQuery()
                 .select(Q_DIAMOND)
-                .from(Q_DIAMOND)
-                .where(Q_DIAMOND.state.eq(State.ACTIVE));
+                .from(Q_DIAMOND);
 
         BooleanExpressionBuilder booleanExpressionBuilder = createBooleanExpressionBuilder();
 

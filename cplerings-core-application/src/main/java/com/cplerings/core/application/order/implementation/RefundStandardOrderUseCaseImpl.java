@@ -9,8 +9,6 @@ import com.cplerings.core.application.order.input.RefundStandardOrderInput;
 import com.cplerings.core.application.order.mapper.ARefundStandardOrderMapper;
 import com.cplerings.core.application.order.output.RefundStandardOrderOutput;
 import com.cplerings.core.application.shared.service.configuration.ConfigurationService;
-import com.cplerings.core.application.shared.service.security.CurrentUser;
-import com.cplerings.core.application.shared.service.security.SecurityService;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
@@ -63,7 +61,7 @@ public class RefundStandardOrderUseCaseImpl extends AbstractUseCase<RefundStanda
                 .orElse(null);
         validator.validateAndStopExecution(staff != null, RefundStandardOrderErrorCode.STAFF_NOT_FOUND);
         Image proofImage = refundStandardOrderDataSource.getImageById(input.refundStandardOrderRequestData().proofImageId())
-                        .orElse(null);
+                .orElse(null);
         validator.validateAndStopExecution(proofImage != null, RefundStandardOrderErrorCode.IMAGE_NOT_FOUND);
         standardOrder.getStandardOrderItems().forEach(standardOrderItem -> {
             Jewelry jewelry = standardOrderItem.getJewelry();
@@ -85,7 +83,12 @@ public class RefundStandardOrderUseCaseImpl extends AbstractUseCase<RefundStanda
             case TRANSFER -> refund.setMethod(RefundMethod.TRANSFER);
         }
         refund = refundStandardOrderDataSource.save(refund);
-
+        if (standardOrder.getStatus() == StandardOrderStatus.PAID && standardOrder.getTransportationOrders() != null) {
+            standardOrder.getTransportationOrders().forEach(transportationOrder -> {
+                transportationOrder.setState(State.INACTIVE);
+                refundStandardOrderDataSource.save(transportationOrder);
+            });
+        }
         standardOrder.setStatus(StandardOrderStatus.REFUNDED);
         standardOrder = refundStandardOrderDataSource.save(standardOrder);
         StandardOrderHistory standardOrderHistory = StandardOrderHistory.builder()
@@ -93,15 +96,6 @@ public class RefundStandardOrderUseCaseImpl extends AbstractUseCase<RefundStanda
                 .status(StandardOrderStatus.REFUNDED)
                 .build();
         refundStandardOrderDataSource.save(standardOrderHistory);
-
-        if (standardOrder.getStatus() == StandardOrderStatus.PAID) {
-            if (standardOrder.getTransportationOrders() != null) {
-                standardOrder.getTransportationOrders().forEach(transportationOrder -> {
-                    transportationOrder.setState(State.INACTIVE);
-                    refundStandardOrderDataSource.save(transportationOrder);
-                });
-            }
-        }
 
         return aRefundStandardOrderMapper.toOutput(refund);
     }
