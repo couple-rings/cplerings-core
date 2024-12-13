@@ -4,6 +4,8 @@ import com.cplerings.core.domain.jewelry.Jewelry;
 import com.cplerings.core.domain.order.StandardOrder;
 import com.cplerings.core.domain.order.StandardOrderItem;
 import com.cplerings.core.domain.order.StandardOrderStatus;
+import com.cplerings.core.domain.order.TransportStatus;
+import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.shared.valueobject.Money;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
@@ -16,6 +18,9 @@ import org.springframework.boot.test.context.TestComponent;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @TestComponent
 @RequiredArgsConstructor
@@ -24,6 +29,7 @@ public class StandardOrderTestHelper {
     private final AccountRepository accountRepository;
     private final TestDataSource testDataSource;
     private final JewelryTestHelper jewelryTestHelper;
+    private final TransportOrderTestHelper transportOrderTestHelper;
 
     public StandardOrder createStandardOrder() {
         StandardOrder standardOrder = StandardOrder.builder()
@@ -40,6 +46,15 @@ public class StandardOrderTestHelper {
                 .status(StandardOrderStatus.PAID)
                 .customer(accountRepository.getReferenceById(1L))
                 .build();
+        standardOrder = testDataSource.save(standardOrder);
+        TransportationOrder transportationOrder = TransportationOrder.builder()
+                .deliveryAddress("Test")
+                .receiverName("Test")
+                .receiverPhone("Test")
+                .status(TransportStatus.PENDING)
+                .standardOrder(standardOrder)
+                .build();
+        testDataSource.save(transportationOrder);
         return testDataSource.save(standardOrder);
     }
 
@@ -49,6 +64,15 @@ public class StandardOrderTestHelper {
                 .status(StandardOrderStatus.COMPLETED)
                 .customer(accountRepository.getReferenceById(1L))
                 .build();
+        standardOrder = testDataSource.save(standardOrder);
+        TransportationOrder transportationOrder = TransportationOrder.builder()
+                .deliveryAddress("Test")
+                .receiverName("Test")
+                .receiverPhone("Test")
+                .status(TransportStatus.PENDING)
+                .standardOrder(standardOrder)
+                .build();
+        testDataSource.save(transportationOrder);
         return testDataSource.save(standardOrder);
     }
 

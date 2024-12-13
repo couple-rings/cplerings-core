@@ -47,6 +47,7 @@ import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.order.QCustomOrder;
 import com.cplerings.core.domain.order.QStandardOrder;
 import com.cplerings.core.domain.order.QStandardOrderItem;
+import com.cplerings.core.domain.order.QTransportationOrder;
 import com.cplerings.core.domain.order.StandardOrder;
 import com.cplerings.core.domain.order.StandardOrderHistory;
 import com.cplerings.core.domain.order.StandardOrderItem;
@@ -97,6 +98,7 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
     private static final QStandardOrderItem Q_STANDARD_ORDER_ITEM = QStandardOrderItem.standardOrderItem;
     private static final QImage Q_IMAGE = QImage.image;
     private static final QRefund Q_REFUND = QRefund.refund;
+    private static final QTransportationOrder Q_TRANSPORTATION_ORDER = QTransportationOrder.transportationOrder;
 
     private final CustomOrderRepository customOrderRepository;
     private final CustomOrderHistoryRepository customOrderHistoryRepository;
@@ -447,7 +449,7 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
                 .from(Q_STANDARD_ORDER)
                 .leftJoin(Q_STANDARD_ORDER.standardOrderItems, Q_STANDARD_ORDER_ITEM).fetchJoin()
                 .leftJoin(Q_STANDARD_ORDER_ITEM.jewelry).fetchJoin()
-                .leftJoin(Q_STANDARD_ORDER.transportationOrders).fetchJoin()
+                .leftJoin(Q_STANDARD_ORDER.transportationOrders, Q_TRANSPORTATION_ORDER).fetchJoin()
                 .where(Q_STANDARD_ORDER.id.eq(id))
                 .fetchFirst());
     }
