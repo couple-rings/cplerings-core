@@ -447,6 +447,7 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
                 .from(Q_STANDARD_ORDER)
                 .leftJoin(Q_STANDARD_ORDER.standardOrderItems, Q_STANDARD_ORDER_ITEM).fetchJoin()
                 .leftJoin(Q_STANDARD_ORDER_ITEM.jewelry).fetchJoin()
+                .leftJoin(Q_STANDARD_ORDER.transportationOrders).fetchJoin()
                 .where(Q_STANDARD_ORDER.id.eq(id))
                 .fetchFirst());
     }

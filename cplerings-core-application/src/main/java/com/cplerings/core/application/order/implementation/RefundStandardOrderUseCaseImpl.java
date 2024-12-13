@@ -22,6 +22,7 @@ import com.cplerings.core.domain.order.StandardOrder;
 import com.cplerings.core.domain.order.StandardOrderStatus;
 import com.cplerings.core.domain.refund.Refund;
 import com.cplerings.core.domain.refund.RefundMethod;
+import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
 import lombok.RequiredArgsConstructor;
@@ -83,6 +84,15 @@ public class RefundStandardOrderUseCaseImpl extends AbstractUseCase<RefundStanda
             case TRANSFER -> refund.setMethod(RefundMethod.TRANSFER);
         }
         refund = refundStandardOrderDataSource.save(refund);
+        if (standardOrder.getStatus() == StandardOrderStatus.PAID) {
+            if (standardOrder.getTransportationOrders() != null) {
+                standardOrder.getTransportationOrders().forEach(transportationOrder -> {
+                    transportationOrder.setState(State.INACTIVE);
+                    refundStandardOrderDataSource.save(transportationOrder);
+                });
+            }
+        }
+
         return aRefundStandardOrderMapper.toOutput(refund);
     }
 }
