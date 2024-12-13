@@ -204,5 +204,10 @@ public final class APIConstant {
     */
     public static final String ORDERS_PATH = "/orders";
     public static final String COMPLETE_ORDER_PATH = ORDERS_PATH + "/complete";
+
+    /*
+     refunds' paths
+  */
+    public static final String REFUNDS_PATH = "/refunds";
 }
 

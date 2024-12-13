@@ -76,6 +76,7 @@ public class SecurityConfiguration {
         handleStandardOrderAPI(localHttp);
         handleConfigurationAPI(localHttp);
         handleCustomOrderAPI(localHttp);
+        handleRefundAPI(localHttp);
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(resolvePath("/**"))
                 .denyAll());
         return localHttp.build();
@@ -362,6 +363,11 @@ public class SecurityConfiguration {
     private void handleCustomOrderAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.REFUND_CUSTOM_ORDER_PATH))
                 .hasAuthority(RoleConstant.ROLE_STAFF));
+    }
+
+    private void handleRefundAPI(HttpSecurity localHttp) throws Exception {
+        localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.REFUNDS_PATH))
+                .hasAnyAuthority(RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER));
     }
 
     private String resolvePath(String path) {
