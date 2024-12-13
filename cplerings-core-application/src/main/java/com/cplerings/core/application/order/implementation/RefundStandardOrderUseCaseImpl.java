@@ -19,6 +19,7 @@ import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.jewelry.Jewelry;
 import com.cplerings.core.domain.jewelry.JewelryStatus;
 import com.cplerings.core.domain.order.StandardOrder;
+import com.cplerings.core.domain.order.StandardOrderHistory;
 import com.cplerings.core.domain.order.StandardOrderStatus;
 import com.cplerings.core.domain.refund.Refund;
 import com.cplerings.core.domain.refund.RefundMethod;
@@ -84,6 +85,15 @@ public class RefundStandardOrderUseCaseImpl extends AbstractUseCase<RefundStanda
             case TRANSFER -> refund.setMethod(RefundMethod.TRANSFER);
         }
         refund = refundStandardOrderDataSource.save(refund);
+
+        standardOrder.setStatus(StandardOrderStatus.REFUNDED);
+        standardOrder = refundStandardOrderDataSource.save(standardOrder);
+        StandardOrderHistory standardOrderHistory = StandardOrderHistory.builder()
+                .standardOrder(standardOrder)
+                .status(StandardOrderStatus.REFUNDED)
+                .build();
+        refundStandardOrderDataSource.save(standardOrderHistory);
+
         if (standardOrder.getStatus() == StandardOrderStatus.PAID) {
             if (standardOrder.getTransportationOrders() != null) {
                 standardOrder.getTransportationOrders().forEach(transportationOrder -> {
