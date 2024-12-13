@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.diamond.datasource.CreateDiamondDataSource;
+import com.cplerings.core.application.diamond.datasource.DisableDiamondDataSource;
 import com.cplerings.core.application.diamond.datasource.UpdateDiamondDataSource;
 import com.cplerings.core.application.diamond.datasource.ViewDiamondSpecificationDataSource;
 import com.cplerings.core.application.diamond.datasource.ViewDiamondsDataSource;
@@ -35,7 +36,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SharedDiamondDataSource extends AbstractDataSource
         implements ViewDiamondSpecificationDataSource, CreateDiamondDataSource, ViewDiamondsDataSource,
-                    UpdateDiamondDataSource {
+                    UpdateDiamondDataSource, DisableDiamondDataSource {
 
     private static final QDiamondSpecification Q_DIAMOND_SPECIFICATION = QDiamondSpecification.diamondSpecification;
     private static final QDiamond Q_DIAMOND = QDiamond.diamond;

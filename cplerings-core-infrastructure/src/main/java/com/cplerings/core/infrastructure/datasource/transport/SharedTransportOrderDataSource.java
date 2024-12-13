@@ -102,7 +102,8 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
                 .from(Q_TRANSPORTATION_ORDER)
                 .leftJoin(Q_TRANSPORTATION_ORDER.customOrder, Q_CUSTOM_ORDER).fetchJoin()
                 .leftJoin(Q_TRANSPORTATION_ORDER.standardOrder, Q_STANDARD_ORDER).fetchJoin()
-                .where(Q_TRANSPORTATION_ORDER.id.eq(transportationOrderId))
+                .where(Q_TRANSPORTATION_ORDER.id.eq(transportationOrderId)
+                        .and(Q_TRANSPORTATION_ORDER.state.eq(State.ACTIVE)))
                 .fetchOne());
     }
 
@@ -146,7 +147,8 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
     public List<TransportationOrder> getTransportationOrders(List<Long> ids) {
         return createQuery().select(Q_TRANSPORTATION_ORDER)
                 .from(Q_TRANSPORTATION_ORDER)
-                .where(Q_TRANSPORTATION_ORDER.id.in(ids))
+                .where(Q_TRANSPORTATION_ORDER.id.in(ids)
+                        .and(Q_TRANSPORTATION_ORDER.state.eq(State.ACTIVE)))
                 .fetch();
     }
 
@@ -236,7 +238,8 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
                 .select(Q_TRANSPORTATION_ORDER)
                 .from(Q_TRANSPORTATION_ORDER)
                 .leftJoin(Q_TRANSPORTATION_ORDER.customOrder, Q_CUSTOM_ORDER)
-                .where(Q_TRANSPORTATION_ORDER.customOrder.id.eq(customOrderId))
+                .where(Q_TRANSPORTATION_ORDER.customOrder.id.eq(customOrderId)
+                        .and(Q_TRANSPORTATION_ORDER.state.eq(State.ACTIVE)))
                 .fetchFirst());
     }
 
