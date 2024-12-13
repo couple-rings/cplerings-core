@@ -1,6 +1,7 @@
 package com.cplerings.core.application.order.implementation;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 import com.cplerings.core.application.order.RefundStandardOrderUseCase;
 import com.cplerings.core.application.order.datasource.RefundStandardOrderDataSource;
@@ -19,6 +20,7 @@ import com.cplerings.core.domain.jewelry.JewelryStatus;
 import com.cplerings.core.domain.order.StandardOrder;
 import com.cplerings.core.domain.order.StandardOrderHistory;
 import com.cplerings.core.domain.order.StandardOrderStatus;
+import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.refund.Refund;
 import com.cplerings.core.domain.refund.RefundMethod;
 import com.cplerings.core.domain.shared.State;
@@ -84,10 +86,11 @@ public class RefundStandardOrderUseCaseImpl extends AbstractUseCase<RefundStanda
         }
         refund = refundStandardOrderDataSource.save(refund);
         if (standardOrder.getStatus() == StandardOrderStatus.PAID && standardOrder.getTransportationOrders() != null) {
-            standardOrder.getTransportationOrders().forEach(transportationOrder -> {
+            Set<TransportationOrder> transportationOrders = standardOrder.getTransportationOrders();
+            for (var transportationOrder : transportationOrders) {
                 transportationOrder.setState(State.INACTIVE);
                 refundStandardOrderDataSource.save(transportationOrder);
-            });
+            }
         }
         standardOrder.setStatus(StandardOrderStatus.REFUNDED);
         standardOrder = refundStandardOrderDataSource.save(standardOrder);

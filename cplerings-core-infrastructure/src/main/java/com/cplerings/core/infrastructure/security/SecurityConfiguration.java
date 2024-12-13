@@ -320,6 +320,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.DIAMONDS_PATH))
                         .hasAuthority(RoleConstant.ROLE_MANAGER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.PUT, resolvePath(APIConstant.SINGLE_DIAMOND_PATH))
+                        .hasAuthority(RoleConstant.ROLE_MANAGER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.DELETE, resolvePath(APIConstant.SINGLE_DIAMOND_PATH))
                         .hasAuthority(RoleConstant.ROLE_MANAGER));
     }
 
