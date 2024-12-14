@@ -134,6 +134,7 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
                 case DONE -> booleanExpressionBuilder.and(Q_CUSTOM_ORDER.status.eq(CustomOrderStatus.DONE));
                 case CANCELED -> booleanExpressionBuilder.and(Q_CUSTOM_ORDER.status.eq(CustomOrderStatus.CANCELED));
                 case COMPLETED -> booleanExpressionBuilder.and(Q_CUSTOM_ORDER.status.eq(CustomOrderStatus.COMPLETED));
+                case REFUNDED -> booleanExpressionBuilder.and(Q_CUSTOM_ORDER.status.eq(CustomOrderStatus.REFUNDED));
             }
         }
         if (input.getCustomerId() != null) {
@@ -360,6 +361,7 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
                 case CANCELLED ->
                         booleanExpressionBuilder.and(Q_STANDARD_ORDER.status.eq(StandardOrderStatus.CANCELLED));
                 case PAID -> booleanExpressionBuilder.and(Q_STANDARD_ORDER.status.eq(StandardOrderStatus.PAID));
+                case REFUNDED -> booleanExpressionBuilder.and(Q_STANDARD_ORDER.status.eq(StandardOrderStatus.REFUNDED));
             }
         }
         if (input.getCustomerId() != null) {

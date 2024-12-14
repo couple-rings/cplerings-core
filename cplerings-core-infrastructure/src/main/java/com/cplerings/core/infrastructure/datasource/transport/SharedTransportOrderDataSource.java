@@ -173,7 +173,6 @@ public class SharedTransportOrderDataSource extends AbstractDataSource implement
                 .leftJoin(SECOND_Q_RING.branch, SECOND_Q_BRANCH).fetchJoin()
                 .where(Q_TRANSPORTATION_ORDER.state.eq(State.ACTIVE));
         final BooleanExpressionBuilder booleanExpressionBuilder = createBooleanExpressionBuilder();
-//        booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.state.eq(State.ACTIVE));
         if (input.getTransporterId() != null) {
             booleanExpressionBuilder.and(Q_TRANSPORTATION_ORDER.transporter.id.eq(input.getTransporterId()));
         }
