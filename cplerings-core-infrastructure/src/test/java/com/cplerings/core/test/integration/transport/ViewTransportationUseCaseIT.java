@@ -35,15 +35,12 @@ public class ViewTransportationUseCaseIT extends AbstractIT {
 
     @Test
     void givenTransporterOrStaff_whenViewTransportationOrders() {
-        var transportationOrder = transportOrderTestHelper.createTransportOrderWithWaitingStatusAndCustomOrderDone();
-        transportationOrder.setTransporter(accountRepository.getReferenceById(51L));
-        testDataSource.save(transportationOrder);
+        transportOrderTestHelper.createTransportOrderWithWaitingStatusAndCustomOrderDone();
         String token = jwtTestHelper.generateToken(AccountTestConstant.TRANSPORTER_EMAIL);
         ViewTransportationOrdersRequest request = ViewTransportationOrdersRequest.builder()
                 .page(0)
-                .pageSize(1)
-                .transporterId(51L)
-                .status(ATransportationOrderStatus.WAITING)
+                .pageSize(10)
+                .branchId(1L)
                 .build();
         final WebTestClient.ResponseSpec response = requestBuilder()
                 .path(APIConstant.TRANSPORTATION_ORDER_PATH)
@@ -68,7 +65,7 @@ public class ViewTransportationUseCaseIT extends AbstractIT {
         final TransportationOrdersData transportationOrdersData = responseBody.getData();
         assertThat(transportationOrdersData).isNotNull();
         assertThat(transportationOrdersData.getPage()).isZero();
-        assertThat(transportationOrdersData.getPageSize()).isEqualTo(1);
+        assertThat(transportationOrdersData.getPageSize()).isEqualTo(10);
         assertThat(transportationOrdersData.getItems()).hasSize(1);
         assertThat(transportationOrdersData.getTotalPages()).isEqualTo(1);
         assertThat(transportationOrdersData.getItems().stream().findFirst().get().getStatus()).isEqualByComparingTo(ATransportationOrderStatus.WAITING);

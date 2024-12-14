@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.TestComponent;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
+import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
 
 import lombok.RequiredArgsConstructor;
