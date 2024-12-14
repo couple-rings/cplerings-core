@@ -138,6 +138,13 @@ public class SharedDiamondDataSource extends AbstractDataSource
             booleanExpressionBuilder.and(Q_DIAMOND.giaReportNumber.eq(input.getGiaReportNumber()));
         }
 
+        if (input.getState() != null) {
+            switch (input.getState()) {
+                case ACTIVE -> booleanExpressionBuilder.and(Q_DIAMOND.state.eq(State.ACTIVE));
+                case INACTIVE -> booleanExpressionBuilder.and(Q_DIAMOND.state.eq(State.INACTIVE));
+            }
+        }
+
         final BooleanExpression predicate = booleanExpressionBuilder.build();
         query.where(predicate);
 

@@ -1,5 +1,6 @@
 package com.cplerings.core.application.diamond.input;
 
+import com.cplerings.core.application.shared.entity.shared.AState;
 import com.cplerings.core.application.shared.pagination.AbstractPaginatedInput;
 
 import lombok.Getter;
@@ -13,6 +14,7 @@ public class ViewDiamondsInput extends AbstractPaginatedInput {
 
     private Long branchId;
     private String giaReportNumber;
+    private AState state;
 
     public static Builder builder() {
         return new Builder();
@@ -22,6 +24,7 @@ public class ViewDiamondsInput extends AbstractPaginatedInput {
 
         private Long branchId;
         private String giaReportNumber;
+        private AState state;
 
         public Builder giaReportNumber(String giaReportNumber) {
             this.giaReportNumber = giaReportNumber;
@@ -30,6 +33,11 @@ public class ViewDiamondsInput extends AbstractPaginatedInput {
 
         public Builder branchId(Long branchId) {
             this.branchId = branchId;
+            return self();
+        }
+
+        public Builder state(AState state) {
+            this.state = state;
             return self();
         }
 
