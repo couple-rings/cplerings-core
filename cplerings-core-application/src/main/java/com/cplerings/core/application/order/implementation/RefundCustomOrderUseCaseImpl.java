@@ -96,7 +96,7 @@ public class RefundCustomOrderUseCaseImpl extends AbstractUseCase<RefundCustomOr
                 .orElse(null);
         validator.validateAndStopExecution(customOrder != null, CUSTOM_ORDER_NOT_FOUND);
         validator.validateAndStopExecution(customOrder.getStatus() == CustomOrderStatus.COMPLETED || customOrder.getStatus() == CustomOrderStatus.DONE, CUSTOM_ORDER_NOT_COMPLETED);
-        validator.validateAndStopExecution(customOrderIsReceived(customOrder), CUSTOM_ORDER_NOT_RECEIVED_BY_CUSTOMER);
+//        validator.validateAndStopExecution(customOrderIsReceived(customOrder), CUSTOM_ORDER_NOT_RECEIVED_BY_CUSTOMER);
 
         final RefundDetail refundDetail = input.refundDetail();
         final Account staff = dataSource.findStaffById(refundDetail.staffId())
@@ -168,11 +168,11 @@ public class RefundCustomOrderUseCaseImpl extends AbstractUseCase<RefundCustomOr
         return totalPrice.multiply(percentage);
     }
 
-    private boolean customOrderIsReceived(CustomOrder customOrder) {
-        return CollectionUtils.isEmpty(customOrder.getTransportationOrders())
-                || customOrder.getTransportationOrders()
-                .stream()
-                .filter(Objects::nonNull)
-                .anyMatch(transportationOrder -> transportationOrder.getStatus() == TransportStatus.COMPLETED);
-    }
+//    private boolean customOrderIsReceived(CustomOrder customOrder) {
+//        return CollectionUtils.isEmpty(customOrder.getTransportationOrders())
+//                || customOrder.getTransportationOrders()
+//                .stream()
+//                .filter(Objects::nonNull)
+//                .anyMatch(transportationOrder -> transportationOrder.getStatus() == TransportStatus.COMPLETED);
+//    }
 }
