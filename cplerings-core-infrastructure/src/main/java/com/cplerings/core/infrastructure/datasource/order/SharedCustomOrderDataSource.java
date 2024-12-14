@@ -252,7 +252,7 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
 
     @Override
     public void saveDiamonds(Collection<Diamond> diamonds) {
-        diamondRepository.deleteAll(diamonds);
+        diamondRepository.saveAll(diamonds);
     }
 
     @Override

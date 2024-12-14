@@ -4,6 +4,8 @@ import com.cplerings.core.common.temporal.TemporalUtils;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderStatus;
+import com.cplerings.core.domain.order.TransportStatus;
+import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
 import com.cplerings.core.domain.ring.RingStatus;
@@ -173,12 +175,21 @@ public class CustomOrderTestHelper {
         CustomOrder customOrder = CustomOrder.builder()
                 .totalPrice(Money.create(BigDecimal.valueOf(120000)))
                 .customer(accountRepository.getReferenceById(1L))
-                .status(CustomOrderStatus.COMPLETED)
+                .status(CustomOrderStatus.DONE)
                 .firstRing(firstRing)
                 .secondRing(secondRing)
                 .contract(contractCreated)
                 .jeweler(accountRepository.getReferenceById(41L))
                 .build();
+        customOrder = testDataSource.save(customOrder);
+        TransportationOrder transportationOrder = TransportationOrder.builder()
+                .customOrder(customOrder)
+                .deliveryAddress("Test")
+                .receiverName("Test")
+                .receiverPhone("Test")
+                .status(TransportStatus.PENDING)
+                .build();
+        testDataSource.save(transportationOrder);
         return testDataSource.save(customOrder);
     }
 }
