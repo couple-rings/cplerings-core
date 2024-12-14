@@ -87,7 +87,7 @@ public class CustomOrder extends AbstractOrderEntity {
     @Column(name = "status", nullable = false)
     private CustomOrderStatus status;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transportation_address_id")
     private TransportationAddress transportationAddress;
 
