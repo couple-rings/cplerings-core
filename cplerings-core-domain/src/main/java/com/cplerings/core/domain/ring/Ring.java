@@ -76,7 +76,7 @@ public class Ring extends AbstractProductEntity {
     @OneToOne(mappedBy = "secondRing")
     private CustomOrder customOrderAsSecond;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "spouse_id")
     private Spouse spouse;
 
