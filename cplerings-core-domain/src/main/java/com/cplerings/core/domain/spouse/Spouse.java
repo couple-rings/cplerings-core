@@ -4,6 +4,7 @@ import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.shared.AbstractEntity;
 
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import java.time.Instant;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -54,6 +56,6 @@ public class Spouse extends AbstractEntity {
     @OneToOne(mappedBy = "spouse")
     private SpouseAccount spouseAccount;
 
-    @OneToOne(mappedBy = "spouse")
-    private Ring ring;
+    @OneToMany(mappedBy = "spouse")
+    private Set<Ring> rings;
 }
