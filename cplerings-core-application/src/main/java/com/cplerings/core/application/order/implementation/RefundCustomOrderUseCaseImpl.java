@@ -129,7 +129,6 @@ public class RefundCustomOrderUseCaseImpl extends AbstractUseCase<RefundCustomOr
         final Collection<RingDiamond> ringDiamonds = rings.stream()
                 .flatMap(ring -> ring.getRingDiamonds().stream())
                 .collect(Collectors.toSet());
-        dataSource.deleteRingDiamonds(ringDiamonds);
 
         final Collection<Diamond> diamonds = ringDiamonds.stream()
                 .map(RingDiamond::getDiamond)
