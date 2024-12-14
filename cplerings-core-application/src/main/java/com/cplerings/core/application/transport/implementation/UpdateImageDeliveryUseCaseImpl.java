@@ -38,7 +38,7 @@ public class UpdateImageDeliveryUseCaseImpl extends AbstractUseCase<UpdateImageD
         TransportationOrder transportationOrder = updateImageDeliveryDataSource.getTransportationOrder(input.transportationOrderId())
                 .orElse(null);
         validator.validateAndStopExecution(transportationOrder != null, UpdateImageDeliveryErrorCode.TRANSPORTATION_ORDER_NOT_FOUND);
-        validator.validateAndStopExecution(transportationOrder.getStatus() == TransportStatus.DELIVERING, UpdateImageDeliveryErrorCode.WRONG_STATUS);
+        validator.validateAndStopExecution(transportationOrder.getStatus() == TransportStatus.DELIVERING || transportationOrder.getStatus() == TransportStatus.REJECTED, UpdateImageDeliveryErrorCode.WRONG_STATUS);
         Image image = updateImageDeliveryDataSource.getImageById(input.imageId())
                         .orElse(null);
         validator.validateAndStopExecution(image != null, UpdateImageDeliveryErrorCode.IMAGE_NOT_FOUND);
