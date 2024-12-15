@@ -128,6 +128,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.GET_RANDOM_STAFF_PATH))
                         .hasAuthority(RoleConstant.ROLE_SERVICE))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.GET_DESIGN_STAFFS_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_MANAGER, RoleConstant.ROLE_STAFF))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.CUSTOMERS_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_MANAGER, RoleConstant.ROLE_STAFF));
     }
 
