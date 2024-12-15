@@ -15,17 +15,19 @@ import com.cplerings.core.application.account.datasource.ResetPasswordDataSource
 import com.cplerings.core.application.account.datasource.VerifyCustomerDataSource;
 import com.cplerings.core.application.account.datasource.ViewAccountDataSource;
 import com.cplerings.core.application.account.datasource.ViewCurrentProfileDataSource;
+import com.cplerings.core.application.account.datasource.ViewCustomersDataSource;
 import com.cplerings.core.application.account.datasource.ViewJewelersUseDataSource;
 import com.cplerings.core.application.account.datasource.ViewTransportersDataSource;
 import com.cplerings.core.application.account.datasource.ViewUsersDataSource;
+import com.cplerings.core.application.account.datasource.result.Customers;
 import com.cplerings.core.application.account.datasource.result.DesignStaffsResult;
 import com.cplerings.core.application.account.datasource.result.Jewelers;
 import com.cplerings.core.application.account.datasource.result.Transporters;
 import com.cplerings.core.application.account.datasource.result.Users;
 import com.cplerings.core.application.account.input.GetDesignStaffsInput;
+import com.cplerings.core.application.account.input.ViewCustomersInput;
 import com.cplerings.core.application.account.input.ViewJewelersInput;
 import com.cplerings.core.application.account.input.ViewTransportersInput;
-import com.cplerings.core.application.account.output.result.JewelersOutputResult;
 import com.cplerings.core.application.shared.entity.account.ADesignStaff;
 import com.cplerings.core.application.shared.entity.account.AJeweler;
 import com.cplerings.core.application.shared.entity.account.ATransporter;
@@ -55,6 +57,7 @@ import com.cplerings.core.infrastructure.repository.AccountPasswordResetReposito
 import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.infrastructure.repository.AccountVerificationRepository;
 import com.cplerings.core.infrastructure.repository.SpouseAccountRepository;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 
 import lombok.RequiredArgsConstructor;
@@ -64,7 +67,7 @@ import lombok.RequiredArgsConstructor;
 public class SharedAccountDataSource extends AbstractDataSource
         implements RegisterCustomerDataSource, VerifyCustomerDataSource, RequestResetPasswordDataSource,
         ResetPasswordDataSource, ViewAccountDataSource, ViewCurrentProfileDataSource, ViewTransportersDataSource,
-        ViewJewelersUseDataSource, ViewUsersDataSource, GetRandomStaffDataSource, GetDesignStaffsDataSource {
+        ViewJewelersUseDataSource, ViewUsersDataSource, GetRandomStaffDataSource, GetDesignStaffsDataSource, ViewCustomersDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QAccountVerification Q_ACCOUNT_VERIFICATION = QAccountVerification.accountVerification;
@@ -272,5 +275,30 @@ public class SharedAccountDataSource extends AbstractDataSource
                 .where(Q_CUSTOM_REQUEST.staff.id.eq(staff.getId())
                         .and(Q_CUSTOM_REQUEST.status.eq(CustomRequestStatus.APPROVED)));
         return query.distinct().fetchCount();
+    }
+
+    @Override
+    public Customers getCustomers(ViewCustomersInput input) {
+        var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
+        BlazeJPAQuery<Account> query = createQuery()
+                .select(Q_ACCOUNT)
+                .from(Q_ACCOUNT)
+                .where(Q_ACCOUNT.role.eq(Role.CUSTOMER));
+        final BooleanExpressionBuilder booleanExpressionBuilder = createBooleanExpressionBuilder();
+        if (input.getEmail() != null) {
+            booleanExpressionBuilder.and(Q_ACCOUNT.email.toLowerCase().contains(input.getEmail().toLowerCase()));
+        }
+
+        final BooleanExpression predicate = booleanExpressionBuilder.build();
+        query.where(predicate);
+
+        long count = query.distinct().fetchCount();
+        List<Account> customers = query.limit(input.getPageSize()).offset(offset).fetch();
+        return Customers.builder()
+                .customers(customers)
+                .count(count)
+                .page(input.getPage())
+                .pageSize(input.getPageSize())
+                .build();
     }
 }
