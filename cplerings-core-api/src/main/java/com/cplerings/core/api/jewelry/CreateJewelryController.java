@@ -1,12 +1,5 @@
 package com.cplerings.core.api.jewelry;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.cplerings.core.api.design.request.CreateCustomDesignRequest;
-import com.cplerings.core.api.design.response.CreateCustomDesignResponse;
 import com.cplerings.core.api.jewelry.mapper.APICreateJewelryMapper;
 import com.cplerings.core.api.jewelry.request.CreateJewelryRequest;
 import com.cplerings.core.api.jewelry.response.CreateJewelryResponse;
@@ -21,11 +14,17 @@ import com.cplerings.core.application.shared.entity.jewelry.AJewelry;
 import com.cplerings.core.application.shared.usecase.UseCase;
 import com.cplerings.core.common.api.APIConstant;
 
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
@@ -59,5 +58,4 @@ public class CreateJewelryController extends AbstractController<CreateJewelryInp
     public ResponseEntity<Object> create(@RequestBody CreateJewelryRequest request) {
         return handleRequest(request);
     }
-
 }

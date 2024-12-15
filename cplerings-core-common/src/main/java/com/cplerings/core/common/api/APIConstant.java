@@ -185,6 +185,7 @@ public final class APIConstant {
     public static final String JEWELRIES_PATH = "/jewelries";
     public static final String JEWELRIES_CATEGORIES_PATH = JEWELRIES_PATH + "/categories";
     public static final String JEWELRY_PRODUCT_NO_PATH = JEWELRIES_PATH + "/productNo/{productNo}";
+    public static final String RESELL_JEWELRY_PATH = JEWELRIES_PATH + "/{jewelryId}/jewelry";
 
     /*
         Standard orders' paths
