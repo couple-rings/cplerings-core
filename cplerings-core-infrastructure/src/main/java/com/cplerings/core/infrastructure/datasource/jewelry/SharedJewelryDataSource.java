@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.jewelry.datasource.CreateJewelryDataSource;
+import com.cplerings.core.application.jewelry.datasource.GetJewelryByProductNoDataSource;
 import com.cplerings.core.application.jewelry.datasource.ViewJewelriesDataSource;
 import com.cplerings.core.application.jewelry.datasource.ViewJewelryCategoriesDataSource;
 import com.cplerings.core.application.jewelry.datasource.result.Jewelries;
@@ -35,7 +36,7 @@ import lombok.RequiredArgsConstructor;
 
 @DataSource
 @RequiredArgsConstructor
-public class SharedJewelryDataSource extends AbstractDataSource implements CreateJewelryDataSource, ViewJewelryCategoriesDataSource, ViewJewelriesDataSource {
+public class SharedJewelryDataSource extends AbstractDataSource implements CreateJewelryDataSource, ViewJewelryCategoriesDataSource, ViewJewelriesDataSource, GetJewelryByProductNoDataSource {
 
     private static final QDesign Q_DESIGN = QDesign.design;
     private static final QMetalSpecification Q_METAL_SPECIFICATION = QMetalSpecification.metalSpecification;
@@ -120,6 +121,7 @@ public class SharedJewelryDataSource extends AbstractDataSource implements Creat
                 case AVAILABLE -> booleanExpressionBuilder.and(Q_JEWELRY.status.eq(JewelryStatus.AVAILABLE));
                 case UNAVAILABLE -> booleanExpressionBuilder.and(Q_JEWELRY.status.eq(JewelryStatus.UNAVAILABLE));
                 case PURCHASED -> booleanExpressionBuilder.and(Q_JEWELRY.status.eq(JewelryStatus.PURCHASED));
+                case RESOLD -> booleanExpressionBuilder.and(Q_JEWELRY.status.eq(JewelryStatus.RESOLD));
             }
         }
         if (input.getBranchId() != null) {
@@ -145,5 +147,14 @@ public class SharedJewelryDataSource extends AbstractDataSource implements Creat
                 .page(input.getPage())
                 .pageSize(input.getPageSize())
                 .build();
+    }
+
+    @Override
+    public Optional<Jewelry> getJewelryByProductNo(String productNo) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_JEWELRY)
+                .from(Q_JEWELRY)
+                .where(Q_JEWELRY.productNo.toLowerCase().eq(productNo.toLowerCase()))
+                .fetchFirst());
     }
 }

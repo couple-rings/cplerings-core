@@ -337,6 +337,8 @@ public class SecurityConfiguration {
                         .permitAll())
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.POST, resolvePath(APIConstant.JEWELRIES_PATH))
                         .hasAuthority(RoleConstant.ROLE_MANAGER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.JEWELRY_PRODUCT_NO_PATH))
+                        .hasAuthority(RoleConstant.ROLE_STAFF))
         ;
     }
 
