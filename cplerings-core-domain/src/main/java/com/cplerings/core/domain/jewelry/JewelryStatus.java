@@ -2,5 +2,5 @@ package com.cplerings.core.domain.jewelry;
 
 public enum JewelryStatus {
 
-    AVAILABLE, UNAVAILABLE, PURCHASED
+    AVAILABLE, UNAVAILABLE, PURCHASED, RESOLD
 }

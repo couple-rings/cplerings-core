@@ -121,6 +121,7 @@ public class SharedJewelryDataSource extends AbstractDataSource implements Creat
                 case AVAILABLE -> booleanExpressionBuilder.and(Q_JEWELRY.status.eq(JewelryStatus.AVAILABLE));
                 case UNAVAILABLE -> booleanExpressionBuilder.and(Q_JEWELRY.status.eq(JewelryStatus.UNAVAILABLE));
                 case PURCHASED -> booleanExpressionBuilder.and(Q_JEWELRY.status.eq(JewelryStatus.PURCHASED));
+                case RESOLD -> booleanExpressionBuilder.and(Q_JEWELRY.status.eq(JewelryStatus.RESOLD));
             }
         }
         if (input.getBranchId() != null) {
