@@ -18,14 +18,17 @@ import com.cplerings.core.application.order.datasource.RefundStandardOrderDataSo
 import com.cplerings.core.application.order.datasource.ViewCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrdersDataSource;
 import com.cplerings.core.application.order.datasource.ViewRefundOrdersDataSource;
+import com.cplerings.core.application.order.datasource.ViewResellOrdersDataSource;
 import com.cplerings.core.application.order.datasource.ViewStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewStandardOrdersDataSource;
 import com.cplerings.core.application.order.datasource.data.JewelrySearchInfo;
 import com.cplerings.core.application.order.datasource.result.CustomOrders;
 import com.cplerings.core.application.order.datasource.result.Refunds;
+import com.cplerings.core.application.order.datasource.result.ResellOrders;
 import com.cplerings.core.application.order.datasource.result.StandardOrders;
 import com.cplerings.core.application.order.input.ViewCustomOrdersInput;
 import com.cplerings.core.application.order.input.ViewRefundOrdersInput;
+import com.cplerings.core.application.order.input.ViewResellOrdersInput;
 import com.cplerings.core.application.order.input.ViewStandardOrdersInput;
 import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
@@ -56,6 +59,8 @@ import com.cplerings.core.domain.order.TransportOrderHistory;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.refund.QRefund;
 import com.cplerings.core.domain.refund.Refund;
+import com.cplerings.core.domain.resell.QResellOrder;
+import com.cplerings.core.domain.resell.ResellOrder;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
 import com.cplerings.core.domain.shared.State;
@@ -88,7 +93,7 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
         CreateStandardOrderDataSource, ViewStandardOrdersDataSource, PayStandardOrderDataSource,
         ProcessPayStandardOrderDataSource, ViewStandardOrderDataSource, CancelStandardOrderDataSource, CompleteOrderDataSource,
         GetCustomOrderByOrderNoDataSource, RefundStandardOrderDataSource, GetStandardOrderByOrderNoDataSource,
-        RefundCustomOrderDataSource, ViewRefundOrdersDataSource {
+        RefundCustomOrderDataSource, ViewRefundOrdersDataSource, ViewResellOrdersDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QAccount Q_ACCOUNT = QAccount.account;
@@ -99,6 +104,7 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
     private static final QImage Q_IMAGE = QImage.image;
     private static final QRefund Q_REFUND = QRefund.refund;
     private static final QTransportationOrder Q_TRANSPORTATION_ORDER = QTransportationOrder.transportationOrder;
+    private static final QResellOrder Q_RESELL_ORDER = QResellOrder.resellOrder;
 
     private final CustomOrderRepository customOrderRepository;
     private final CustomOrderHistoryRepository customOrderHistoryRepository;
@@ -520,6 +526,35 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
         List<Refund> refunds = query.limit(input.getPageSize()).offset(offset).fetch();
         return Refunds.builder()
                 .refunds(refunds)
+                .count(count)
+                .page(input.getPage())
+                .pageSize(input.getPageSize())
+                .build();
+    }
+
+    @Override
+    public ResellOrders getResellOrders(ViewResellOrdersInput input) {
+        var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
+        BlazeJPAQuery<ResellOrder> query = createQuery()
+                .select(Q_RESELL_ORDER)
+                .from(Q_RESELL_ORDER);
+        final BooleanExpressionBuilder booleanExpressionBuilder = createBooleanExpressionBuilder();
+
+        if (input.getStaffId() != null) {
+            booleanExpressionBuilder.and(Q_RESELL_ORDER.staff.id.eq(input.getStaffId()));
+        }
+
+        if (input.getCustomerId() != null) {
+            booleanExpressionBuilder.and(Q_RESELL_ORDER.customer.id.eq(input.getCustomerId()));
+        }
+
+        final BooleanExpression predicate = booleanExpressionBuilder.build();
+        query.where(predicate);
+
+        long count = query.distinct().fetchCount();
+        List<ResellOrder> resellOrders = query.limit(input.getPageSize()).offset(offset).fetch();
+        return ResellOrders.builder()
+                .resellOrders(resellOrders)
                 .count(count)
                 .page(input.getPage())
                 .pageSize(input.getPageSize())

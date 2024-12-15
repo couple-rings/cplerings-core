@@ -35,6 +35,7 @@ import com.cplerings.core.domain.order.status.TransportationNote;
 import com.cplerings.core.domain.payment.DesignSessionPayment;
 import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.refund.Refund;
+import com.cplerings.core.domain.resell.ResellOrder;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
 import com.cplerings.core.domain.spouse.Agreement;
@@ -63,6 +64,7 @@ import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.infrastructure.repository.JewelryRepository;
 import com.cplerings.core.infrastructure.repository.PaymentRepository;
 import com.cplerings.core.infrastructure.repository.RefundRepository;
+import com.cplerings.core.infrastructure.repository.ResellOrderRepository;
 import com.cplerings.core.infrastructure.repository.RingDiamondRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
 import com.cplerings.core.infrastructure.repository.SpouseAccountRepository;
@@ -122,6 +124,7 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     private final RingDiamondRepository ringDiamondRepository;
     private final StandardOrderItemRepository standardOrderItemRepository;
     private final RefundRepository refundRepository;
+    private final ResellOrderRepository resellOrderRepository;
 
     @Override
     public Payment save(Payment payment) {
@@ -329,6 +332,12 @@ public class SharedTestDataSource extends AbstractDataSource implements TestData
     public Refund save(Refund refund) {
         updateAuditor(refund);
         return refundRepository.save(refund);
+    }
+
+    @Override
+    public ResellOrder save(ResellOrder resellOrder) {
+        updateAuditor(resellOrder);
+        return resellOrderRepository.save(resellOrder);
     }
 
     @Override

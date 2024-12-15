@@ -28,6 +28,7 @@ import com.cplerings.core.domain.order.status.TransportationNote;
 import com.cplerings.core.domain.payment.DesignSessionPayment;
 import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.refund.Refund;
+import com.cplerings.core.domain.resell.ResellOrder;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
 import com.cplerings.core.domain.spouse.Agreement;
@@ -111,4 +112,6 @@ public interface TestDataSource {
     StandardOrderItem save(StandardOrderItem standardOrderItem);
 
     Refund save(Refund refund);
+
+    ResellOrder save(ResellOrder resellOrder);
 }
