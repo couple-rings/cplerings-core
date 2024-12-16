@@ -1,7 +1,5 @@
 package com.cplerings.core.application.shared.entity.order;
 
-import java.io.Serializable;
-
 import com.cplerings.core.application.shared.entity.account.AAccount;
 import com.cplerings.core.application.shared.entity.file.AImage;
 import com.cplerings.core.application.shared.entity.jewelry.AJewelry;
@@ -12,6 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.io.Serializable;
 
 @Getter
 @Setter

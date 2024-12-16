@@ -1,10 +1,6 @@
 package com.cplerings.core.infrastructure.datasource.order;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-
-import com.blazebit.persistence.querydsl.BlazeJPAQuery;
+import com.cplerings.core.application.jewelry.datasource.ResellJewelryDataSource;
 import com.cplerings.core.application.order.datasource.AssignJewelerToCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.CancelStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.CompleteOrderDataSource;
@@ -73,8 +69,10 @@ import com.cplerings.core.infrastructure.repository.CustomOrderHistoryRepository
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.cplerings.core.infrastructure.repository.DesignRepository;
 import com.cplerings.core.infrastructure.repository.DiamondRepository;
+import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.infrastructure.repository.JewelryRepository;
 import com.cplerings.core.infrastructure.repository.RefundRepository;
+import com.cplerings.core.infrastructure.repository.ResellOrderRepository;
 import com.cplerings.core.infrastructure.repository.RingDiamondRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
 import com.cplerings.core.infrastructure.repository.StandardOrderHistoryRepository;
@@ -82,18 +80,24 @@ import com.cplerings.core.infrastructure.repository.StandardOrderItemRepository;
 import com.cplerings.core.infrastructure.repository.StandardOrderRepository;
 import com.cplerings.core.infrastructure.repository.TransportOrderHistoryRepository;
 import com.cplerings.core.infrastructure.repository.TransportationOrderRepository;
-import com.querydsl.core.types.dsl.BooleanExpression;
 
 import lombok.RequiredArgsConstructor;
 
+import com.blazebit.persistence.querydsl.BlazeJPAQuery;
+import com.querydsl.core.types.dsl.BooleanExpression;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @DataSource
-public class SharedCustomOrderDataSource extends AbstractDataSource
+public class SharedOrderDataSource extends AbstractDataSource
         implements ViewCustomOrdersDataSource, ViewCustomOrderDataSource, AssignJewelerToCustomOrderDataSource,
         CreateStandardOrderDataSource, ViewStandardOrdersDataSource, PayStandardOrderDataSource,
         ProcessPayStandardOrderDataSource, ViewStandardOrderDataSource, CancelStandardOrderDataSource, CompleteOrderDataSource,
         GetCustomOrderByOrderNoDataSource, RefundStandardOrderDataSource, GetStandardOrderByOrderNoDataSource,
-        RefundCustomOrderDataSource, ViewRefundOrdersDataSource, ViewResellOrdersDataSource {
+        RefundCustomOrderDataSource, ViewRefundOrdersDataSource, ViewResellOrdersDataSource, ResellJewelryDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QAccount Q_ACCOUNT = QAccount.account;
@@ -121,6 +125,8 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
     private final AgreementRepository agreementRepository;
     private final RingDiamondRepository ringDiamondRepository;
     private final DiamondRepository diamondRepository;
+    private final ImageRepository imageRepository;
+    private final ResellOrderRepository resellOrderRepository;
 
     @Override
     public CustomOrders getCustomOrders(ViewCustomOrdersInput input) {
@@ -470,6 +476,17 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
     }
 
     @Override
+    public Account getStaffReference(Long staffId) {
+        return accountRepository.getReferenceById(staffId);
+    }
+
+    @Override
+    public ResellOrder save(ResellOrder resellOrder) {
+        updateAuditor(resellOrder);
+        return resellOrderRepository.save(resellOrder);
+    }
+
+    @Override
     public Refund save(Refund refund) {
         updateAuditor(refund);
         return refundRepository.save(refund);
@@ -559,5 +576,20 @@ public class SharedCustomOrderDataSource extends AbstractDataSource
                 .page(input.getPage())
                 .pageSize(input.getPageSize())
                 .build();
+    }
+
+    @Override
+    public Optional<Jewelry> findJewelryById(Long jewelryId) {
+        return jewelryRepository.findById(jewelryId);
+    }
+
+    @Override
+    public Optional<Account> findCustomerById(Long customerId) {
+        return accountRepository.findById(customerId);
+    }
+
+    @Override
+    public Optional<Image> findProofImageById(Long proofImageId) {
+        return imageRepository.findById(proofImageId);
     }
 }
