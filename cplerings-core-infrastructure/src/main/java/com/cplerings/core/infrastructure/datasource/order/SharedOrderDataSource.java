@@ -487,6 +487,17 @@ public class SharedOrderDataSource extends AbstractDataSource
     }
 
     @Override
+    public Optional<StandardOrderItem> findByJewelryId(Long jewelryId) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_STANDARD_ORDER_ITEM)
+                .from(Q_STANDARD_ORDER_ITEM)
+                .leftJoin(Q_STANDARD_ORDER_ITEM.standardOrder, Q_STANDARD_ORDER).fetchJoin()
+                .leftJoin(Q_STANDARD_ORDER.customer, Q_ACCOUNT).fetchJoin()
+                .where(Q_STANDARD_ORDER_ITEM.jewelry.id.eq(jewelryId))
+                .fetchFirst());
+    }
+
+    @Override
     public Refund save(Refund refund) {
         updateAuditor(refund);
         return refundRepository.save(refund);

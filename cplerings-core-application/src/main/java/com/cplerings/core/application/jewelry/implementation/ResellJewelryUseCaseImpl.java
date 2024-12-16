@@ -12,6 +12,8 @@ import static com.cplerings.core.application.jewelry.error.ResellJewelryErrorCod
 import static com.cplerings.core.application.jewelry.error.ResellJewelryErrorCode.PAYMENT_METHOD_REQUIRED;
 import static com.cplerings.core.application.jewelry.error.ResellJewelryErrorCode.PROOF_IMAGE_ID_REQUIRED;
 import static com.cplerings.core.application.jewelry.error.ResellJewelryErrorCode.PROOF_IMAGE_NOT_FOUND;
+import static com.cplerings.core.application.jewelry.error.ResellJewelryErrorCode.STANDARD_ORDER_ITEM_NOT_FOUND;
+import static com.cplerings.core.application.jewelry.error.ResellJewelryErrorCode.WRONG_CUSTOMER;
 
 import com.cplerings.core.application.jewelry.ResellJewelryUseCase;
 import com.cplerings.core.application.jewelry.datasource.ResellJewelryDataSource;
@@ -30,6 +32,7 @@ import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.jewelry.Jewelry;
 import com.cplerings.core.domain.jewelry.JewelryStatus;
+import com.cplerings.core.domain.order.StandardOrderItem;
 import com.cplerings.core.domain.resell.ResellOrder;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
@@ -81,6 +84,12 @@ public class ResellJewelryUseCaseImpl extends AbstractUseCase<ResellJewelryInput
         final Image proofImage = dataSource.findProofImageById(input.proofImageId())
                 .orElse(null);
         validator.validateAndStopExecution(proofImage != null, PROOF_IMAGE_NOT_FOUND);
+
+        StandardOrderItem standardOrderItem = dataSource.findByJewelryId(jewelry.getId())
+                        .orElse(null);
+        validator.validateAndStopExecution(standardOrderItem != null, STANDARD_ORDER_ITEM_NOT_FOUND);
+        var standardOrder = standardOrderItem.getStandardOrder();
+        validator.validateAndStopExecution(standardOrder.getCustomer().getId() == customer.getId(), WRONG_CUSTOMER);
 
         jewelry.setStatus(JewelryStatus.RESOLD);
         jewelry = dataSource.save(jewelry);

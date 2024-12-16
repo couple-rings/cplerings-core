@@ -22,6 +22,8 @@ public enum ResellJewelryErrorCode implements ErrorCode {
     JEWELRY_NOT_PURCHASED("011", "resellJewelry.error.jewelryNotPurchased", Type.BUSINESS),
     CUSTOMER_NOT_FOUND("012", "resellJewelry.error.customerNotFound", Type.BUSINESS),
     PROOF_IMAGE_NOT_FOUND("013", "resellJewelry.error.proofImageNotFound", Type.BUSINESS),
+    STANDARD_ORDER_ITEM_NOT_FOUND("014", "resellJewelry.error.standardOrderItemNotFound", Type.BUSINESS),
+    WRONG_CUSTOMER("015", "resellJewelry.error.wrongCustomer", Type.BUSINESS),
     ;
 
     private final String code;
