@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.cplerings.core.application.jewelry.datasource.CreateJewelryDataSource;
 import com.cplerings.core.application.jewelry.datasource.GetJewelryByProductNoDataSource;
+import com.cplerings.core.application.jewelry.datasource.UpdateJewelryDataSource;
 import com.cplerings.core.application.jewelry.datasource.ViewJewelriesDataSource;
 import com.cplerings.core.application.jewelry.datasource.ViewJewelryCategoriesDataSource;
 import com.cplerings.core.application.jewelry.datasource.result.Jewelries;
@@ -36,7 +37,7 @@ import lombok.RequiredArgsConstructor;
 
 @DataSource
 @RequiredArgsConstructor
-public class SharedJewelryDataSource extends AbstractDataSource implements CreateJewelryDataSource, ViewJewelryCategoriesDataSource, ViewJewelriesDataSource, GetJewelryByProductNoDataSource {
+public class SharedJewelryDataSource extends AbstractDataSource implements CreateJewelryDataSource, ViewJewelryCategoriesDataSource, ViewJewelriesDataSource, GetJewelryByProductNoDataSource, UpdateJewelryDataSource {
 
     private static final QDesign Q_DESIGN = QDesign.design;
     private static final QMetalSpecification Q_METAL_SPECIFICATION = QMetalSpecification.metalSpecification;
@@ -66,6 +67,15 @@ public class SharedJewelryDataSource extends AbstractDataSource implements Creat
     }
 
     @Override
+    public Optional<MetalSpecification> getMetalSpecificationById(Long id) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_METAL_SPECIFICATION)
+                .from(Q_METAL_SPECIFICATION)
+                .where(Q_METAL_SPECIFICATION.id.eq(id))
+                .fetchFirst());
+    }
+
+    @Override
     public Optional<Diamond> getDiamondById(Long id) {
         return Optional.ofNullable(createQuery()
                 .select(Q_DIAMOND)
@@ -80,6 +90,15 @@ public class SharedJewelryDataSource extends AbstractDataSource implements Creat
                 .select(Q_METAL_SPECIFICATION)
                 .from(Q_METAL_SPECIFICATION)
                 .where(Q_METAL_SPECIFICATION.id.eq(id))
+                .fetchFirst());
+    }
+
+    @Override
+    public Optional<Jewelry> getJewelryById(Long id) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_JEWELRY)
+                .from(Q_JEWELRY)
+                .where(Q_JEWELRY.id.eq(id))
                 .fetchFirst());
     }
 
