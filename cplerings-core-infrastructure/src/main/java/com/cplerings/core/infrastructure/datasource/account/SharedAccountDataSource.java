@@ -2,11 +2,7 @@ package com.cplerings.core.infrastructure.datasource.account;
 
 import static com.querydsl.jpa.JPAExpressions.select;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-
-import com.blazebit.persistence.querydsl.BlazeJPAQuery;
+import com.cplerings.core.application.account.datasource.DevCreateAccountDataSource;
 import com.cplerings.core.application.account.datasource.GetDesignStaffsDataSource;
 import com.cplerings.core.application.account.datasource.GetRandomStaffDataSource;
 import com.cplerings.core.application.account.datasource.RegisterCustomerDataSource;
@@ -41,6 +37,7 @@ import com.cplerings.core.domain.account.QAccountPasswordReset;
 import com.cplerings.core.domain.account.QAccountVerification;
 import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.domain.account.StaffPosition;
+import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.design.request.CustomRequestStatus;
 import com.cplerings.core.domain.design.request.QCustomRequest;
@@ -56,18 +53,26 @@ import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.cplerings.core.infrastructure.repository.AccountPasswordResetRepository;
 import com.cplerings.core.infrastructure.repository.AccountRepository;
 import com.cplerings.core.infrastructure.repository.AccountVerificationRepository;
+import com.cplerings.core.infrastructure.repository.BranchRepository;
 import com.cplerings.core.infrastructure.repository.SpouseAccountRepository;
+
+import lombok.RequiredArgsConstructor;
+
+import com.blazebit.persistence.querydsl.BlazeJPAQuery;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 
-import lombok.RequiredArgsConstructor;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @DataSource
 @RequiredArgsConstructor
 public class SharedAccountDataSource extends AbstractDataSource
         implements RegisterCustomerDataSource, VerifyCustomerDataSource, RequestResetPasswordDataSource,
         ResetPasswordDataSource, ViewAccountDataSource, ViewCurrentProfileDataSource, ViewTransportersDataSource,
-        ViewJewelersUseDataSource, ViewUsersDataSource, GetRandomStaffDataSource, GetDesignStaffsDataSource, ViewCustomersDataSource {
+        ViewJewelersUseDataSource, ViewUsersDataSource, GetRandomStaffDataSource, GetDesignStaffsDataSource,
+        ViewCustomersDataSource, DevCreateAccountDataSource {
 
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QAccountVerification Q_ACCOUNT_VERIFICATION = QAccountVerification.accountVerification;
@@ -80,6 +85,7 @@ public class SharedAccountDataSource extends AbstractDataSource
     private final AccountVerificationRepository accountVerificationRepository;
     private final AccountPasswordResetRepository accountPasswordResetRepository;
     private final SpouseAccountRepository spouseAccountRepository;
+    private final BranchRepository branchRepository;
 
     @Override
     public boolean emailIsNew(String email) {
@@ -300,5 +306,10 @@ public class SharedAccountDataSource extends AbstractDataSource
                 .page(input.getPage())
                 .pageSize(input.getPageSize())
                 .build();
+    }
+
+    @Override
+    public Branch getBranchReferenceById(Long branchId) {
+        return branchRepository.getReferenceById(branchId);
     }
 }

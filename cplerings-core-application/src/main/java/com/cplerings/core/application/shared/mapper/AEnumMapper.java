@@ -54,4 +54,6 @@ public interface AEnumMapper {
     APaymentMethod toPaymentMethod(PaymentMethod paymentMethod);
 
     PaymentMethod toPaymentMethod(APaymentMethod paymentMethod);
+
+    Role toRole(ARole role);
 }
