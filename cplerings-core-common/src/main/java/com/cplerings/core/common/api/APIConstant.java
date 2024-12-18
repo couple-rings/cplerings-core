@@ -17,6 +17,7 @@ public final class APIConstant {
     public static final String DEV_TOKEN_PATH = DEV_PATH + "/token";
     public static final String DEV_PAYMENTS_PATH = DEV_PATH + "/payments";
     public static final String DEV_VNPAY_PATH = DEV_PAYMENTS_PATH + "/vnpay";
+    public static final String DEV_ACCOUNTS_PATH = DEV_PATH + "/accounts";
 
     /*
         Accounts' paths
