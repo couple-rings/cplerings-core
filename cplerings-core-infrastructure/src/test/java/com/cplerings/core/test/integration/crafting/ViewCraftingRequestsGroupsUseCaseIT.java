@@ -29,7 +29,6 @@ class ViewCraftingRequestsGroupsUseCaseIT extends AbstractIT {
     @Autowired
     private JWTTestHelper jwtTestHelper;
 
-
     @Autowired
     private CustomDesignTestHelper customDesignTestHelper;
 

@@ -536,8 +536,16 @@ public class SharedCraftingDataSource extends AbstractDataSource
                 .select(Q_ACCOUNT)
                 .from(Q_ACCOUNT)
                 .rightJoin(Q_ACCOUNT.craftingRequests, Q_CRAFTING_REQUEST).fetchJoin()
-                .where(Q_ACCOUNT.role.eq(Role.CUSTOMER)
-                        .and(Q_ACCOUNT.branch.id.eq(input.getBranchId())));
+                .where(Q_ACCOUNT.role.eq(Role.CUSTOMER));
+        BooleanExpressionBuilder booleanExpressionBuilder = createBooleanExpressionBuilder();
+        if (input.getBranchId() != null) {
+            booleanExpressionBuilder.and(Q_ACCOUNT.branch.id.eq(input.getBranchId()));
+        }
+
+        final BooleanExpression predicate = booleanExpressionBuilder.build();
+        query.where(predicate);
+
+
         long count = query.distinct().fetchCount();
         List<Account> accounts = query.limit(input.getPageSize()).offset(offset).fetch();
         return CraftingRequestGroupsList.builder()
