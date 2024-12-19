@@ -19,6 +19,7 @@ import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.common.number.NumberUtils;
 import com.cplerings.core.domain.account.Account;
+import com.cplerings.core.domain.account.AccountStatus;
 
 import lombok.RequiredArgsConstructor;
 
@@ -54,6 +55,7 @@ public class DevCreateAccountUseCaseImpl extends AbstractUseCase<DevCreateAccoun
                 .username(input.username().trim())
                 .role(enumMapper.toRole(input.role()))
                 .branch(dataSource.getBranchReferenceById(input.branchId()))
+                .status(AccountStatus.ACTIVE)
                 .build();
         account = dataSource.save(account);
         return DevCreateAccountOutput.builder()
