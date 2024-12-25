@@ -15,6 +15,7 @@ import com.cplerings.core.application.order.datasource.ResellCustomOrderDataSour
 import com.cplerings.core.application.order.datasource.ViewCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrdersDataSource;
 import com.cplerings.core.application.order.datasource.ViewRefundOrdersDataSource;
+import com.cplerings.core.application.order.datasource.ViewResellOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewResellOrdersDataSource;
 import com.cplerings.core.application.order.datasource.ViewStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewStandardOrdersDataSource;
@@ -98,7 +99,8 @@ public class SharedOrderDataSource extends AbstractDataSource
         CreateStandardOrderDataSource, ViewStandardOrdersDataSource, PayStandardOrderDataSource,
         ProcessPayStandardOrderDataSource, ViewStandardOrderDataSource, CancelStandardOrderDataSource, CompleteOrderDataSource,
         GetCustomOrderByOrderNoDataSource, RefundStandardOrderDataSource, GetStandardOrderByOrderNoDataSource,
-        RefundCustomOrderDataSource, ViewRefundOrdersDataSource, ViewResellOrdersDataSource, ResellJewelryDataSource, ResellCustomOrderDataSource {
+        RefundCustomOrderDataSource, ViewRefundOrdersDataSource, ViewResellOrdersDataSource, ResellJewelryDataSource, ResellCustomOrderDataSource,
+        ViewResellOrderDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QAccount Q_ACCOUNT = QAccount.account;
@@ -610,5 +612,14 @@ public class SharedOrderDataSource extends AbstractDataSource
     @Override
     public Optional<Image> findProofImageById(Long proofImageId) {
         return imageRepository.findById(proofImageId);
+    }
+
+    @Override
+    public Optional<ResellOrder> getResellOrderById(Long orderId) {
+        return Optional.ofNullable(createQuery()
+                .select(Q_RESELL_ORDER)
+                .from(Q_RESELL_ORDER)
+                .where(Q_RESELL_ORDER.id.eq(orderId))
+                .fetchFirst());
     }
 }

@@ -220,5 +220,6 @@ public final class APIConstant {
         Resell Orders' paths
     */
     public static final String RESELL_ORDERS_PATH = "/resell-orders";
+    public static final String RESELL_ORDER_PATH = RESELL_ORDERS_PATH + "/{resellOrderId}";
 }
 
