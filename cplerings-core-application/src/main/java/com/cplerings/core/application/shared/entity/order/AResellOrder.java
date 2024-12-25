@@ -28,4 +28,5 @@ public class AResellOrder implements Serializable {
     private Money amount;
     private AImage proofImage;
     private String note;
+    private ACustomOrder customOrder;
 }
