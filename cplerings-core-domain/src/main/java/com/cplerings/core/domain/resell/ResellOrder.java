@@ -4,9 +4,11 @@ import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.jewelry.Jewelry;
+import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,7 +46,7 @@ public class ResellOrder extends AbstractEntity {
     @Column(name = "resell_order_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "jewelry_id")
     private Jewelry jewelry;
 
@@ -69,4 +71,8 @@ public class ResellOrder extends AbstractEntity {
 
     @Column(name = "note", length = DatabaseConstant.DEFAULT_COMMENT_LENGTH, nullable = false)
     private String note;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "custom_order_id")
+    private CustomOrder customOrder;
 }

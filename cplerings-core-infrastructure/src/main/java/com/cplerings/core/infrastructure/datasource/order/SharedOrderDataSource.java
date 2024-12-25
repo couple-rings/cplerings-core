@@ -11,6 +11,7 @@ import com.cplerings.core.application.order.datasource.PayStandardOrderDataSourc
 import com.cplerings.core.application.order.datasource.ProcessPayStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.RefundCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.RefundStandardOrderDataSource;
+import com.cplerings.core.application.order.datasource.ResellCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrdersDataSource;
 import com.cplerings.core.application.order.datasource.ViewRefundOrdersDataSource;
@@ -97,7 +98,7 @@ public class SharedOrderDataSource extends AbstractDataSource
         CreateStandardOrderDataSource, ViewStandardOrdersDataSource, PayStandardOrderDataSource,
         ProcessPayStandardOrderDataSource, ViewStandardOrderDataSource, CancelStandardOrderDataSource, CompleteOrderDataSource,
         GetCustomOrderByOrderNoDataSource, RefundStandardOrderDataSource, GetStandardOrderByOrderNoDataSource,
-        RefundCustomOrderDataSource, ViewRefundOrdersDataSource, ViewResellOrdersDataSource, ResellJewelryDataSource {
+        RefundCustomOrderDataSource, ViewRefundOrdersDataSource, ViewResellOrdersDataSource, ResellJewelryDataSource, ResellCustomOrderDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QAccount Q_ACCOUNT = QAccount.account;
@@ -147,6 +148,7 @@ public class SharedOrderDataSource extends AbstractDataSource
                 case CANCELED -> booleanExpressionBuilder.and(Q_CUSTOM_ORDER.status.eq(CustomOrderStatus.CANCELED));
                 case COMPLETED -> booleanExpressionBuilder.and(Q_CUSTOM_ORDER.status.eq(CustomOrderStatus.COMPLETED));
                 case REFUNDED -> booleanExpressionBuilder.and(Q_CUSTOM_ORDER.status.eq(CustomOrderStatus.REFUNDED));
+                case RESOLD -> booleanExpressionBuilder.and(Q_CUSTOM_ORDER.status.eq(CustomOrderStatus.RESOLD));
             }
         }
         if (input.getCustomerId() != null) {
@@ -478,6 +480,12 @@ public class SharedOrderDataSource extends AbstractDataSource
     @Override
     public Account getStaffReference(Long staffId) {
         return accountRepository.getReferenceById(staffId);
+    }
+
+    @Override
+    public Ring save(Ring ring) {
+        updateAuditor(ring);
+        return ringRepository.save(ring);
     }
 
     @Override

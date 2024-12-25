@@ -175,7 +175,7 @@ public class CustomOrderTestHelper {
         CustomOrder customOrder = CustomOrder.builder()
                 .totalPrice(Money.create(BigDecimal.valueOf(120000)))
                 .customer(accountRepository.getReferenceById(1L))
-                .status(CustomOrderStatus.DONE)
+                .status(CustomOrderStatus.COMPLETED)
                 .firstRing(firstRing)
                 .secondRing(secondRing)
                 .contract(contractCreated)
