@@ -7,17 +7,20 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.cplerings.core.application.dashboard.datasource.ViewBranchRevenueDataSource;
 import com.cplerings.core.application.dashboard.datasource.data.Revenue;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
+import com.cplerings.core.domain.branch.QBranch;
 import com.cplerings.core.domain.order.QCustomOrder;
 import com.cplerings.core.domain.refund.QRefund;
 import com.cplerings.core.domain.resell.QResellOrder;
 import com.cplerings.core.domain.ring.QRing;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
+import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.dsl.Expressions;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +34,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
     private static final QRefund Q_REFUND = QRefund.refund;
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QRing Q_FIRST_RING = QRing.ring;
+    private static final QBranch Q_BRANCH = QBranch.branch;
 
     @Override
     public Revenue getTotalRevenue(Instant start, Instant end, Long branchId) {
@@ -52,7 +56,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
     public Account getAccountById(Long id) {
         return createQuery().select(Q_ACCOUNT)
                 .from(Q_ACCOUNT)
-                .leftJoin(Q_ACCOUNT.branch).fetchJoin()
+                .leftJoin(Q_ACCOUNT.branch)
                 .where(Q_ACCOUNT.id.eq(id))
                 .fetchOne();
     }
@@ -64,43 +68,46 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         LocalDate startDateLocalDate = startDate.atZone(ZoneId.systemDefault()).toLocalDate();
         for (int i = 1; i <= numOfDays; i++) {
             BigDecimal totalRevenueEachDay = BigDecimal.ZERO;
-            BigDecimal customOrderRevenueEachDay = createQuery().select(Q_CUSTOM_ORDER.totalPrice.amount)
+            BigDecimal customOrderRevenueEachDay = Optional.ofNullable(createQuery().select(Q_CUSTOM_ORDER.totalPrice.amount.sum())
                     .from(Q_CUSTOM_ORDER)
                     .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                    .leftJoin(Q_FIRST_RING.branch)
+                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                     .where(
                             Expressions.stringTemplate(
-                                    "DATE({0})", Q_CUSTOM_ORDER.createdAt
-                            ).eq(startDate.toString()
-                            )
-                                    .and(Q_CUSTOM_ORDER.firstRing.branch.id.eq(branchId)))
-                    .fetchOne();
+                                            "FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt
+                                    ).eq(Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+                                    )
+                                    .and(Q_FIRST_RING.branch.isNotNull())
+                                    .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                    .fetchOne()).orElse(BigDecimal.ZERO);
             totalRevenue = totalRevenue.add(customOrderRevenueEachDay);
             totalRevenueEachDay = totalRevenueEachDay.add(customOrderRevenueEachDay);
-            BigDecimal resellOrderRevenueEachDay = createQuery().select(Q_RESELL_ORDER.amount.amount)
+            BigDecimal resellOrderRevenueEachDay =  Optional.ofNullable(createQuery().select(Q_RESELL_ORDER.amount.amount.sum())
                     .from(Q_RESELL_ORDER)
                     .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
                     .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                     .leftJoin(Q_FIRST_RING.branch)
                     .where(
                             Expressions.stringTemplate(
-                                    "DATE({0})", Q_RESELL_ORDER.createdAt
-                            ).eq(startDate.toString()
-                            ).and(Q_RESELL_ORDER.customOrder.firstRing.branch.id.eq(branchId)))
-                    .fetchOne();
+                                    "FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt
+                            ).eq( Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+                            ).and(Q_FIRST_RING.branch.isNotNull())
+                                            .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                    .fetchOne()).orElse(BigDecimal.ZERO);
             totalRevenue = totalRevenue.subtract(resellOrderRevenueEachDay);
             totalRevenueEachDay = totalRevenueEachDay.subtract(resellOrderRevenueEachDay);
-            BigDecimal refundOrderRevenueEachDay = createQuery().select(Q_REFUND.amount.amount)
+            BigDecimal refundOrderRevenueEachDay = Optional.ofNullable(createQuery().select(Q_REFUND.amount.amount.sum())
                     .from(Q_REFUND)
                     .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
                     .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                     .leftJoin(Q_FIRST_RING.branch)
                     .where(
                             Expressions.stringTemplate(
-                                    "DATE({0})", Q_REFUND.createdAt
-                            ).eq(startDate.toString()
-                            ).and(Q_REFUND.customOrder.firstRing.branch.id.eq(branchId)))
-                    .fetchOne();
+                                    "FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt
+                            ).eq(Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+                            ).and(Q_FIRST_RING.branch.isNotNull()
+                                            .and(Q_FIRST_RING.branch.id.eq(branchId))))
+                    .fetchOne()).orElse(BigDecimal.ZERO);
             totalRevenue = totalRevenue.subtract(refundOrderRevenueEachDay);
             totalRevenueEachDay = totalRevenueEachDay.subtract(refundOrderRevenueEachDay);
             revenueEachDayForCustomOrder.add(totalRevenueEachDay);
@@ -121,42 +128,51 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         for (int i = 1; i <= quotient; i++) {
             if (i < quotient) {
                 BigDecimal totalRevenueEachWeek = BigDecimal.ZERO;
-                BigDecimal customOrderRevenueEachWeek = createQuery().select(Q_CUSTOM_ORDER.totalPrice.amount.sum())
+                BigDecimal customOrderRevenueEachWeek = Optional.ofNullable(createQuery().select(Q_CUSTOM_ORDER.totalPrice.amount.sum())
                         .from(Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                         .leftJoin(Q_FIRST_RING.branch)
                         .where(
-                                Expressions.stringTemplate(
-                                        "DATE({0})", Q_CUSTOM_ORDER.createdAt
-                                ).between(startDateLocalDate.toString(), startDateLocalDate.plusDays(6L).toString())
-                                        .and(Q_CUSTOM_ORDER.firstRing.branch.id.eq(branchId)))
-                        .fetchOne();
+                                Expressions.predicate(
+                                                Ops.BETWEEN,
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                                Expressions.constant(startDateLocalDate.plusDays(6L).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                        .and(Q_FIRST_RING.branch.isNotNull().isNotNull())
+                                        .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne()).orElse(BigDecimal.ZERO);
                 totalRevenue = totalRevenue.add(customOrderRevenueEachWeek);
                 totalRevenueEachWeek = totalRevenueEachWeek.add(customOrderRevenueEachWeek);
-                BigDecimal resellOrderRevenueEachWeek = createQuery().select(Q_RESELL_ORDER.amount.amount.sum())
+                BigDecimal resellOrderRevenueEachWeek = Optional.ofNullable(createQuery().select(Q_RESELL_ORDER.amount.amount.sum())
                         .from(Q_RESELL_ORDER)
                         .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                         .leftJoin(Q_FIRST_RING.branch)
                         .where(
-                                Expressions.stringTemplate(
-                                        "DATE({0})", Q_RESELL_ORDER.createdAt
-                                ).between(startDateLocalDate.toString(), startDateLocalDate.plusDays(6L).toString())
-                                        .and(Q_RESELL_ORDER.customOrder.firstRing.branch.id.eq(branchId)))
-                        .fetchOne();
+                                Expressions.predicate(
+                                                Ops.BETWEEN,
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                                Expressions.constant(startDateLocalDate.plusDays(6L).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                        .and(Q_FIRST_RING.branch.isNotNull())
+                                        .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne()).orElse(BigDecimal.ZERO);
                 totalRevenue = totalRevenue.subtract(resellOrderRevenueEachWeek);
                 totalRevenueEachWeek = totalRevenueEachWeek.subtract(resellOrderRevenueEachWeek);
-                BigDecimal refundOrderRevenueEachWeek = createQuery().select(Q_REFUND.amount.amount.sum())
+                BigDecimal refundOrderRevenueEachWeek = Optional.ofNullable(createQuery().select(Q_REFUND.amount.amount.sum())
                         .from(Q_REFUND)
                         .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                         .leftJoin(Q_FIRST_RING.branch)
                         .where(
-                                Expressions.stringTemplate(
-                                        "DATE({0})", Q_REFUND.createdAt
-                                ).between(startDateLocalDate.toString(), startDateLocalDate.plusDays(6L).toString())
-                                        .and(Q_REFUND.customOrder.firstRing.branch.id.eq(branchId)))
-                        .fetchOne();
+                                Expressions.predicate(
+                                                Ops.BETWEEN,
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                                Expressions.constant(startDateLocalDate.plusDays(6L).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                        .and(Q_FIRST_RING.branch.isNotNull())
+                                        .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne()).orElse(BigDecimal.ZERO);
                 totalRevenue = totalRevenue.subtract(refundOrderRevenueEachWeek);
                 totalRevenueEachWeek = totalRevenueEachWeek.subtract(refundOrderRevenueEachWeek);
                 revenueEachWeekForCustomOrder.add(totalRevenueEachWeek);
@@ -164,42 +180,51 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 startDateLocalDate = startDateLocalDate.plusDays(7);
             } else {
                 BigDecimal totalRevenueEachWeek = BigDecimal.ZERO;
-                BigDecimal customOrderRevenueEachWeek = createQuery().select(Q_CUSTOM_ORDER.totalPrice.amount.sum())
+                BigDecimal customOrderRevenueEachWeek = Optional.ofNullable(createQuery().select(Q_CUSTOM_ORDER.totalPrice.amount.sum())
                         .from(Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                         .leftJoin(Q_FIRST_RING.branch)
                         .where(
-                                Expressions.stringTemplate(
-                                        "DATE({0})", Q_CUSTOM_ORDER.createdAt
-                                ).between(startDateLocalDate.toString(), startDateLocalDate.plusDays(remainder).toString())
-                                        .and(Q_CUSTOM_ORDER.firstRing.branch.id.eq(branchId)))
-                        .fetchOne();
+                                Expressions.predicate(
+                                                Ops.BETWEEN,
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                                Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                        .and(Q_FIRST_RING.branch.isNotNull())
+                                        .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne()).orElse(BigDecimal.ZERO);
                 totalRevenue = totalRevenue.add(customOrderRevenueEachWeek);
                 totalRevenueEachWeek = totalRevenueEachWeek.add(customOrderRevenueEachWeek);
-                BigDecimal resellOrderRevenueEachWeek = createQuery().select(Q_RESELL_ORDER.amount.amount.sum())
+                BigDecimal resellOrderRevenueEachWeek = Optional.ofNullable(createQuery().select(Q_RESELL_ORDER.amount.amount.sum())
                         .from(Q_RESELL_ORDER)
                         .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                         .leftJoin(Q_FIRST_RING.branch)
                         .where(
-                                Expressions.stringTemplate(
-                                        "DATE({0})", Q_RESELL_ORDER.createdAt
-                                ).between(startDateLocalDate.toString(), startDateLocalDate.plusDays(remainder).toString())
-                                        .and(Q_RESELL_ORDER.customOrder.firstRing.branch.id.eq(branchId)))
-                        .fetchOne();
+                                Expressions.predicate(
+                                                Ops.BETWEEN,
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                                Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                        .and(Q_FIRST_RING.branch.isNotNull())
+                                        .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne()).orElse(BigDecimal.ZERO);
                 totalRevenue = totalRevenue.subtract(resellOrderRevenueEachWeek);
                 totalRevenueEachWeek = totalRevenueEachWeek.subtract(resellOrderRevenueEachWeek);
-                BigDecimal refundOrderRevenueEachWeek = createQuery().select(Q_REFUND.amount.amount.sum())
+                BigDecimal refundOrderRevenueEachWeek = Optional.ofNullable(createQuery().select(Q_REFUND.amount.amount.sum())
                         .from(Q_REFUND)
                         .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                         .leftJoin(Q_FIRST_RING.branch)
                         .where(
-                                Expressions.stringTemplate(
-                                        "DATE({0})", Q_REFUND.createdAt
-                                ).between(startDateLocalDate.toString(), startDateLocalDate.plusDays(remainder).toString())
-                                        .and(Q_REFUND.customOrder.firstRing.branch.id.eq(branchId)))
-                        .fetchOne();
+                                Expressions.predicate(
+                                                Ops.BETWEEN,
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                                Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                        .and(Q_FIRST_RING.branch.isNotNull())
+                                        .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne()).orElse(BigDecimal.ZERO);
                 totalRevenue = totalRevenue.subtract(refundOrderRevenueEachWeek);
                 totalRevenueEachWeek = totalRevenueEachWeek.subtract(refundOrderRevenueEachWeek);
                 revenueEachWeekForCustomOrder.add(totalRevenueEachWeek);
@@ -219,42 +244,51 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         for (int i = 1; i <= quotient; i++) {
             if (i < quotient) {
                 BigDecimal totalRevenueEachMonth = BigDecimal.ZERO;
-                BigDecimal customOrderRevenueEachMonth = createQuery().select(Q_CUSTOM_ORDER.totalPrice.amount.sum())
+                BigDecimal customOrderRevenueEachMonth = Optional.ofNullable(createQuery().select(Q_CUSTOM_ORDER.totalPrice.amount.sum())
                         .from(Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                         .leftJoin(Q_FIRST_RING.branch)
                         .where(
-                                Expressions.stringTemplate(
-                                        "DATE({0})", Q_CUSTOM_ORDER.createdAt
-                                ).between(startDateLocalDate.toString(), startDateLocalDate.plusDays(29L).toString())
-                                        .and(Q_CUSTOM_ORDER.firstRing.branch.id.eq(branchId)))
-                        .fetchOne();
+                                Expressions.predicate(
+                                                Ops.BETWEEN,
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                                Expressions.constant(startDateLocalDate.plusDays(29L).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                        .and(Q_FIRST_RING.branch.isNotNull())
+                                        .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne()).orElse(BigDecimal.ZERO);
                 totalRevenue = totalRevenue.add(customOrderRevenueEachMonth);
                 totalRevenueEachMonth = totalRevenueEachMonth.add(customOrderRevenueEachMonth);
-                BigDecimal resellOrderRevenueEachMonth = createQuery().select(Q_RESELL_ORDER.amount.amount.sum())
+                BigDecimal resellOrderRevenueEachMonth = Optional.ofNullable(createQuery().select(Q_RESELL_ORDER.amount.amount.sum())
                         .from(Q_RESELL_ORDER)
                         .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                         .leftJoin(Q_FIRST_RING.branch)
                         .where(
-                                Expressions.stringTemplate(
-                                        "DATE({0})", Q_RESELL_ORDER.createdAt
-                                ).between(startDateLocalDate.toString(), startDateLocalDate.plusDays(29L).toString())
-                                        .and(Q_RESELL_ORDER.customOrder.firstRing.branch.id.eq(branchId)))
-                        .fetchOne();
+                                Expressions.predicate(
+                                                Ops.BETWEEN,
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                                Expressions.constant(startDateLocalDate.plusDays(29L).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                        .and(Q_FIRST_RING.branch.isNotNull())
+                                        .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne()).orElse(BigDecimal.ZERO);
                 totalRevenue = totalRevenue.subtract(resellOrderRevenueEachMonth);
                 totalRevenueEachMonth = totalRevenueEachMonth.subtract(resellOrderRevenueEachMonth);
-                BigDecimal refundOrderRevenueEachMonth = createQuery().select(Q_REFUND.amount.amount.sum())
+                BigDecimal refundOrderRevenueEachMonth = Optional.ofNullable(createQuery().select(Q_REFUND.amount.amount.sum())
                         .from(Q_REFUND)
                         .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                         .leftJoin(Q_FIRST_RING.branch)
                         .where(
-                                Expressions.stringTemplate(
-                                        "DATE({0})", Q_REFUND.createdAt
-                                ).between(startDateLocalDate.toString(), startDateLocalDate.plusDays(29L).toString())
-                                        .and(Q_REFUND.customOrder.firstRing.branch.id.eq(branchId)))
-                        .fetchOne();
+                                Expressions.predicate(
+                                                Ops.BETWEEN,
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                                Expressions.constant(startDateLocalDate.plusDays(29L).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                        .and(Q_FIRST_RING.branch.id.isNotNull())
+                                        .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne()).orElse(BigDecimal.ZERO);
                 totalRevenue = totalRevenue.subtract(refundOrderRevenueEachMonth);
                 totalRevenueEachMonth = totalRevenueEachMonth.subtract(refundOrderRevenueEachMonth);
                 revenueEachMonthForCustomOrder.add(totalRevenueEachMonth);
@@ -262,42 +296,50 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 startDateLocalDate = startDateLocalDate.plusDays(30);
             } else {
                 BigDecimal totalRevenueEachMonth = BigDecimal.ZERO;
-                BigDecimal customOrderRevenueEachMonth = createQuery().select(Q_CUSTOM_ORDER.totalPrice.amount.sum())
+                BigDecimal customOrderRevenueEachMonth = Optional.ofNullable(createQuery().select(Q_CUSTOM_ORDER.totalPrice.amount.sum())
                         .from(Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                         .leftJoin(Q_FIRST_RING.branch)
                         .where(
-                                Expressions.stringTemplate(
-                                        "DATE({0})", Q_CUSTOM_ORDER.createdAt
-                                ).between(startDateLocalDate.toString(), startDateLocalDate.plusDays(remainder).toString())
+                                Expressions.predicate(
+                                                Ops.BETWEEN,
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                                Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
                                         .and(Q_CUSTOM_ORDER.firstRing.branch.id.eq(branchId)))
-                        .fetchOne();
+                        .fetchOne()).orElse(BigDecimal.ZERO);
                 totalRevenue = totalRevenue.add(customOrderRevenueEachMonth);
                 totalRevenueEachMonth = totalRevenueEachMonth.add(customOrderRevenueEachMonth);
-                BigDecimal resellOrderRevenueEachMonth = createQuery().select(Q_RESELL_ORDER.amount.amount.sum())
+                BigDecimal resellOrderRevenueEachMonth = Optional.ofNullable(createQuery().select(Q_RESELL_ORDER.amount.amount.sum())
                         .from(Q_RESELL_ORDER)
                         .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                         .leftJoin(Q_FIRST_RING.branch)
                         .where(
-                                Expressions.stringTemplate(
-                                        "DATE({0})", Q_RESELL_ORDER.createdAt
-                                ).between(startDateLocalDate.toString(), startDateLocalDate.plusDays(remainder).toString())
-                                        .and(Q_RESELL_ORDER.customOrder.firstRing.branch.id.eq(branchId)))
-                        .fetchOne();
+                                Expressions.predicate(
+                                                Ops.BETWEEN,
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                                Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                        .and(Q_FIRST_RING.branch.isNotNull())
+                                        .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne()).orElse(BigDecimal.ZERO);
                 totalRevenue = totalRevenue.subtract(resellOrderRevenueEachMonth);
                 totalRevenueEachMonth = totalRevenueEachMonth.subtract(resellOrderRevenueEachMonth);
-                BigDecimal refundOrderRevenueEachMonth = createQuery().select(Q_REFUND.amount.amount.sum())
+                BigDecimal refundOrderRevenueEachMonth = Optional.ofNullable(createQuery().select(Q_REFUND.amount.amount.sum())
                         .from(Q_REFUND)
                         .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                         .leftJoin(Q_FIRST_RING.branch)
                         .where(
-                                Expressions.stringTemplate(
-                                        "DATE({0})", Q_REFUND.createdAt
-                                ).between(startDateLocalDate.toString(), startDateLocalDate.plusDays(remainder).toString())
-                                        .and(Q_REFUND.customOrder.firstRing.branch.id.eq(branchId)))
-                        .fetchOne();
+                                Expressions.predicate(
+                                                Ops.BETWEEN,
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                                Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                        .and(Q_FIRST_RING.branch.isNotNull())
+                                        .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne()).orElse(BigDecimal.ZERO);
                 totalRevenue = totalRevenue.subtract(refundOrderRevenueEachMonth);
                 totalRevenueEachMonth = totalRevenueEachMonth.subtract(refundOrderRevenueEachMonth);
                 revenueEachMonthForCustomOrder.add(totalRevenueEachMonth);
