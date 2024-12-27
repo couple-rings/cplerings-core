@@ -14,6 +14,7 @@ import com.cplerings.core.application.dashboard.datasource.data.Revenue;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.branch.QBranch;
+import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.order.QCustomOrder;
 import com.cplerings.core.domain.refund.QRefund;
 import com.cplerings.core.domain.resell.QResellOrder;
@@ -79,6 +80,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                             "FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt
                                     ).eq(Expressions.constant(startDateLocalDate.atStartOfDay().atZone(targetZone).toInstant())
                                     )
+                                    .and(Q_CUSTOM_ORDER.status.eq(CustomOrderStatus.COMPLETED))
                                     .and(Q_FIRST_RING.branch.isNotNull())
                                     .and(Q_FIRST_RING.branch.id.eq(branchId)))
                     .fetchOne()).orElse(BigDecimal.ZERO);
@@ -140,6 +142,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                                                 Expressions.constant(startDateLocalDate.plusDays(6L).atStartOfDay().atZone(targetZone).toInstant()))
+                                        .and(Q_CUSTOM_ORDER.status.eq(CustomOrderStatus.COMPLETED))
                                         .and(Q_FIRST_RING.branch.isNotNull().isNotNull())
                                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne()).orElse(BigDecimal.ZERO);
@@ -192,6 +195,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                                                 Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
+                                        .and(Q_CUSTOM_ORDER.status.eq(CustomOrderStatus.COMPLETED))
                                         .and(Q_FIRST_RING.branch.isNotNull())
                                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne()).orElse(BigDecimal.ZERO);
@@ -256,6 +260,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                                                 Expressions.constant(startDateLocalDate.plusDays(29L).atStartOfDay().atZone(targetZone).toInstant()))
+                                        .and(Q_CUSTOM_ORDER.status.eq(CustomOrderStatus.COMPLETED))
                                         .and(Q_FIRST_RING.branch.isNotNull())
                                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne()).orElse(BigDecimal.ZERO);
@@ -308,6 +313,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                                                 Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
+                                        .and(Q_CUSTOM_ORDER.status.eq(CustomOrderStatus.COMPLETED))
                                         .and(Q_CUSTOM_ORDER.firstRing.branch.id.eq(branchId)))
                         .fetchOne()).orElse(BigDecimal.ZERO);
                 totalRevenue = totalRevenue.add(customOrderRevenueEachMonth);
