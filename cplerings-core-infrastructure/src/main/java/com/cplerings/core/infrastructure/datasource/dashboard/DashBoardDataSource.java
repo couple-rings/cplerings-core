@@ -14,7 +14,10 @@ import com.cplerings.core.application.dashboard.datasource.data.Revenue;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.branch.QBranch;
+import com.cplerings.core.domain.crafting.QCraftingStage;
 import com.cplerings.core.domain.order.QCustomOrder;
+import com.cplerings.core.domain.payment.PaymentStatus;
+import com.cplerings.core.domain.payment.QPayment;
 import com.cplerings.core.domain.refund.QRefund;
 import com.cplerings.core.domain.resell.QResellOrder;
 import com.cplerings.core.domain.ring.QRing;
@@ -35,6 +38,8 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
     private static final QAccount Q_ACCOUNT = QAccount.account;
     private static final QRing Q_FIRST_RING = QRing.ring;
     private static final QBranch Q_BRANCH = QBranch.branch;
+    private static final QPayment Q_PAYMENT = QPayment.payment;
+    private static final QCraftingStage Q_CRAFTING_STAGE = QCraftingStage.craftingStage;
 
     private final ZoneId targetZone = ZoneId.of("UTC");
 
@@ -70,31 +75,35 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         LocalDate startDateLocalDate = startDate.atZone(ZoneId.systemDefault()).toLocalDate();
         for (int i = 1; i <= numOfDays; i++) {
             BigDecimal totalRevenueEachDay = BigDecimal.ZERO;
-            BigDecimal customOrderRevenueEachDay = Optional.ofNullable(createQuery().select(Q_CUSTOM_ORDER.totalPrice.amount.sum())
-                    .from(Q_CUSTOM_ORDER)
+            BigDecimal customOrderRevenueEachDay = Optional.ofNullable(createQuery().select(Q_PAYMENT.amount.amount.sum())
+                    .from(Q_PAYMENT)
+                    .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
+                    .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
                     .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
+                    .leftJoin(Q_FIRST_RING.branch)
                     .where(
                             Expressions.stringTemplate(
-                                            "FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt
+                                            "FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt
                                     ).eq(Expressions.constant(startDateLocalDate.atStartOfDay().atZone(targetZone).toInstant())
                                     )
+                                    .and(Q_PAYMENT.craftingStage.isNotNull())
+                                    .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
                                     .and(Q_FIRST_RING.branch.isNotNull())
                                     .and(Q_FIRST_RING.branch.id.eq(branchId)))
                     .fetchOne()).orElse(BigDecimal.ZERO);
             totalRevenue = totalRevenue.add(customOrderRevenueEachDay);
             totalRevenueEachDay = totalRevenueEachDay.add(customOrderRevenueEachDay);
-            BigDecimal resellOrderRevenueEachDay =  Optional.ofNullable(createQuery().select(Q_RESELL_ORDER.amount.amount.sum())
+            BigDecimal resellOrderRevenueEachDay = Optional.ofNullable(createQuery().select(Q_RESELL_ORDER.amount.amount.sum())
                     .from(Q_RESELL_ORDER)
                     .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
                     .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                     .leftJoin(Q_FIRST_RING.branch)
                     .where(
                             Expressions.stringTemplate(
-                                    "FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt
-                            ).eq( Expressions.constant(startDateLocalDate.atStartOfDay().atZone(targetZone).toInstant())
-                            ).and(Q_FIRST_RING.branch.isNotNull())
-                                            .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                                            "FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt
+                                    ).eq(Expressions.constant(startDateLocalDate.atStartOfDay().atZone(targetZone).toInstant())
+                                    ).and(Q_FIRST_RING.branch.isNotNull())
+                                    .and(Q_FIRST_RING.branch.id.eq(branchId)))
                     .fetchOne()).orElse(BigDecimal.ZERO);
             totalRevenue = totalRevenue.subtract(resellOrderRevenueEachDay);
             totalRevenueEachDay = totalRevenueEachDay.subtract(resellOrderRevenueEachDay);
@@ -108,7 +117,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                     "FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt
                             ).eq(Expressions.constant(startDateLocalDate.atStartOfDay().atZone(targetZone).toInstant())
                             ).and(Q_FIRST_RING.branch.isNotNull()
-                                            .and(Q_FIRST_RING.branch.id.eq(branchId))))
+                                    .and(Q_FIRST_RING.branch.id.eq(branchId))))
                     .fetchOne()).orElse(BigDecimal.ZERO);
             totalRevenue = totalRevenue.subtract(refundOrderRevenueEachDay);
             totalRevenueEachDay = totalRevenueEachDay.subtract(refundOrderRevenueEachDay);
@@ -130,8 +139,10 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         for (int i = 1; i <= quotient; i++) {
             if (i < quotient) {
                 BigDecimal totalRevenueEachWeek = BigDecimal.ZERO;
-                BigDecimal customOrderRevenueEachWeek = Optional.ofNullable(createQuery().select(Q_CUSTOM_ORDER.totalPrice.amount.sum())
-                        .from(Q_CUSTOM_ORDER)
+                BigDecimal customOrderRevenueEachWeek = Optional.ofNullable(createQuery().select(Q_PAYMENT.amount.amount.sum())
+                        .from(Q_PAYMENT)
+                        .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
+                        .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                         .leftJoin(Q_FIRST_RING.branch)
                         .where(
@@ -140,6 +151,8 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                                                 Expressions.constant(startDateLocalDate.plusDays(6L).atStartOfDay().atZone(targetZone).toInstant()))
+                                        .and(Q_PAYMENT.craftingStage.isNotNull())
+                                        .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
                                         .and(Q_FIRST_RING.branch.isNotNull().isNotNull())
                                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne()).orElse(BigDecimal.ZERO);
@@ -182,8 +195,10 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 startDateLocalDate = startDateLocalDate.plusDays(7);
             } else {
                 BigDecimal totalRevenueEachWeek = BigDecimal.ZERO;
-                BigDecimal customOrderRevenueEachWeek = Optional.ofNullable(createQuery().select(Q_CUSTOM_ORDER.totalPrice.amount.sum())
-                        .from(Q_CUSTOM_ORDER)
+                BigDecimal customOrderRevenueEachWeek = Optional.ofNullable(createQuery().select(Q_PAYMENT.amount.amount.sum())
+                        .from(Q_PAYMENT)
+                        .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
+                        .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                         .leftJoin(Q_FIRST_RING.branch)
                         .where(
@@ -192,6 +207,8 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                                                 Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
+                                        .and(Q_PAYMENT.craftingStage.isNotNull())
+                                        .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
                                         .and(Q_FIRST_RING.branch.isNotNull())
                                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne()).orElse(BigDecimal.ZERO);
@@ -246,8 +263,10 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         for (int i = 1; i <= quotient; i++) {
             if (i < quotient) {
                 BigDecimal totalRevenueEachMonth = BigDecimal.ZERO;
-                BigDecimal customOrderRevenueEachMonth = Optional.ofNullable(createQuery().select(Q_CUSTOM_ORDER.totalPrice.amount.sum())
-                        .from(Q_CUSTOM_ORDER)
+                BigDecimal customOrderRevenueEachMonth = Optional.ofNullable(createQuery().select(Q_PAYMENT.amount.amount.sum())
+                        .from(Q_PAYMENT)
+                        .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
+                        .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                         .leftJoin(Q_FIRST_RING.branch)
                         .where(
@@ -256,6 +275,8 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                                                 Expressions.constant(startDateLocalDate.plusDays(29L).atStartOfDay().atZone(targetZone).toInstant()))
+                                        .and(Q_PAYMENT.craftingStage.isNotNull())
+                                        .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
                                         .and(Q_FIRST_RING.branch.isNotNull())
                                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne()).orElse(BigDecimal.ZERO);
@@ -298,8 +319,10 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 startDateLocalDate = startDateLocalDate.plusDays(30);
             } else {
                 BigDecimal totalRevenueEachMonth = BigDecimal.ZERO;
-                BigDecimal customOrderRevenueEachMonth = Optional.ofNullable(createQuery().select(Q_CUSTOM_ORDER.totalPrice.amount.sum())
-                        .from(Q_CUSTOM_ORDER)
+                BigDecimal customOrderRevenueEachMonth = Optional.ofNullable(createQuery().select(Q_PAYMENT.amount.amount.sum())
+                        .from(Q_PAYMENT)
+                        .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
+                        .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                         .leftJoin(Q_FIRST_RING.branch)
                         .where(
@@ -308,6 +331,8 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                                                 Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
+                                        .and(Q_PAYMENT.craftingStage.isNotNull())
+                                        .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
                                         .and(Q_CUSTOM_ORDER.firstRing.branch.id.eq(branchId)))
                         .fetchOne()).orElse(BigDecimal.ZERO);
                 totalRevenue = totalRevenue.add(customOrderRevenueEachMonth);
