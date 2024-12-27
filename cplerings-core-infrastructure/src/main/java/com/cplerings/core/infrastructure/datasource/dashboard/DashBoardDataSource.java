@@ -36,9 +36,11 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
     private static final QRing Q_FIRST_RING = QRing.ring;
     private static final QBranch Q_BRANCH = QBranch.branch;
 
+    private final ZoneId targetZone = ZoneId.of("UTC");
+
     @Override
     public Revenue getTotalRevenue(Instant start, Instant end, Long branchId) {
-        var numOfDays = ChronoUnit.DAYS.between(start, end);
+        var numOfDays = ChronoUnit.DAYS.between(start, end) + 1L;
         if (numOfDays > 0 && numOfDays < 30) {
             return getTotalRevenueOfCustomOrderForEachDay(numOfDays, start, branchId);
         } else if (numOfDays >= 30 && numOfDays < 60) {
@@ -75,7 +77,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                     .where(
                             Expressions.stringTemplate(
                                             "FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt
-                                    ).eq(Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+                                    ).eq(Expressions.constant(startDateLocalDate.atStartOfDay().atZone(targetZone).toInstant())
                                     )
                                     .and(Q_FIRST_RING.branch.isNotNull())
                                     .and(Q_FIRST_RING.branch.id.eq(branchId)))
@@ -90,7 +92,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                     .where(
                             Expressions.stringTemplate(
                                     "FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt
-                            ).eq( Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+                            ).eq( Expressions.constant(startDateLocalDate.atStartOfDay().atZone(targetZone).toInstant())
                             ).and(Q_FIRST_RING.branch.isNotNull())
                                             .and(Q_FIRST_RING.branch.id.eq(branchId)))
                     .fetchOne()).orElse(BigDecimal.ZERO);
@@ -104,7 +106,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                     .where(
                             Expressions.stringTemplate(
                                     "FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt
-                            ).eq(Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+                            ).eq(Expressions.constant(startDateLocalDate.atStartOfDay().atZone(targetZone).toInstant())
                             ).and(Q_FIRST_RING.branch.isNotNull()
                                             .and(Q_FIRST_RING.branch.id.eq(branchId))))
                     .fetchOne()).orElse(BigDecimal.ZERO);
@@ -137,7 +139,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                                 Ops.BETWEEN,
                                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                                                Expressions.constant(startDateLocalDate.plusDays(6L).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                                Expressions.constant(startDateLocalDate.plusDays(6L).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_FIRST_RING.branch.isNotNull().isNotNull())
                                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne()).orElse(BigDecimal.ZERO);
@@ -153,7 +155,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                                 Ops.BETWEEN,
                                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                                                Expressions.constant(startDateLocalDate.plusDays(6L).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                                Expressions.constant(startDateLocalDate.plusDays(6L).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_FIRST_RING.branch.isNotNull())
                                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne()).orElse(BigDecimal.ZERO);
@@ -169,7 +171,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                                 Ops.BETWEEN,
                                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                                                Expressions.constant(startDateLocalDate.plusDays(6L).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                                Expressions.constant(startDateLocalDate.plusDays(6L).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_FIRST_RING.branch.isNotNull())
                                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne()).orElse(BigDecimal.ZERO);
@@ -189,7 +191,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                                 Ops.BETWEEN,
                                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                                                Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                                Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_FIRST_RING.branch.isNotNull())
                                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne()).orElse(BigDecimal.ZERO);
@@ -205,7 +207,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                                 Ops.BETWEEN,
                                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                                                Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                                Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_FIRST_RING.branch.isNotNull())
                                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne()).orElse(BigDecimal.ZERO);
@@ -221,7 +223,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                                 Ops.BETWEEN,
                                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                                                Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                                Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_FIRST_RING.branch.isNotNull())
                                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne()).orElse(BigDecimal.ZERO);
@@ -253,7 +255,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                                 Ops.BETWEEN,
                                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                                                Expressions.constant(startDateLocalDate.plusDays(29L).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                                Expressions.constant(startDateLocalDate.plusDays(29L).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_FIRST_RING.branch.isNotNull())
                                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne()).orElse(BigDecimal.ZERO);
@@ -269,7 +271,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                                 Ops.BETWEEN,
                                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                                                Expressions.constant(startDateLocalDate.plusDays(29L).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                                Expressions.constant(startDateLocalDate.plusDays(29L).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_FIRST_RING.branch.isNotNull())
                                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne()).orElse(BigDecimal.ZERO);
@@ -285,7 +287,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                                 Ops.BETWEEN,
                                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                                                Expressions.constant(startDateLocalDate.plusDays(29L).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                                Expressions.constant(startDateLocalDate.plusDays(29L).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_FIRST_RING.branch.id.isNotNull())
                                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne()).orElse(BigDecimal.ZERO);
@@ -305,7 +307,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                                 Ops.BETWEEN,
                                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                                                Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                                Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_CUSTOM_ORDER.firstRing.branch.id.eq(branchId)))
                         .fetchOne()).orElse(BigDecimal.ZERO);
                 totalRevenue = totalRevenue.add(customOrderRevenueEachMonth);
@@ -320,7 +322,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                                 Ops.BETWEEN,
                                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                                                Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                                Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_FIRST_RING.branch.isNotNull())
                                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne()).orElse(BigDecimal.ZERO);
@@ -336,7 +338,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                                 Ops.BETWEEN,
                                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                                                Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                                Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_FIRST_RING.branch.isNotNull())
                                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne()).orElse(BigDecimal.ZERO);
