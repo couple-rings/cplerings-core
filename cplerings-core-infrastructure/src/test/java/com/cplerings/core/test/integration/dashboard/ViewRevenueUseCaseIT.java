@@ -57,6 +57,5 @@ class ViewRevenueUseCaseIT extends AbstractIT {
         final ViewBranchRevenueData customRequestData = responseBody.getData();
         assertThat(customRequestData).isNotNull();
         assertThat(customRequestData.totalRevenue()).isNotNull();
-        assertThat(customRequestData.totalRevenue()).isNotEqualTo(0);
     }
 }

@@ -2,18 +2,14 @@ package com.cplerings.core.api.dashboard;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cplerings.core.api.crafting.request.ViewCraftingRequestRequest;
-import com.cplerings.core.api.crafting.response.ViewCraftingRequestResponse;
 import com.cplerings.core.api.dashboard.data.ViewBranchRevenueData;
 import com.cplerings.core.api.dashboard.mapper.APIViewBranchRevenueMapper;
 import com.cplerings.core.api.dashboard.request.ViewBranchRevenueRequest;
 import com.cplerings.core.api.dashboard.response.ViewBranchRevenueResponse;
 import com.cplerings.core.api.shared.AbstractController;
 import com.cplerings.core.api.shared.mapper.APIMapper;
-import com.cplerings.core.api.shared.openapi.CraftingRequestTag;
 import com.cplerings.core.api.shared.openapi.DashboardTag;
 import com.cplerings.core.api.shared.openapi.ErrorAPIResponse;
 import com.cplerings.core.application.dashboard.ViewBranchRevenueUseCase;
