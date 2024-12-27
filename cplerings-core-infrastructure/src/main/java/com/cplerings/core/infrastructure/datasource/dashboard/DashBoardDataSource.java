@@ -123,7 +123,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
             totalRevenueEachDay = totalRevenueEachDay.subtract(refundOrderRevenueEachDay);
             revenueEachDayForCustomOrder.add(totalRevenueEachDay);
 
-            startDateLocalDate = startDateLocalDate.plusDays(i);
+            startDateLocalDate = startDateLocalDate.plusDays(1);
         }
         return Revenue.builder()
                 .totalRevenue(totalRevenue)
