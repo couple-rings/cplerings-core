@@ -391,7 +391,9 @@ public class SecurityConfiguration {
 
     private void handleRevenueAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.REVENUE_PATH))
-                .hasAnyAuthority(RoleConstant.ROLE_MANAGER));
+                        .hasAnyAuthority(RoleConstant.ROLE_MANAGER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.ORDERS_STATISTIC_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_MANAGER));
     }
 
     private String resolvePath(String path) {
