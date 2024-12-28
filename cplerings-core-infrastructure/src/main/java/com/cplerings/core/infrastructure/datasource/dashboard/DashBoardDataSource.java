@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.cplerings.core.application.dashboard.datasource.ViewBranchOrdersDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewBranchRevenueDataSource;
+import com.cplerings.core.application.dashboard.datasource.data.Orders;
 import com.cplerings.core.application.dashboard.datasource.data.Revenue;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
@@ -30,7 +32,7 @@ import lombok.RequiredArgsConstructor;
 
 @DataSource
 @RequiredArgsConstructor
-public class DashBoardDataSource extends AbstractDataSource implements ViewBranchRevenueDataSource {
+public class DashBoardDataSource extends AbstractDataSource implements ViewBranchRevenueDataSource, ViewBranchOrdersDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QResellOrder Q_RESELL_ORDER = QResellOrder.resellOrder;
@@ -148,7 +150,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
-                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                                                 Expressions.constant(startDateLocalDate.plusDays(6L).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_PAYMENT.craftingStage.isNotNull())
@@ -166,7 +168,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
-                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                                                 Expressions.constant(startDateLocalDate.plusDays(6L).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_FIRST_RING.branch.isNotNull())
@@ -182,7 +184,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
-                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                                                 Expressions.constant(startDateLocalDate.plusDays(6L).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_FIRST_RING.branch.isNotNull())
@@ -204,7 +206,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
-                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                                                 Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_PAYMENT.craftingStage.isNotNull())
@@ -222,7 +224,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
-                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                                                 Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_FIRST_RING.branch.isNotNull())
@@ -238,7 +240,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
-                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                                                 Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_FIRST_RING.branch.isNotNull())
@@ -272,7 +274,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
-                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                                                 Expressions.constant(startDateLocalDate.plusDays(29L).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_PAYMENT.craftingStage.isNotNull())
@@ -290,7 +292,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
-                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                                                 Expressions.constant(startDateLocalDate.plusDays(29L).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_FIRST_RING.branch.isNotNull())
@@ -306,7 +308,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
-                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                                                 Expressions.constant(startDateLocalDate.plusDays(29L).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_FIRST_RING.branch.id.isNotNull())
@@ -328,7 +330,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
-                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                                                 Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_PAYMENT.craftingStage.isNotNull())
@@ -345,7 +347,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
-                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                                                 Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_FIRST_RING.branch.isNotNull())
@@ -361,7 +363,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
-                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt),
                                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                                                 Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_FIRST_RING.branch.isNotNull())
@@ -375,6 +377,329 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         return Revenue.builder()
                 .totalRevenue(totalRevenue)
                 .revenueForEach(revenueEachMonthForCustomOrder)
+                .build();
+    }
+
+    @Override
+    public Orders getOrders(Instant start, Instant end, Long branchId) {
+        var numOfDays = ChronoUnit.DAYS.between(start, end) + 1L;
+        if (numOfDays > 0 && numOfDays < 30) {
+            return getOrdersEachDay(numOfDays, start, branchId);
+        } else if (numOfDays >= 30 && numOfDays < 60) {
+            Long quotient = numOfDays / 7;
+            Long remainder = numOfDays % 7;
+            return getOrdersEachWeek(start, quotient, remainder, branchId);
+        } else {
+            Long quotient = numOfDays / 30;
+            Long remainder = numOfDays % 30;
+            return getOrdersEachMonth(start, quotient, remainder, branchId);
+        }
+    }
+
+    private Orders getOrdersEachDay(Long numOfDays, Instant start, Long branchId) {
+        Long totalCustomOrders = 0L;
+        Long totalResellOrders = 0L;
+        Long totalRefundOrders = 0L;
+
+        List<Long> customOrdersForEachDay = new ArrayList<>();
+        List<Long> resellOrdersForEachDay = new ArrayList<>();
+        List<Long> refundOrdersForEachDay = new ArrayList<>();
+
+        LocalDate startDateLocalDate = start.atZone(ZoneId.systemDefault()).toLocalDate();
+        for (int i = 1; i <= numOfDays; i++) {
+            long customOrderForDay = createQuery().select(Q_CUSTOM_ORDER.count())
+                    .from(Q_CUSTOM_ORDER)
+                    .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                    .leftJoin(Q_FIRST_RING.branch)
+                    .where(Expressions.stringTemplate(
+                                    "FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt
+                            ).eq(Expressions.constant(startDateLocalDate.atStartOfDay().atZone(targetZone).toInstant())
+                            )
+                            .and(Q_FIRST_RING.branch.isNotNull())
+                            .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                    .fetchOne();
+            totalCustomOrders = totalCustomOrders + customOrderForDay;
+            customOrdersForEachDay.add(customOrderForDay);
+
+            long resellOrderForDay = createQuery().select(Q_RESELL_ORDER.count())
+                    .from(Q_RESELL_ORDER)
+                    .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
+                    .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                    .leftJoin(Q_FIRST_RING.branch)
+                    .where(Expressions.stringTemplate(
+                                    "FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt
+                            ).eq(Expressions.constant(startDateLocalDate.atStartOfDay().atZone(targetZone).toInstant())
+                            )
+                            .and(Q_FIRST_RING.branch.isNotNull())
+                            .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                    .fetchOne();
+            totalResellOrders = totalResellOrders + resellOrderForDay;
+            resellOrdersForEachDay.add(resellOrderForDay);
+
+            long refundOrderForDay = createQuery().select(Q_REFUND.count())
+                    .from(Q_REFUND)
+                    .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
+                    .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                    .leftJoin(Q_FIRST_RING.branch)
+                    .where(Expressions.stringTemplate(
+                                    "FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt
+                            ).eq(Expressions.constant(startDateLocalDate.atStartOfDay().atZone(targetZone).toInstant())
+                            )
+                            .and(Q_FIRST_RING.branch.isNotNull())
+                            .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                    .fetchOne();
+            totalRefundOrders = totalRefundOrders + refundOrderForDay;
+            refundOrdersForEachDay.add(resellOrderForDay);
+
+            startDateLocalDate = startDateLocalDate.plusDays(1L);
+        }
+        return Orders.builder()
+                .customOrdersForEach(customOrdersForEachDay)
+                .refundOrdersForEach(refundOrdersForEachDay)
+                .resellOrdersForEach(resellOrdersForEachDay)
+                .totalCustomOrder(totalCustomOrders)
+                .totalRefundOrder(totalRefundOrders)
+                .totalResellOrder(totalResellOrders)
+                .build();
+    }
+
+    private Orders getOrdersEachWeek(Instant start, Long quotient, Long remainder, Long branchId) {
+        Long totalCustomOrders = 0L;
+        Long totalResellOrders = 0L;
+        Long totalRefundOrders = 0L;
+
+        List<Long> customOrdersForEachDay = new ArrayList<>();
+        List<Long> resellOrdersForEachDay = new ArrayList<>();
+        List<Long> refundOrdersForEachDay = new ArrayList<>();
+
+        LocalDate startDateLocalDate = start.atZone(ZoneId.systemDefault()).toLocalDate();
+        for (int i = 1; i <= quotient; i++) {
+            if (i < quotient) {
+                long customOrderForDay = createQuery().select(Q_CUSTOM_ORDER.count())
+                        .from(Q_CUSTOM_ORDER)
+                        .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                        .leftJoin(Q_FIRST_RING.branch)
+                        .where(Expressions.predicate(
+                                        Ops.BETWEEN,
+                                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                        Expressions.constant(startDateLocalDate.plusDays(6L).atStartOfDay().atZone(targetZone).toInstant()))
+                                .and(Q_FIRST_RING.branch.isNotNull())
+                                .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne();
+                totalCustomOrders = totalCustomOrders + customOrderForDay;
+                customOrdersForEachDay.add(customOrderForDay);
+
+                long resellOrderForDay = createQuery().select(Q_RESELL_ORDER.count())
+                        .from(Q_RESELL_ORDER)
+                        .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
+                        .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                        .leftJoin(Q_FIRST_RING.branch)
+                        .where(Expressions.predicate(
+                                        Ops.BETWEEN,
+                                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
+                                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                        Expressions.constant(startDateLocalDate.plusDays(6L).atStartOfDay().atZone(targetZone).toInstant()))
+                                .and(Q_FIRST_RING.branch.isNotNull())
+                                .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne();
+                totalResellOrders = totalResellOrders + resellOrderForDay;
+                resellOrdersForEachDay.add(resellOrderForDay);
+
+                long refundOrderForDay = createQuery().select(Q_REFUND.count())
+                        .from(Q_REFUND)
+                        .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
+                        .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                        .leftJoin(Q_FIRST_RING.branch)
+                        .where(Expressions.predicate(
+                                        Ops.BETWEEN,
+                                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt),
+                                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                        Expressions.constant(startDateLocalDate.plusDays(6L).atStartOfDay().atZone(targetZone).toInstant()))
+                                .and(Q_FIRST_RING.branch.isNotNull())
+                                .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne();
+                totalRefundOrders = totalRefundOrders + refundOrderForDay;
+                refundOrdersForEachDay.add(resellOrderForDay);
+
+                startDateLocalDate = startDateLocalDate.plusDays(7L);
+            } else {
+                long customOrderForDay = createQuery().select(Q_CUSTOM_ORDER.count())
+                        .from(Q_CUSTOM_ORDER)
+                        .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                        .leftJoin(Q_FIRST_RING.branch)
+                        .where(Expressions.predicate(
+                                        Ops.BETWEEN,
+                                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                        Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
+                                .and(Q_FIRST_RING.branch.isNotNull())
+                                .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne();
+                totalCustomOrders = totalCustomOrders + customOrderForDay;
+                customOrdersForEachDay.add(customOrderForDay);
+
+                long resellOrderForDay = createQuery().select(Q_RESELL_ORDER.count())
+                        .from(Q_RESELL_ORDER)
+                        .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
+                        .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                        .leftJoin(Q_FIRST_RING.branch)
+                        .where(Expressions.predicate(
+                                        Ops.BETWEEN,
+                                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
+                                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                        Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
+                                .and(Q_FIRST_RING.branch.isNotNull())
+                                .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne();
+                totalResellOrders = totalResellOrders + resellOrderForDay;
+                resellOrdersForEachDay.add(resellOrderForDay);
+
+                long refundOrderForDay = createQuery().select(Q_REFUND.count())
+                        .from(Q_REFUND)
+                        .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
+                        .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                        .leftJoin(Q_FIRST_RING.branch)
+                        .where(Expressions.predicate(
+                                        Ops.BETWEEN,
+                                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt),
+                                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                        Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
+                                .and(Q_FIRST_RING.branch.isNotNull())
+                                .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne();
+                totalRefundOrders = totalRefundOrders + refundOrderForDay;
+                refundOrdersForEachDay.add(resellOrderForDay);
+            }
+        }
+
+        return Orders.builder()
+                .customOrdersForEach(customOrdersForEachDay)
+                .refundOrdersForEach(refundOrdersForEachDay)
+                .resellOrdersForEach(resellOrdersForEachDay)
+                .totalCustomOrder(totalCustomOrders)
+                .totalRefundOrder(totalRefundOrders)
+                .totalResellOrder(totalResellOrders)
+                .build();
+    }
+
+    private Orders getOrdersEachMonth(Instant start, Long quotient, Long remainder, Long branchId) {
+        Long totalCustomOrders = 0L;
+        Long totalResellOrders = 0L;
+        Long totalRefundOrders = 0L;
+
+        List<Long> customOrdersForEachDay = new ArrayList<>();
+        List<Long> resellOrdersForEachDay = new ArrayList<>();
+        List<Long> refundOrdersForEachDay = new ArrayList<>();
+
+        LocalDate startDateLocalDate = start.atZone(ZoneId.systemDefault()).toLocalDate();
+        for (int i = 1; i <= quotient; i++) {
+            if (i < quotient) {
+                long customOrderForDay = createQuery().select(Q_CUSTOM_ORDER.count())
+                        .from(Q_CUSTOM_ORDER)
+                        .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                        .leftJoin(Q_FIRST_RING.branch)
+                        .where(Expressions.predicate(
+                                        Ops.BETWEEN,
+                                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                        Expressions.constant(startDateLocalDate.plusDays(29L).atStartOfDay().atZone(targetZone).toInstant()))
+                                .and(Q_FIRST_RING.branch.isNotNull())
+                                .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne();
+                totalCustomOrders = totalCustomOrders + customOrderForDay;
+                customOrdersForEachDay.add(customOrderForDay);
+
+                long resellOrderForDay = createQuery().select(Q_RESELL_ORDER.count())
+                        .from(Q_RESELL_ORDER)
+                        .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
+                        .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                        .leftJoin(Q_FIRST_RING.branch)
+                        .where(Expressions.predicate(
+                                        Ops.BETWEEN,
+                                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
+                                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                        Expressions.constant(startDateLocalDate.plusDays(29L).atStartOfDay().atZone(targetZone).toInstant()))
+                                .and(Q_FIRST_RING.branch.isNotNull())
+                                .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne();
+                totalResellOrders = totalResellOrders + resellOrderForDay;
+                resellOrdersForEachDay.add(resellOrderForDay);
+
+                long refundOrderForDay = createQuery().select(Q_REFUND.count())
+                        .from(Q_REFUND)
+                        .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
+                        .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                        .leftJoin(Q_FIRST_RING.branch)
+                        .where(Expressions.predicate(
+                                        Ops.BETWEEN,
+                                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt),
+                                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                        Expressions.constant(startDateLocalDate.plusDays(29L).atStartOfDay().atZone(targetZone).toInstant()))
+                                .and(Q_FIRST_RING.branch.isNotNull())
+                                .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne();
+                totalRefundOrders = totalRefundOrders + refundOrderForDay;
+                refundOrdersForEachDay.add(resellOrderForDay);
+
+                startDateLocalDate = startDateLocalDate.plusDays(30L);
+            } else {
+                long customOrderForDay = createQuery().select(Q_CUSTOM_ORDER.count())
+                        .from(Q_CUSTOM_ORDER)
+                        .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                        .leftJoin(Q_FIRST_RING.branch)
+                        .where(Expressions.predicate(
+                                        Ops.BETWEEN,
+                                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                        Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
+                                .and(Q_FIRST_RING.branch.isNotNull())
+                                .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne();
+                totalCustomOrders = totalCustomOrders + customOrderForDay;
+                customOrdersForEachDay.add(customOrderForDay);
+
+                long resellOrderForDay = createQuery().select(Q_RESELL_ORDER.count())
+                        .from(Q_RESELL_ORDER)
+                        .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
+                        .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                        .leftJoin(Q_FIRST_RING.branch)
+                        .where(Expressions.predicate(
+                                        Ops.BETWEEN,
+                                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
+                                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                        Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
+                                .and(Q_FIRST_RING.branch.isNotNull())
+                                .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne();
+                totalResellOrders = totalResellOrders + resellOrderForDay;
+                resellOrdersForEachDay.add(resellOrderForDay);
+
+                long refundOrderForDay = createQuery().select(Q_REFUND.count())
+                        .from(Q_REFUND)
+                        .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
+                        .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                        .leftJoin(Q_FIRST_RING.branch)
+                        .where(Expressions.predicate(
+                                        Ops.BETWEEN,
+                                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt),
+                                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                        Expressions.constant(startDateLocalDate.plusDays(remainder).atStartOfDay().atZone(targetZone).toInstant()))
+                                .and(Q_FIRST_RING.branch.isNotNull())
+                                .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                        .fetchOne();
+                totalRefundOrders = totalRefundOrders + refundOrderForDay;
+                refundOrdersForEachDay.add(resellOrderForDay);
+            }
+        }
+
+        return Orders.builder()
+                .customOrdersForEach(customOrdersForEachDay)
+                .refundOrdersForEach(refundOrdersForEachDay)
+                .resellOrdersForEach(resellOrdersForEachDay)
+                .totalCustomOrder(totalCustomOrders)
+                .totalRefundOrder(totalRefundOrders)
+                .totalResellOrder(totalResellOrders)
                 .build();
     }
 }
