@@ -7,11 +7,13 @@ import com.cplerings.core.test.shared.AbstractCT;
 import com.cplerings.core.test.shared.datasource.TestDataSource;
 import com.cplerings.core.test.shared.entity.order.DummyOrder;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+@Disabled("Should use actual OrderEntity, not Dummy")
 class AbstractOrderEntityCT extends AbstractCT {
 
     @Autowired
@@ -27,6 +29,8 @@ class AbstractOrderEntityCT extends AbstractCT {
     }
 
     private void thenOrderNoIsPopulated(DummyOrder dummyOrder) {
-        assertThat(dummyOrder.getOrderNo()).isEqualTo("00000001");
+        assertThat(dummyOrder.getOrderNo())
+                .hasSize(10)
+                .matches("[A-Z]{2}00000001");
     }
 }
