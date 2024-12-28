@@ -5,6 +5,7 @@ import com.cplerings.core.application.shared.entity.branch.ABranch;
 import com.cplerings.core.application.shared.entity.design.ACustomDesign;
 import com.cplerings.core.application.shared.entity.design.ADiamondSpecification;
 import com.cplerings.core.application.shared.entity.design.AMetalSpecification;
+import com.cplerings.core.application.shared.entity.order.ADifficulty;
 import com.cplerings.core.domain.design.crafting.CraftingRequestStatus;
 
 import lombok.AllArgsConstructor;
@@ -16,7 +17,6 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Collection;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -37,5 +37,6 @@ public class ACraftingRequest implements Serializable {
     private Instant createdAt;
     private ABranch branch;
     private ACustomDesign customDesign;
+    private ADifficulty difficulty;
     private Collection<ACraftingRequestHistory> craftingRequestHistories;
 }

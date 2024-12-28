@@ -18,6 +18,7 @@ public enum AcceptCraftingRequestErrorCode implements ErrorCode {
     WRONG_STATUS("008", "crafting.request.wrongStatus", Type.BUSINESS),
     INVALID_CRAFTING_REQUEST_STATUS("009", "crafting.request.invalidCraftingStatus", Type.BUSINESS),
     NOT_ENOUGH_UNUSED_DIAMONDS("010", "crafting.request.notEnoughUnusedDiamonds", Type.BUSINESS),
+    DIFFICULTY_REQUIRED("011", "acceptCraftingRequest.error.difficultyRequired", Type.VALIDATION),
     ;
 
     private final String code;
