@@ -9,6 +9,7 @@ import com.cplerings.core.application.shared.entity.design.ADiamondShape;
 import com.cplerings.core.application.shared.entity.design.AMetalColor;
 import com.cplerings.core.application.shared.entity.design.request.ACustomRequestStatus;
 import com.cplerings.core.application.shared.entity.order.ACustomOrderStatus;
+import com.cplerings.core.application.shared.entity.order.ADifficulty;
 import com.cplerings.core.application.shared.entity.order.APaymentMethod;
 import com.cplerings.core.application.shared.entity.order.ARefundMethod;
 import com.cplerings.core.common.mapper.SpringMapperConfiguration;
@@ -21,6 +22,7 @@ import com.cplerings.core.domain.diamond.DiamondColor;
 import com.cplerings.core.domain.diamond.DiamondShape;
 import com.cplerings.core.domain.metal.MetalColor;
 import com.cplerings.core.domain.order.CustomOrderStatus;
+import com.cplerings.core.domain.order.Difficulty;
 import com.cplerings.core.domain.refund.RefundMethod;
 import com.cplerings.core.domain.resell.PaymentMethod;
 
@@ -56,4 +58,8 @@ public interface AEnumMapper {
     PaymentMethod toPaymentMethod(APaymentMethod paymentMethod);
 
     Role toRole(ARole role);
+
+    ADifficulty toDifficulty(Difficulty difficulty);
+
+    Difficulty toDifficulty(ADifficulty difficulty);
 }

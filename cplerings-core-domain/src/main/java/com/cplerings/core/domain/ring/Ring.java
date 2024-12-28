@@ -9,6 +9,7 @@ import com.cplerings.core.domain.design.CustomDesign;
 import com.cplerings.core.domain.file.Document;
 import com.cplerings.core.domain.metal.MetalSpecification;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.order.Difficulty;
 import com.cplerings.core.domain.shared.AbstractProductEntity;
 import com.cplerings.core.domain.shared.valueobject.Money;
 import com.cplerings.core.domain.spouse.Spouse;
@@ -100,6 +101,10 @@ public class Ring extends AbstractProductEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "metal_specification_id", nullable = false)
     private MetalSpecification metalSpecification;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "difficulty", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
+    private Difficulty difficulty;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "ring")
     private Set<RingHistory> ringHistories;

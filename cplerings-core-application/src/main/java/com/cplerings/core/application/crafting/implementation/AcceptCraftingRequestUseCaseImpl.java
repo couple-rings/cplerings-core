@@ -7,6 +7,7 @@ import com.cplerings.core.application.crafting.input.AcceptCraftingRequestInput;
 import com.cplerings.core.application.crafting.mapper.AAcceptCraftingRequestMapper;
 import com.cplerings.core.application.crafting.output.AcceptCraftingRequestOutput;
 import com.cplerings.core.application.shared.entity.crafting.ACraftingRequestStatus;
+import com.cplerings.core.application.shared.mapper.AEnumMapper;
 import com.cplerings.core.application.shared.service.configuration.ConfigurationService;
 import com.cplerings.core.application.shared.service.price.CalculationTotalPriceService;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
@@ -29,6 +30,7 @@ import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.CustomOrderStatus;
+import com.cplerings.core.domain.order.Difficulty;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
 import com.cplerings.core.domain.ring.RingHistory;
@@ -40,6 +42,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -55,6 +58,7 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
     private final AcceptCraftingRequestDataSource dataSource;
     private final CalculationTotalPriceService calculationTotalPriceService;
     private final ConfigurationService configurationService;
+    private final AEnumMapper enumMapper;
 
     @Override
     protected void validateInput(UseCaseValidator validator, AcceptCraftingRequestInput input) {
@@ -62,9 +66,12 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
         validator.validateAndStopExecution(input.firstCraftingRequestId() > 0, AcceptCraftingRequestErrorCode.CRAFTING_REQUEST_ID_WRONG_POSITIVE_INTEGER);
         validator.validateAndStopExecution(input.secondCraftingRequestId() > 0, AcceptCraftingRequestErrorCode.CRAFTING_REQUEST_ID_WRONG_POSITIVE_INTEGER);
         validator.validateAndStopExecution(input.status() != null, AcceptCraftingRequestErrorCode.STATUS_REQUIRED);
+
         if (input.status() == ACraftingRequestStatus.REJECTED) {
             validator.validateAndStopExecution(input.firstCommentCrafting() != null, AcceptCraftingRequestErrorCode.COMMENT_REQUIRED);
             validator.validateAndStopExecution(input.secondCommentCrafting() != null, AcceptCraftingRequestErrorCode.COMMENT_REQUIRED);
+        } else {
+            validator.validateAndStopExecution(input.difficulty() != null, AcceptCraftingRequestErrorCode.DIFFICULTY_REQUIRED);
         }
     }
 
@@ -80,12 +87,27 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
         validator.validateAndStopExecution(secondCraftingRequest.getCraftingRequestStatus() == CraftingRequestStatus.PENDING, AcceptCraftingRequestErrorCode.INVALID_CRAFTING_REQUEST_STATUS);
 
         if (input.status() == ACraftingRequestStatus.ACCEPTED) {
-            List<CraftingRequest> craftingRequests = acceptCraftingRequests(input, firstCraftingRequest, secondCraftingRequest);
+            Difficulty difficulty = enumMapper.toDifficulty(input.difficulty());
+
+            List<CraftingRequest> craftingRequests = acceptCraftingRequests(input, firstCraftingRequest, secondCraftingRequest, difficulty);
+
             Configuration configuration = dataSource.getConfigurationForSideDiamond();
             double sideDiamondPrice = Double.parseDouble(configuration.getValue());
-            Money firstRingPrice = calculationTotalPriceService.calculationTotalPrice(firstCraftingRequest.getMetalSpecification().getPricePerUnit(), firstCraftingRequest.getDiamondSpecification().getPrice(), firstCraftingRequest.getCustomDesign().getMetalWeight().getWeightValue(), firstCraftingRequest.getCustomDesign().getSideDiamondsCount(), sideDiamondPrice);
-            Money secondRingPrice = calculationTotalPriceService.calculationTotalPrice(secondCraftingRequest.getMetalSpecification().getPricePerUnit(), secondCraftingRequest.getDiamondSpecification().getPrice(), secondCraftingRequest.getCustomDesign().getMetalWeight().getWeightValue(), secondCraftingRequest.getCustomDesign().getSideDiamondsCount(), sideDiamondPrice);
-            List<Ring> rings = createRings(validator, firstCraftingRequest, secondCraftingRequest, firstRingPrice, secondRingPrice);
+
+            Money firstRingPrice = calculationTotalPriceService.calculationTotalPrice(firstCraftingRequest.getMetalSpecification().getPricePerUnit(),
+                    firstCraftingRequest.getDiamondSpecification().getPrice(),
+                    firstCraftingRequest.getCustomDesign().getMetalWeight().getWeightValue(),
+                    firstCraftingRequest.getCustomDesign().getSideDiamondsCount(),
+                    sideDiamondPrice);
+
+            Money secondRingPrice = calculationTotalPriceService.calculationTotalPrice(secondCraftingRequest.getMetalSpecification().getPricePerUnit(),
+                    secondCraftingRequest.getDiamondSpecification().getPrice(),
+                    secondCraftingRequest.getCustomDesign().getMetalWeight().getWeightValue(),
+                    secondCraftingRequest.getCustomDesign().getSideDiamondsCount(),
+                    sideDiamondPrice);
+
+
+            List<Ring> rings = createRings(validator, firstCraftingRequest, secondCraftingRequest, firstRingPrice, secondRingPrice, difficulty);
 
             Contract contract = createContract();
 
@@ -103,48 +125,58 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
         if (input.status() == ACraftingRequestStatus.REJECTED) {
             firstCraftingRequest.setComment(input.firstCommentCrafting());
             secondCraftingRequest.setComment(input.secondCommentCrafting());
+
             firstCraftingRequest.setCraftingRequestStatus(CraftingRequestStatus.REJECTED);
             secondCraftingRequest.setCraftingRequestStatus(CraftingRequestStatus.REJECTED);
-            List<CraftingRequest> craftingRequests = new ArrayList<>();
-            craftingRequests.add(firstCraftingRequest);
-            craftingRequests.add(secondCraftingRequest);
-            List<CraftingRequest> craftingRequestUpdated = dataSource.saveCraftingRequests(craftingRequests);
-            craftingRequestUpdated.forEach(x -> {
+
+            List<CraftingRequest> craftingRequests = Arrays.asList(firstCraftingRequest, secondCraftingRequest);
+            craftingRequests = dataSource.saveCraftingRequests(craftingRequests);
+
+            craftingRequests.forEach(x -> {
                 CraftingRequestHistory craftingRequestHistory = CraftingRequestHistory.builder()
                         .craftingRequest(x)
                         .status(CraftingRequestStatus.REJECTED)
                         .build();
                 dataSource.save(craftingRequestHistory);
             });
-            return mapper.toOutput(null, craftingRequestUpdated.get(0), craftingRequestUpdated.get(0));
+
+            return mapper.toOutput(null, craftingRequests.get(0), craftingRequests.get(1));
         }
 
         validator.validateAndStopExecution(false, AcceptCraftingRequestErrorCode.WRONG_STATUS);
         return null;
     }
 
-    private List<CraftingRequest> acceptCraftingRequests(AcceptCraftingRequestInput input, CraftingRequest firstCraftingRequest, CraftingRequest secondCraftingRequest) {
+    private List<CraftingRequest> acceptCraftingRequests(AcceptCraftingRequestInput input, CraftingRequest firstCraftingRequest, CraftingRequest secondCraftingRequest, Difficulty difficulty) {
         firstCraftingRequest.setCraftingRequestStatus(CraftingRequestStatus.ACCEPTED);
         secondCraftingRequest.setCraftingRequestStatus(CraftingRequestStatus.ACCEPTED);
-        if (input.firstCommentCrafting() != null)
+
+        firstCraftingRequest.setDifficulty(difficulty);
+        secondCraftingRequest.setDifficulty(difficulty);
+
+        if (input.firstCommentCrafting() != null) {
             firstCraftingRequest.setComment(input.firstCommentCrafting());
-        if (input.secondCommentCrafting() != null)
+        }
+
+        if (input.secondCommentCrafting() != null) {
             secondCraftingRequest.setComment(input.secondCommentCrafting());
-        List<CraftingRequest> craftingRequests = new ArrayList<>();
-        craftingRequests.add(firstCraftingRequest);
-        craftingRequests.add(secondCraftingRequest);
-        List<CraftingRequest> craftingRequestUpdated = dataSource.saveCraftingRequests(craftingRequests);
-        craftingRequestUpdated.forEach(x -> {
+        }
+
+        List<CraftingRequest> craftingRequests = Arrays.asList(firstCraftingRequest, secondCraftingRequest);
+        craftingRequests = dataSource.saveCraftingRequests(craftingRequests);
+
+        craftingRequests.forEach(x -> {
             CraftingRequestHistory craftingRequestHistory = CraftingRequestHistory.builder()
                     .craftingRequest(x)
-                    .status(CraftingRequestStatus.REJECTED)
+                    .status(CraftingRequestStatus.ACCEPTED)
                     .build();
             dataSource.save(craftingRequestHistory);
         });
-        return craftingRequestUpdated;
+
+        return craftingRequests;
     }
 
-    private List<Ring> createRings(UseCaseValidator validator, CraftingRequest firstCraftingRequest, CraftingRequest secondCraftingRequest, Money firstRingPrice, Money secondRingPrice) {
+    private List<Ring> createRings(UseCaseValidator validator, CraftingRequest firstCraftingRequest, CraftingRequest secondCraftingRequest, Money firstRingPrice, Money secondRingPrice, Difficulty difficulty) {
         final Collection<Long> diamondSpecIds = new HashSet<>();
         diamondSpecIds.add(firstCraftingRequest.getDiamondSpecification().getId());
         diamondSpecIds.add(secondCraftingRequest.getDiamondSpecification().getId());
@@ -170,6 +202,7 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                 .engraving(firstCraftingRequest.getEngraving())
                 .metalSpecification(firstCraftingRequest.getMetalSpecification())
                 .price(firstRingPrice)
+                .difficulty(difficulty)
                 .build();
         firstRing = dataSource.save(firstRing);
         RingHistory firstRingHistory = RingHistory.builder()
@@ -195,6 +228,7 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                 .engraving(secondCraftingRequest.getEngraving())
                 .metalSpecification(secondCraftingRequest.getMetalSpecification())
                 .price(secondRingPrice)
+                .difficulty(difficulty)
                 .build();
         secondRing = dataSource.save(secondRing);
         RingHistory secondRingHistory = RingHistory.builder()

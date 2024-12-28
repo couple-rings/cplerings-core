@@ -1,14 +1,11 @@
 package com.cplerings.core.application.shared.entity.ring;
 
-import java.io.Serializable;
-import java.time.Instant;
-import java.util.Collection;
-
 import com.cplerings.core.application.shared.entity.branch.ABranch;
 import com.cplerings.core.application.shared.entity.design.ACustomDesign;
 import com.cplerings.core.application.shared.entity.design.ADiamond;
 import com.cplerings.core.application.shared.entity.design.AMetalSpecification;
 import com.cplerings.core.application.shared.entity.file.ADocument;
+import com.cplerings.core.application.shared.entity.order.ADifficulty;
 import com.cplerings.core.application.shared.entity.spouse.ASpouse;
 import com.cplerings.core.domain.ring.RingStatus;
 import com.cplerings.core.domain.shared.valueobject.Money;
@@ -18,6 +15,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.io.Serializable;
+import java.time.Instant;
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -42,4 +43,5 @@ public class ARing implements Serializable {
     private Collection<ARingHistory> ringHistories;
     private Money price;
     private String productNo;
+    private ADifficulty difficulty;
 }

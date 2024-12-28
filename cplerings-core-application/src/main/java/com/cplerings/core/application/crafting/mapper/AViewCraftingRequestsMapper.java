@@ -1,18 +1,12 @@
 package com.cplerings.core.application.crafting.mapper;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-
 import com.cplerings.core.application.crafting.datasource.result.CraftingRequests;
 import com.cplerings.core.application.crafting.output.ViewCraftingRequestsOutput;
 import com.cplerings.core.application.shared.entity.crafting.ACraftingRequest;
 import com.cplerings.core.application.shared.entity.design.ACustomDesign;
 import com.cplerings.core.application.shared.entity.design.ADiamondSpecification;
 import com.cplerings.core.application.shared.entity.design.AMetalSpecification;
+import com.cplerings.core.application.shared.mapper.AEnumMapper;
 import com.cplerings.core.application.shared.mapper.DesignSizeMapper;
 import com.cplerings.core.application.shared.mapper.MoneyMapper;
 import com.cplerings.core.application.shared.mapper.WeightMapper;
@@ -24,12 +18,20 @@ import com.cplerings.core.domain.design.crafting.CraftingRequest;
 import com.cplerings.core.domain.diamond.DiamondSpecification;
 import com.cplerings.core.domain.metal.MetalSpecification;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Mapper(
         config = SpringMapperConfiguration.class,
         uses = {
                 WeightMapper.class,
                 DesignSizeMapper.class,
-                MoneyMapper.class
+                MoneyMapper.class,
+                AEnumMapper.class,
         }
 )
 public interface AViewCraftingRequestsMapper {
