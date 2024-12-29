@@ -6,7 +6,9 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.cplerings.core.application.dashboard.datasource.ViewBranchOrdersDataSource;
@@ -72,7 +74,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
 
     private Revenue getTotalRevenueOfCustomOrderForEachDay(Long numOfDays, Instant startDate, Long branchId) {
         BigDecimal totalRevenue = BigDecimal.ZERO;
-        List<BigDecimal> revenueEachDayForCustomOrder = new ArrayList<>();
+        Map<String, BigDecimal> revenueEachDayForCustomOrder = new HashMap<>();
 
         LocalDate startDateLocalDate = startDate.atZone(ZoneId.systemDefault()).toLocalDate();
         for (int i = 1; i <= numOfDays; i++) {
@@ -123,7 +125,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                     .fetchOne()).orElse(BigDecimal.ZERO);
             totalRevenue = totalRevenue.subtract(refundOrderRevenueEachDay);
             totalRevenueEachDay = totalRevenueEachDay.subtract(refundOrderRevenueEachDay);
-            revenueEachDayForCustomOrder.add(totalRevenueEachDay);
+            revenueEachDayForCustomOrder.put(startDateLocalDate.toString(),totalRevenueEachDay);
 
             startDateLocalDate = startDateLocalDate.plusDays(1);
         }
@@ -135,7 +137,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
 
     private Revenue getTotalRevenueOfCustomOrderForEachWeek(Instant startDate, Long quotient, Long remainder, Long branchId) {
         BigDecimal totalRevenue = BigDecimal.ZERO;
-        List<BigDecimal> revenueEachWeekForCustomOrder = new ArrayList<>();
+        Map<String, BigDecimal> revenueEachWeekForCustomOrder = new HashMap<>();
 
         LocalDate startDateLocalDate = startDate.atZone(ZoneId.systemDefault()).toLocalDate();
         for (int i = 1; i <= quotient; i++) {
@@ -155,7 +157,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                                 Expressions.constant(startDateLocalDate.plusDays(6L).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_PAYMENT.craftingStage.isNotNull())
                                         .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
-                                        .and(Q_FIRST_RING.branch.isNotNull().isNotNull())
+                                        .and(Q_FIRST_RING.branch.isNotNull())
                                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne()).orElse(BigDecimal.ZERO);
                 totalRevenue = totalRevenue.add(customOrderRevenueEachWeek);
@@ -192,7 +194,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .fetchOne()).orElse(BigDecimal.ZERO);
                 totalRevenue = totalRevenue.subtract(refundOrderRevenueEachWeek);
                 totalRevenueEachWeek = totalRevenueEachWeek.subtract(refundOrderRevenueEachWeek);
-                revenueEachWeekForCustomOrder.add(totalRevenueEachWeek);
+                revenueEachWeekForCustomOrder.put(startDateLocalDate + " - " +  startDateLocalDate.plusDays(6L), totalRevenueEachWeek);
 
                 startDateLocalDate = startDateLocalDate.plusDays(7);
             } else {
@@ -248,7 +250,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .fetchOne()).orElse(BigDecimal.ZERO);
                 totalRevenue = totalRevenue.subtract(refundOrderRevenueEachWeek);
                 totalRevenueEachWeek = totalRevenueEachWeek.subtract(refundOrderRevenueEachWeek);
-                revenueEachWeekForCustomOrder.add(totalRevenueEachWeek);
+                revenueEachWeekForCustomOrder.put(startDateLocalDate + " - " + startDateLocalDate.plusDays(remainder), totalRevenueEachWeek);
             }
         }
         return Revenue.builder()
@@ -259,7 +261,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
 
     private Revenue getTotalRevenueOfCustomOrderForEachMonth(Instant startDate, Long quotient, Long remainder, Long branchId) {
         BigDecimal totalRevenue = BigDecimal.ZERO;
-        List<BigDecimal> revenueEachMonthForCustomOrder = new ArrayList<>();
+        Map<String, BigDecimal> revenueEachMonthForCustomOrder = new HashMap<>();
 
         LocalDate startDateLocalDate = startDate.atZone(ZoneId.systemDefault()).toLocalDate();
         for (int i = 1; i <= quotient; i++) {
@@ -316,7 +318,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .fetchOne()).orElse(BigDecimal.ZERO);
                 totalRevenue = totalRevenue.subtract(refundOrderRevenueEachMonth);
                 totalRevenueEachMonth = totalRevenueEachMonth.subtract(refundOrderRevenueEachMonth);
-                revenueEachMonthForCustomOrder.add(totalRevenueEachMonth);
+                revenueEachMonthForCustomOrder.put(startDateLocalDate + " - " + startDateLocalDate.plusDays(29L), totalRevenueEachMonth);
 
                 startDateLocalDate = startDateLocalDate.plusDays(30);
             } else {
@@ -371,7 +373,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .fetchOne()).orElse(BigDecimal.ZERO);
                 totalRevenue = totalRevenue.subtract(refundOrderRevenueEachMonth);
                 totalRevenueEachMonth = totalRevenueEachMonth.subtract(refundOrderRevenueEachMonth);
-                revenueEachMonthForCustomOrder.add(totalRevenueEachMonth);
+                revenueEachMonthForCustomOrder.put(startDateLocalDate + " - " + startDateLocalDate.plusDays(remainder), totalRevenueEachMonth);
             }
         }
         return Revenue.builder()
@@ -401,9 +403,9 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         Long totalResellOrders = 0L;
         Long totalRefundOrders = 0L;
 
-        List<Long> customOrdersForEachDay = new ArrayList<>();
-        List<Long> resellOrdersForEachDay = new ArrayList<>();
-        List<Long> refundOrdersForEachDay = new ArrayList<>();
+        Map<String, Long> customOrdersForEachDay = new HashMap<>();
+        Map<String, Long> resellOrdersForEachDay = new HashMap<>();
+        Map<String, Long> refundOrdersForEachDay = new HashMap<>();
 
         LocalDate startDateLocalDate = start.atZone(ZoneId.systemDefault()).toLocalDate();
         for (int i = 1; i <= numOfDays; i++) {
@@ -419,7 +421,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                             .and(Q_FIRST_RING.branch.id.eq(branchId)))
                     .fetchOne();
             totalCustomOrders = totalCustomOrders + customOrderForDay;
-            customOrdersForEachDay.add(customOrderForDay);
+            customOrdersForEachDay.put(startDateLocalDate.toString() ,customOrderForDay);
 
             long resellOrderForDay = createQuery().select(Q_RESELL_ORDER.count())
                     .from(Q_RESELL_ORDER)
@@ -434,7 +436,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                             .and(Q_FIRST_RING.branch.id.eq(branchId)))
                     .fetchOne();
             totalResellOrders = totalResellOrders + resellOrderForDay;
-            resellOrdersForEachDay.add(resellOrderForDay);
+            resellOrdersForEachDay.put(startDateLocalDate.toString(), resellOrderForDay);
 
             long refundOrderForDay = createQuery().select(Q_REFUND.count())
                     .from(Q_REFUND)
@@ -449,7 +451,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                             .and(Q_FIRST_RING.branch.id.eq(branchId)))
                     .fetchOne();
             totalRefundOrders = totalRefundOrders + refundOrderForDay;
-            refundOrdersForEachDay.add(resellOrderForDay);
+            refundOrdersForEachDay.put(startDateLocalDate.toString(), resellOrderForDay);
 
             startDateLocalDate = startDateLocalDate.plusDays(1L);
         }
@@ -468,9 +470,9 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         Long totalResellOrders = 0L;
         Long totalRefundOrders = 0L;
 
-        List<Long> customOrdersForEachDay = new ArrayList<>();
-        List<Long> resellOrdersForEachDay = new ArrayList<>();
-        List<Long> refundOrdersForEachDay = new ArrayList<>();
+        Map<String, Long> customOrdersForEachDay = new HashMap<>();
+        Map<String, Long> resellOrdersForEachDay = new HashMap<>();
+        Map<String, Long> refundOrdersForEachDay = new HashMap<>();
 
         LocalDate startDateLocalDate = start.atZone(ZoneId.systemDefault()).toLocalDate();
         for (int i = 1; i <= quotient; i++) {
@@ -488,7 +490,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                 .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne();
                 totalCustomOrders = totalCustomOrders + customOrderForDay;
-                customOrdersForEachDay.add(customOrderForDay);
+                customOrdersForEachDay.put(startDateLocalDate + " - " + startDateLocalDate.plusDays(6L), customOrderForDay);
 
                 long resellOrderForDay = createQuery().select(Q_RESELL_ORDER.count())
                         .from(Q_RESELL_ORDER)
@@ -504,7 +506,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                 .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne();
                 totalResellOrders = totalResellOrders + resellOrderForDay;
-                resellOrdersForEachDay.add(resellOrderForDay);
+                resellOrdersForEachDay.put(startDateLocalDate + " - " + startDateLocalDate.plusDays(6L), resellOrderForDay);
 
                 long refundOrderForDay = createQuery().select(Q_REFUND.count())
                         .from(Q_REFUND)
@@ -520,7 +522,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                 .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne();
                 totalRefundOrders = totalRefundOrders + refundOrderForDay;
-                refundOrdersForEachDay.add(resellOrderForDay);
+                refundOrdersForEachDay.put(startDateLocalDate + " - " + startDateLocalDate.plusDays(6L), resellOrderForDay);
 
                 startDateLocalDate = startDateLocalDate.plusDays(7L);
             } else {
@@ -537,7 +539,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                 .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne();
                 totalCustomOrders = totalCustomOrders + customOrderForDay;
-                customOrdersForEachDay.add(customOrderForDay);
+                customOrdersForEachDay.put(startDateLocalDate + " - " + startDateLocalDate.plusDays(remainder), customOrderForDay);
 
                 long resellOrderForDay = createQuery().select(Q_RESELL_ORDER.count())
                         .from(Q_RESELL_ORDER)
@@ -553,7 +555,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                 .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne();
                 totalResellOrders = totalResellOrders + resellOrderForDay;
-                resellOrdersForEachDay.add(resellOrderForDay);
+                resellOrdersForEachDay.put(startDateLocalDate + " - " + startDateLocalDate.plusDays(remainder), resellOrderForDay);
 
                 long refundOrderForDay = createQuery().select(Q_REFUND.count())
                         .from(Q_REFUND)
@@ -569,7 +571,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                 .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne();
                 totalRefundOrders = totalRefundOrders + refundOrderForDay;
-                refundOrdersForEachDay.add(resellOrderForDay);
+                refundOrdersForEachDay.put(startDateLocalDate + " - " + startDateLocalDate.plusDays(remainder), resellOrderForDay);
             }
         }
 
@@ -588,9 +590,9 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         Long totalResellOrders = 0L;
         Long totalRefundOrders = 0L;
 
-        List<Long> customOrdersForEachDay = new ArrayList<>();
-        List<Long> resellOrdersForEachDay = new ArrayList<>();
-        List<Long> refundOrdersForEachDay = new ArrayList<>();
+        Map<String, Long> customOrdersForEachDay = new HashMap<>();
+        Map<String, Long> resellOrdersForEachDay = new HashMap<>();
+        Map<String, Long> refundOrdersForEachDay = new HashMap<>();
 
         LocalDate startDateLocalDate = start.atZone(ZoneId.systemDefault()).toLocalDate();
         for (int i = 1; i <= quotient; i++) {
@@ -608,7 +610,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                 .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne();
                 totalCustomOrders = totalCustomOrders + customOrderForDay;
-                customOrdersForEachDay.add(customOrderForDay);
+                customOrdersForEachDay.put(startDateLocalDate + " - " + startDateLocalDate.plusDays(29L), customOrderForDay);
 
                 long resellOrderForDay = createQuery().select(Q_RESELL_ORDER.count())
                         .from(Q_RESELL_ORDER)
@@ -624,7 +626,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                 .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne();
                 totalResellOrders = totalResellOrders + resellOrderForDay;
-                resellOrdersForEachDay.add(resellOrderForDay);
+                resellOrdersForEachDay.put(startDateLocalDate + " - " + startDateLocalDate.plusDays(29L), resellOrderForDay);
 
                 long refundOrderForDay = createQuery().select(Q_REFUND.count())
                         .from(Q_REFUND)
@@ -640,7 +642,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                 .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne();
                 totalRefundOrders = totalRefundOrders + refundOrderForDay;
-                refundOrdersForEachDay.add(resellOrderForDay);
+                refundOrdersForEachDay.put(startDateLocalDate + " - " + startDateLocalDate.plusDays(29L), resellOrderForDay);
 
                 startDateLocalDate = startDateLocalDate.plusDays(30L);
             } else {
@@ -657,7 +659,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                 .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne();
                 totalCustomOrders = totalCustomOrders + customOrderForDay;
-                customOrdersForEachDay.add(customOrderForDay);
+                customOrdersForEachDay.put(startDateLocalDate + " - " + startDateLocalDate.plusDays(remainder), customOrderForDay);
 
                 long resellOrderForDay = createQuery().select(Q_RESELL_ORDER.count())
                         .from(Q_RESELL_ORDER)
@@ -673,7 +675,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                 .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne();
                 totalResellOrders = totalResellOrders + resellOrderForDay;
-                resellOrdersForEachDay.add(resellOrderForDay);
+                resellOrdersForEachDay.put(startDateLocalDate + " - " + startDateLocalDate.plusDays(remainder), resellOrderForDay);
 
                 long refundOrderForDay = createQuery().select(Q_REFUND.count())
                         .from(Q_REFUND)
@@ -689,7 +691,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                 .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .fetchOne();
                 totalRefundOrders = totalRefundOrders + refundOrderForDay;
-                refundOrdersForEachDay.add(resellOrderForDay);
+                refundOrdersForEachDay.put(startDateLocalDate + " - " + startDateLocalDate.plusDays(remainder), resellOrderForDay);
             }
         }
 

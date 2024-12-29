@@ -4,6 +4,7 @@ import com.cplerings.core.common.temporal.TemporalUtils;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderStatus;
+import com.cplerings.core.domain.order.Difficulty;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.ring.Ring;
@@ -131,6 +132,7 @@ public class CustomOrderTestHelper {
                 .fingerSize(15)
                 .metalSpecification(metalSpecificationRepository.getReferenceById(1L))
                 .price(Money.create(BigDecimal.valueOf(1000)))
+                .difficulty(Difficulty.NORMAL)
                 .build();
         firstRing = testDataSource.save(firstRing);
 
@@ -150,6 +152,7 @@ public class CustomOrderTestHelper {
                 .fingerSize(16)
                 .metalSpecification(metalSpecificationRepository.getReferenceById(11L))
                 .price(Money.create(BigDecimal.valueOf(1000)))
+                .difficulty(Difficulty.NORMAL)
                 .build();
         secondRing = testDataSource.save(secondRing);
 
