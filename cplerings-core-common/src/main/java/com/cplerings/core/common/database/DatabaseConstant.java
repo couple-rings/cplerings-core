@@ -28,5 +28,7 @@ public final class DatabaseConstant {
 
     public static final int DEFAULT_ORDER_NO_LENGTH = 10;
 
+    public static final int DEFAULT_ORDER_NO_NUMBER_PART_LENGTH = 8;
+
     public static final int DEFAULT_ENGRAVING_LENGTH = 15;
 }

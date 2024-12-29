@@ -19,6 +19,7 @@ public class ASpouse implements Serializable {
 
     private Long id;
     private String fullName;
+    private String citizenId;
     private Long customerId;
     private UUID coupleId;
     private Instant createdAt;

@@ -5,4 +5,5 @@ import com.cplerings.core.application.crafting.output.AcceptCraftingRequestOutpu
 import com.cplerings.core.application.shared.usecase.UseCase;
 
 public interface AcceptCraftingRequestUseCase extends UseCase<AcceptCraftingRequestInput, AcceptCraftingRequestOutput> {
+
 }

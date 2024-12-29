@@ -10,6 +10,13 @@ import org.mapstruct.Mapping;
 @Mapper(config = SpringMapperConfiguration.class)
 public interface ASpouseMapper {
 
-    @Mapping(target = "customerId", expression = "java(spouse.getSpouseAccount() != null && spouse.getSpouseAccount().getCustomer() != null ? spouse.getSpouseAccount().getCustomer().getId() : null)")
+    @Mapping(target = "customerId", expression = "java(toCustomerId(spouse))")
     ASpouse toSpouse(Spouse spouse);
+
+    default Long toCustomerId(Spouse spouse) {
+        if (spouse == null || spouse.getSpouseAccount() == null || spouse.getSpouseAccount().getCustomer() == null) {
+            return null;
+        }
+        return spouse.getSpouseAccount().getCustomer().getId();
+    }
 }
