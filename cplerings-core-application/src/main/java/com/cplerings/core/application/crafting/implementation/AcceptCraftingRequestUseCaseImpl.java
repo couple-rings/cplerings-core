@@ -9,11 +9,15 @@ import com.cplerings.core.application.crafting.output.AcceptCraftingRequestOutpu
 import com.cplerings.core.application.shared.entity.crafting.ACraftingRequestStatus;
 import com.cplerings.core.application.shared.mapper.AEnumMapper;
 import com.cplerings.core.application.shared.service.configuration.ConfigurationService;
-import com.cplerings.core.application.shared.service.price.CalculationTotalPriceService;
+import com.cplerings.core.application.shared.service.price.CalculationService;
+import com.cplerings.core.application.shared.service.price.CraftingStageAmounts;
+import com.cplerings.core.application.shared.service.price.CraftingStageInfo;
+import com.cplerings.core.application.shared.service.price.CustomOrderInfo;
+import com.cplerings.core.application.shared.service.price.RingInfo;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
-import com.cplerings.core.domain.configuration.Configuration;
+import com.cplerings.core.common.locale.LocaleUtils;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.crafting.CraftingStageHistory;
@@ -37,25 +41,38 @@ import com.cplerings.core.domain.ring.RingStatus;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
+import lombok.Builder;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
 @UseCaseImplementation
 public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraftingRequestInput, AcceptCraftingRequestOutput> implements AcceptCraftingRequestUseCase {
 
+    @Getter
+    @Builder
+    private static final class Configs {
+
+        private Money sideDiamondPrice;
+    }
+
+    private static final String FIRST_CRAFTING_STAGE_NAME = "acceptCraftingRequest.firstCraftingStageName";
+    private static final String SECOND_CRAFTING_STAGE_NAME = "acceptCraftingRequest.secondCraftingStageName";
+    private static final String THIRD_CRAFTING_STAGE_NAME = "acceptCraftingRequest.thirdCraftingStageName";
+
     private final AAcceptCraftingRequestMapper mapper;
     private final AcceptCraftingRequestDataSource dataSource;
-    private final CalculationTotalPriceService calculationTotalPriceService;
+    private final CalculationService calculationService;
     private final ConfigurationService configurationService;
     private final AEnumMapper enumMapper;
 
@@ -89,22 +106,11 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
         if (input.getStatus() == ACraftingRequestStatus.ACCEPTED) {
             List<CraftingRequest> craftingRequests = acceptCraftingRequests(input, firstCraftingRequest, secondCraftingRequest);
 
-            Configuration configuration = dataSource.getConfigurationForSideDiamond();
-            double sideDiamondPrice = Double.parseDouble(configuration.getValue());
+            final Configs configs = Configs.builder()
+                    .sideDiamondPrice(configurationService.getSideDiamondPrice())
+                    .build();
 
-            Money firstRingPrice = calculationTotalPriceService.calculationTotalPrice(firstCraftingRequest.getMetalSpecification().getPricePerUnit(),
-                    firstCraftingRequest.getDiamondSpecification().getPrice(),
-                    firstCraftingRequest.getCustomDesign().getMetalWeight().getWeightValue(),
-                    firstCraftingRequest.getCustomDesign().getSideDiamondsCount(),
-                    sideDiamondPrice);
-
-            Money secondRingPrice = calculationTotalPriceService.calculationTotalPrice(secondCraftingRequest.getMetalSpecification().getPricePerUnit(),
-                    secondCraftingRequest.getDiamondSpecification().getPrice(),
-                    secondCraftingRequest.getCustomDesign().getMetalWeight().getWeightValue(),
-                    secondCraftingRequest.getCustomDesign().getSideDiamondsCount(),
-                    sideDiamondPrice);
-
-            List<Ring> rings = createRings(validator, firstCraftingRequest, secondCraftingRequest, firstRingPrice, secondRingPrice, input);
+            List<Ring> rings = createRings(validator, firstCraftingRequest, secondCraftingRequest, input, configs);
 
             Contract contract = createContract();
 
@@ -173,12 +179,13 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
         return craftingRequests;
     }
 
-    private List<Ring> createRings(UseCaseValidator validator, CraftingRequest firstCraftingRequest, CraftingRequest secondCraftingRequest, Money firstRingPrice, Money secondRingPrice, AcceptCraftingRequestInput input) {
+    private List<Ring> createRings(UseCaseValidator validator, CraftingRequest firstCraftingRequest, CraftingRequest secondCraftingRequest, AcceptCraftingRequestInput input, Configs configs) {
         final Collection<Long> diamondSpecIds = new HashSet<>();
         diamondSpecIds.add(firstCraftingRequest.getDiamondSpecification().getId());
         diamondSpecIds.add(secondCraftingRequest.getDiamondSpecification().getId());
 
         final Collection<Diamond> unusedDiamonds;
+
         if (diamondSpecIds.size() == 1) {
             unusedDiamonds = dataSource.getUnusedDiamondsFromSpecsAndBranch(diamondSpecIds, firstCraftingRequest.getBranch().getId());
         } else {
@@ -188,7 +195,17 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
             dataSource.getUnusedDiamondFromSpecAndBranch(secondCraftingRequest.getDiamondSpecification().getId(), secondCraftingRequest.getBranch().getId())
                     .ifPresent(unusedDiamonds::add);
         }
+
         validator.validateAndStopExecution(unusedDiamonds.size() == 2, AcceptCraftingRequestErrorCode.NOT_ENOUGH_UNUSED_DIAMONDS);
+
+        final RingInfo firstRingInfo = RingInfo.builder()
+                .metalPricePerUnit(firstCraftingRequest.getMetalSpecification().getPricePerUnit())
+                .metalWeight(firstCraftingRequest.getCustomDesign().getMetalWeight())
+                .diamondPrice(firstCraftingRequest.getDiamondSpecification().getPrice())
+                .sideDiamondPrice(configs.getSideDiamondPrice())
+                .sideDiamondCount(firstCraftingRequest.getCustomDesign().getSideDiamondsCount())
+                .craftingFee(calculationService.calculateCraftingFee(enumMapper.toDifficulty(input.getFirstCraftingRequestDifficulty())))
+                .build();
 
         Ring firstRing = Ring.builder()
                 .branch(firstCraftingRequest.getBranch())
@@ -198,8 +215,12 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                 .fingerSize(firstCraftingRequest.getFingerSize())
                 .engraving(firstCraftingRequest.getEngraving())
                 .metalSpecification(firstCraftingRequest.getMetalSpecification())
-                .price(firstRingPrice)
                 .difficulty(enumMapper.toDifficulty(input.getFirstCraftingRequestDifficulty()))
+                .diamondPrice(firstRingInfo.getDiamondPrice())
+                .metalPricePerUnit(firstRingInfo.getMetalPricePerUnit())
+                .sideDiamondPrice(firstRingInfo.getSideDiamondPrice())
+                .craftingFee(firstRingInfo.getCraftingFee())
+                .price(calculationService.calculateRingPrice(firstRingInfo))
                 .build();
         firstRing = dataSource.save(firstRing);
 
@@ -217,6 +238,15 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                 .build();
         dataSource.save(firstRingDiamond);
 
+        final RingInfo secondRingInfo = RingInfo.builder()
+                .metalPricePerUnit(secondCraftingRequest.getMetalSpecification().getPricePerUnit())
+                .metalWeight(secondCraftingRequest.getCustomDesign().getMetalWeight())
+                .diamondPrice(secondCraftingRequest.getDiamondSpecification().getPrice())
+                .sideDiamondPrice(configs.getSideDiamondPrice())
+                .sideDiamondCount(secondCraftingRequest.getCustomDesign().getSideDiamondsCount())
+                .craftingFee(calculationService.calculateCraftingFee(enumMapper.toDifficulty(input.getSecondCraftingRequestDifficulty())))
+                .build();
+
         Ring secondRing = Ring.builder()
                 .branch(secondCraftingRequest.getBranch())
                 .status(RingStatus.NOT_AVAIL)
@@ -225,8 +255,12 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                 .fingerSize(secondCraftingRequest.getFingerSize())
                 .engraving(secondCraftingRequest.getEngraving())
                 .metalSpecification(secondCraftingRequest.getMetalSpecification())
-                .price(secondRingPrice)
                 .difficulty(enumMapper.toDifficulty(input.getSecondCraftingRequestDifficulty()))
+                .diamondPrice(secondRingInfo.getDiamondPrice())
+                .metalPricePerUnit(secondRingInfo.getMetalPricePerUnit())
+                .sideDiamondPrice(secondRingInfo.getSideDiamondPrice())
+                .craftingFee(secondRingInfo.getCraftingFee())
+                .price(calculationService.calculateRingPrice(secondRingInfo))
                 .build();
         secondRing = dataSource.save(secondRing);
 
@@ -253,11 +287,13 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
     }
 
     private CustomOrder createCustomOrder(CraftingRequest firstCraftingRequest, CraftingRequest secondCraftingRequest, List<Ring> ringsCreated, Contract contractCreated) {
-        Configuration configuration = dataSource.getConfigurationForSideDiamond();
-        double sideDiamondPrice = Double.parseDouble(configuration.getValue());
-        Money firstRingPrice = calculationTotalPriceService.calculationTotalPrice(firstCraftingRequest.getMetalSpecification().getPricePerUnit(), firstCraftingRequest.getDiamondSpecification().getPrice(), firstCraftingRequest.getCustomDesign().getMetalWeight().getWeightValue(), firstCraftingRequest.getCustomDesign().getSideDiamondsCount(), sideDiamondPrice);
-        Money secondRingPrice = calculationTotalPriceService.calculationTotalPrice(secondCraftingRequest.getMetalSpecification().getPricePerUnit(), secondCraftingRequest.getDiamondSpecification().getPrice(), secondCraftingRequest.getCustomDesign().getMetalWeight().getWeightValue(), secondCraftingRequest.getCustomDesign().getSideDiamondsCount(), sideDiamondPrice);
-        Money totalPrice = Money.create(firstRingPrice.getAmount().add(secondRingPrice.getAmount()));
+        final CustomOrderInfo customOrderInfo = CustomOrderInfo.builder()
+                .ringPrices(ringsCreated.stream()
+                        .map(Ring::getPrice)
+                        .collect(Collectors.toList()))
+                .build();
+        final Money totalPrice = calculationService.calculateTotalPrice(customOrderInfo);
+
         CustomOrder customOrder = CustomOrder.builder()
                 .customer(firstCraftingRequest.getCustomer())
                 .firstRing(ringsCreated.stream()
@@ -270,14 +306,17 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                         .orElseThrow(() -> new IllegalStateException("Cannot find ring of second crafting request")))
                 .contract(contractCreated)
                 .status(CustomOrderStatus.PENDING)
+                .shippingFee(configurationService.getShippingFee())
                 .totalPrice(totalPrice)
                 .build();
         CustomOrder customOrderCreated = dataSource.saveCustomOrder(customOrder);
+
         CustomOrderHistory customOrderHistory = CustomOrderHistory.builder()
                 .customOrder(customOrderCreated)
                 .status(CustomOrderStatus.PENDING)
                 .build();
         dataSource.save(customOrderHistory);
+
         return customOrderCreated;
     }
 
@@ -313,30 +352,39 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
     }
 
     private void createCraftingStages(CustomOrder customOrderCreated) {
+        final CraftingStageInfo craftingStageInfo = CraftingStageInfo.builder()
+                .totalPrice(customOrderCreated.getTotalPrice())
+                .build();
+        final CraftingStageAmounts craftingStageAmounts = calculationService.calculateCraftingStageAmounts(craftingStageInfo);
+
         CraftingStage firstStage = CraftingStage.builder()
                 .status(CraftingStageStatus.PENDING)
                 .customOrder(customOrderCreated)
                 .progress(configurationService.getCraftingStageProgress1())
-                .name("Stage 1")
+                .amount(craftingStageAmounts.getFirstCraftingStageAmount())
+                .name(LocaleUtils.translateLocale(FIRST_CRAFTING_STAGE_NAME))
                 .build();
+
         CraftingStage secondStage = CraftingStage.builder()
                 .status(CraftingStageStatus.PENDING)
                 .customOrder(customOrderCreated)
                 .progress(configurationService.getCraftingStageProgress2())
-                .name("Stage 2")
+                .amount(craftingStageAmounts.getSecondCraftingStageAmount())
+                .name(LocaleUtils.translateLocale(SECOND_CRAFTING_STAGE_NAME))
                 .build();
+
         CraftingStage thirdStage = CraftingStage.builder()
                 .status(CraftingStageStatus.PENDING)
                 .customOrder(customOrderCreated)
                 .progress(configurationService.getCraftingStageProgress3())
-                .name("Stage 3")
+                .amount(craftingStageAmounts.getThirdCraftingStageAmount())
+                .name(LocaleUtils.translateLocale(THIRD_CRAFTING_STAGE_NAME))
                 .build();
-        List<CraftingStage> craftingStages = new ArrayList<>();
-        craftingStages.add(firstStage);
-        craftingStages.add(secondStage);
-        craftingStages.add(thirdStage);
-        List<CraftingStage> craftingStagesCreated = dataSource.saveStages(craftingStages);
-        craftingStagesCreated.forEach(stage -> {
+
+        List<CraftingStage> craftingStages = Arrays.asList(firstStage, secondStage, thirdStage);
+        craftingStages = dataSource.saveStages(craftingStages);
+
+        craftingStages.forEach(stage -> {
             CraftingStageHistory craftingStageHistory = CraftingStageHistory.builder()
                     .status(CraftingStageStatus.PENDING)
                     .craftingStage(stage)

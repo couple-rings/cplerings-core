@@ -72,16 +72,6 @@ public class CustomOrder extends AbstractOrderEntity {
     @JoinColumn(name = "contract_id")
     private Contract contract;
 
-    @OneToMany(mappedBy = "customOrder", fetch = FetchType.LAZY)
-    private Set<CraftingStage> craftingStages;
-
-    @OneToMany(mappedBy = "customOrder", fetch = FetchType.LAZY)
-    private Set<TransportationOrder> transportationOrders;
-
-    @Embedded
-    @AttributeOverride(name = "amount", column = @Column(name = "total_price", precision = 12, scale = 3, nullable = false))
-    private Money totalPrice;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private CustomOrderStatus status;
@@ -89,6 +79,20 @@ public class CustomOrder extends AbstractOrderEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transportation_address_id")
     private TransportationAddress transportationAddress;
+
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "shipping_fee", precision = 12, scale = 3, nullable = false))
+    private Money shippingFee;
+
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "total_price", precision = 12, scale = 3, nullable = false))
+    private Money totalPrice;
+
+    @OneToMany(mappedBy = "customOrder", fetch = FetchType.LAZY)
+    private Set<CraftingStage> craftingStages;
+
+    @OneToMany(mappedBy = "customOrder", fetch = FetchType.LAZY)
+    private Set<TransportationOrder> transportationOrders;
 
     @OneToMany(mappedBy = "customOrder", fetch = FetchType.LAZY)
     private Set<CustomOrderHistory> customOrderHistories;
