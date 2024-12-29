@@ -1,8 +1,5 @@
 package com.cplerings.core.domain.ring;
 
-import java.time.Instant;
-import java.util.Set;
-
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.branch.Branch;
 import com.cplerings.core.domain.design.CustomDesign;
@@ -13,6 +10,12 @@ import com.cplerings.core.domain.order.Difficulty;
 import com.cplerings.core.domain.shared.AbstractProductEntity;
 import com.cplerings.core.domain.shared.valueobject.Money;
 import com.cplerings.core.domain.spouse.Spouse;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
@@ -30,11 +33,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+
+import java.time.Instant;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -84,19 +85,12 @@ public class Ring extends AbstractProductEntity {
     @Column(name = "engraving", length = DatabaseConstant.DEFAULT_ENGRAVING_LENGTH)
     private String engraving;
 
-    @Embedded
-    @AttributeOverride(name = "amount", column = @Column(name = "total_price", precision = 12, scale = 3, nullable = false))
-    private Money price;
+    @Column(name = "finger_size", nullable = false)
+    private Integer fingerSize;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "custom_design_id", nullable = false)
     private CustomDesign customDesign;
-
-    @Column(name = "finger_size", nullable = false)
-    private Integer fingerSize;
-
-    @OneToMany(mappedBy = "ring", fetch = FetchType.LAZY)
-    private Set<RingDiamond> ringDiamonds;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "metal_specification_id", nullable = false)
@@ -105,6 +99,29 @@ public class Ring extends AbstractProductEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "difficulty", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
     private Difficulty difficulty;
+
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "diamond_price", precision = 12, scale = 3, nullable = false))
+    private Money diamondPrice;
+
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "metal_price_per_unit", precision = 12, scale = 3, nullable = false))
+    private Money metalPricePerUnit;
+
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "side_diamond_price", precision = 12, scale = 3, nullable = false))
+    private Money sideDiamondPrice;
+
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "crafting_fee", precision = 12, scale = 3, nullable = false))
+    private Money craftingFee;
+
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "total_price", precision = 12, scale = 3, nullable = false))
+    private Money price;
+
+    @OneToMany(mappedBy = "ring", fetch = FetchType.LAZY)
+    private Set<RingDiamond> ringDiamonds;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "ring")
     private Set<RingHistory> ringHistories;

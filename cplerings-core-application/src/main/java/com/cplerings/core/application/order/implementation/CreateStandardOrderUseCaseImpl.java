@@ -19,7 +19,7 @@ import com.cplerings.core.application.order.input.CreateStandardOrderInput;
 import com.cplerings.core.application.order.mapper.ACreateStandardOrderMapper;
 import com.cplerings.core.application.order.output.CreateStandardOrderOutput;
 import com.cplerings.core.application.shared.service.configuration.ConfigurationService;
-import com.cplerings.core.application.shared.service.price.CalculationTotalPriceService;
+import com.cplerings.core.application.shared.service.price.CalculationService;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
@@ -40,7 +40,7 @@ public class CreateStandardOrderUseCaseImpl extends AbstractUseCase<CreateStanda
 
     private final CreateStandardOrderDataSource createStandardOrderDataSource;
     private final ACreateStandardOrderMapper aCreateStandardOrderMapper;
-    private final CalculationTotalPriceService calculationTotalPriceService;
+    private final CalculationService calculationService;
     private final ConfigurationService configurationService;
 
     @Override
@@ -97,7 +97,7 @@ public class CreateStandardOrderUseCaseImpl extends AbstractUseCase<CreateStanda
         BigDecimal totalPrice = BigDecimal.valueOf(0);
         BigDecimal sideDiamondPrice = configurationService.getSideDiamondPrice().getAmount();
         for (var jewelry : jewelries) {
-            var eachJewelryPrice = calculationTotalPriceService.calculationPriceForJewelry(
+            var eachJewelryPrice = calculationService.calculationPriceForJewelry(
                     jewelry.getMetalSpecification().getPricePerUnit(),
                     jewelry.getDesign().getMetalWeight().getWeightValue(),
                     jewelry.getDesign().getSideDiamondsCount(),
@@ -125,7 +125,7 @@ public class CreateStandardOrderUseCaseImpl extends AbstractUseCase<CreateStanda
                     .branch(x.getBranch())
                     .metalSpecification(x.getMetalSpecification())
                     .build();
-            var eachJewelryPrice = calculationTotalPriceService.calculationPriceForJewelry(
+            var eachJewelryPrice = calculationService.calculationPriceForJewelry(
                     x.getMetalSpecification().getPricePerUnit(),
                     x.getDesign().getMetalWeight().getWeightValue(),
                     x.getDesign().getSideDiamondsCount(),

@@ -21,7 +21,7 @@ import com.cplerings.core.application.jewelry.input.ResellJewelryInput;
 import com.cplerings.core.application.jewelry.output.ResellJewelryOutput;
 import com.cplerings.core.application.shared.mapper.AResellOrderMapper;
 import com.cplerings.core.application.shared.service.configuration.ConfigurationService;
-import com.cplerings.core.application.shared.service.price.CalculationTotalPriceService;
+import com.cplerings.core.application.shared.service.price.CalculationService;
 import com.cplerings.core.application.shared.service.security.CurrentUser;
 import com.cplerings.core.application.shared.service.security.SecurityService;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
@@ -51,7 +51,7 @@ public class ResellJewelryUseCaseImpl extends AbstractUseCase<ResellJewelryInput
     private final AResellOrderMapper mapper;
     private final SecurityService securityService;
     private final ConfigurationService configurationService;
-    private final CalculationTotalPriceService calculationTotalPriceService;
+    private final CalculationService calculationService;
 
     @Override
     protected void validateInput(UseCaseValidator validator, ResellJewelryInput input) {
@@ -111,7 +111,7 @@ public class ResellJewelryUseCaseImpl extends AbstractUseCase<ResellJewelryInput
     }
 
     private Money calculateAmount(Jewelry jewelry) {
-        final Money jewelryPrice = calculationTotalPriceService.calculationPriceForJewelry(jewelry.getMetalSpecification().getPricePerUnit(),
+        final Money jewelryPrice = calculationService.calculationPriceForJewelry(jewelry.getMetalSpecification().getPricePerUnit(),
                 jewelry.getDesign().getMetalWeight().getWeightValue(),
                 jewelry.getDesign().getSideDiamondsCount(),
                 configurationService.getSideDiamondPrice().getAmount());

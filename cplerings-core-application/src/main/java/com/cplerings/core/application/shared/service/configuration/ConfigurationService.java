@@ -1,8 +1,8 @@
 package com.cplerings.core.application.shared.service.configuration;
 
-import java.math.BigDecimal;
-
 import com.cplerings.core.domain.shared.valueobject.Money;
+
+import java.math.BigDecimal;
 
 public interface ConfigurationService {
 
@@ -27,4 +27,8 @@ public interface ConfigurationService {
     Double getRefundPercentage();
 
     Double getResellPercentage();
+
+    BigDecimal getMetalWeightRatio();
+
+    BigDecimal getCraftingFeeHardMultiplier();
 }

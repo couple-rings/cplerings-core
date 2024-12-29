@@ -42,6 +42,28 @@ public final class Money {
         return Money.create(current.multiply(sanitizedDivisor));
     }
 
+    public Money add(BigDecimal amount) {
+        final BigDecimal current = this.amount;
+        final BigDecimal sanitizedAmount = sanitizeMoney(amount);
+        return Money.create(current.add(sanitizedAmount));
+    }
+
+    public Money add(Money other) {
+        final BigDecimal current = this.amount;
+        return Money.create(current.add(other.amount));
+    }
+
+    public Money subtract(BigDecimal amount) {
+        final BigDecimal current = this.amount;
+        final BigDecimal sanitizedAmount = sanitizeMoney(amount);
+        return Money.create(current.subtract(sanitizedAmount));
+    }
+
+    public Money subtract(Money other) {
+        final BigDecimal current = this.amount;
+        return Money.create(current.subtract(other.amount));
+    }
+
     public static Money create(BigDecimal amount) {
         return new Money(sanitizeMoney(amount));
     }

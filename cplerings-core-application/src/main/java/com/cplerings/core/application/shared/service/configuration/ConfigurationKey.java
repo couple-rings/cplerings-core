@@ -62,6 +62,16 @@ public enum ConfigurationKey {
      * Resell
      */
     RESE("RESE"),
+
+    /**
+     * Metal weight ratio
+     */
+    MEWR("MEWR"),
+
+    /**
+     * Crafting fee Hard Multiplier
+     */
+    CFHM("CFHM"),
     ;
 
     private final String key;

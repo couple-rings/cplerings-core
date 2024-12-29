@@ -1,11 +1,5 @@
 package com.cplerings.core.infrastructure.service.configuration;
 
-import java.math.BigDecimal;
-import java.util.Objects;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-
 import com.cplerings.core.application.shared.service.configuration.ConfigurationKey;
 import com.cplerings.core.application.shared.service.configuration.ConfigurationService;
 import com.cplerings.core.domain.configuration.Configuration;
@@ -13,6 +7,12 @@ import com.cplerings.core.domain.shared.valueobject.Money;
 import com.cplerings.core.infrastructure.service.configuration.datasource.ConfigurationServiceDataSource;
 
 import lombok.RequiredArgsConstructor;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -75,6 +75,16 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         return getConfiguration(ConfigurationKey.RESE.getKey(), Double.class);
     }
 
+    @Override
+    public BigDecimal getMetalWeightRatio() {
+        return getConfiguration(ConfigurationKey.MEWR.getKey(), BigDecimal.class);
+    }
+
+    @Override
+    public BigDecimal getCraftingFeeHardMultiplier() {
+        return getConfiguration(ConfigurationKey.CFHM.getKey(), BigDecimal.class);
+    }
+
     private <T> T getConfiguration(String key, Class<T> clazz) {
         if (StringUtils.isEmpty(key) || clazz == null) {
             throw new IllegalArgumentException("key or clazz is null");
@@ -100,6 +110,9 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         }
         if (Objects.equals(clazz, Double.class)) {
             return (T) Double.valueOf(Double.parseDouble(value));
+        }
+        if (Objects.equals(clazz, BigDecimal.class)) {
+            return (T) new BigDecimal(value);
         }
         throw new IllegalArgumentException("Unsupported type: " + clazz);
     }
