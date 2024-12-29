@@ -23,15 +23,15 @@ public final class OrderNoGenerator implements BeforeExecutionGenerator {
         }
         return switch (entity) {
             case CustomOrder customOrder ->
-                    String.format("CO%0" + DatabaseConstant.DEFAULT_ORDER_NO_LENGTH + "d", customOrder.getId());
+                    String.format("CO%0" + DatabaseConstant.DEFAULT_ORDER_NO_NUMBER_PART_LENGTH + "d", customOrder.getId());
             case StandardOrder standardOrder ->
-                    String.format("SO%0" + DatabaseConstant.DEFAULT_ORDER_NO_LENGTH + "d", standardOrder.getId());
+                    String.format("SO%0" + DatabaseConstant.DEFAULT_ORDER_NO_NUMBER_PART_LENGTH + "d", standardOrder.getId());
             case TransportationOrder transportationOrder ->
-                    String.format("TO%0" + DatabaseConstant.DEFAULT_ORDER_NO_LENGTH + "d", transportationOrder.getId());
+                    String.format("TO%0" + DatabaseConstant.DEFAULT_ORDER_NO_NUMBER_PART_LENGTH + "d", transportationOrder.getId());
             case ResellOrder resellOrder ->
-                    String.format("RS%0" + DatabaseConstant.DEFAULT_ORDER_NO_LENGTH + "d", resellOrder.getId());
+                    String.format("RS%0" + DatabaseConstant.DEFAULT_ORDER_NO_NUMBER_PART_LENGTH + "d", resellOrder.getId());
             case Refund refund ->
-                    String.format("RF%0" + DatabaseConstant.DEFAULT_ORDER_NO_LENGTH + "d", refund.getId());
+                    String.format("RF%0" + DatabaseConstant.DEFAULT_ORDER_NO_NUMBER_PART_LENGTH + "d", refund.getId());
             default ->
                     throw new IllegalStateException("Unknown OrderEntity type: " + entity.getClass().getSimpleName());
         };
