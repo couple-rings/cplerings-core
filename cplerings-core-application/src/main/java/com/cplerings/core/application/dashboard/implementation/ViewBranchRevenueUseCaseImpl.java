@@ -1,8 +1,9 @@
 package com.cplerings.core.application.dashboard.implementation;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import com.cplerings.core.application.dashboard.ViewBranchRevenueUseCase;
 import com.cplerings.core.application.dashboard.datasource.ViewBranchRevenueDataSource;
@@ -31,10 +32,13 @@ public class ViewBranchRevenueUseCaseImpl extends AbstractUseCase<ViewBranchReve
         var revenue = dataSource.getTotalRevenue(input.startDate(), input.endDate(), manager.getBranch().getId());
         BigDecimal totalRevenue = revenue.totalRevenue();
         Money totalRevenueMoney = Money.create(totalRevenue);
-        List<Money> moneyList = new ArrayList<>();
-        for(var eachRevenue : revenue.revenueForEach()) {
-            Money revenueMoneyForEach = Money.create(eachRevenue);
-            moneyList.add(revenueMoneyForEach);
+        Map<String, Money> moneyList = new HashMap<>();
+        Iterator<Map.Entry<String, BigDecimal>> iterator = revenue.revenueForEach().entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, BigDecimal> entry = iterator.next();
+            Money revenueMoneyForEach = Money.create(entry.getValue());
+            String date = entry.getKey();
+            moneyList.put(date, revenueMoneyForEach);
         }
         return ViewBranchRevenueOutput.builder()
                 .revenueForEach(moneyList)

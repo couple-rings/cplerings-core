@@ -393,6 +393,8 @@ public class SecurityConfiguration {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.REVENUE_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_MANAGER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.ORDERS_STATISTIC_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_MANAGER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.ORDERS_STATISTIC_PAGINATION_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_MANAGER));
     }
 

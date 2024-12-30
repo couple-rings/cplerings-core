@@ -227,5 +227,6 @@ public final class APIConstant {
     */
     public static final String REVENUE_PATH = "/revenue";
     public static final String ORDERS_STATISTIC_PATH = "/orders/statistic";
+    public static final String ORDERS_STATISTIC_PAGINATION_PATH = "/orders/statistic/pagination";
 }
 

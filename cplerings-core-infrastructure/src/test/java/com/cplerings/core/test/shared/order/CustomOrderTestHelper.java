@@ -4,6 +4,7 @@ import com.cplerings.core.common.temporal.TemporalUtils;
 import com.cplerings.core.domain.contract.Contract;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderStatus;
+import com.cplerings.core.domain.order.Difficulty;
 import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.ring.Ring;
@@ -131,6 +132,13 @@ public class CustomOrderTestHelper {
                 .fingerSize(15)
                 .metalSpecification(metalSpecificationRepository.getReferenceById(1L))
                 .price(Money.create(BigDecimal.valueOf(1000)))
+                .difficulty(Difficulty.NORMAL)
+                .craftingFee(Money.create(BigDecimal.ZERO))
+                .diamondPrice(Money.create(BigDecimal.ZERO))
+                .price(Money.create(BigDecimal.ZERO))
+                .craftingFee(Money.create(BigDecimal.ZERO))
+                .sideDiamondPrice(Money.create(BigDecimal.ZERO))
+                .metalPricePerUnit(Money.create(BigDecimal.ZERO))
                 .build();
         firstRing = testDataSource.save(firstRing);
 
@@ -150,6 +158,13 @@ public class CustomOrderTestHelper {
                 .fingerSize(16)
                 .metalSpecification(metalSpecificationRepository.getReferenceById(11L))
                 .price(Money.create(BigDecimal.valueOf(1000)))
+                .difficulty(Difficulty.NORMAL)
+                .craftingFee(Money.create(BigDecimal.ZERO))
+                .diamondPrice(Money.create(BigDecimal.ZERO))
+                .price(Money.create(BigDecimal.ZERO))
+                .craftingFee(Money.create(BigDecimal.ZERO))
+                .sideDiamondPrice(Money.create(BigDecimal.ZERO))
+                .metalPricePerUnit(Money.create(BigDecimal.ZERO))
                 .build();
         secondRing = testDataSource.save(secondRing);
 
@@ -180,6 +195,7 @@ public class CustomOrderTestHelper {
                 .secondRing(secondRing)
                 .contract(contractCreated)
                 .jeweler(accountRepository.getReferenceById(41L))
+                .shippingFee(Money.create(BigDecimal.ZERO))
                 .build();
         customOrder = testDataSource.save(customOrder);
         TransportationOrder transportationOrder = TransportationOrder.builder()
