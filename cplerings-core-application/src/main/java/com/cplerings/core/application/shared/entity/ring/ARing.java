@@ -41,6 +41,10 @@ public class ARing implements Serializable {
     private Instant createdAt;
     private ABranch branch;
     private Collection<ARingHistory> ringHistories;
+    private Money diamondPrice;
+    private Money metalPricePerUnit;
+    private Money sideDiamondPrice;
+    private Money craftingFee;
     private Money price;
     private String productNo;
     private ADifficulty difficulty;

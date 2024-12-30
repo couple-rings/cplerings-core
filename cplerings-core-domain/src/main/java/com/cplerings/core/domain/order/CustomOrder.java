@@ -33,6 +33,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Getter
@@ -87,6 +88,9 @@ public class CustomOrder extends AbstractOrderEntity {
     @Embedded
     @AttributeOverride(name = "amount", column = @Column(name = "total_price", precision = 12, scale = 3, nullable = false))
     private Money totalPrice;
+
+    @Column(name = "price_application_ratio", precision = 4, scale = 2, nullable = false)
+    private BigDecimal priceApplicationRatio;
 
     @OneToMany(mappedBy = "customOrder", fetch = FetchType.LAZY)
     private Set<CraftingStage> craftingStages;

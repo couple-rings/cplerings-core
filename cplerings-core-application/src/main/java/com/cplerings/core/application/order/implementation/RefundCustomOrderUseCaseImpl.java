@@ -3,7 +3,6 @@ package com.cplerings.core.application.order.implementation;
 import static com.cplerings.core.application.order.error.RefundCustomOrderErrorCode.CUSTOM_ORDER_ID_REQUIRED;
 import static com.cplerings.core.application.order.error.RefundCustomOrderErrorCode.CUSTOM_ORDER_NOT_COMPLETED;
 import static com.cplerings.core.application.order.error.RefundCustomOrderErrorCode.CUSTOM_ORDER_NOT_FOUND;
-import static com.cplerings.core.application.order.error.RefundCustomOrderErrorCode.CUSTOM_ORDER_NOT_RECEIVED_BY_CUSTOMER;
 import static com.cplerings.core.application.order.error.RefundCustomOrderErrorCode.INVALID_CUSTOM_ORDER_ID;
 import static com.cplerings.core.application.order.error.RefundCustomOrderErrorCode.INVALID_PROOF_IMAGE_ID;
 import static com.cplerings.core.application.order.error.RefundCustomOrderErrorCode.INVALID_STAFF_ID;
@@ -36,8 +35,6 @@ import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.CustomOrderStatus;
-import com.cplerings.core.domain.order.StandardOrderStatus;
-import com.cplerings.core.domain.order.TransportStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
 import com.cplerings.core.domain.refund.Refund;
 import com.cplerings.core.domain.ring.Ring;
@@ -49,14 +46,12 @@ import com.cplerings.core.domain.spouse.Agreement;
 
 import lombok.RequiredArgsConstructor;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -96,7 +91,6 @@ public class RefundCustomOrderUseCaseImpl extends AbstractUseCase<RefundCustomOr
                 .orElse(null);
         validator.validateAndStopExecution(customOrder != null, CUSTOM_ORDER_NOT_FOUND);
         validator.validateAndStopExecution(customOrder.getStatus() == CustomOrderStatus.COMPLETED || customOrder.getStatus() == CustomOrderStatus.DONE, CUSTOM_ORDER_NOT_COMPLETED);
-//        validator.validateAndStopExecution(customOrderIsReceived(customOrder), CUSTOM_ORDER_NOT_RECEIVED_BY_CUSTOMER);
 
         final RefundDetail refundDetail = input.refundDetail();
         final Account staff = dataSource.findStaffById(refundDetail.staffId())
@@ -167,12 +161,4 @@ public class RefundCustomOrderUseCaseImpl extends AbstractUseCase<RefundCustomOr
                 .divide(Constants.ONE_HUNDRED, RoundingMode.HALF_EVEN);
         return totalPrice.multiply(percentage);
     }
-
-//    private boolean customOrderIsReceived(CustomOrder customOrder) {
-//        return CollectionUtils.isEmpty(customOrder.getTransportationOrders())
-//                || customOrder.getTransportationOrders()
-//                .stream()
-//                .filter(Objects::nonNull)
-//                .anyMatch(transportationOrder -> transportationOrder.getStatus() == TransportStatus.COMPLETED);
-//    }
 }

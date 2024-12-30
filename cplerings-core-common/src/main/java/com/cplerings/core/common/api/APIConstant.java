@@ -148,6 +148,7 @@ public final class APIConstant {
     public static final String VIEW_A_CUSTOM_ORDER_BY_ORDER_NO_PATH = CUSTOM_ORDERS_PATH + "/orderNo/{orderNo}";
     public static final String REFUND_CUSTOM_ORDER_PATH = CUSTOM_ORDERS_PATH + "/{customOrderId}/refund";
     public static final String RESELL_CUSTOM_ORDER_PATH = CUSTOM_ORDERS_PATH + "/{customOrderId}/resell";
+    public static final String CANCEL_CUSTOM_ORDER_PATH = CUSTOM_ORDERS_PATH + "/{customOrderId}";
 
     /*
        agreements paths

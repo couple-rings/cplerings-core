@@ -38,7 +38,7 @@ public interface RefundCustomOrderDataSource {
 
     void deleteRingDiamonds(Collection<RingDiamond> ringDiamonds);
 
-    void saveDiamonds(Collection<Diamond> diamonds);
+    Collection<Diamond> saveDiamonds(Collection<Diamond> diamonds);
 
     TransportationOrder save(TransportationOrder transportationOrder);
 }
