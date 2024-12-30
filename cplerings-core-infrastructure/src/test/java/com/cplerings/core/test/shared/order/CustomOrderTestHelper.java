@@ -133,6 +133,12 @@ public class CustomOrderTestHelper {
                 .metalSpecification(metalSpecificationRepository.getReferenceById(1L))
                 .price(Money.create(BigDecimal.valueOf(1000)))
                 .difficulty(Difficulty.NORMAL)
+                .craftingFee(Money.create(BigDecimal.ZERO))
+                .diamondPrice(Money.create(BigDecimal.ZERO))
+                .price(Money.create(BigDecimal.ZERO))
+                .craftingFee(Money.create(BigDecimal.ZERO))
+                .sideDiamondPrice(Money.create(BigDecimal.ZERO))
+                .metalPricePerUnit(Money.create(BigDecimal.ZERO))
                 .build();
         firstRing = testDataSource.save(firstRing);
 
@@ -153,6 +159,12 @@ public class CustomOrderTestHelper {
                 .metalSpecification(metalSpecificationRepository.getReferenceById(11L))
                 .price(Money.create(BigDecimal.valueOf(1000)))
                 .difficulty(Difficulty.NORMAL)
+                .craftingFee(Money.create(BigDecimal.ZERO))
+                .diamondPrice(Money.create(BigDecimal.ZERO))
+                .price(Money.create(BigDecimal.ZERO))
+                .craftingFee(Money.create(BigDecimal.ZERO))
+                .sideDiamondPrice(Money.create(BigDecimal.ZERO))
+                .metalPricePerUnit(Money.create(BigDecimal.ZERO))
                 .build();
         secondRing = testDataSource.save(secondRing);
 
@@ -183,6 +195,7 @@ public class CustomOrderTestHelper {
                 .secondRing(secondRing)
                 .contract(contractCreated)
                 .jeweler(accountRepository.getReferenceById(41L))
+                .shippingFee(Money.create(BigDecimal.ZERO))
                 .build();
         customOrder = testDataSource.save(customOrder);
         TransportationOrder transportationOrder = TransportationOrder.builder()
