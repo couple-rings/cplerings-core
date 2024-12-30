@@ -2,6 +2,7 @@ package com.cplerings.core.infrastructure.datasource.order;
 
 import com.cplerings.core.application.jewelry.datasource.ResellJewelryDataSource;
 import com.cplerings.core.application.order.datasource.AssignJewelerToCustomOrderDataSource;
+import com.cplerings.core.application.order.datasource.CancelCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.CancelStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.CompleteOrderDataSource;
 import com.cplerings.core.application.order.datasource.CreateStandardOrderDataSource;
@@ -61,6 +62,7 @@ import com.cplerings.core.domain.resell.QResellOrder;
 import com.cplerings.core.domain.resell.ResellOrder;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
+import com.cplerings.core.domain.ring.RingHistory;
 import com.cplerings.core.domain.shared.State;
 import com.cplerings.core.domain.spouse.Agreement;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
@@ -76,6 +78,7 @@ import com.cplerings.core.infrastructure.repository.JewelryRepository;
 import com.cplerings.core.infrastructure.repository.RefundRepository;
 import com.cplerings.core.infrastructure.repository.ResellOrderRepository;
 import com.cplerings.core.infrastructure.repository.RingDiamondRepository;
+import com.cplerings.core.infrastructure.repository.RingHistoryRepository;
 import com.cplerings.core.infrastructure.repository.RingRepository;
 import com.cplerings.core.infrastructure.repository.StandardOrderHistoryRepository;
 import com.cplerings.core.infrastructure.repository.StandardOrderItemRepository;
@@ -100,7 +103,7 @@ public class SharedOrderDataSource extends AbstractDataSource
         ProcessPayStandardOrderDataSource, ViewStandardOrderDataSource, CancelStandardOrderDataSource, CompleteOrderDataSource,
         GetCustomOrderByOrderNoDataSource, RefundStandardOrderDataSource, GetStandardOrderByOrderNoDataSource,
         RefundCustomOrderDataSource, ViewRefundOrdersDataSource, ViewResellOrdersDataSource, ResellJewelryDataSource, ResellCustomOrderDataSource,
-        ViewResellOrderDataSource {
+        ViewResellOrderDataSource, CancelCustomOrderDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QAccount Q_ACCOUNT = QAccount.account;
@@ -130,6 +133,7 @@ public class SharedOrderDataSource extends AbstractDataSource
     private final DiamondRepository diamondRepository;
     private final ImageRepository imageRepository;
     private final ResellOrderRepository resellOrderRepository;
+    private final RingHistoryRepository ringHistoryRepository;
 
     @Override
     public CustomOrders getCustomOrders(ViewCustomOrdersInput input) {
@@ -245,6 +249,18 @@ public class SharedOrderDataSource extends AbstractDataSource
     }
 
     @Override
+    public Collection<TransportationOrder> saveTransportationOrders(Collection<TransportationOrder> transportationOrders) {
+        transportationOrders.forEach(this::updateAuditor);
+        return transportationOrderRepository.saveAll(transportationOrders);
+    }
+
+    @Override
+    public RingHistory save(RingHistory ringHistory) {
+        updateAuditor(ringHistory);
+        return ringHistoryRepository.save(ringHistory);
+    }
+
+    @Override
     public List<Ring> saveRings(Collection<Ring> rings) {
         rings.forEach(this::updateAuditor);
         return ringRepository.saveAll(rings);
@@ -267,8 +283,9 @@ public class SharedOrderDataSource extends AbstractDataSource
     }
 
     @Override
-    public void saveDiamonds(Collection<Diamond> diamonds) {
-        diamondRepository.saveAll(diamonds);
+    public Collection<Diamond> saveDiamonds(Collection<Diamond> diamonds) {
+        diamonds.forEach(this::updateAuditor);
+        return diamondRepository.saveAll(diamonds);
     }
 
     @Override

@@ -27,5 +27,5 @@ public interface ResellCustomOrderDataSource {
 
     void delete(Agreement agreement);
 
-    void saveDiamonds(Collection<Diamond> diamonds);
+    Collection<Diamond> saveDiamonds(Collection<Diamond> diamonds);
 }

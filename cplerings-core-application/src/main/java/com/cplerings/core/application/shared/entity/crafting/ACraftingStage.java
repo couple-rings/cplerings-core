@@ -1,15 +1,16 @@
 package com.cplerings.core.application.shared.entity.crafting;
 
-import java.time.Instant;
-import java.util.Collection;
-
 import com.cplerings.core.application.shared.entity.file.AImage;
+import com.cplerings.core.domain.shared.valueobject.Money;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.Instant;
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -22,10 +23,10 @@ public class ACraftingStage {
     private String name;
     private Long customOrderId;
     private Integer progress;
+    private Money amount;
     private Instant completionDate;
     private AImage image;
     private ACraftingStageStatus status;
     private Collection<ACraftingStageHistory> craftingStageHistories;
     private Instant createdAt;
-
 }

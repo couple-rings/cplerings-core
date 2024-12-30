@@ -46,6 +46,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -308,6 +309,7 @@ public class AcceptCraftingRequestUseCaseImpl extends AbstractUseCase<AcceptCraf
                 .status(CustomOrderStatus.PENDING)
                 .shippingFee(configurationService.getShippingFee())
                 .totalPrice(totalPrice)
+                .priceApplicationRatio(BigDecimal.valueOf(configurationService.getPriceApplicationRatio()))
                 .build();
         CustomOrder customOrderCreated = dataSource.saveCustomOrder(customOrder);
 
