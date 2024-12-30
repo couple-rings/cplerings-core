@@ -27,7 +27,7 @@ public class ViewBranchOrdersPaginateUseCaseImpl extends AbstractUseCase<ViewBra
         var orders = dataSource.getAllTypeOrders(input, manager.getBranch().getId());
         return ViewBranchOrdersPaginateOutput
                 .builder()
-                .(orders)
+                .orders(orders)
                 .build();
     }
 }
