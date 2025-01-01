@@ -29,7 +29,7 @@ public class APayment implements Serializable {
     private Money amount;
     private PaymentStatus status;
     private PaymentReceiverType paymentReceiverType;
-    private ATransaction vnPayTransaction;
+    private AVNPayTransaction vnPayTransaction;
     private ACustomRequest customRequest;
     private ACraftingStage craftingStage;
     private AStandardOrder standardOrder;

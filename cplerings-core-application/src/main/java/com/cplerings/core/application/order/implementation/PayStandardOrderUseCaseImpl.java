@@ -6,13 +6,6 @@ import static com.cplerings.core.application.order.error.PayStandardOrderErrorCo
 import static com.cplerings.core.application.order.error.PayStandardOrderErrorCode.STANDARD_ORDER_ID_REQUIRED;
 import static com.cplerings.core.application.order.error.PayStandardOrderErrorCode.STANDARD_ORDER_NOT_FOUND;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import com.cplerings.core.application.order.PayStandardOrderUseCase;
 import com.cplerings.core.application.order.datasource.PayStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.data.JewelrySearchInfo;
@@ -26,6 +19,7 @@ import com.cplerings.core.application.shared.service.security.SecurityService;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
+import com.cplerings.core.common.locale.LocaleUtils;
 import com.cplerings.core.common.number.NumberUtils;
 import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.jewelry.Jewelry;
@@ -40,10 +34,19 @@ import com.cplerings.core.domain.payment.PaymentReceiverType;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @UseCaseImplementation
 @RequiredArgsConstructor
 public class PayStandardOrderUseCaseImpl extends AbstractUseCase<PayStandardOrderInput, PayStandardOrderOutput>
         implements PayStandardOrderUseCase {
+
+    private static final String STANDARD_ORDER_PAYMENT_DESCRIPTION = "payStandardOrder.standardOrderPaymentDescription";
 
     private final PayStandardOrderDataSource dataSource;
     private final SecurityService securityService;
@@ -112,7 +115,7 @@ public class PayStandardOrderUseCaseImpl extends AbstractUseCase<PayStandardOrde
         final PaymentRequest paymentRequest = paymentRequestService.requestPayment(PaymentInfo.builder()
                 .receiverType(PaymentReceiverType.STANDARD)
                 .amount(standardOrder.getTotalPrice())
-                .description("Standard Order " + standardOrder.getOrderNo())
+                .description(String.format(LocaleUtils.translateLocale(STANDARD_ORDER_PAYMENT_DESCRIPTION), standardOrder.getOrderNo()))
                 .build());
         standardOrder.setPayment(paymentRequest.getPayment());
         StandardOrder standardOrderCreated = dataSource.save(standardOrder);

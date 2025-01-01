@@ -4,8 +4,6 @@ import static com.cplerings.core.application.design.error.DesignErrorCode.CUSTOM
 import static com.cplerings.core.application.design.error.DesignErrorCode.CUSTOMER_NOT_FOUND;
 import static com.cplerings.core.application.design.error.DesignErrorCode.EXIST_UNUSED_DESIGN_SESSION;
 
-import java.util.UUID;
-
 import com.cplerings.core.application.design.CreateDesignSessionUseCase;
 import com.cplerings.core.application.design.datasource.CreateDesignSessionDataSource;
 import com.cplerings.core.application.design.mapper.ACreateDesignSessionMapper;
@@ -19,6 +17,7 @@ import com.cplerings.core.application.shared.service.security.SecurityService;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
+import com.cplerings.core.common.locale.LocaleUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.AccountStatus;
 import com.cplerings.core.domain.payment.DesignSessionPayment;
@@ -27,10 +26,14 @@ import com.cplerings.core.domain.shared.valueobject.Money;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @UseCaseImplementation
 public class CreateDesignSessionUseCaseImpl extends AbstractUseCase<NoInput, CreateDesignSessionOutput>
         implements CreateDesignSessionUseCase {
+
+    private static final String DESIGN_FEE_DESCRIPTION = "createDesignSession.designFeeDescription";
 
     private final CreateDesignSessionDataSource dataSource;
     private final ACreateDesignSessionMapper mapper;
@@ -55,7 +58,7 @@ public class CreateDesignSessionUseCaseImpl extends AbstractUseCase<NoInput, Cre
 
         final Money designFee = configurationService.getDesignFee();
         final PaymentRequest paymentRequest = paymentRequestService.requestPayment(PaymentInfo.builder()
-                .description(customer.getEmail() + " Design payment fee")
+                .description(String.format(LocaleUtils.translateLocale(DESIGN_FEE_DESCRIPTION), customer.getEmail()))
                 .amount(designFee)
                 .receiverType(PaymentReceiverType.DESIGN_FEE)
                 .build());
