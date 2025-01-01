@@ -32,7 +32,7 @@ public class ViewCustomOrdersWithDateUseCaseImpl extends AbstractUseCase<ViewCus
     protected ViewCustomOrdersWithDateOutput internalExecute(UseCaseValidator validator, ViewCustomOrdersWithDateInput input) {
         var user = securityService.getCurrentUser();
         Account manager = dataSource.getAccountById(user.id());
-        var result = dataSource.getCustomOrders(input, manager.getId());
+        var result = dataSource.getCustomOrders(input, manager.getBranch().getId());
         List<CombinedOrder> orders = new ArrayList<>();
         for (var customOrder : result.getCustomOrders()) {
             CombinedOrder combinedOrder = CombinedOrder.builder()

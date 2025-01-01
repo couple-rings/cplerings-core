@@ -18,6 +18,7 @@ import com.cplerings.core.application.dashboard.datasource.ViewCustomOrdersWithD
 import com.cplerings.core.application.dashboard.datasource.ViewPaymentWithDateDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewRefundOrdersWithDateDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewResellOrdersWithDateDataSource;
+import com.cplerings.core.application.dashboard.datasource.ViewTotalRevenueDataSource;
 import com.cplerings.core.application.dashboard.datasource.data.CombinedOrder;
 import com.cplerings.core.application.dashboard.datasource.data.CombinedOrders;
 import com.cplerings.core.application.dashboard.datasource.data.OrderTypeStatistic;
@@ -59,7 +60,7 @@ import lombok.RequiredArgsConstructor;
 @DataSource
 @RequiredArgsConstructor
 public class DashBoardDataSource extends AbstractDataSource implements ViewBranchRevenueDataSource, ViewBranchOrdersDataSource, ViewBranchOrdersPaginateDataSource, ViewCustomOrdersWithDateDataSource, ViewResellOrdersWithDateDataSource,
-        ViewRefundOrdersWithDateDataSource, ViewPaymentWithDateDataSource {
+        ViewRefundOrdersWithDateDataSource, ViewPaymentWithDateDataSource, ViewTotalRevenueDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QResellOrder Q_RESELL_ORDER = QResellOrder.resellOrder;
@@ -919,5 +920,41 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 .page(input.getPage())
                 .pageSize(input.getPageSize())
                 .build();
+    }
+
+    @Override
+    public BigDecimal getTotalRevenue(Long branchId) {
+        BigDecimal totalRevenue = BigDecimal.ZERO;
+        BigDecimal customOrderRevenueEachDay = Optional.ofNullable(createQuery().select(Q_PAYMENT.amount.amount.sum())
+                .from(Q_PAYMENT)
+                .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
+                .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
+                .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
+                .where(Q_PAYMENT.craftingStage.isNotNull()
+                        .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
+                        .and(Q_FIRST_RING.branch.isNotNull())
+                        .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                .fetchOne()).orElse(BigDecimal.ZERO);
+        totalRevenue = totalRevenue.add(customOrderRevenueEachDay);
+        BigDecimal resellOrderRevenueEachDay = Optional.ofNullable(createQuery().select(Q_RESELL_ORDER.amount.amount.sum())
+                .from(Q_RESELL_ORDER)
+                .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
+                .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
+                .where(Q_FIRST_RING.branch.isNotNull()
+                        .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                .fetchOne()).orElse(BigDecimal.ZERO);
+        totalRevenue = totalRevenue.subtract(resellOrderRevenueEachDay);
+        BigDecimal refundOrderRevenueEachDay = Optional.ofNullable(createQuery().select(Q_REFUND.amount.amount.sum())
+                .from(Q_REFUND)
+                .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
+                .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
+                .where(Q_FIRST_RING.branch.isNotNull()
+                        .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                .fetchOne()).orElse(BigDecimal.ZERO);
+        totalRevenue = totalRevenue.subtract(refundOrderRevenueEachDay);
+        return totalRevenue;
     }
 }
