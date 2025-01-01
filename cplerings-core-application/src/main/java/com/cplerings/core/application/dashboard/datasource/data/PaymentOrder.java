@@ -8,5 +8,5 @@ import com.cplerings.core.domain.shared.valueobject.Money;
 import lombok.Builder;
 
 @Builder
-public record CombinedOrder(Long orderId, Money amount, OrderTypeStatistic orderType, APaymentMethod paymentMethod, String orderNo, Instant createdAt) {
+public record PaymentOrder(Long paymentId, Money amount, OrderTypeStatistic orderType, APaymentMethod paymentMethod, String orderNo, Instant createdAt) {
 }
