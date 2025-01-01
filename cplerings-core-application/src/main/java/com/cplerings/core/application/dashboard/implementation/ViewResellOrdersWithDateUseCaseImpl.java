@@ -33,7 +33,7 @@ public class ViewResellOrdersWithDateUseCaseImpl extends AbstractUseCase<ViewRes
     protected ViewResellOrdersWithDateOutput internalExecute(UseCaseValidator validator, ViewResellOrdersWithDateInput input) {
         var user = securityService.getCurrentUser();
         Account manager = dataSource.getAccountById(user.id());
-        var result = dataSource.geResellOrders(input, manager.getId());
+        var result = dataSource.geResellOrders(input, manager.getBranch().getId());
         List<CombinedOrder> orders = new ArrayList<>();
         for (var resellOrder : result.getResellOrders()) {
             CombinedOrder combinedOrder = CombinedOrder.builder()

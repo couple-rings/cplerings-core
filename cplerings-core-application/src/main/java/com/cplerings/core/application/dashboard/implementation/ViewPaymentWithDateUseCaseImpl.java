@@ -32,7 +32,7 @@ public class ViewPaymentWithDateUseCaseImpl extends AbstractUseCase<ViewPaymentW
     protected ViewPaymentWithDateOutput internalExecute(UseCaseValidator validator, ViewPaymentWithDateInput input) {
         var user = securityService.getCurrentUser();
         Account manager = dataSource.getAccountById(user.id());
-        var result = dataSource.getPayments(input, manager.getId());
+        var result = dataSource.getPayments(input, manager.getBranch().getId());
         List<PaymentOrder> paymentOrders = new ArrayList<>();
         for (var payemnt : result.getPayments()) {
             PaymentOrder paymentOrder = PaymentOrder.builder()

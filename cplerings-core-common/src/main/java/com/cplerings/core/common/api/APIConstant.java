@@ -233,5 +233,6 @@ public final class APIConstant {
     public static final String RESELL_ORDERS_STATISTIC_PAGINATION_PATH = ORDERS_STATISTIC_PATH + "/resell-orders";
     public static final String REFUND_ORDERS_STATISTIC_PAGINATION_PATH = ORDERS_STATISTIC_PATH + "/refund-orders";
     public static final String PAYMENTS_STATISTIC_PAGINATION_PATH = ORDERS_STATISTIC_PATH + "/payments";
+    public static final String TOTAL_REVENUE_BRANCH_PATH = REVENUE_PATH + "/total";
 }
 
