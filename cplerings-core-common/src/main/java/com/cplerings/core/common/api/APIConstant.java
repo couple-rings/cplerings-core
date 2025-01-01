@@ -231,5 +231,6 @@ public final class APIConstant {
     public static final String ORDERS_STATISTIC_PAGINATION_PATH = "/orders/statistic/pagination";
     public static final String CUSTOM_ORDERS_STATISTIC_PAGINATION_PATH = "/custom-orders/statistic";
     public static final String RESELL_ORDERS_STATISTIC_PAGINATION_PATH = "/resell-orders/statistic";
+    public static final String REFUND_ORDERS_STATISTIC_PAGINATION_PATH = "/refund-orders/statistic";
 }
 
