@@ -11,28 +11,29 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.blazebit.persistence.querydsl.BlazeJPAQuery;
-import com.cplerings.core.application.crafting.datasource.result.CraftingRequestGroupsList;
 import com.cplerings.core.application.dashboard.datasource.ViewBranchOrdersDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewBranchOrdersPaginateDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewBranchRevenueDataSource;
+import com.cplerings.core.application.dashboard.datasource.ViewCustomOrdersWithDateDataSource;
 import com.cplerings.core.application.dashboard.datasource.data.CombinedOrder;
 import com.cplerings.core.application.dashboard.datasource.data.CombinedOrders;
 import com.cplerings.core.application.dashboard.datasource.data.OrderTypeStatistic;
 import com.cplerings.core.application.dashboard.datasource.data.Orders;
 import com.cplerings.core.application.dashboard.datasource.data.Revenue;
 import com.cplerings.core.application.dashboard.input.ViewBranchOrdersPaginateInput;
+import com.cplerings.core.application.dashboard.input.ViewCustomOrdersWithDateInput;
+import com.cplerings.core.application.order.datasource.result.CustomOrders;
 import com.cplerings.core.application.shared.entity.order.APaymentMethod;
 import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.branch.QBranch;
 import com.cplerings.core.domain.crafting.QCraftingStage;
+import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.QCustomOrder;
 import com.cplerings.core.domain.payment.PaymentStatus;
 import com.cplerings.core.domain.payment.QPayment;
 import com.cplerings.core.domain.refund.QRefund;
-import com.cplerings.core.domain.refund.RefundMethod;
-import com.cplerings.core.domain.resell.PaymentMethod;
 import com.cplerings.core.domain.resell.QResellOrder;
 import com.cplerings.core.domain.ring.QRing;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
@@ -45,7 +46,7 @@ import lombok.RequiredArgsConstructor;
 
 @DataSource
 @RequiredArgsConstructor
-public class DashBoardDataSource extends AbstractDataSource implements ViewBranchRevenueDataSource, ViewBranchOrdersDataSource, ViewBranchOrdersPaginateDataSource {
+public class DashBoardDataSource extends AbstractDataSource implements ViewBranchRevenueDataSource, ViewBranchOrdersDataSource, ViewBranchOrdersPaginateDataSource, ViewCustomOrdersWithDateDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QResellOrder Q_RESELL_ORDER = QResellOrder.resellOrder;
@@ -735,10 +736,10 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                 .leftJoin(Q_FIRST_RING.branch)
                 .where(Expressions.predicate(
-                        Ops.BETWEEN,
-                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
-                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                        Expressions.constant(startDateLocalDate.plusDays(numOfDays).atStartOfDay().atZone(targetZone).toInstant()))
+                                Ops.BETWEEN,
+                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
+                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                Expressions.constant(startDateLocalDate.plusDays(numOfDays).atStartOfDay().atZone(targetZone).toInstant()))
                         .and(Q_FIRST_RING.branch.isNotNull())
                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
                 .unionAll(customOrderQuery
@@ -754,10 +755,10 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                         .leftJoin(Q_FIRST_RING.branch)
                         .where(Expressions.predicate(
-                                Ops.BETWEEN,
-                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
-                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                                Expressions.constant(startDateLocalDate.plusDays(numOfDays).atStartOfDay().atZone(targetZone).toInstant()))
+                                        Ops.BETWEEN,
+                                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
+                                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                        Expressions.constant(startDateLocalDate.plusDays(numOfDays).atStartOfDay().atZone(targetZone).toInstant()))
                                 .and(Q_FIRST_RING.branch.isNotNull())
                                 .and(Q_FIRST_RING.branch.id.eq(branchId)))
                         .unionAll(customOrderQuery
@@ -773,16 +774,44 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                 .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                                 .leftJoin(Q_FIRST_RING.branch)
                                 .where(Expressions.predicate(
-                                        Ops.BETWEEN,
-                                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt),
-                                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                                        Expressions.constant(startDateLocalDate.plusDays(numOfDays).atStartOfDay().atZone(targetZone).toInstant()))
+                                                Ops.BETWEEN,
+                                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt),
+                                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                                Expressions.constant(startDateLocalDate.plusDays(numOfDays).atStartOfDay().atZone(targetZone).toInstant()))
                                         .and(Q_FIRST_RING.branch.isNotNull())
                                         .and(Q_FIRST_RING.branch.id.eq(branchId)))));
         long count = customOrderQuery.distinct().fetchCount();
-        List<CombinedOrder> orders  = customOrderQuery.limit(input.getPageSize()).offset(offset).fetch();
+        List<CombinedOrder> orders = customOrderQuery.limit(input.getPageSize()).offset(offset).fetch();
         return CombinedOrders.builder()
                 .orders(orders)
+                .count(count)
+                .page(input.getPage())
+                .pageSize(input.getPageSize())
+                .build();
+    }
+
+    @Override
+    public CustomOrders getCustomOrders(ViewCustomOrdersWithDateInput input, Long branchId) {
+        var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
+        var numOfDays = ChronoUnit.DAYS.between(input.getStartDate(), input.getEndDate()) + 1L;
+        LocalDate startDateLocalDate = input.getStartDate().atZone(ZoneId.systemDefault()).toLocalDate();
+        BlazeJPAQuery<CustomOrder> query = createQuery()
+                .select(Q_CUSTOM_ORDER)
+                .from(Q_CUSTOM_ORDER)
+                .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                .leftJoin(Q_FIRST_RING.branch)
+                .where(Expressions.predicate(
+                                Ops.BETWEEN,
+                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
+                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                Expressions.constant(startDateLocalDate.plusDays(numOfDays).atStartOfDay().atZone(targetZone).toInstant()))
+                        .and(Q_FIRST_RING.branch.isNotNull())
+                        .and(Q_FIRST_RING.branch.id.eq(branchId)));
+
+        long count = query.distinct().fetchCount();
+        List<CustomOrder> customOrders = query.limit(input.getPageSize()).offset(offset).fetch();
+        return CustomOrders.builder()
+                .customOrders(customOrders)
                 .count(count)
                 .page(input.getPage())
                 .pageSize(input.getPageSize())
