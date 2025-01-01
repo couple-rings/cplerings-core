@@ -11,6 +11,7 @@ import com.cplerings.core.api.dashboard.response.ViewBranchOrdersPaginateRespons
 import com.cplerings.core.api.shared.AbstractController;
 import com.cplerings.core.api.shared.mapper.APIMapper;
 import com.cplerings.core.api.shared.openapi.DashboardTag;
+import com.cplerings.core.api.shared.openapi.DevTag;
 import com.cplerings.core.api.shared.openapi.ErrorAPIResponse;
 import com.cplerings.core.application.dashboard.ViewBranchOrdersPaginateUseCase;
 import com.cplerings.core.application.dashboard.input.ViewBranchOrdersPaginateInput;
@@ -42,7 +43,7 @@ public class ViewBranchOrdersPaginateController extends AbstractController<ViewB
     }
 
     @GetMapping(APIConstant.ORDERS_STATISTIC_PAGINATION_PATH)
-    @DashboardTag
+    @DevTag
     @Operation(summary = "View orders statistic")
     @ApiResponse(
             description = "The orders",
