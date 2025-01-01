@@ -12,6 +12,7 @@ import org.mapstruct.Mapping;
         uses = {
                 AEnumMapper.class,
                 AImageMapper.class,
+                APaymentMapper.class,
         }
 )
 public interface ACraftingMapper {

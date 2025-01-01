@@ -1,6 +1,7 @@
 package com.cplerings.core.application.shared.entity.crafting;
 
 import com.cplerings.core.application.shared.entity.file.AImage;
+import com.cplerings.core.application.shared.entity.payment.APaymentInfo;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
 import lombok.AllArgsConstructor;
@@ -27,6 +28,7 @@ public class ACraftingStage {
     private Instant completionDate;
     private AImage image;
     private ACraftingStageStatus status;
+    private APaymentInfo payment;
     private Collection<ACraftingStageHistory> craftingStageHistories;
     private Instant createdAt;
 }

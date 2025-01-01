@@ -12,6 +12,9 @@ import com.cplerings.core.application.shared.entity.order.ACustomOrderStatus;
 import com.cplerings.core.application.shared.entity.order.ADifficulty;
 import com.cplerings.core.application.shared.entity.order.APaymentMethod;
 import com.cplerings.core.application.shared.entity.order.ARefundMethod;
+import com.cplerings.core.application.shared.entity.payment.APaymentReceiverType;
+import com.cplerings.core.application.shared.entity.payment.APaymentStatus;
+import com.cplerings.core.application.shared.entity.payment.APaymentType;
 import com.cplerings.core.common.mapper.SpringMapperConfiguration;
 import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.domain.crafting.CraftingStageStatus;
@@ -23,6 +26,9 @@ import com.cplerings.core.domain.diamond.DiamondShape;
 import com.cplerings.core.domain.metal.MetalColor;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.order.Difficulty;
+import com.cplerings.core.domain.payment.PaymentReceiverType;
+import com.cplerings.core.domain.payment.PaymentStatus;
+import com.cplerings.core.domain.payment.PaymentType;
 import com.cplerings.core.domain.refund.RefundMethod;
 import com.cplerings.core.domain.resell.PaymentMethod;
 
@@ -62,4 +68,10 @@ public interface AEnumMapper {
     ADifficulty toDifficulty(Difficulty difficulty);
 
     Difficulty toDifficulty(ADifficulty difficulty);
+
+    APaymentType toPaymentType(PaymentType paymentType);
+
+    APaymentReceiverType toPaymentReceiverType(PaymentReceiverType paymentReceiverType);
+
+    APaymentStatus toPaymentStatus(PaymentStatus paymentStatus);
 }

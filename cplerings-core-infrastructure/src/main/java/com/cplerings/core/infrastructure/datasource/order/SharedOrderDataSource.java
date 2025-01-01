@@ -14,6 +14,7 @@ import com.cplerings.core.application.order.datasource.RefundCustomOrderDataSour
 import com.cplerings.core.application.order.datasource.RefundStandardOrderDataSource;
 import com.cplerings.core.application.order.datasource.ResellCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrderDataSource;
+import com.cplerings.core.application.order.datasource.ViewCustomOrderPaymentsDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrdersDataSource;
 import com.cplerings.core.application.order.datasource.ViewRefundOrdersDataSource;
 import com.cplerings.core.application.order.datasource.ViewResellOrderDataSource;
@@ -56,6 +57,8 @@ import com.cplerings.core.domain.order.StandardOrderItem;
 import com.cplerings.core.domain.order.StandardOrderStatus;
 import com.cplerings.core.domain.order.TransportOrderHistory;
 import com.cplerings.core.domain.order.TransportationOrder;
+import com.cplerings.core.domain.payment.Payment;
+import com.cplerings.core.domain.payment.QPayment;
 import com.cplerings.core.domain.refund.QRefund;
 import com.cplerings.core.domain.refund.Refund;
 import com.cplerings.core.domain.resell.QResellOrder;
@@ -103,7 +106,7 @@ public class SharedOrderDataSource extends AbstractDataSource
         ProcessPayStandardOrderDataSource, ViewStandardOrderDataSource, CancelStandardOrderDataSource, CompleteOrderDataSource,
         GetCustomOrderByOrderNoDataSource, RefundStandardOrderDataSource, GetStandardOrderByOrderNoDataSource,
         RefundCustomOrderDataSource, ViewRefundOrdersDataSource, ViewResellOrdersDataSource, ResellJewelryDataSource, ResellCustomOrderDataSource,
-        ViewResellOrderDataSource, CancelCustomOrderDataSource {
+        ViewResellOrderDataSource, CancelCustomOrderDataSource, ViewCustomOrderPaymentsDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QAccount Q_ACCOUNT = QAccount.account;
@@ -115,6 +118,7 @@ public class SharedOrderDataSource extends AbstractDataSource
     private static final QRefund Q_REFUND = QRefund.refund;
     private static final QTransportationOrder Q_TRANSPORTATION_ORDER = QTransportationOrder.transportationOrder;
     private static final QResellOrder Q_RESELL_ORDER = QResellOrder.resellOrder;
+    private static final QPayment Q_PAYMENT = QPayment.payment;
 
     private final CustomOrderRepository customOrderRepository;
     private final CustomOrderHistoryRepository customOrderHistoryRepository;
@@ -638,5 +642,19 @@ public class SharedOrderDataSource extends AbstractDataSource
                 .from(Q_RESELL_ORDER)
                 .where(Q_RESELL_ORDER.id.eq(orderId))
                 .fetchFirst());
+    }
+
+    @Override
+    public boolean customOrderDoesNotExist(Long customOrderId) {
+        return !customOrderRepository.existsById(customOrderId);
+    }
+
+    @Override
+    public List<Payment> getPaymentsOfCustomOrder(Long customOrderId) {
+        return createQuery().select(Q_PAYMENT)
+                .from(Q_PAYMENT)
+                .where(Q_PAYMENT.craftingStage.customOrder.id.eq(customOrderId))
+                .orderBy(Q_PAYMENT.createdAt.asc())
+                .fetch();
     }
 }
