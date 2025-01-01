@@ -165,7 +165,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         Map<String, BigDecimal> revenueEachWeekForCustomOrder = new HashMap<>();
 
         LocalDate startDateLocalDate = startDate.atZone(ZoneId.systemDefault()).toLocalDate();
-        for (int i = 1; i <= quotient; i++) {
+        for (int i = 0; i <= quotient; i++) {
             if (i < quotient) {
                 BigDecimal totalRevenueEachWeek = BigDecimal.ZERO;
                 BigDecimal customOrderRevenueEachWeek = Optional.ofNullable(createQuery().select(Q_PAYMENT.amount.amount.sum())
@@ -289,7 +289,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         Map<String, BigDecimal> revenueEachMonthForCustomOrder = new HashMap<>();
 
         LocalDate startDateLocalDate = startDate.atZone(ZoneId.systemDefault()).toLocalDate();
-        for (int i = 1; i <= quotient; i++) {
+        for (int i = 0; i <= quotient; i++) {
             if (i < quotient) {
                 BigDecimal totalRevenueEachMonth = BigDecimal.ZERO;
                 BigDecimal customOrderRevenueEachMonth = Optional.ofNullable(createQuery().select(Q_PAYMENT.amount.amount.sum())
@@ -500,7 +500,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         Map<String, Long> refundOrdersForEachDay = new HashMap<>();
 
         LocalDate startDateLocalDate = start.atZone(ZoneId.systemDefault()).toLocalDate();
-        for (int i = 1; i <= quotient; i++) {
+        for (int i = 0; i <= quotient; i++) {
             if (i < quotient) {
                 long customOrderForDay = createQuery().select(Q_CUSTOM_ORDER.count())
                         .from(Q_CUSTOM_ORDER)
@@ -620,7 +620,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         Map<String, Long> refundOrdersForEachDay = new HashMap<>();
 
         LocalDate startDateLocalDate = start.atZone(ZoneId.systemDefault()).toLocalDate();
-        for (int i = 1; i <= quotient; i++) {
+        for (int i = 0; i <= quotient; i++) {
             if (i < quotient) {
                 long customOrderForDay = createQuery().select(Q_CUSTOM_ORDER.count())
                         .from(Q_CUSTOM_ORDER)
