@@ -15,15 +15,18 @@ import com.cplerings.core.application.dashboard.datasource.ViewBranchOrdersDataS
 import com.cplerings.core.application.dashboard.datasource.ViewBranchOrdersPaginateDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewBranchRevenueDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewCustomOrdersWithDateDataSource;
+import com.cplerings.core.application.dashboard.datasource.ViewPaymentWithDateDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewRefundOrdersWithDateDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewResellOrdersWithDateDataSource;
 import com.cplerings.core.application.dashboard.datasource.data.CombinedOrder;
 import com.cplerings.core.application.dashboard.datasource.data.CombinedOrders;
 import com.cplerings.core.application.dashboard.datasource.data.OrderTypeStatistic;
 import com.cplerings.core.application.dashboard.datasource.data.Orders;
+import com.cplerings.core.application.dashboard.datasource.data.Payments;
 import com.cplerings.core.application.dashboard.datasource.data.Revenue;
 import com.cplerings.core.application.dashboard.input.ViewBranchOrdersPaginateInput;
 import com.cplerings.core.application.dashboard.input.ViewCustomOrdersWithDateInput;
+import com.cplerings.core.application.dashboard.input.ViewPaymentWithDateInput;
 import com.cplerings.core.application.dashboard.input.ViewRefundOrdersWithDateInput;
 import com.cplerings.core.application.dashboard.input.ViewResellOrdersWithDateInput;
 import com.cplerings.core.application.order.datasource.result.CustomOrders;
@@ -37,6 +40,7 @@ import com.cplerings.core.domain.branch.QBranch;
 import com.cplerings.core.domain.crafting.QCraftingStage;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.QCustomOrder;
+import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.payment.PaymentStatus;
 import com.cplerings.core.domain.payment.QPayment;
 import com.cplerings.core.domain.refund.QRefund;
@@ -55,7 +59,7 @@ import lombok.RequiredArgsConstructor;
 @DataSource
 @RequiredArgsConstructor
 public class DashBoardDataSource extends AbstractDataSource implements ViewBranchRevenueDataSource, ViewBranchOrdersDataSource, ViewBranchOrdersPaginateDataSource, ViewCustomOrdersWithDateDataSource, ViewResellOrdersWithDateDataSource,
-        ViewRefundOrdersWithDateDataSource {
+        ViewRefundOrdersWithDateDataSource, ViewPaymentWithDateDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QResellOrder Q_RESELL_ORDER = QResellOrder.resellOrder;
@@ -879,6 +883,38 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         List<Refund> refunds = query.limit(input.getPageSize()).offset(offset).fetch();
         return Refunds.builder()
                 .refunds(refunds)
+                .count(count)
+                .page(input.getPage())
+                .pageSize(input.getPageSize())
+                .build();
+    }
+
+    @Override
+    public Payments getPayments(ViewPaymentWithDateInput input, Long branchId) {
+        var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
+        var numOfDays = ChronoUnit.DAYS.between(input.getStartDate(), input.getEndDate()) + 1L;
+        LocalDate startDateLocalDate = input.getStartDate().atZone(ZoneId.systemDefault()).toLocalDate();
+        BlazeJPAQuery<Payment> query = createQuery()
+                .select(Q_PAYMENT)
+                .from(Q_PAYMENT)
+                .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE).fetchJoin()
+                .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER).fetchJoin()
+                .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING).fetchJoin()
+                .leftJoin(Q_FIRST_RING.branch).fetchJoin()
+                .where(Expressions.predicate(
+                                Ops.BETWEEN,
+                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
+                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                Expressions.constant(startDateLocalDate.plusDays(numOfDays).atStartOfDay().atZone(targetZone).toInstant()))
+                        .and(Q_PAYMENT.craftingStage.isNotNull())
+                        .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
+                        .and(Q_FIRST_RING.branch.isNotNull())
+                        .and(Q_FIRST_RING.branch.id.eq(branchId)));
+
+        long count = query.distinct().fetchCount();
+        List<Payment> payments = query.limit(input.getPageSize()).offset(offset).fetch();
+        return Payments.builder()
+                .payments(payments)
                 .count(count)
                 .page(input.getPage())
                 .pageSize(input.getPageSize())

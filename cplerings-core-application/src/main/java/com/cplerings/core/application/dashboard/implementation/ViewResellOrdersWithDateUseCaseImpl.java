@@ -39,7 +39,7 @@ public class ViewResellOrdersWithDateUseCaseImpl extends AbstractUseCase<ViewRes
             CombinedOrder combinedOrder = CombinedOrder.builder()
                     .orderId(resellOrder.getId())
                     .orderNo(resellOrder.getOrderNo())
-                    .orderType(OrderTypeStatistic.CUSTOM)
+                    .orderType(OrderTypeStatistic.RESELL)
                     .amount(resellOrder.getAmount())
                     .paymentMethod(resellOrder.getPaymentMethod() == PaymentMethod.CASH ? APaymentMethod.CASH : APaymentMethod.TRANSFER)
                     .createdAt(resellOrder.getCreatedAt())

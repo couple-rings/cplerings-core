@@ -31,7 +31,6 @@ public class ViewRefundOrdersWithDateUseCaseImpl extends AbstractUseCase<ViewRef
 
     @Override
     protected ViewRefundOrdersWithDateOutput internalExecute(UseCaseValidator validator, ViewRefundOrdersWithDateInput input) {
-
         var user = securityService.getCurrentUser();
         Account manager = dataSource.getAccountById(user.id());
         var result = dataSource.getRefundOrders(input, manager.getId());
@@ -40,7 +39,7 @@ public class ViewRefundOrdersWithDateUseCaseImpl extends AbstractUseCase<ViewRef
             CombinedOrder combinedOrder = CombinedOrder.builder()
                     .orderId(resellOrder.getId())
                     .orderNo(resellOrder.getOrderNo())
-                    .orderType(OrderTypeStatistic.CUSTOM)
+                    .orderType(OrderTypeStatistic.REFUND)
                     .amount(resellOrder.getAmount())
                     .paymentMethod(resellOrder.getMethod() == RefundMethod.CASH.CASH ? APaymentMethod.CASH : APaymentMethod.TRANSFER)
                     .createdAt(resellOrder.getCreatedAt())
