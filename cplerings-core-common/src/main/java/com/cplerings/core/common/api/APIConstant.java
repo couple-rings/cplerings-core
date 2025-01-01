@@ -229,9 +229,9 @@ public final class APIConstant {
     public static final String REVENUE_PATH = "/revenue";
     public static final String ORDERS_STATISTIC_PATH = "/orders/statistic";
     public static final String ORDERS_STATISTIC_PAGINATION_PATH = "/orders/statistic/pagination";
-    public static final String CUSTOM_ORDERS_STATISTIC_PAGINATION_PATH = "/custom-orders/statistic";
-    public static final String RESELL_ORDERS_STATISTIC_PAGINATION_PATH = "/resell-orders/statistic";
-    public static final String REFUND_ORDERS_STATISTIC_PAGINATION_PATH = "/refund-orders/statistic";
-    public static final String PAYMENTS_STATISTIC_PAGINATION_PATH = "/payments/statistic";
+    public static final String CUSTOM_ORDERS_STATISTIC_PAGINATION_PATH = ORDERS_STATISTIC_PATH + "/custom-orders";
+    public static final String RESELL_ORDERS_STATISTIC_PAGINATION_PATH = ORDERS_STATISTIC_PATH + "/resell-orders";
+    public static final String REFUND_ORDERS_STATISTIC_PAGINATION_PATH = ORDERS_STATISTIC_PATH + "/refund-orders";
+    public static final String PAYMENTS_STATISTIC_PAGINATION_PATH = ORDERS_STATISTIC_PATH + "/payments";
 }
 

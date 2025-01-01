@@ -109,7 +109,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                     .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
                     .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
                     .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                    .leftJoin(Q_FIRST_RING.branch)
+                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                     .where(
                             Expressions.stringTemplate(
                                             "FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt
@@ -126,7 +126,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                     .from(Q_RESELL_ORDER)
                     .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
                     .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                    .leftJoin(Q_FIRST_RING.branch)
+                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                     .where(
                             Expressions.stringTemplate(
                                             "FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt
@@ -140,7 +140,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                     .from(Q_REFUND)
                     .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
                     .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                    .leftJoin(Q_FIRST_RING.branch)
+                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                     .where(
                             Expressions.stringTemplate(
                                     "FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt
@@ -173,7 +173,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
                         .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
@@ -191,7 +191,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .from(Q_RESELL_ORDER)
                         .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
@@ -207,7 +207,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .from(Q_REFUND)
                         .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
@@ -229,7 +229,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
                         .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
@@ -247,7 +247,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .from(Q_RESELL_ORDER)
                         .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
@@ -263,7 +263,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .from(Q_REFUND)
                         .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
@@ -297,7 +297,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
                         .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
@@ -315,7 +315,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .from(Q_RESELL_ORDER)
                         .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
@@ -331,7 +331,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .from(Q_REFUND)
                         .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
@@ -353,7 +353,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
                         .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
@@ -370,7 +370,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .from(Q_RESELL_ORDER)
                         .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
@@ -386,7 +386,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .from(Q_REFUND)
                         .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(
                                 Expressions.predicate(
                                                 Ops.BETWEEN,
@@ -437,7 +437,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
             long customOrderForDay = createQuery().select(Q_CUSTOM_ORDER.count())
                     .from(Q_CUSTOM_ORDER)
                     .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                    .leftJoin(Q_FIRST_RING.branch)
+                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                     .where(Expressions.stringTemplate(
                                     "FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt
                             ).eq(Expressions.constant(startDateLocalDate.atStartOfDay().atZone(targetZone).toInstant())
@@ -452,7 +452,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                     .from(Q_RESELL_ORDER)
                     .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
                     .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                    .leftJoin(Q_FIRST_RING.branch)
+                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                     .where(Expressions.stringTemplate(
                                     "FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt
                             ).eq(Expressions.constant(startDateLocalDate.atStartOfDay().atZone(targetZone).toInstant())
@@ -467,7 +467,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                     .from(Q_REFUND)
                     .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
                     .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                    .leftJoin(Q_FIRST_RING.branch)
+                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                     .where(Expressions.stringTemplate(
                                     "FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt
                             ).eq(Expressions.constant(startDateLocalDate.atStartOfDay().atZone(targetZone).toInstant())
@@ -505,7 +505,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 long customOrderForDay = createQuery().select(Q_CUSTOM_ORDER.count())
                         .from(Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(Expressions.predicate(
                                         Ops.BETWEEN,
                                         Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
@@ -521,7 +521,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .from(Q_RESELL_ORDER)
                         .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(Expressions.predicate(
                                         Ops.BETWEEN,
                                         Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
@@ -537,7 +537,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .from(Q_REFUND)
                         .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(Expressions.predicate(
                                         Ops.BETWEEN,
                                         Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt),
@@ -554,7 +554,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 long customOrderForDay = createQuery().select(Q_CUSTOM_ORDER.count())
                         .from(Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(Expressions.predicate(
                                         Ops.BETWEEN,
                                         Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
@@ -570,7 +570,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .from(Q_RESELL_ORDER)
                         .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(Expressions.predicate(
                                         Ops.BETWEEN,
                                         Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
@@ -586,7 +586,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .from(Q_REFUND)
                         .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(Expressions.predicate(
                                         Ops.BETWEEN,
                                         Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt),
@@ -625,7 +625,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 long customOrderForDay = createQuery().select(Q_CUSTOM_ORDER.count())
                         .from(Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(Expressions.predicate(
                                         Ops.BETWEEN,
                                         Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
@@ -641,7 +641,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .from(Q_RESELL_ORDER)
                         .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(Expressions.predicate(
                                         Ops.BETWEEN,
                                         Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
@@ -657,7 +657,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .from(Q_REFUND)
                         .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(Expressions.predicate(
                                         Ops.BETWEEN,
                                         Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt),
@@ -674,7 +674,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 long customOrderForDay = createQuery().select(Q_CUSTOM_ORDER.count())
                         .from(Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(Expressions.predicate(
                                         Ops.BETWEEN,
                                         Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
@@ -690,7 +690,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .from(Q_RESELL_ORDER)
                         .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
                         .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                        .leftJoin(Q_FIRST_RING.branch)
+                        .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                         .where(Expressions.predicate(
                                         Ops.BETWEEN,
                                         Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
@@ -812,7 +812,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 .select(Q_CUSTOM_ORDER)
                 .from(Q_CUSTOM_ORDER)
                 .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                .leftJoin(Q_FIRST_RING.branch)
+                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                 .where(Expressions.predicate(
                                 Ops.BETWEEN,
                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_CUSTOM_ORDER.createdAt),
@@ -841,7 +841,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 .from(Q_RESELL_ORDER)
                 .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
                 .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                .leftJoin(Q_FIRST_RING.branch)
+                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                 .where(Expressions.predicate(
                                 Ops.BETWEEN,
                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
@@ -870,7 +870,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 .from(Q_REFUND)
                 .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
                 .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                .leftJoin(Q_FIRST_RING.branch)
+                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                 .where(Expressions.predicate(
                                 Ops.BETWEEN,
                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt),
@@ -900,7 +900,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE).fetchJoin()
                 .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER).fetchJoin()
                 .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING).fetchJoin()
-                .leftJoin(Q_FIRST_RING.branch).fetchJoin()
+                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH).fetchJoin()
                 .where(Expressions.predicate(
                                 Ops.BETWEEN,
                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
