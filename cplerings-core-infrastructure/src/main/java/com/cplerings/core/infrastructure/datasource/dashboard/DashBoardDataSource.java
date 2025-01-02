@@ -21,6 +21,7 @@ import com.cplerings.core.application.dashboard.datasource.ViewResellOrdersWithD
 import com.cplerings.core.application.dashboard.datasource.ViewTotalOrdersOfBranchDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewTotalRevenueDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewTotalTransactionsOfBranchDataSource;
+import com.cplerings.core.application.dashboard.datasource.ViewTotalTypeOfPaymentDataSource;
 import com.cplerings.core.application.dashboard.datasource.data.CombinedOrder;
 import com.cplerings.core.application.dashboard.datasource.data.CombinedOrders;
 import com.cplerings.core.application.dashboard.datasource.data.OrderTypeStatistic;
@@ -32,6 +33,8 @@ import com.cplerings.core.application.dashboard.input.ViewCustomOrdersWithDateIn
 import com.cplerings.core.application.dashboard.input.ViewPaymentWithDateInput;
 import com.cplerings.core.application.dashboard.input.ViewRefundOrdersWithDateInput;
 import com.cplerings.core.application.dashboard.input.ViewResellOrdersWithDateInput;
+import com.cplerings.core.application.dashboard.input.ViewTotalTypeOfPaymentInput;
+import com.cplerings.core.application.dashboard.output.ViewTotalTypeOfPaymentOutput;
 import com.cplerings.core.application.order.datasource.result.CustomOrders;
 import com.cplerings.core.application.order.datasource.result.Refunds;
 import com.cplerings.core.application.order.datasource.result.ResellOrders;
@@ -48,6 +51,8 @@ import com.cplerings.core.domain.payment.PaymentStatus;
 import com.cplerings.core.domain.payment.QPayment;
 import com.cplerings.core.domain.refund.QRefund;
 import com.cplerings.core.domain.refund.Refund;
+import com.cplerings.core.domain.refund.RefundMethod;
+import com.cplerings.core.domain.resell.PaymentMethod;
 import com.cplerings.core.domain.resell.QResellOrder;
 import com.cplerings.core.domain.resell.ResellOrder;
 import com.cplerings.core.domain.ring.QRing;
@@ -62,7 +67,7 @@ import lombok.RequiredArgsConstructor;
 @DataSource
 @RequiredArgsConstructor
 public class DashBoardDataSource extends AbstractDataSource implements ViewBranchRevenueDataSource, ViewBranchOrdersDataSource, ViewBranchOrdersPaginateDataSource, ViewCustomOrdersWithDateDataSource, ViewResellOrdersWithDateDataSource,
-        ViewRefundOrdersWithDateDataSource, ViewPaymentWithDateDataSource, ViewTotalRevenueDataSource, ViewTotalTransactionsOfBranchDataSource, ViewTotalOrdersOfBranchDataSource {
+        ViewRefundOrdersWithDateDataSource, ViewPaymentWithDateDataSource, ViewTotalRevenueDataSource, ViewTotalTransactionsOfBranchDataSource, ViewTotalOrdersOfBranchDataSource, ViewTotalTypeOfPaymentDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QResellOrder Q_RESELL_ORDER = QResellOrder.resellOrder;
@@ -1026,5 +1031,96 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 .fetchOne();
         totalOrders = totalOrders + refundOrderRevenueEachDay;
         return totalOrders;
+    }
+
+    @Override
+    public ViewTotalTypeOfPaymentOutput getTotalTypeOfPayment(ViewTotalTypeOfPaymentInput input, Long branchId) {
+        var numOfDays = ChronoUnit.DAYS.between(input.getStartDate(), input.getEndDate()) + 1L;
+        LocalDate startDateLocalDate = input.getStartDate().atZone(ZoneId.systemDefault()).toLocalDate();
+        Long totalTransferType = 0L;
+        Long totalCashType = 0L;
+        Long customOrderRevenueEachDay = createQuery().select(Q_PAYMENT.count())
+                .from(Q_PAYMENT)
+                .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
+                .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
+                .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
+                .where(Expressions.predicate(
+                                Ops.BETWEEN,
+                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
+                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                Expressions.constant(startDateLocalDate.plusDays(numOfDays).atStartOfDay().atZone(targetZone).toInstant()))
+                        .and(Q_PAYMENT.craftingStage.isNotNull())
+                        .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
+                        .and(Q_FIRST_RING.branch.isNotNull())
+                        .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                .fetchOne();
+        totalTransferType = totalTransferType + customOrderRevenueEachDay;
+        Long resellOrderRevenueEachDay = createQuery().select(Q_RESELL_ORDER.count())
+                .from(Q_RESELL_ORDER)
+                .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
+                .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
+                .where(Expressions.predicate(
+                        Ops.BETWEEN,
+                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
+                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                        Expressions.constant(startDateLocalDate.plusDays(numOfDays).atStartOfDay().atZone(targetZone).toInstant()))
+                        .and(Q_FIRST_RING.branch.isNotNull())
+                        .and(Q_FIRST_RING.branch.id.eq(branchId))
+                        .and(Q_RESELL_ORDER.paymentMethod.eq(PaymentMethod.TRANSFER)))
+                .fetchOne();
+        totalTransferType = totalTransferType + resellOrderRevenueEachDay;
+        Long refundOrderRevenueEachDay = createQuery().select(Q_REFUND.count())
+                .from(Q_REFUND)
+                .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
+                .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
+                .where(Expressions.predicate(
+                        Ops.BETWEEN,
+                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt),
+                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                        Expressions.constant(startDateLocalDate.plusDays(numOfDays).atStartOfDay().atZone(targetZone).toInstant()))
+                        .and(Q_FIRST_RING.branch.isNotNull())
+                        .and(Q_FIRST_RING.branch.id.eq(branchId))
+                        .and(Q_REFUND.method.eq(RefundMethod.TRANSFER)))
+                .fetchOne();
+        totalTransferType = totalTransferType + refundOrderRevenueEachDay;
+
+        Long resellOrderRevenueEachDay2 = createQuery().select(Q_RESELL_ORDER.count())
+                .from(Q_RESELL_ORDER)
+                .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
+                .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
+                .where(Expressions.predicate(
+                        Ops.BETWEEN,
+                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
+                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                        Expressions.constant(startDateLocalDate.plusDays(numOfDays).atStartOfDay().atZone(targetZone).toInstant()))
+                        .and(Q_FIRST_RING.branch.isNotNull())
+                        .and(Q_FIRST_RING.branch.id.eq(branchId))
+                        .and(Q_RESELL_ORDER.paymentMethod.eq(PaymentMethod.CASH)))
+                .fetchOne();
+        totalCashType = totalCashType + resellOrderRevenueEachDay2;
+        Long refundOrderRevenueEachDay2 = createQuery().select(Q_REFUND.count())
+                .from(Q_REFUND)
+                .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
+                .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
+                .where(Expressions.predicate(
+                        Ops.BETWEEN,
+                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt),
+                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                        Expressions.constant(startDateLocalDate.plusDays(numOfDays).atStartOfDay().atZone(targetZone).toInstant()))
+                        .and(Q_FIRST_RING.branch.isNotNull())
+                        .and(Q_FIRST_RING.branch.id.eq(branchId))
+                        .and(Q_REFUND.method.eq(RefundMethod.CASH)))
+                .fetchOne();
+        totalCashType = totalCashType + refundOrderRevenueEachDay2;
+        return ViewTotalTypeOfPaymentOutput
+                .builder()
+                .totalByCash(totalCashType)
+                .totalByTransfer(totalTransferType)
+                .build();
     }
 }
