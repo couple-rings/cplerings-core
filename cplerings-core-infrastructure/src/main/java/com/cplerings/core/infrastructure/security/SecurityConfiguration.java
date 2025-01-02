@@ -409,6 +409,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.TOTAL_TRANSACTION_BRANCH_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_MANAGER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.TOTAL_ORDERS_BRANCH_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_MANAGER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.TOTAL_PAYMENT_TYPE_BRANCH_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_MANAGER));
     }
 
