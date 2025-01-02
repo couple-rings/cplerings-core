@@ -97,8 +97,8 @@ public class CalculationServiceImpl implements CalculationService {
                 .multiply(firstStagePercentage);
 
         final BigDecimal secondStagePercentage = BigDecimal.valueOf(configurationService.getCraftingStageProgress2())
-                .subtract(firstStagePercentage)
-                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_EVEN);
+                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_EVEN)
+                .subtract(firstStagePercentage);
         final Money secondStageAmount = craftingStageInfo.getTotalPrice()
                 .multiply(secondStagePercentage);
 
