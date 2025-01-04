@@ -1040,7 +1040,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         LocalDate startDateLocalDate = input.getStartDate().atZone(ZoneId.systemDefault()).toLocalDate();
         BigDecimal totalTransferType = BigDecimal.ZERO;
         BigDecimal totalCashType = BigDecimal.ZERO;
-        BigDecimal customOrderRevenueEachDay = createQuery().select(Q_PAYMENT.amount.amount.sum())
+        BigDecimal customOrderRevenueEachDay = Optional.ofNullable(createQuery().select(Q_PAYMENT.amount.amount.sum())
                 .from(Q_PAYMENT)
                 .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
                 .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
@@ -1055,9 +1055,9 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
                         .and(Q_FIRST_RING.branch.isNotNull())
                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
-                .fetchOne();
+                .fetchOne()).orElse(BigDecimal.ZERO);
         totalTransferType = totalTransferType.add(customOrderRevenueEachDay);
-        BigDecimal resellOrderRevenueEachDay = createQuery().select(Q_RESELL_ORDER.amount.amount.sum())
+        BigDecimal resellOrderRevenueEachDay = Optional.ofNullable(createQuery().select(Q_RESELL_ORDER.amount.amount.sum())
                 .from(Q_RESELL_ORDER)
                 .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
                 .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
@@ -1070,9 +1070,9 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .and(Q_FIRST_RING.branch.isNotNull())
                         .and(Q_FIRST_RING.branch.id.eq(branchId))
                         .and(Q_RESELL_ORDER.paymentMethod.eq(PaymentMethod.TRANSFER)))
-                .fetchOne();
+                .fetchOne()).orElse(BigDecimal.ZERO);
         totalTransferType = totalTransferType.subtract(resellOrderRevenueEachDay);
-        BigDecimal refundOrderRevenueEachDay = createQuery().select(Q_REFUND.amount.amount.sum())
+        BigDecimal refundOrderRevenueEachDay = Optional.ofNullable(createQuery().select(Q_REFUND.amount.amount.sum())
                 .from(Q_REFUND)
                 .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
                 .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
@@ -1085,10 +1085,10 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .and(Q_FIRST_RING.branch.isNotNull())
                         .and(Q_FIRST_RING.branch.id.eq(branchId))
                         .and(Q_REFUND.method.eq(RefundMethod.TRANSFER)))
-                .fetchOne();
+                .fetchOne()).orElse(BigDecimal.ZERO);
         totalTransferType = totalTransferType.subtract(refundOrderRevenueEachDay);
 
-        BigDecimal resellOrderRevenueEachDay2 = createQuery().select(Q_RESELL_ORDER.amount.amount.sum())
+        BigDecimal resellOrderRevenueEachDay2 = Optional.ofNullable(createQuery().select(Q_RESELL_ORDER.amount.amount.sum())
                 .from(Q_RESELL_ORDER)
                 .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
                 .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
@@ -1101,9 +1101,9 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .and(Q_FIRST_RING.branch.isNotNull())
                         .and(Q_FIRST_RING.branch.id.eq(branchId))
                         .and(Q_RESELL_ORDER.paymentMethod.eq(PaymentMethod.CASH)))
-                .fetchOne();
+                .fetchOne()).orElse(BigDecimal.ZERO);
         totalCashType = totalCashType.subtract(resellOrderRevenueEachDay2);
-        BigDecimal refundOrderRevenueEachDay2 = createQuery().select(Q_REFUND.amount.amount.sum())
+        BigDecimal refundOrderRevenueEachDay2 = Optional.ofNullable(createQuery().select(Q_REFUND.amount.amount.sum())
                 .from(Q_REFUND)
                 .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
                 .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
@@ -1116,7 +1116,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .and(Q_FIRST_RING.branch.isNotNull())
                         .and(Q_FIRST_RING.branch.id.eq(branchId))
                         .and(Q_REFUND.method.eq(RefundMethod.CASH)))
-                .fetchOne();
+                .fetchOne()).orElse(BigDecimal.ZERO);
         totalCashType = totalCashType.subtract(refundOrderRevenueEachDay2);
         Money totalCashTypeMoney = Money.create(totalCashType);
         Money totalTransferTypeMoney = Money.create(totalTransferType);
