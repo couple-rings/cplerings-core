@@ -112,6 +112,8 @@ public class ResellCustomOrderUseCaseImpl extends AbstractUseCase<ResellCustomOr
                 .map(Account::getAgreement)
                 .orElseThrow(() -> new IllegalStateException("No agreement was found"));
         dataSource.delete(agreement);
+        customOrder.setStatus(CustomOrderStatus.RESOLD);
+        dataSource.save(customOrder);
 
         ResellOrder resellOrder = ResellOrder.builder()
                 .customer(customer)
