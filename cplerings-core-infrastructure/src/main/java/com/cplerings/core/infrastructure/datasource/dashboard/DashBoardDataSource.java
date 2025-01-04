@@ -56,6 +56,7 @@ import com.cplerings.core.domain.resell.PaymentMethod;
 import com.cplerings.core.domain.resell.QResellOrder;
 import com.cplerings.core.domain.resell.ResellOrder;
 import com.cplerings.core.domain.ring.QRing;
+import com.cplerings.core.domain.shared.valueobject.Money;
 import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.querydsl.core.types.Ops;
@@ -1037,9 +1038,9 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
     public ViewTotalTypeOfPaymentOutput getTotalTypeOfPayment(ViewTotalTypeOfPaymentInput input, Long branchId) {
         var numOfDays = ChronoUnit.DAYS.between(input.getStartDate(), input.getEndDate()) + 1L;
         LocalDate startDateLocalDate = input.getStartDate().atZone(ZoneId.systemDefault()).toLocalDate();
-        Long totalTransferType = 0L;
-        Long totalCashType = 0L;
-        Long customOrderRevenueEachDay = createQuery().select(Q_PAYMENT.count())
+        BigDecimal totalTransferType = BigDecimal.ZERO;
+        BigDecimal totalCashType = BigDecimal.ZERO;
+        BigDecimal customOrderRevenueEachDay = createQuery().select(Q_PAYMENT.amount.amount.sum())
                 .from(Q_PAYMENT)
                 .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
                 .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
@@ -1055,8 +1056,8 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .and(Q_FIRST_RING.branch.isNotNull())
                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
                 .fetchOne();
-        totalTransferType = totalTransferType + customOrderRevenueEachDay;
-        Long resellOrderRevenueEachDay = createQuery().select(Q_RESELL_ORDER.count())
+        totalTransferType = totalTransferType.add(customOrderRevenueEachDay);
+        BigDecimal resellOrderRevenueEachDay = createQuery().select(Q_RESELL_ORDER.amount.amount.sum())
                 .from(Q_RESELL_ORDER)
                 .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
                 .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
@@ -1070,8 +1071,8 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .and(Q_FIRST_RING.branch.id.eq(branchId))
                         .and(Q_RESELL_ORDER.paymentMethod.eq(PaymentMethod.TRANSFER)))
                 .fetchOne();
-        totalTransferType = totalTransferType + resellOrderRevenueEachDay;
-        Long refundOrderRevenueEachDay = createQuery().select(Q_REFUND.count())
+        totalTransferType = totalTransferType.subtract(resellOrderRevenueEachDay);
+        BigDecimal refundOrderRevenueEachDay = createQuery().select(Q_REFUND.amount.amount.sum())
                 .from(Q_REFUND)
                 .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
                 .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
@@ -1085,9 +1086,9 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .and(Q_FIRST_RING.branch.id.eq(branchId))
                         .and(Q_REFUND.method.eq(RefundMethod.TRANSFER)))
                 .fetchOne();
-        totalTransferType = totalTransferType + refundOrderRevenueEachDay;
+        totalTransferType = totalTransferType.subtract(refundOrderRevenueEachDay);
 
-        Long resellOrderRevenueEachDay2 = createQuery().select(Q_RESELL_ORDER.count())
+        BigDecimal resellOrderRevenueEachDay2 = createQuery().select(Q_RESELL_ORDER.amount.amount.sum())
                 .from(Q_RESELL_ORDER)
                 .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
                 .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
@@ -1101,8 +1102,8 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .and(Q_FIRST_RING.branch.id.eq(branchId))
                         .and(Q_RESELL_ORDER.paymentMethod.eq(PaymentMethod.CASH)))
                 .fetchOne();
-        totalCashType = totalCashType + resellOrderRevenueEachDay2;
-        Long refundOrderRevenueEachDay2 = createQuery().select(Q_REFUND.count())
+        totalCashType = totalCashType.subtract(resellOrderRevenueEachDay2);
+        BigDecimal refundOrderRevenueEachDay2 = createQuery().select(Q_REFUND.amount.amount.sum())
                 .from(Q_REFUND)
                 .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
                 .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
@@ -1116,11 +1117,13 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .and(Q_FIRST_RING.branch.id.eq(branchId))
                         .and(Q_REFUND.method.eq(RefundMethod.CASH)))
                 .fetchOne();
-        totalCashType = totalCashType + refundOrderRevenueEachDay2;
+        totalCashType = totalCashType.subtract(refundOrderRevenueEachDay2);
+        Money totalCashTypeMoney = Money.create(totalCashType);
+        Money totalTransferTypeMoney = Money.create(totalTransferType);
         return ViewTotalTypeOfPaymentOutput
                 .builder()
-                .totalByCash(totalCashType)
-                .totalByTransfer(totalTransferType)
+                .totalByCash(totalCashTypeMoney)
+                .totalByTransfer(totalTransferTypeMoney)
                 .build();
     }
 }
