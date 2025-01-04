@@ -113,7 +113,7 @@ public class ResellCustomOrderUseCaseImpl extends AbstractUseCase<ResellCustomOr
                 .orElseThrow(() -> new IllegalStateException("No agreement was found"));
         dataSource.delete(agreement);
         customOrder.setStatus(CustomOrderStatus.RESOLD);
-        dataSource.save(customOrder);
+        customOrder = dataSource.save(customOrder);
 
         ResellOrder resellOrder = ResellOrder.builder()
                 .customer(customer)
