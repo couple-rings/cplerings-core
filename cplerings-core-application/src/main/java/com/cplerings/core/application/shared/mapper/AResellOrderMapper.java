@@ -10,7 +10,8 @@ import com.cplerings.core.domain.resell.ResellOrder;
 uses = {
         MoneyMapper.class,
         WeightMapper.class,
-        DesignSizeMapper.class
+        DesignSizeMapper.class,
+        ARingMapper.class
 })
 public interface AResellOrderMapper {
 

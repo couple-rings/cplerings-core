@@ -22,6 +22,7 @@ public class ResellTestHelper {
     private final AccountRepository accountRepository;
     private final ImageRepository imageRepository;
     private final JewelryTestHelper jewelryTestHelper;
+    private final CustomOrderTestHelper customOrderTestHelper;
 
     public ResellOrder createResellOrder() {
         ResellOrder resellOrder = ResellOrder.builder()
@@ -32,6 +33,7 @@ public class ResellTestHelper {
                 .note("test")
                 .paymentMethod(PaymentMethod.CASH)
                 .proofImage(imageRepository.getReferenceById(1L))
+                .customOrder(customOrderTestHelper.createCompleteCustomOrder())
                 .build();
         return testDataSource.save(resellOrder);
     }
