@@ -1234,7 +1234,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                         Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
                                 .and(Q_FIRST_RING.branch.isNotNull())
                                 .and(Q_FIRST_RING.branch.id.eq(branchId))
-                                .and(Q_RESELL_ORDER.paymentMethod.eq(PaymentMethod.TRANSFER)))
+                                .and(Q_RESELL_ORDER.paymentMethod.eq(PaymentMethod.CASH)))
                 .fetchOne()).orElse(BigDecimal.ZERO);
         totalExpenditureCashType = totalExpenditureCashType.add(resellOrderExpenditureForCashType);
         BigDecimal refundOrderExpenditureForCashType = Optional.ofNullable(createQuery().select(Q_REFUND.amount.amount.sum())
@@ -1250,7 +1250,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                         Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
                                 .and(Q_FIRST_RING.branch.isNotNull())
                                 .and(Q_FIRST_RING.branch.id.eq(branchId))
-                                .and(Q_REFUND.method.eq(RefundMethod.TRANSFER)))
+                                .and(Q_REFUND.method.eq(RefundMethod.CASH)))
                 .fetchOne()).orElse(BigDecimal.ZERO);
         totalExpenditureCashType = totalExpenditureCashType.add(refundOrderExpenditureForCashType);
         totalExpenditure = totalExpenditure.add(totalExpenditureCashType).add(totalExpenditureTransferType);
@@ -1295,7 +1295,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                 .where(Q_FIRST_RING.branch.isNotNull()
                         .and(Q_FIRST_RING.branch.id.eq(branchId))
-                        .and(Q_RESELL_ORDER.paymentMethod.eq(PaymentMethod.TRANSFER)))
+                        .and(Q_RESELL_ORDER.paymentMethod.eq(PaymentMethod.CASH)))
                 .fetchOne()).orElse(BigDecimal.ZERO);
         totalExpenditureCashType = totalExpenditureCashType.add(resellOrderExpenditureForCashType);
         BigDecimal refundOrderExpenditureForCashType = Optional.ofNullable(createQuery().select(Q_REFUND.amount.amount.sum())
@@ -1305,7 +1305,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                 .where(Q_FIRST_RING.branch.isNotNull()
                         .and(Q_FIRST_RING.branch.id.eq(branchId))
-                        .and(Q_REFUND.method.eq(RefundMethod.TRANSFER)))
+                        .and(Q_REFUND.method.eq(RefundMethod.CASH)))
                 .fetchOne()).orElse(BigDecimal.ZERO);
         totalExpenditureCashType = totalExpenditureCashType.add(refundOrderExpenditureForCashType);
         totalExpenditure = totalExpenditure.add(totalExpenditureCashType).add(totalExpenditureTransferType);
