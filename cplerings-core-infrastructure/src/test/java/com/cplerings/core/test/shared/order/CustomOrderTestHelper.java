@@ -196,6 +196,7 @@ public class CustomOrderTestHelper {
                 .contract(contractCreated)
                 .jeweler(accountRepository.getReferenceById(41L))
                 .shippingFee(Money.create(BigDecimal.ZERO))
+                .priceApplicationRatio(BigDecimal.valueOf(1.3))
                 .build();
         customOrder = testDataSource.save(customOrder);
         TransportationOrder transportationOrder = TransportationOrder.builder()
