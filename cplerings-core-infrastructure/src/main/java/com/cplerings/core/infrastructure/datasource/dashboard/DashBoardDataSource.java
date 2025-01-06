@@ -19,6 +19,7 @@ import com.cplerings.core.application.dashboard.datasource.ViewPaymentWithDateDa
 import com.cplerings.core.application.dashboard.datasource.ViewRefundOrdersWithDateDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewResellOrdersWithDateDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewTotalExpenditureDataSource;
+import com.cplerings.core.application.dashboard.datasource.ViewTotalExpenditureForAllDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewTotalInDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewTotalInForAllDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewTotalOrdersOfBranchDataSource;
@@ -37,6 +38,7 @@ import com.cplerings.core.application.dashboard.input.ViewPaymentWithDateInput;
 import com.cplerings.core.application.dashboard.input.ViewRefundOrdersWithDateInput;
 import com.cplerings.core.application.dashboard.input.ViewResellOrdersWithDateInput;
 import com.cplerings.core.application.dashboard.input.ViewTotalTypeOfPaymentInput;
+import com.cplerings.core.application.dashboard.output.ViewTotalExpenditureForAllOutput;
 import com.cplerings.core.application.dashboard.output.ViewTotalExpenditureOutput;
 import com.cplerings.core.application.dashboard.output.ViewTotalTypeOfPaymentOutput;
 import com.cplerings.core.application.order.datasource.result.CustomOrders;
@@ -73,7 +75,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DashBoardDataSource extends AbstractDataSource implements ViewBranchRevenueDataSource, ViewBranchOrdersDataSource, ViewBranchOrdersPaginateDataSource, ViewCustomOrdersWithDateDataSource, ViewResellOrdersWithDateDataSource,
         ViewRefundOrdersWithDateDataSource, ViewPaymentWithDateDataSource, ViewTotalRevenueDataSource, ViewTotalTransactionsOfBranchDataSource, ViewTotalOrdersOfBranchDataSource, ViewTotalTypeOfPaymentDataSource,
-        ViewTotalInDataSource, ViewTotalInForAllDataSource, ViewTotalExpenditureDataSource {
+        ViewTotalInDataSource, ViewTotalInForAllDataSource, ViewTotalExpenditureDataSource, ViewTotalExpenditureForAllDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QResellOrder Q_RESELL_ORDER = QResellOrder.resellOrder;
@@ -1247,6 +1249,61 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         totalExpenditure = totalExpenditure.add(totalExpenditureCashType).add(totalExpenditureTransferType);
 
         return ViewTotalExpenditureOutput.builder()
+                .totalExpenditure(Money.create(totalExpenditure))
+                .totalExpenditureWithCashType(Money.create(totalExpenditureCashType))
+                .totalExpenditureWithTransferType(Money.create(totalExpenditureTransferType))
+                .build();
+    }
+
+    @Override
+    public ViewTotalExpenditureForAllOutput getTotalExpenditureForAll(Long branchId) {
+        BigDecimal totalExpenditure = BigDecimal.ZERO;
+        BigDecimal totalExpenditureTransferType = BigDecimal.ZERO;
+        BigDecimal totalExpenditureCashType = BigDecimal.ZERO;
+        BigDecimal resellOrderExpenditureForTransferType = Optional.ofNullable(createQuery().select(Q_RESELL_ORDER.amount.amount.sum())
+                .from(Q_RESELL_ORDER)
+                .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
+                .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
+                .where(Q_FIRST_RING.branch.isNotNull()
+                        .and(Q_FIRST_RING.branch.id.eq(branchId))
+                        .and(Q_RESELL_ORDER.paymentMethod.eq(PaymentMethod.TRANSFER)))
+                .fetchOne()).orElse(BigDecimal.ZERO);
+        totalExpenditureTransferType = totalExpenditureTransferType.add(resellOrderExpenditureForTransferType);
+        BigDecimal refundOrderExpenditureForTransferType = Optional.ofNullable(createQuery().select(Q_REFUND.amount.amount.sum())
+                .from(Q_REFUND)
+                .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
+                .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
+                .where(Q_FIRST_RING.branch.isNotNull()
+                        .and(Q_FIRST_RING.branch.id.eq(branchId))
+                        .and(Q_REFUND.method.eq(RefundMethod.TRANSFER)))
+                .fetchOne()).orElse(BigDecimal.ZERO);
+        totalExpenditureTransferType = totalExpenditureTransferType.add(refundOrderExpenditureForTransferType);
+
+        BigDecimal resellOrderExpenditureForCashType = Optional.ofNullable(createQuery().select(Q_RESELL_ORDER.amount.amount.sum())
+                .from(Q_RESELL_ORDER)
+                .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
+                .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
+                .where(Q_FIRST_RING.branch.isNotNull()
+                        .and(Q_FIRST_RING.branch.id.eq(branchId))
+                        .and(Q_RESELL_ORDER.paymentMethod.eq(PaymentMethod.TRANSFER)))
+                .fetchOne()).orElse(BigDecimal.ZERO);
+        totalExpenditureCashType = totalExpenditureCashType.add(resellOrderExpenditureForCashType);
+        BigDecimal refundOrderExpenditureForCashType = Optional.ofNullable(createQuery().select(Q_REFUND.amount.amount.sum())
+                .from(Q_REFUND)
+                .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
+                .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
+                .where(Q_FIRST_RING.branch.isNotNull()
+                        .and(Q_FIRST_RING.branch.id.eq(branchId))
+                        .and(Q_REFUND.method.eq(RefundMethod.TRANSFER)))
+                .fetchOne()).orElse(BigDecimal.ZERO);
+        totalExpenditureCashType = totalExpenditureCashType.add(refundOrderExpenditureForCashType);
+        totalExpenditure = totalExpenditure.add(totalExpenditureCashType).add(totalExpenditureTransferType);
+
+        return ViewTotalExpenditureForAllOutput.builder()
                 .totalExpenditure(Money.create(totalExpenditure))
                 .totalExpenditureWithCashType(Money.create(totalExpenditureCashType))
                 .totalExpenditureWithTransferType(Money.create(totalExpenditureTransferType))
