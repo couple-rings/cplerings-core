@@ -50,6 +50,6 @@ public class ViewResellOrderUseCaseIT extends AbstractIT {
         assertThat(resellOrder).isNotNull();
         assertThat(resellOrder.getAmount()).isNotNull();
         assertThat(resellOrder.getCustomOrder().getFirstRing().getDiamonds()).isNotNull();
-        assertThat(resellOrder.getCustomOrder().getFirstRing().getDiamonds()).isNotNull();
+        assertThat(resellOrder.getCustomOrder().getFirstRing().getCustomDesign().getDiamondSpecifications()).isNotNull();
     }
 }
