@@ -38,6 +38,8 @@ import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.domain.address.QTransportationAddress;
 import com.cplerings.core.domain.address.TransportationAddress;
 import com.cplerings.core.domain.design.Design;
+import com.cplerings.core.domain.design.DesignVersion;
+import com.cplerings.core.domain.design.QDesignVersion;
 import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.file.QImage;
@@ -75,6 +77,7 @@ import com.cplerings.core.infrastructure.repository.AgreementRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderHistoryRepository;
 import com.cplerings.core.infrastructure.repository.CustomOrderRepository;
 import com.cplerings.core.infrastructure.repository.DesignRepository;
+import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
 import com.cplerings.core.infrastructure.repository.DiamondRepository;
 import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.infrastructure.repository.JewelryRepository;
@@ -119,6 +122,7 @@ public class SharedOrderDataSource extends AbstractDataSource
     private static final QTransportationOrder Q_TRANSPORTATION_ORDER = QTransportationOrder.transportationOrder;
     private static final QResellOrder Q_RESELL_ORDER = QResellOrder.resellOrder;
     private static final QPayment Q_PAYMENT = QPayment.payment;
+    private static final QDesignVersion Q_DESIGN_VERSION = QDesignVersion.designVersion;
 
     private final CustomOrderRepository customOrderRepository;
     private final CustomOrderHistoryRepository customOrderHistoryRepository;
@@ -138,6 +142,7 @@ public class SharedOrderDataSource extends AbstractDataSource
     private final ImageRepository imageRepository;
     private final ResellOrderRepository resellOrderRepository;
     private final RingHistoryRepository ringHistoryRepository;
+    private final DesignVersionRepository designVersionRepository;
 
     @Override
     public CustomOrders getCustomOrders(ViewCustomOrdersInput input) {
@@ -279,6 +284,21 @@ public class SharedOrderDataSource extends AbstractDataSource
     @Override
     public void delete(Agreement agreement) {
         agreementRepository.delete(agreement);
+    }
+
+    @Override
+    public Collection<DesignVersion> findActiveDesignVersionsByDesignIds(Collection<Long> designIds) {
+        return createQuery().select(Q_DESIGN_VERSION)
+                .from(Q_DESIGN_VERSION)
+                .where(Q_DESIGN_VERSION.design.id.in(designIds)
+                        .and(Q_DESIGN_VERSION.state.eq(State.ACTIVE)))
+                .fetch();
+    }
+
+    @Override
+    public Collection<DesignVersion> saveDesignVersions(Collection<DesignVersion> designVersions) {
+        designVersions.forEach(this::updateAuditor);
+        return designVersionRepository.saveAll(designVersions);
     }
 
     @Override

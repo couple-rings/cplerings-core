@@ -1,6 +1,7 @@
 package com.cplerings.core.application.order.datasource;
 
 import com.cplerings.core.domain.design.Design;
+import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
@@ -31,4 +32,8 @@ public interface CancelCustomOrderDataSource {
     Collection<Design> saveDesigns(Collection<Design> designs);
 
     void delete(Agreement agreement);
+
+    Collection<DesignVersion> findActiveDesignVersionsByDesignIds(Collection<Long> designIds);
+
+    Collection<DesignVersion> saveDesignVersions(Collection<DesignVersion> designVersions);
 }
