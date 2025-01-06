@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.design.Design;
+import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.CustomOrder;
@@ -41,4 +42,8 @@ public interface RefundCustomOrderDataSource {
     Collection<Diamond> saveDiamonds(Collection<Diamond> diamonds);
 
     TransportationOrder save(TransportationOrder transportationOrder);
+
+    Collection<DesignVersion> findActiveDesignVersionsByDesignIds(Collection<Long> designIds);
+
+    Collection<DesignVersion> saveDesignVersions(Collection<DesignVersion> designVersions);
 }

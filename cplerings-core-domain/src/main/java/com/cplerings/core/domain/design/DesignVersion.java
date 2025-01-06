@@ -1,7 +1,5 @@
 package com.cplerings.core.domain.design;
 
-import java.time.Instant;
-
 import com.cplerings.core.common.database.DatabaseConstant;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.file.Document;
@@ -27,7 +25,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -35,13 +34,7 @@ import jakarta.persistence.UniqueConstraint;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(
-        name = "tbl_design_version",
-        uniqueConstraints = @UniqueConstraint(
-                name = "uc_tbl_design_version_design_id_version_number",
-                columnNames = { "design_id", "version_number" }
-        )
-)
+@Table(name = "tbl_design_version")
 public class DesignVersion extends AbstractEntity {
 
     private static final String DESIGN_VERSION_SEQUENCE = "design_version_seq";
