@@ -244,5 +244,6 @@ public final class APIConstant {
     public static final String TOTAL_INCOME_PATH_WITH_DATE = TOTAL_INCOME_PATH + "/time";
     public static final String TOTAL_EXPENDITURE_PATH = "/expenditure";
     public static final String TOTAL_EXPENDITURE_PATH_WITH_DATE = TOTAL_EXPENDITURE_PATH + "/time";
+    public static final String TOP_5_CUSTOM_ORDER = CUSTOM_ORDERS_PATH + "/top-5";
 }
 

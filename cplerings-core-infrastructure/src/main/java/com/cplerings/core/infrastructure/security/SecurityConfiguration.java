@@ -423,6 +423,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.TOTAL_EXPENDITURE_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_MANAGER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.TOTAL_EXPENDITURE_PATH_WITH_DATE))
+                        .hasAnyAuthority(RoleConstant.ROLE_MANAGER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.TOP_5_CUSTOM_ORDER))
                         .hasAnyAuthority(RoleConstant.ROLE_MANAGER));
     }
 
