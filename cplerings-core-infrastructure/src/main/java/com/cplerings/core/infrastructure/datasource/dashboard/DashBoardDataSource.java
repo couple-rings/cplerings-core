@@ -19,6 +19,7 @@ import com.cplerings.core.application.dashboard.datasource.ViewPaymentWithDateDa
 import com.cplerings.core.application.dashboard.datasource.ViewRefundOrdersWithDateDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewResellOrdersWithDateDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewTotalInDataSource;
+import com.cplerings.core.application.dashboard.datasource.ViewTotalInForAllDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewTotalOrdersOfBranchDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewTotalRevenueDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewTotalTransactionsOfBranchDataSource;
@@ -70,7 +71,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DashBoardDataSource extends AbstractDataSource implements ViewBranchRevenueDataSource, ViewBranchOrdersDataSource, ViewBranchOrdersPaginateDataSource, ViewCustomOrdersWithDateDataSource, ViewResellOrdersWithDateDataSource,
         ViewRefundOrdersWithDateDataSource, ViewPaymentWithDateDataSource, ViewTotalRevenueDataSource, ViewTotalTransactionsOfBranchDataSource, ViewTotalOrdersOfBranchDataSource, ViewTotalTypeOfPaymentDataSource,
-        ViewTotalInDataSource {
+        ViewTotalInDataSource, ViewTotalInForAllDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QResellOrder Q_RESELL_ORDER = QResellOrder.resellOrder;
@@ -1065,10 +1066,10 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                 .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                 .where(Expressions.predicate(
-                        Ops.BETWEEN,
-                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
-                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                        Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
+                                Ops.BETWEEN,
+                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
+                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
                         .and(Q_FIRST_RING.branch.isNotNull())
                         .and(Q_FIRST_RING.branch.id.eq(branchId))
                         .and(Q_RESELL_ORDER.paymentMethod.eq(PaymentMethod.TRANSFER)))
@@ -1080,10 +1081,10 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                 .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                 .where(Expressions.predicate(
-                        Ops.BETWEEN,
-                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt),
-                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                        Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
+                                Ops.BETWEEN,
+                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt),
+                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
                         .and(Q_FIRST_RING.branch.isNotNull())
                         .and(Q_FIRST_RING.branch.id.eq(branchId))
                         .and(Q_REFUND.method.eq(RefundMethod.TRANSFER)))
@@ -1096,10 +1097,10 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                 .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                 .where(Expressions.predicate(
-                        Ops.BETWEEN,
-                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
-                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                        Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
+                                Ops.BETWEEN,
+                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_RESELL_ORDER.createdAt),
+                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
                         .and(Q_FIRST_RING.branch.isNotNull())
                         .and(Q_FIRST_RING.branch.id.eq(branchId))
                         .and(Q_RESELL_ORDER.paymentMethod.eq(PaymentMethod.CASH)))
@@ -1111,10 +1112,10 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                 .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                 .where(Expressions.predicate(
-                        Ops.BETWEEN,
-                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt),
-                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                        Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
+                                Ops.BETWEEN,
+                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_REFUND.createdAt),
+                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
                         .and(Q_FIRST_RING.branch.isNotNull())
                         .and(Q_FIRST_RING.branch.id.eq(branchId))
                         .and(Q_REFUND.method.eq(RefundMethod.CASH)))
@@ -1149,6 +1150,22 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                 .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
                                 .and(Q_FIRST_RING.branch.isNotNull())
                                 .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                .fetchOne()).orElse(BigDecimal.ZERO);
+        return Money.create(totalIn);
+    }
+
+    @Override
+    public Money getTotalForAll(Long branchId) {
+        BigDecimal totalIn = Optional.ofNullable(createQuery().select(Q_PAYMENT.amount.amount.sum())
+                .from(Q_PAYMENT)
+                .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
+                .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
+                .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
+                .where(Q_PAYMENT.craftingStage.isNotNull()
+                        .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
+                        .and(Q_FIRST_RING.branch.isNotNull())
+                        .and(Q_FIRST_RING.branch.id.eq(branchId)))
                 .fetchOne()).orElse(BigDecimal.ZERO);
         return Money.create(totalIn);
     }
