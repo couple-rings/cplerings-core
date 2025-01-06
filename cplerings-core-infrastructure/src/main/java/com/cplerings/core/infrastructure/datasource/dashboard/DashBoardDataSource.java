@@ -18,6 +18,7 @@ import com.cplerings.core.application.dashboard.datasource.ViewCustomOrdersWithD
 import com.cplerings.core.application.dashboard.datasource.ViewPaymentWithDateDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewRefundOrdersWithDateDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewResellOrdersWithDateDataSource;
+import com.cplerings.core.application.dashboard.datasource.ViewTop5CustomOrderDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewTotalExpenditureDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewTotalExpenditureForAllDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewTotalInDataSource;
@@ -50,6 +51,9 @@ import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
 import com.cplerings.core.domain.branch.QBranch;
 import com.cplerings.core.domain.crafting.QCraftingStage;
+import com.cplerings.core.domain.design.QCustomDesign;
+import com.cplerings.core.domain.design.QDesign;
+import com.cplerings.core.domain.design.QDesignVersion;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.QCustomOrder;
 import com.cplerings.core.domain.payment.Payment;
@@ -75,7 +79,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DashBoardDataSource extends AbstractDataSource implements ViewBranchRevenueDataSource, ViewBranchOrdersDataSource, ViewBranchOrdersPaginateDataSource, ViewCustomOrdersWithDateDataSource, ViewResellOrdersWithDateDataSource,
         ViewRefundOrdersWithDateDataSource, ViewPaymentWithDateDataSource, ViewTotalRevenueDataSource, ViewTotalTransactionsOfBranchDataSource, ViewTotalOrdersOfBranchDataSource, ViewTotalTypeOfPaymentDataSource,
-        ViewTotalInDataSource, ViewTotalInForAllDataSource, ViewTotalExpenditureDataSource, ViewTotalExpenditureForAllDataSource {
+        ViewTotalInDataSource, ViewTotalInForAllDataSource, ViewTotalExpenditureDataSource, ViewTotalExpenditureForAllDataSource, ViewTop5CustomOrderDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QResellOrder Q_RESELL_ORDER = QResellOrder.resellOrder;
@@ -85,6 +89,9 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
     private static final QBranch Q_BRANCH = QBranch.branch;
     private static final QPayment Q_PAYMENT = QPayment.payment;
     private static final QCraftingStage Q_CRAFTING_STAGE = QCraftingStage.craftingStage;
+    private static final QCustomDesign Q_CUSTOM_DESIGN = QCustomDesign.customDesign;
+    private static final QDesignVersion Q_DESIGN_VERSION = QDesignVersion.designVersion;
+    private static final QDesign Q_DESIGN = QDesign.design;
 
     private final ZoneId targetZone = ZoneId.of("UTC");
 
@@ -1308,5 +1315,20 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 .totalExpenditureWithCashType(Money.create(totalExpenditureCashType))
                 .totalExpenditureWithTransferType(Money.create(totalExpenditureTransferType))
                 .build();
+    }
+
+    @Override
+    public List<CustomOrder> getTop5CustomOrders(Long branchId) {
+        return createQuery()
+                .select(Q_CUSTOM_ORDER)
+                .from(Q_CUSTOM_ORDER)
+                .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING).fetchJoin()
+                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH).fetchJoin()
+                .leftJoin(Q_DESIGN_VERSION.design, Q_DESIGN).fetchJoin()
+                .where(Q_FIRST_RING.branch.isNotNull()
+                        .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                .orderBy(Q_CUSTOM_ORDER.createdAt.desc())
+                .limit(5)
+                .fetch();
     }
 }
