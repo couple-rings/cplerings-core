@@ -17,6 +17,7 @@ import com.cplerings.core.common.number.NumberUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.DesignStatus;
+import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
@@ -72,6 +73,8 @@ public class CancelCustomOrderUseCaseImpl extends AbstractUseCase<CancelCustomOr
         enableDiamonds(customOrder);
 
         enableDesigns(customOrder);
+
+        cancelDesignVersions(customOrder);
 
         deleteAgreement(customOrder);
 
@@ -134,6 +137,16 @@ public class CancelCustomOrderUseCaseImpl extends AbstractUseCase<CancelCustomOr
         designs.forEach(design -> design.setStatus(DesignStatus.AVAILABLE));
 
         dataSource.saveDesigns(designs);
+    }
+
+    private void cancelDesignVersions(CustomOrder customOrder) {
+        final Collection<Long> designIds = Stream.of(customOrder.getFirstRing(), customOrder.getSecondRing())
+                .map(ring -> ring.getCustomDesign().getDesignVersion().getDesign().getId())
+                .collect(Collectors.toSet());
+
+        final Collection<DesignVersion> designVersions = dataSource.findActiveDesignVersionsByDesignIds(designIds);
+        designVersions.forEach(designVersion -> designVersion.setState(State.INACTIVE));
+        dataSource.saveDesignVersions(designVersions);
     }
 
     private void deleteAgreement(CustomOrder customOrder) {

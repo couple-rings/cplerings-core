@@ -30,6 +30,7 @@ import com.cplerings.core.common.number.NumberUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.design.Design;
 import com.cplerings.core.domain.design.DesignStatus;
+import com.cplerings.core.domain.design.DesignVersion;
 import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.CustomOrder;
@@ -119,6 +120,14 @@ public class RefundCustomOrderUseCaseImpl extends AbstractUseCase<RefundCustomOr
                 .collect(Collectors.toSet());
         designs.forEach(design -> design.setStatus(DesignStatus.AVAILABLE));
         dataSource.saveDesigns(designs);
+
+        final Collection<Long> designIds = designs.stream()
+                .map(Design::getId)
+                .collect(Collectors.toSet());
+
+        final Collection<DesignVersion> designVersions = dataSource.findActiveDesignVersionsByDesignIds(designIds);
+        designVersions.forEach(designVersion -> designVersion.setState(State.INACTIVE));
+        dataSource.saveDesignVersions(designVersions);
 
         final Collection<RingDiamond> ringDiamonds = rings.stream()
                 .flatMap(ring -> ring.getRingDiamonds().stream())
