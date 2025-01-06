@@ -240,5 +240,7 @@ public final class APIConstant {
     public static final String TOTAL_TRANSACTION_BRANCH_PATH = TRANSACTION_PATH + "/total";
     public static final String TOTAL_ORDERS_BRANCH_PATH = ORDERS_STATISTIC_PATH + "/total";
     public static final String TOTAL_PAYMENT_TYPE_BRANCH_PATH = PAYMENTS_STATISTIC_PAGINATION_PATH + "/type";
+    public static final String TOTAL_INCOME_PATH = "/income";
+    public static final String TOTAL_INCOME_PATH_WITH_DATE = TOTAL_INCOME_PATH + "/time";
 }
 

@@ -18,6 +18,7 @@ import com.cplerings.core.application.dashboard.datasource.ViewCustomOrdersWithD
 import com.cplerings.core.application.dashboard.datasource.ViewPaymentWithDateDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewRefundOrdersWithDateDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewResellOrdersWithDateDataSource;
+import com.cplerings.core.application.dashboard.datasource.ViewTotalInDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewTotalOrdersOfBranchDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewTotalRevenueDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewTotalTransactionsOfBranchDataSource;
@@ -68,7 +69,8 @@ import lombok.RequiredArgsConstructor;
 @DataSource
 @RequiredArgsConstructor
 public class DashBoardDataSource extends AbstractDataSource implements ViewBranchRevenueDataSource, ViewBranchOrdersDataSource, ViewBranchOrdersPaginateDataSource, ViewCustomOrdersWithDateDataSource, ViewResellOrdersWithDateDataSource,
-        ViewRefundOrdersWithDateDataSource, ViewPaymentWithDateDataSource, ViewTotalRevenueDataSource, ViewTotalTransactionsOfBranchDataSource, ViewTotalOrdersOfBranchDataSource, ViewTotalTypeOfPaymentDataSource {
+        ViewRefundOrdersWithDateDataSource, ViewPaymentWithDateDataSource, ViewTotalRevenueDataSource, ViewTotalTransactionsOfBranchDataSource, ViewTotalOrdersOfBranchDataSource, ViewTotalTypeOfPaymentDataSource,
+        ViewTotalInDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QResellOrder Q_RESELL_ORDER = QResellOrder.resellOrder;
@@ -1125,5 +1127,29 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 .totalByCash(totalCashTypeMoney)
                 .totalByTransfer(totalTransferTypeMoney)
                 .build();
+    }
+
+    @Override
+    public Money getTotal(Instant start, Instant end, Long branchId) {
+        var numOfDays = ChronoUnit.DAYS.between(start, end) + 1L;
+        LocalDate startDateLocalDate = start.atZone(ZoneId.systemDefault()).toLocalDate();
+        BigDecimal totalIn = Optional.ofNullable(createQuery().select(Q_PAYMENT.amount.amount.sum())
+                .from(Q_PAYMENT)
+                .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
+                .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
+                .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
+                .where(
+                        Expressions.predicate(
+                                        Ops.BETWEEN,
+                                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
+                                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                        Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
+                                .and(Q_PAYMENT.craftingStage.isNotNull())
+                                .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
+                                .and(Q_FIRST_RING.branch.isNotNull())
+                                .and(Q_FIRST_RING.branch.id.eq(branchId)))
+                .fetchOne()).orElse(BigDecimal.ZERO);
+        return Money.create(totalIn);
     }
 }
