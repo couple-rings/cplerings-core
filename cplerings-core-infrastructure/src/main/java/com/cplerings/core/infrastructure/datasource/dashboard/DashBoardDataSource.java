@@ -1324,7 +1324,6 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 .from(Q_CUSTOM_ORDER)
                 .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING).fetchJoin()
                 .leftJoin(Q_FIRST_RING.branch, Q_BRANCH).fetchJoin()
-                .leftJoin(Q_DESIGN_VERSION.design, Q_DESIGN).fetchJoin()
                 .where(Q_FIRST_RING.branch.isNotNull()
                         .and(Q_FIRST_RING.branch.id.eq(branchId)))
                 .orderBy(Q_CUSTOM_ORDER.createdAt.desc())
