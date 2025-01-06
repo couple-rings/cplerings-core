@@ -1,10 +1,6 @@
 package com.cplerings.core.infrastructure.security;
 
-import com.cplerings.core.common.api.APIConstant;
-import com.cplerings.core.common.profile.ProfileConstant;
-import com.cplerings.core.common.security.RoleConstant;
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +17,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
+import com.cplerings.core.common.api.APIConstant;
+import com.cplerings.core.common.profile.ProfileConstant;
+import com.cplerings.core.common.security.RoleConstant;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
@@ -415,6 +415,14 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.TOTAL_ORDERS_BRANCH_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_MANAGER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.TOTAL_PAYMENT_TYPE_BRANCH_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_MANAGER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.TOTAL_INCOME_PATH_WITH_DATE))
+                        .hasAnyAuthority(RoleConstant.ROLE_MANAGER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.TOTAL_INCOME_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_MANAGER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.TOTAL_EXPENDITURE_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_MANAGER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.TOTAL_EXPENDITURE_PATH_WITH_DATE))
                         .hasAnyAuthority(RoleConstant.ROLE_MANAGER));
     }
 
