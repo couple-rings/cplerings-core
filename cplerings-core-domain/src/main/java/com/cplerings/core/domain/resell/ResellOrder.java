@@ -5,6 +5,7 @@ import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.jewelry.Jewelry;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.shared.AbstractOrderEntity;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
@@ -71,6 +72,10 @@ public class ResellOrder extends AbstractOrderEntity {
 
     @Column(name = "note", length = DatabaseConstant.DEFAULT_COMMENT_LENGTH, nullable = false)
     private String note;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "custom_order_id")

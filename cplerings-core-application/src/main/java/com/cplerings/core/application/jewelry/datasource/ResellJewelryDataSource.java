@@ -4,6 +4,7 @@ import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.jewelry.Jewelry;
 import com.cplerings.core.domain.order.StandardOrderItem;
+import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.resell.ResellOrder;
 
 import java.util.Optional;
@@ -23,4 +24,6 @@ public interface ResellJewelryDataSource {
     ResellOrder save(ResellOrder resellOrder);
 
     Optional<StandardOrderItem> findByJewelryId(Long jewelryId);
+
+    Payment save(Payment payment);
 }

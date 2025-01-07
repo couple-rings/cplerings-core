@@ -2,5 +2,5 @@ package com.cplerings.core.domain.payment;
 
 public enum PaymentReceiverType {
 
-    DESIGN_FEE, CRAFT_STAGE, STANDARD
+    DESIGN_FEE, CRAFT_STAGE, STANDARD, RESELL, REFUND
 }

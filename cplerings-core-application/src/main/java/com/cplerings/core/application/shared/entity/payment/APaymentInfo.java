@@ -22,4 +22,5 @@ public class APaymentInfo {
     private APaymentStatus status;
     private APaymentReceiverType paymentReceiverType;
     private AVNPayTransaction vnPayTransaction;
+    private String paymentNo;
 }

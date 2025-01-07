@@ -12,6 +12,7 @@ import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.TransportationOrder;
+import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.refund.Refund;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
@@ -46,4 +47,6 @@ public interface RefundCustomOrderDataSource {
     Collection<DesignVersion> findActiveDesignVersionsByDesignIds(Collection<Long> designIds);
 
     Collection<DesignVersion> saveDesignVersions(Collection<DesignVersion> designVersions);
+
+    Payment save(Payment payment);
 }

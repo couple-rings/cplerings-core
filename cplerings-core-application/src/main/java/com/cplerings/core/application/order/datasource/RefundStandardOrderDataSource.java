@@ -8,6 +8,7 @@ import com.cplerings.core.domain.jewelry.Jewelry;
 import com.cplerings.core.domain.order.StandardOrder;
 import com.cplerings.core.domain.order.StandardOrderHistory;
 import com.cplerings.core.domain.order.TransportationOrder;
+import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.refund.Refund;
 
 public interface RefundStandardOrderDataSource {
@@ -27,4 +28,6 @@ public interface RefundStandardOrderDataSource {
     StandardOrder save(StandardOrder standardOrder);
 
     StandardOrderHistory save(StandardOrderHistory standardOrderHistory);
+
+    Payment save(Payment payment);
 }

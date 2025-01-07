@@ -81,6 +81,7 @@ import com.cplerings.core.infrastructure.repository.DesignVersionRepository;
 import com.cplerings.core.infrastructure.repository.DiamondRepository;
 import com.cplerings.core.infrastructure.repository.ImageRepository;
 import com.cplerings.core.infrastructure.repository.JewelryRepository;
+import com.cplerings.core.infrastructure.repository.PaymentRepository;
 import com.cplerings.core.infrastructure.repository.RefundRepository;
 import com.cplerings.core.infrastructure.repository.ResellOrderRepository;
 import com.cplerings.core.infrastructure.repository.RingDiamondRepository;
@@ -143,6 +144,7 @@ public class SharedOrderDataSource extends AbstractDataSource
     private final ResellOrderRepository resellOrderRepository;
     private final RingHistoryRepository ringHistoryRepository;
     private final DesignVersionRepository designVersionRepository;
+    private final PaymentRepository paymentRepository;
 
     @Override
     public CustomOrders getCustomOrders(ViewCustomOrdersInput input) {
@@ -299,6 +301,12 @@ public class SharedOrderDataSource extends AbstractDataSource
     public Collection<DesignVersion> saveDesignVersions(Collection<DesignVersion> designVersions) {
         designVersions.forEach(this::updateAuditor);
         return designVersionRepository.saveAll(designVersions);
+    }
+
+    @Override
+    public Payment save(Payment payment) {
+        updateAuditor(payment);
+        return paymentRepository.save(payment);
     }
 
     @Override

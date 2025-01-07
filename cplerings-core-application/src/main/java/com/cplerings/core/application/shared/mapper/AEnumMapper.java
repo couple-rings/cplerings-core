@@ -15,6 +15,7 @@ import com.cplerings.core.application.shared.entity.order.ARefundMethod;
 import com.cplerings.core.application.shared.entity.payment.APaymentReceiverType;
 import com.cplerings.core.application.shared.entity.payment.APaymentStatus;
 import com.cplerings.core.application.shared.entity.payment.APaymentType;
+import com.cplerings.core.application.shared.entity.shared.AState;
 import com.cplerings.core.common.mapper.SpringMapperConfiguration;
 import com.cplerings.core.domain.account.Role;
 import com.cplerings.core.domain.crafting.CraftingStageStatus;
@@ -31,6 +32,7 @@ import com.cplerings.core.domain.payment.PaymentStatus;
 import com.cplerings.core.domain.payment.PaymentType;
 import com.cplerings.core.domain.refund.RefundMethod;
 import com.cplerings.core.domain.resell.PaymentMethod;
+import com.cplerings.core.domain.shared.State;
 
 import org.mapstruct.Mapper;
 
@@ -74,4 +76,10 @@ public interface AEnumMapper {
     APaymentReceiverType toPaymentReceiverType(PaymentReceiverType paymentReceiverType);
 
     APaymentStatus toPaymentStatus(PaymentStatus paymentStatus);
+
+    PaymentType toPaymentType(APaymentMethod paymentMethod);
+
+    PaymentType toPaymentType(ARefundMethod refundMethod);
+
+    AState toState(State state);
 }
