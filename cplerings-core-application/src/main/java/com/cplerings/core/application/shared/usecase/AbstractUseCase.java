@@ -24,21 +24,27 @@ public abstract class AbstractUseCase<I, O> implements UseCase<I, O> {
         final UseCaseValidator validator = new UseCaseValidator();
         final SessionInformation sessionInformation = customizeSessionInformation();
         final Session session = transactionManager.createSession(sessionInformation);
+        boolean sessionIsNotCommitOrRollback = true;
         try {
             validator.validateAndStopExecution(input != null, ERROR);
             validateInput(validator, input);
             validator.clearAndThrowErrorCodes();
             final O output = internalExecute(validator, input);
+            sessionIsNotCommitOrRollback = false;
             session.commit();
             return Either.left(output);
         } catch (ErrorCodeException e) {
             log.error(e.getMessage(), e);
-            session.rollback();
+            if (sessionIsNotCommitOrRollback) {
+                session.rollback();
+            }
             return Either.right(e.getErrorCodes());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            session.rollback();
-            return Either.right(ErrorCodes.SYSTEM_ERROR);
+            if (sessionIsNotCommitOrRollback) {
+                session.rollback();
+            }
+            throw e;
         } finally {
             log.info("Done UseCase {}", getClass().getSimpleName());
         }
