@@ -5,6 +5,7 @@ import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.StandardOrder;
+import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.shared.AbstractOrderEntity;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
@@ -62,6 +63,10 @@ public class Refund extends AbstractOrderEntity {
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "image_id")
     private Image proofImage;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "standard_order_id")

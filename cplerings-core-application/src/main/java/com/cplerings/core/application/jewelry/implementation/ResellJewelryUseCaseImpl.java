@@ -19,6 +19,7 @@ import com.cplerings.core.application.jewelry.ResellJewelryUseCase;
 import com.cplerings.core.application.jewelry.datasource.ResellJewelryDataSource;
 import com.cplerings.core.application.jewelry.input.ResellJewelryInput;
 import com.cplerings.core.application.jewelry.output.ResellJewelryOutput;
+import com.cplerings.core.application.shared.mapper.AEnumMapper;
 import com.cplerings.core.application.shared.mapper.AResellOrderMapper;
 import com.cplerings.core.application.shared.service.configuration.ConfigurationService;
 import com.cplerings.core.application.shared.service.price.CalculationService;
@@ -27,12 +28,16 @@ import com.cplerings.core.application.shared.service.security.SecurityService;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
+import com.cplerings.core.common.locale.LocaleUtils;
 import com.cplerings.core.common.number.NumberUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.jewelry.Jewelry;
 import com.cplerings.core.domain.jewelry.JewelryStatus;
 import com.cplerings.core.domain.order.StandardOrderItem;
+import com.cplerings.core.domain.payment.Payment;
+import com.cplerings.core.domain.payment.PaymentReceiverType;
+import com.cplerings.core.domain.payment.PaymentStatus;
 import com.cplerings.core.domain.resell.ResellOrder;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
@@ -47,11 +52,14 @@ import java.math.RoundingMode;
 @RequiredArgsConstructor
 public class ResellJewelryUseCaseImpl extends AbstractUseCase<ResellJewelryInput, ResellJewelryOutput> implements ResellJewelryUseCase {
 
+    private static final String PAYMENT_DESCRIPTION_LOCALE = "resellJewelry.paymentDescription";
+
     private final ResellJewelryDataSource dataSource;
     private final AResellOrderMapper mapper;
     private final SecurityService securityService;
     private final ConfigurationService configurationService;
     private final CalculationService calculationService;
+    private final AEnumMapper aEnumMapper;
 
     @Override
     protected void validateInput(UseCaseValidator validator, ResellJewelryInput input) {
@@ -86,7 +94,7 @@ public class ResellJewelryUseCaseImpl extends AbstractUseCase<ResellJewelryInput
         validator.validateAndStopExecution(proofImage != null, PROOF_IMAGE_NOT_FOUND);
 
         StandardOrderItem standardOrderItem = dataSource.findByJewelryId(jewelry.getId())
-                        .orElse(null);
+                .orElse(null);
         validator.validateAndStopExecution(standardOrderItem != null, STANDARD_ORDER_ITEM_NOT_FOUND);
         var standardOrder = standardOrderItem.getStandardOrder();
         validator.validateAndStopExecution(standardOrder.getCustomer().getId() == customer.getId(), WRONG_CUSTOMER);
@@ -94,14 +102,26 @@ public class ResellJewelryUseCaseImpl extends AbstractUseCase<ResellJewelryInput
         jewelry.setStatus(JewelryStatus.RESOLD);
         jewelry = dataSource.save(jewelry);
 
+        final Money amount = calculateAmount(jewelry);
+
+        Payment payment = Payment.builder()
+                .type(aEnumMapper.toPaymentType(input.paymentMethod()))
+                .description(String.format(LocaleUtils.translateLocale(PAYMENT_DESCRIPTION_LOCALE), standardOrder.getOrderNo()))
+                .paymentReceiverType(PaymentReceiverType.RESELL)
+                .status(PaymentStatus.SUCCESSFUL)
+                .amount(amount)
+                .build();
+        payment = dataSource.save(payment);
+
         ResellOrder resellOrder = ResellOrder.builder()
                 .jewelry(jewelry)
                 .customer(customer)
                 .staff(dataSource.getStaffReference(currentUser.id()))
                 .proofImage(proofImage)
                 .note(input.note().trim())
-                .paymentMethod(input.paymentMethod())
-                .amount(calculateAmount(jewelry))
+                .paymentMethod(aEnumMapper.toPaymentMethod(input.paymentMethod()))
+                .amount(amount)
+                .payment(payment)
                 .build();
         resellOrder = dataSource.save(resellOrder);
 

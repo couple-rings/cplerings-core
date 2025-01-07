@@ -26,6 +26,7 @@ import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
 import com.cplerings.core.common.constant.Constants;
+import com.cplerings.core.common.locale.LocaleUtils;
 import com.cplerings.core.common.number.NumberUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.design.Design;
@@ -37,6 +38,9 @@ import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderHistory;
 import com.cplerings.core.domain.order.CustomOrderStatus;
 import com.cplerings.core.domain.order.TransportationOrder;
+import com.cplerings.core.domain.payment.Payment;
+import com.cplerings.core.domain.payment.PaymentReceiverType;
+import com.cplerings.core.domain.payment.PaymentStatus;
 import com.cplerings.core.domain.refund.Refund;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
@@ -61,6 +65,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RefundCustomOrderUseCaseImpl extends AbstractUseCase<RefundCustomOrderInput, RefundCustomOrderOutput>
         implements RefundCustomOrderUseCase {
+
+    private static final String PAYMENT_DESCRIPTION_LOCALE = "refundCustomOrder.paymentDescription";
 
     private final RefundCustomOrderDataSource dataSource;
     private final AEnumMapper aEnumMapper;
@@ -144,13 +150,25 @@ public class RefundCustomOrderUseCaseImpl extends AbstractUseCase<RefundCustomOr
                 .orElseThrow(() -> new IllegalStateException("No agreement was found"));
         dataSource.delete(agreement);
 
+        Money refundAmount = calculateRefundMoney(customOrder.getTotalPrice());
+
+        Payment payment = Payment.builder()
+                .type(aEnumMapper.toPaymentType(input.refundDetail().method()))
+                .description(String.format(LocaleUtils.translateLocale(PAYMENT_DESCRIPTION_LOCALE), customOrder.getOrderNo()))
+                .amount(refundAmount)
+                .status(PaymentStatus.SUCCESSFUL)
+                .paymentReceiverType(PaymentReceiverType.REFUND)
+                .build();
+        payment = dataSource.save(payment);
+
         Refund refund = Refund.builder()
                 .customOrder(customOrder)
-                .amount(calculateRefundMoney(customOrder.getTotalPrice()))
+                .amount(refundAmount)
                 .method(aEnumMapper.toRefundMethod(input.refundDetail().method()))
                 .proofImage(proofImage)
                 .reason(refundDetail.reason().trim())
                 .staff(staff)
+                .payment(payment)
                 .build();
         refund = dataSource.save(refund);
 

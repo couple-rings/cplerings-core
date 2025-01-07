@@ -1,7 +1,5 @@
 package com.cplerings.core.application.shared.entity.payment;
 
-import java.io.Serializable;
-
 import com.cplerings.core.application.shared.entity.crafting.ACraftingStage;
 import com.cplerings.core.application.shared.entity.design.request.ACustomRequest;
 import com.cplerings.core.application.shared.entity.order.AStandardOrder;
@@ -21,7 +19,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class APayment implements Serializable {
+public class APayment {
 
     private Long id;
     private PaymentType type;
@@ -29,6 +27,7 @@ public class APayment implements Serializable {
     private Money amount;
     private PaymentStatus status;
     private PaymentReceiverType paymentReceiverType;
+    private String paymentNo;
     private AVNPayTransaction vnPayTransaction;
     private ACustomRequest customRequest;
     private ACraftingStage craftingStage;

@@ -1,10 +1,8 @@
 package com.cplerings.core.application.shared.entity.order;
 
-import java.io.Serializable;
-
 import com.cplerings.core.application.shared.entity.account.AAccount;
 import com.cplerings.core.application.shared.entity.file.AImage;
-import com.cplerings.core.domain.refund.RefundMethod;
+import com.cplerings.core.application.shared.entity.payment.APaymentInfo;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
 import lombok.AllArgsConstructor;
@@ -12,6 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -28,4 +28,5 @@ public class ARefund implements Serializable {
     private AImage proofImage;
     private AStandardOrder standardOrder;
     private ACustomOrder customOrder;
+    private APaymentInfo payment;
 }

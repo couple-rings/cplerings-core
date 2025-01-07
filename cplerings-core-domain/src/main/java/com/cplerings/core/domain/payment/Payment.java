@@ -6,7 +6,14 @@ import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.order.StandardOrder;
 import com.cplerings.core.domain.payment.transaction.VNPayTransaction;
 import com.cplerings.core.domain.shared.AbstractEntity;
+import com.cplerings.core.domain.shared.generator.PaymentNoGeneratorType;
 import com.cplerings.core.domain.shared.valueobject.Money;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -19,11 +26,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -56,12 +58,16 @@ public class Payment extends AbstractEntity {
     @Column(name = "status", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
     private PaymentStatus status;
 
-    @Column(name = "secure_hash", length = DatabaseConstant.DEFAULT_PAYMENT_SECURE_HASH_LENGTH, nullable = false)
+    @Column(name = "secure_hash", length = DatabaseConstant.DEFAULT_PAYMENT_SECURE_HASH_LENGTH)
     private String secureHash;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_receiver_type", length = DatabaseConstant.DEFAULT_ENUM_LENGTH, nullable = false)
     private PaymentReceiverType paymentReceiverType;
+
+    @PaymentNoGeneratorType
+    @Column(name = "payment_no", length = DatabaseConstant.DEFAULT_ORDER_NO_LENGTH, nullable = false, updatable = false)
+    private String paymentNo;
 
     @OneToOne(mappedBy = "payment")
     private VNPayTransaction vnPayTransaction;

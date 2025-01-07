@@ -10,33 +10,29 @@ import static com.cplerings.core.application.jewelry.error.ResellJewelryErrorCod
 import static com.cplerings.core.application.jewelry.error.ResellJewelryErrorCode.PROOF_IMAGE_NOT_FOUND;
 import static com.cplerings.core.application.jewelry.error.ResellJewelryErrorCode.WRONG_CUSTOMER;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.cplerings.core.application.order.ResellCustomOrderUseCase;
 import com.cplerings.core.application.order.datasource.ResellCustomOrderDataSource;
 import com.cplerings.core.application.order.error.ResellCustomOrderErrorCode;
 import com.cplerings.core.application.order.input.ResellCustomOrderInput;
 import com.cplerings.core.application.order.mapper.ResellCustomOrderMapper;
 import com.cplerings.core.application.order.output.ResellCustomOrderOutput;
+import com.cplerings.core.application.shared.mapper.AEnumMapper;
 import com.cplerings.core.application.shared.service.configuration.ConfigurationService;
 import com.cplerings.core.application.shared.service.security.CurrentUser;
 import com.cplerings.core.application.shared.service.security.SecurityService;
 import com.cplerings.core.application.shared.usecase.AbstractUseCase;
 import com.cplerings.core.application.shared.usecase.UseCaseImplementation;
 import com.cplerings.core.application.shared.usecase.UseCaseValidator;
+import com.cplerings.core.common.locale.LocaleUtils;
 import com.cplerings.core.common.number.NumberUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.CustomOrderStatus;
-import com.cplerings.core.domain.resell.PaymentMethod;
+import com.cplerings.core.domain.payment.Payment;
+import com.cplerings.core.domain.payment.PaymentReceiverType;
+import com.cplerings.core.domain.payment.PaymentStatus;
 import com.cplerings.core.domain.resell.ResellOrder;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.ring.RingDiamond;
@@ -47,14 +43,25 @@ import com.cplerings.core.domain.spouse.Agreement;
 
 import lombok.RequiredArgsConstructor;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @UseCaseImplementation
 @RequiredArgsConstructor
 public class ResellCustomOrderUseCaseImpl extends AbstractUseCase<ResellCustomOrderInput, ResellCustomOrderOutput> implements ResellCustomOrderUseCase {
+
+    private static final String PAYMENT_DESCRIPTION_LOCALE = "resellCustomOrder.paymentDescription";
 
     private final ResellCustomOrderDataSource dataSource;
     private final ResellCustomOrderMapper mapper;
     private final SecurityService securityService;
     private final ConfigurationService configurationService;
+    private final AEnumMapper aEnumMapper;
 
     @Override
     protected void validateInput(UseCaseValidator validator, ResellCustomOrderInput input) {
@@ -115,18 +122,27 @@ public class ResellCustomOrderUseCaseImpl extends AbstractUseCase<ResellCustomOr
         customOrder.setStatus(CustomOrderStatus.RESOLD);
         customOrder = dataSource.save(customOrder);
 
+        final Money amount = calculateAmount(customOrder);
+
+        Payment payment = Payment.builder()
+                .type(aEnumMapper.toPaymentType(input.getPaymentMethod()))
+                .description(String.format(LocaleUtils.translateLocale(PAYMENT_DESCRIPTION_LOCALE), customOrder.getOrderNo()))
+                .paymentReceiverType(PaymentReceiverType.RESELL)
+                .status(PaymentStatus.SUCCESSFUL)
+                .amount(amount)
+                .build();
+        payment = dataSource.save(payment);
+
         ResellOrder resellOrder = ResellOrder.builder()
                 .customer(customer)
                 .staff(dataSource.getStaffReference(currentUser.id()))
                 .proofImage(proofImage)
                 .note(input.getNote().trim())
-                .amount(calculateAmount(customOrder))
+                .amount(amount)
                 .customOrder(customOrder)
+                .paymentMethod(aEnumMapper.toPaymentMethod(input.getPaymentMethod()))
+                .payment(payment)
                 .build();
-        switch (input.getPaymentMethod()) {
-            case CASH -> resellOrder.setPaymentMethod(PaymentMethod.CASH);
-            case TRANSFER -> resellOrder.setPaymentMethod(PaymentMethod.TRANSFER);
-        }
         resellOrder = dataSource.save(resellOrder);
 
         return mapper.toOutput(resellOrder);
@@ -135,7 +151,7 @@ public class ResellCustomOrderUseCaseImpl extends AbstractUseCase<ResellCustomOr
     private Money calculateAmount(CustomOrder customOrder) {
         var resellRatio = configurationService.getResellPercentage();
         Money customOrderPrice = customOrder.getTotalPrice();
-        BigDecimal price = customOrderPrice.getAmount().multiply(BigDecimal.valueOf(resellRatio)).divide(BigDecimal.valueOf(100));
-        return Money.create(price);
+        return customOrderPrice.multiply(BigDecimal.valueOf(resellRatio))
+                .divide(BigDecimal.valueOf(100));
     }
 }

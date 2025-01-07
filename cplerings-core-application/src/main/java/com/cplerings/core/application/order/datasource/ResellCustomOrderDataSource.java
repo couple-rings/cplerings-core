@@ -7,6 +7,7 @@ import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.diamond.Diamond;
 import com.cplerings.core.domain.file.Image;
 import com.cplerings.core.domain.order.CustomOrder;
+import com.cplerings.core.domain.payment.Payment;
 import com.cplerings.core.domain.resell.ResellOrder;
 import com.cplerings.core.domain.ring.Ring;
 import com.cplerings.core.domain.spouse.Agreement;
@@ -30,4 +31,6 @@ public interface ResellCustomOrderDataSource {
     Collection<Diamond> saveDiamonds(Collection<Diamond> diamonds);
 
     CustomOrder save(CustomOrder customOrder);
+
+    Payment save(Payment payment);
 }

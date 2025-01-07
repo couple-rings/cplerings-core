@@ -3,6 +3,7 @@ package com.cplerings.core.application.shared.entity.order;
 import com.cplerings.core.application.shared.entity.account.AAccount;
 import com.cplerings.core.application.shared.entity.file.AImage;
 import com.cplerings.core.application.shared.entity.jewelry.AJewelry;
+import com.cplerings.core.application.shared.entity.payment.APaymentInfo;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
 import lombok.AllArgsConstructor;
@@ -30,4 +31,5 @@ public class AResellOrder implements Serializable {
     private String note;
     private ACustomOrder customOrder;
     private String orderNo;
+    private APaymentInfo payment;
 }
