@@ -922,6 +922,19 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         var offset = PaginationUtils.getOffset(input.getPage(), input.getPageSize());
         var numOfDays = ChronoUnit.DAYS.between(input.getStartDate(), input.getEndDate()) + 1L;
         LocalDate startDateLocalDate = input.getStartDate().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        PaymentReceiverType paymentReceiverType = null;
+        if (input.getOrderType() == OrderType.CUSTOM) {
+            paymentReceiverType = PaymentReceiverType.CRAFT_STAGE;
+        }
+
+        if (input.getOrderType() == OrderType.RESELL) {
+            paymentReceiverType = PaymentReceiverType.RESELL;
+        }
+
+        if (input.getOrderType() == OrderType.REFUND) {
+            paymentReceiverType = PaymentReceiverType.REFUND;
+        }
         BlazeJPAQuery<Payment> query = createQuery()
                 .select(Q_PAYMENT)
                 .from(Q_PAYMENT)
@@ -937,23 +950,8 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .and(Q_PAYMENT.craftingStage.isNotNull())
                         .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
                         .and(Q_FIRST_RING.branch.isNotNull())
-                        .and(Q_FIRST_RING.branch.id.eq(branchId)));
-
-        final BooleanExpressionBuilder booleanExpressionBuilder = createBooleanExpressionBuilder();
-
-        if (input.getOrderType() != null) {
-            switch (input.getOrderType()) {
-                case CUSTOM ->
-                        booleanExpressionBuilder.and(Q_PAYMENT.paymentReceiverType.eq(PaymentReceiverType.CRAFT_STAGE));
-                case RESELL ->
-                        booleanExpressionBuilder.and(Q_PAYMENT.paymentReceiverType.eq(PaymentReceiverType.RESELL));
-                case REFUND ->
-                        booleanExpressionBuilder.and(Q_PAYMENT.paymentReceiverType.eq(PaymentReceiverType.REFUND));
-            }
-        }
-        final BooleanExpression predicate = booleanExpressionBuilder.build();
-        query.where(predicate);
-
+                        .and(Q_FIRST_RING.branch.id.eq(branchId))
+                        .and(Q_PAYMENT.paymentReceiverType.eq(paymentReceiverType)));
         long count = query.distinct().fetchCount();
         List<Payment> payments = query.limit(input.getPageSize()).offset(offset).fetch();
         return Payments.builder()
