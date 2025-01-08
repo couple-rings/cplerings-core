@@ -1395,10 +1395,10 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
             total =  Optional.ofNullable(query
                     .select(Q_PAYMENT.amount.amount.sum())
                     .from(Q_PAYMENT)
-                    .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE).fetchJoin()
-                    .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER).fetchJoin()
-                    .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING).fetchJoin()
-                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH).fetchJoin()
+                    .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
+                    .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
+                    .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                     .where(Expressions.predicate(
                                     Ops.BETWEEN,
                                     Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
@@ -1417,10 +1417,10 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
             total =  Optional.ofNullable(query
                     .select(Q_PAYMENT.amount.amount.sum())
                     .from(Q_PAYMENT)
-                    .leftJoin(Q_PAYMENT.resellOrder, Q_RESELL_ORDER).fetchJoin()
-                    .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER).fetchJoin()
-                    .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING).fetchJoin()
-                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH).fetchJoin()
+                    .leftJoin(Q_PAYMENT.resellOrder, Q_RESELL_ORDER)
+                    .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
+                    .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                     .where(Expressions.predicate(
                                     Ops.BETWEEN,
                                     Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
@@ -1438,10 +1438,10 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
             total =  Optional.ofNullable(query
                     .select(Q_PAYMENT.amount.amount.sum())
                     .from(Q_PAYMENT)
-                    .leftJoin(Q_PAYMENT.refund, Q_REFUND).fetchJoin()
-                    .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER).fetchJoin()
-                    .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING).fetchJoin()
-                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH).fetchJoin()
+                    .leftJoin(Q_PAYMENT.refund, Q_REFUND)
+                    .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
+                    .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
                     .where(Expressions.predicate(
                                     Ops.BETWEEN,
                                     Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
