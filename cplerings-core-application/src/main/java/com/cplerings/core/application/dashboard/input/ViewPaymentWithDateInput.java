@@ -2,6 +2,7 @@ package com.cplerings.core.application.dashboard.input;
 
 import java.time.Instant;
 
+import com.cplerings.core.application.shared.entity.order.OrderType;
 import com.cplerings.core.application.shared.pagination.AbstractPaginatedInput;
 
 import lombok.AccessLevel;
@@ -18,6 +19,7 @@ public class ViewPaymentWithDateInput extends AbstractPaginatedInput {
 
     private Instant startDate;
     private Instant endDate;
+    private OrderType orderType;
 
     public static Builder builder() {
         return new Builder();
@@ -29,6 +31,7 @@ public class ViewPaymentWithDateInput extends AbstractPaginatedInput {
 
         private Instant startDate;
         private Instant endDate;
+        private OrderType orderType;
 
         public Builder startDate(Instant startDate) {
             this.startDate = startDate;
@@ -40,11 +43,17 @@ public class ViewPaymentWithDateInput extends AbstractPaginatedInput {
             return self();
         }
 
+        public Builder orderType(OrderType orderType) {
+            this.orderType = orderType;
+            return self();
+        }
+
         @Override
         public ViewPaymentWithDateInput build() {
             final ViewPaymentWithDateInput input = super.build();
             input.setStartDate(startDate);
             input.setEndDate(endDate);
+            input.setOrderType(orderType);
             return input;
         }
 
