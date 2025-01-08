@@ -24,6 +24,7 @@ import com.cplerings.core.application.dashboard.datasource.ViewTotalExpenditureF
 import com.cplerings.core.application.dashboard.datasource.ViewTotalInDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewTotalInForAllDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewTotalOrdersOfBranchDataSource;
+import com.cplerings.core.application.dashboard.datasource.ViewTotalPaymentPerOrderDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewTotalRevenueDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewTotalTransactionsOfBranchDataSource;
 import com.cplerings.core.application.dashboard.datasource.ViewTotalTypeOfPaymentDataSource;
@@ -38,6 +39,7 @@ import com.cplerings.core.application.dashboard.input.ViewCustomOrdersWithDateIn
 import com.cplerings.core.application.dashboard.input.ViewPaymentWithDateInput;
 import com.cplerings.core.application.dashboard.input.ViewRefundOrdersWithDateInput;
 import com.cplerings.core.application.dashboard.input.ViewResellOrdersWithDateInput;
+import com.cplerings.core.application.dashboard.input.ViewTotalPaymentPerOrderInput;
 import com.cplerings.core.application.dashboard.input.ViewTotalTypeOfPaymentInput;
 import com.cplerings.core.application.dashboard.output.ViewTotalExpenditureForAllOutput;
 import com.cplerings.core.application.dashboard.output.ViewTotalExpenditureOutput;
@@ -54,7 +56,6 @@ import com.cplerings.core.domain.crafting.QCraftingStage;
 import com.cplerings.core.domain.design.QCustomDesign;
 import com.cplerings.core.domain.design.QDesign;
 import com.cplerings.core.domain.design.QDesignVersion;
-import com.cplerings.core.domain.design.crafting.CraftingRequestStatus;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.QCustomOrder;
 import com.cplerings.core.domain.payment.Payment;
@@ -82,7 +83,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DashBoardDataSource extends AbstractDataSource implements ViewBranchRevenueDataSource, ViewBranchOrdersDataSource, ViewBranchOrdersPaginateDataSource, ViewCustomOrdersWithDateDataSource, ViewResellOrdersWithDateDataSource,
         ViewRefundOrdersWithDateDataSource, ViewPaymentWithDateDataSource, ViewTotalRevenueDataSource, ViewTotalTransactionsOfBranchDataSource, ViewTotalOrdersOfBranchDataSource, ViewTotalTypeOfPaymentDataSource,
-        ViewTotalInDataSource, ViewTotalInForAllDataSource, ViewTotalExpenditureDataSource, ViewTotalExpenditureForAllDataSource, ViewTop5CustomOrderDataSource {
+        ViewTotalInDataSource, ViewTotalInForAllDataSource, ViewTotalExpenditureDataSource, ViewTotalExpenditureForAllDataSource, ViewTop5CustomOrderDataSource, ViewTotalPaymentPerOrderDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QResellOrder Q_RESELL_ORDER = QResellOrder.resellOrder;
@@ -1347,5 +1348,42 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                 .orderBy(Q_CUSTOM_ORDER.createdAt.desc())
                 .limit(5)
                 .fetch();
+    }
+
+    @Override
+    public Money getTotalAmountPaymentWithOrderType(ViewTotalPaymentPerOrderInput input, Long branchId) {
+        var numOfDays = ChronoUnit.DAYS.between(input.startDate(), input.endDate()) + 1L;
+        LocalDate startDateLocalDate = input.startDate().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        final BooleanExpressionBuilder booleanExpressionBuilder = createBooleanExpressionBuilder();
+        booleanExpressionBuilder.and(Expressions.predicate(
+                        Ops.BETWEEN,
+                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
+                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                        Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                .and(Q_PAYMENT.craftingStage.isNotNull())
+                .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
+                .and(Q_PAYMENT.craftingStage.customOrder.firstRing.branch.id.eq(branchId)));
+
+        if (input.orderType() != null) {
+            switch (input.orderType()) {
+                case CUSTOM ->
+                        booleanExpressionBuilder.and(Q_PAYMENT.paymentReceiverType.eq(PaymentReceiverType.CRAFT_STAGE));
+                case RESELL ->
+                        booleanExpressionBuilder.and(Q_PAYMENT.paymentReceiverType.eq(PaymentReceiverType.RESELL));
+                case REFUND ->
+                        booleanExpressionBuilder.and(Q_PAYMENT.paymentReceiverType.eq(PaymentReceiverType.REFUND));
+            }
+        }
+        final BooleanExpression predicate = booleanExpressionBuilder.build();
+        BigDecimal totalIn = Optional.ofNullable(createQuery().select(Q_PAYMENT.amount.amount.sum())
+                .from(Q_PAYMENT)
+                .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
+                .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
+                .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
+                .where(predicate)
+                .fetchOne()).orElse(BigDecimal.ZERO);
+        return Money.create(totalIn);
     }
 }
