@@ -5,6 +5,8 @@ import com.cplerings.core.domain.crafting.CraftingStage;
 import com.cplerings.core.domain.design.request.CustomRequest;
 import com.cplerings.core.domain.order.StandardOrder;
 import com.cplerings.core.domain.payment.transaction.VNPayTransaction;
+import com.cplerings.core.domain.refund.Refund;
+import com.cplerings.core.domain.resell.ResellOrder;
 import com.cplerings.core.domain.shared.AbstractEntity;
 import com.cplerings.core.domain.shared.generator.PaymentNoGeneratorType;
 import com.cplerings.core.domain.shared.valueobject.Money;
@@ -83,4 +85,10 @@ public class Payment extends AbstractEntity {
 
     @OneToOne(mappedBy = "payment")
     private StandardOrder standardOrder;
+
+    @OneToOne(mappedBy = "payment")
+    private ResellOrder resellOrder;
+
+    @OneToOne(mappedBy = "payment")
+    private Refund refund;
 }
