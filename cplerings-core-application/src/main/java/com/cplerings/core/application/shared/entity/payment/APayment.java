@@ -2,6 +2,8 @@ package com.cplerings.core.application.shared.entity.payment;
 
 import com.cplerings.core.application.shared.entity.crafting.ACraftingStage;
 import com.cplerings.core.application.shared.entity.design.request.ACustomRequest;
+import com.cplerings.core.application.shared.entity.order.ARefund;
+import com.cplerings.core.application.shared.entity.order.AResellOrder;
 import com.cplerings.core.application.shared.entity.order.AStandardOrder;
 import com.cplerings.core.domain.payment.PaymentReceiverType;
 import com.cplerings.core.domain.payment.PaymentStatus;
@@ -32,4 +34,6 @@ public class APayment {
     private ACustomRequest customRequest;
     private ACraftingStage craftingStage;
     private AStandardOrder standardOrder;
+    private AResellOrder resellOrder;
+    private ARefund refund;
 }
