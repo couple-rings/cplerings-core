@@ -1411,7 +1411,6 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                                 Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
                                 Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                                 Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
-                        .and(Q_PAYMENT.craftingStage.isNotNull())
                         .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
                         .and(Q_FIRST_RING.branch.isNotNull())
                         .and(Q_FIRST_RING.branch.id.eq(branchId))
