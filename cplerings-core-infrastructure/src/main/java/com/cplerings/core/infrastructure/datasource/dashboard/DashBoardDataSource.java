@@ -1388,34 +1388,71 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         LocalDate startDateLocalDate = input.startDate().atZone(ZoneId.systemDefault()).toLocalDate();
 
         PaymentReceiverType paymentReceiverType = null;
+        BlazeJPAQuery<Payment> query = createQuery();
+        BigDecimal total = BigDecimal.ZERO;
         if (input.orderType() == OrderType.CUSTOM) {
             paymentReceiverType = PaymentReceiverType.CRAFT_STAGE;
+            total =  Optional.ofNullable(query
+                    .select(Q_PAYMENT.amount.amount.sum())
+                    .from(Q_PAYMENT)
+                    .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE).fetchJoin()
+                    .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER).fetchJoin()
+                    .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING).fetchJoin()
+                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH).fetchJoin()
+                    .where(Expressions.predicate(
+                                    Ops.BETWEEN,
+                                    Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
+                                    Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                    Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
+                            .and(Q_PAYMENT.craftingStage.isNotNull())
+                            .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
+                            .and(Q_FIRST_RING.branch.isNotNull())
+                            .and(Q_FIRST_RING.branch.id.eq(branchId))
+                            .and(Q_PAYMENT.paymentReceiverType.eq(paymentReceiverType)))
+                    .fetchOne()).orElse(BigDecimal.ZERO);
         }
 
         if (input.orderType() == OrderType.RESELL) {
             paymentReceiverType = PaymentReceiverType.RESELL;
+            total =  Optional.ofNullable(query
+                    .select(Q_PAYMENT.amount.amount.sum())
+                    .from(Q_PAYMENT)
+                    .leftJoin(Q_PAYMENT.resellOrder, Q_RESELL_ORDER).fetchJoin()
+                    .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER).fetchJoin()
+                    .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING).fetchJoin()
+                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH).fetchJoin()
+                    .where(Expressions.predicate(
+                                    Ops.BETWEEN,
+                                    Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
+                                    Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                    Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
+                            .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
+                            .and(Q_FIRST_RING.branch.isNotNull())
+                            .and(Q_FIRST_RING.branch.id.eq(branchId))
+                            .and(Q_PAYMENT.paymentReceiverType.eq(paymentReceiverType)))
+                    .fetchOne()).orElse(BigDecimal.ZERO);
         }
 
         if (input.orderType() == OrderType.REFUND) {
             paymentReceiverType = PaymentReceiverType.REFUND;
+            total =  Optional.ofNullable(query
+                    .select(Q_PAYMENT)
+                    .from(Q_PAYMENT)
+                    .leftJoin(Q_PAYMENT.refund, Q_REFUND).fetchJoin()
+                    .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER).fetchJoin()
+                    .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING).fetchJoin()
+                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH).fetchJoin()
+                    .where(Expressions.predicate(
+                                    Ops.BETWEEN,
+                                    Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
+                                    Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                    Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
+                            .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
+                            .and(Q_FIRST_RING.branch.isNotNull())
+                            .and(Q_FIRST_RING.branch.id.eq(branchId))
+                            .and(Q_PAYMENT.paymentReceiverType.eq(paymentReceiverType)))
+                    .fetchOne()).orElse(BigDecimal.ZERO);
         }
-
-        BigDecimal total = Optional.ofNullable(createQuery().select(Q_PAYMENT.amount.amount.sum())
-                .from(Q_PAYMENT)
-                .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
-                .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
-                .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
-                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
-                .where(Expressions.predicate(
-                                Ops.BETWEEN,
-                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
-                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                                Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
-                        .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
-                        .and(Q_FIRST_RING.branch.isNotNull())
-                        .and(Q_FIRST_RING.branch.id.eq(branchId))
-                        .and(Q_PAYMENT.paymentReceiverType.eq(paymentReceiverType)))
-                .fetchOne()).orElse(BigDecimal.ZERO);
         return Money.create(total);
     }
 }
