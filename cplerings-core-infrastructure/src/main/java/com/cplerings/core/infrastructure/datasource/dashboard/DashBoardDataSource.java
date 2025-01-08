@@ -1436,7 +1436,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         if (input.orderType() == OrderType.REFUND) {
             paymentReceiverType = PaymentReceiverType.REFUND;
             total =  Optional.ofNullable(query
-                    .select(Q_PAYMENT)
+                    .select(Q_PAYMENT.amount.amount.sum())
                     .from(Q_PAYMENT)
                     .leftJoin(Q_PAYMENT.refund, Q_REFUND).fetchJoin()
                     .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER).fetchJoin()
