@@ -75,7 +75,6 @@ import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 
 import lombok.RequiredArgsConstructor;
@@ -924,34 +923,69 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         LocalDate startDateLocalDate = input.getStartDate().atZone(ZoneId.systemDefault()).toLocalDate();
 
         PaymentReceiverType paymentReceiverType = null;
+        BlazeJPAQuery<Payment> query = createQuery();
         if (input.getOrderType() == OrderType.CUSTOM) {
             paymentReceiverType = PaymentReceiverType.CRAFT_STAGE;
+            query
+                    .select(Q_PAYMENT)
+                    .from(Q_PAYMENT)
+                    .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE).fetchJoin()
+                    .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER).fetchJoin()
+                    .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING).fetchJoin()
+                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH).fetchJoin()
+                    .where(Expressions.predicate(
+                                    Ops.BETWEEN,
+                                    Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
+                                    Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                    Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
+                            .and(Q_PAYMENT.craftingStage.isNotNull())
+                            .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
+                            .and(Q_FIRST_RING.branch.isNotNull())
+                            .and(Q_FIRST_RING.branch.id.eq(branchId))
+                            .and(Q_PAYMENT.paymentReceiverType.eq(paymentReceiverType)));
         }
 
         if (input.getOrderType() == OrderType.RESELL) {
             paymentReceiverType = PaymentReceiverType.RESELL;
+            query
+                    .select(Q_PAYMENT)
+                    .from(Q_PAYMENT)
+                    .leftJoin(Q_PAYMENT.resellOrder, Q_RESELL_ORDER).fetchJoin()
+                    .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER).fetchJoin()
+                    .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING).fetchJoin()
+                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH).fetchJoin()
+                    .where(Expressions.predicate(
+                                    Ops.BETWEEN,
+                                    Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
+                                    Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                    Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
+                            .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
+                            .and(Q_FIRST_RING.branch.isNotNull())
+                            .and(Q_FIRST_RING.branch.id.eq(branchId))
+                            .and(Q_PAYMENT.paymentReceiverType.eq(paymentReceiverType)));
         }
 
         if (input.getOrderType() == OrderType.REFUND) {
             paymentReceiverType = PaymentReceiverType.REFUND;
+            query
+                    .select(Q_PAYMENT)
+                    .from(Q_PAYMENT)
+                    .leftJoin(Q_PAYMENT.refund, Q_REFUND).fetchJoin()
+                    .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER).fetchJoin()
+                    .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING).fetchJoin()
+                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH).fetchJoin()
+                    .where(Expressions.predicate(
+                                    Ops.BETWEEN,
+                                    Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
+                                    Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                    Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
+                            .and(Q_PAYMENT.craftingStage.isNotNull())
+                            .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
+                            .and(Q_FIRST_RING.branch.isNotNull())
+                            .and(Q_FIRST_RING.branch.id.eq(branchId))
+                            .and(Q_PAYMENT.paymentReceiverType.eq(paymentReceiverType)));
         }
-        BlazeJPAQuery<Payment> query = createQuery()
-                .select(Q_PAYMENT)
-                .from(Q_PAYMENT)
-                .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE).fetchJoin()
-                .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER).fetchJoin()
-                .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING).fetchJoin()
-                .leftJoin(Q_FIRST_RING.branch, Q_BRANCH).fetchJoin()
-                .where(Expressions.predicate(
-                                Ops.BETWEEN,
-                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
-                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                                Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
-                        .and(Q_PAYMENT.craftingStage.isNotNull())
-                        .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
-                        .and(Q_FIRST_RING.branch.isNotNull())
-                        .and(Q_FIRST_RING.branch.id.eq(branchId))
-                        .and(Q_PAYMENT.paymentReceiverType.eq(paymentReceiverType)));
+
         long count = query.distinct().fetchCount();
         List<Payment> payments = query.limit(input.getPageSize()).offset(offset).fetch();
         return Payments.builder()
