@@ -48,6 +48,7 @@ import com.cplerings.core.application.order.datasource.result.CustomOrders;
 import com.cplerings.core.application.order.datasource.result.Refunds;
 import com.cplerings.core.application.order.datasource.result.ResellOrders;
 import com.cplerings.core.application.shared.entity.order.APaymentMethod;
+import com.cplerings.core.application.shared.entity.order.OrderType;
 import com.cplerings.core.common.pagination.PaginationUtils;
 import com.cplerings.core.domain.account.Account;
 import com.cplerings.core.domain.account.QAccount;
@@ -1355,35 +1356,36 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         var numOfDays = ChronoUnit.DAYS.between(input.startDate(), input.endDate()) + 1L;
         LocalDate startDateLocalDate = input.startDate().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        final BooleanExpressionBuilder booleanExpressionBuilder = createBooleanExpressionBuilder();
-        booleanExpressionBuilder.and(Expressions.predicate(
-                        Ops.BETWEEN,
-                        Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
-                        Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                        Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                .and(Q_PAYMENT.craftingStage.isNotNull())
-                .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
-                .and(Q_PAYMENT.craftingStage.customOrder.firstRing.branch.id.eq(branchId)));
-
-        if (input.orderType() != null) {
-            switch (input.orderType()) {
-                case CUSTOM ->
-                        booleanExpressionBuilder.and(Q_PAYMENT.paymentReceiverType.eq(PaymentReceiverType.CRAFT_STAGE));
-                case RESELL ->
-                        booleanExpressionBuilder.and(Q_PAYMENT.paymentReceiverType.eq(PaymentReceiverType.RESELL));
-                case REFUND ->
-                        booleanExpressionBuilder.and(Q_PAYMENT.paymentReceiverType.eq(PaymentReceiverType.REFUND));
-            }
+        PaymentReceiverType paymentReceiverType = null;
+        if (input.orderType() == OrderType.CUSTOM) {
+            paymentReceiverType = PaymentReceiverType.CRAFT_STAGE;
         }
-        final BooleanExpression predicate = booleanExpressionBuilder.build();
-        BigDecimal totalIn = Optional.ofNullable(createQuery().select(Q_PAYMENT.amount.amount.sum())
+
+        if (input.orderType() == OrderType.RESELL) {
+            paymentReceiverType = PaymentReceiverType.RESELL;
+        }
+
+        if (input.orderType() == OrderType.REFUND) {
+            paymentReceiverType = PaymentReceiverType.REFUND;
+        }
+
+        BigDecimal total = Optional.ofNullable(createQuery().select(Q_PAYMENT.amount.amount.sum())
                 .from(Q_PAYMENT)
                 .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
                 .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
                 .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
                 .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
-                .where(predicate)
+                .where(Expressions.predicate(
+                                Ops.BETWEEN,
+                                Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
+                                Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
+                        .and(Q_PAYMENT.craftingStage.isNotNull())
+                        .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
+                        .and(Q_FIRST_RING.branch.isNotNull())
+                        .and(Q_FIRST_RING.branch.id.eq(branchId))
+                        .and(Q_PAYMENT.paymentReceiverType.eq(paymentReceiverType)))
                 .fetchOne()).orElse(BigDecimal.ZERO);
-        return Money.create(totalIn);
+        return Money.create(total);
     }
 }
