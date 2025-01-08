@@ -2,6 +2,7 @@ package com.cplerings.core.api.dashboard.data;
 
 import com.cplerings.core.api.shared.AbstractPaginatedData;
 import com.cplerings.core.application.dashboard.datasource.data.CombinedOrder;
+import com.cplerings.core.application.shared.entity.order.ARefund;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,13 +11,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ViewRefundOrdersWithDateData extends AbstractPaginatedData<CombinedOrder> {
+public class ViewRefundOrdersWithDateData extends AbstractPaginatedData<ARefund> {
 
     public static Builder builder() {
         return new Builder();
     }
 
-    public static final class Builder extends AbstractPaginatedDataBuilder<Builder, ViewRefundOrdersWithDateData, CombinedOrder> {
+    public static final class Builder extends AbstractPaginatedDataBuilder<Builder, ViewRefundOrdersWithDateData, ARefund> {
 
         @Override
         protected ViewRefundOrdersWithDateData getDataInstance() {

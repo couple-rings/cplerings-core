@@ -34,24 +34,6 @@ public class ViewRefundOrdersWithDateUseCaseImpl extends AbstractUseCase<ViewRef
         var user = securityService.getCurrentUser();
         Account manager = dataSource.getAccountById(user.id());
         var result = dataSource.getRefundOrders(input, manager.getBranch().getId());
-        List<CombinedOrder> orders = new ArrayList<>();
-        for (var resellOrder : result.getRefunds()) {
-            CombinedOrder combinedOrder = CombinedOrder.builder()
-                    .orderId(resellOrder.getId())
-                    .orderNo(resellOrder.getOrderNo())
-                    .orderType(OrderTypeStatistic.REFUND)
-                    .amount(resellOrder.getAmount())
-                    .paymentMethod(resellOrder.getMethod() == RefundMethod.CASH.CASH ? APaymentMethod.CASH : APaymentMethod.TRANSFER)
-                    .createdAt(resellOrder.getCreatedAt())
-                    .build();
-            orders.add(combinedOrder);
-        }
-        CombinedOrders combinedOrders = CombinedOrders.builder()
-                .orders(orders)
-                .count(result.getCount())
-                .pageSize(result.getPageSize())
-                .page(result.getPage())
-                .build();
-        return aViewRefundOrdersWithDateMapper.toOutput(combinedOrders);
+        return aViewRefundOrdersWithDateMapper.toOutput(result);
     }
 }

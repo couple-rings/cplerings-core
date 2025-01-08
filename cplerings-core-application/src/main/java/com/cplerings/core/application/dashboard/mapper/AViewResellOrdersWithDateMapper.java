@@ -3,13 +3,18 @@ package com.cplerings.core.application.dashboard.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.cplerings.core.application.dashboard.datasource.data.CombinedOrders;
 import com.cplerings.core.application.dashboard.output.ViewResellOrdersWithDateOutput;
+import com.cplerings.core.application.order.datasource.result.ResellOrders;
+import com.cplerings.core.application.order.mapper.AViewResellOrdersMapper;
+import com.cplerings.core.application.shared.mapper.AResellOrderMapper;
 import com.cplerings.core.common.mapper.SpringMapperConfiguration;
 
-@Mapper(config = SpringMapperConfiguration.class)
+@Mapper(config = SpringMapperConfiguration.class,
+        uses = {
+                AResellOrderMapper.class,
+        })
 public interface AViewResellOrdersWithDateMapper {
 
-    @Mapping(target = "items", source = "orders")
-    ViewResellOrdersWithDateOutput toOutput(CombinedOrders orders);
+    @Mapping(target = "items", source = "resellOrders")
+    ViewResellOrdersWithDateOutput toOutput(ResellOrders orders);
 }

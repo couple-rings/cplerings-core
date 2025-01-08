@@ -54,9 +54,11 @@ import com.cplerings.core.domain.crafting.QCraftingStage;
 import com.cplerings.core.domain.design.QCustomDesign;
 import com.cplerings.core.domain.design.QDesign;
 import com.cplerings.core.domain.design.QDesignVersion;
+import com.cplerings.core.domain.design.crafting.CraftingRequestStatus;
 import com.cplerings.core.domain.order.CustomOrder;
 import com.cplerings.core.domain.order.QCustomOrder;
 import com.cplerings.core.domain.payment.Payment;
+import com.cplerings.core.domain.payment.PaymentReceiverType;
 import com.cplerings.core.domain.payment.PaymentStatus;
 import com.cplerings.core.domain.payment.QPayment;
 import com.cplerings.core.domain.refund.QRefund;
@@ -71,6 +73,7 @@ import com.cplerings.core.infrastructure.datasource.AbstractDataSource;
 import com.cplerings.core.infrastructure.datasource.DataSource;
 import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 
 import lombok.RequiredArgsConstructor;
@@ -933,6 +936,21 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                         .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
                         .and(Q_FIRST_RING.branch.isNotNull())
                         .and(Q_FIRST_RING.branch.id.eq(branchId)));
+
+        final BooleanExpressionBuilder booleanExpressionBuilder = createBooleanExpressionBuilder();
+
+        if (input.getOrderType() != null) {
+            switch (input.getOrderType()) {
+                case CUSTOM ->
+                        booleanExpressionBuilder.and(Q_PAYMENT.paymentReceiverType.eq(PaymentReceiverType.CRAFT_STAGE));
+                case RESELL ->
+                        booleanExpressionBuilder.and(Q_PAYMENT.paymentReceiverType.eq(PaymentReceiverType.RESELL));
+                case REFUND ->
+                        booleanExpressionBuilder.and(Q_PAYMENT.paymentReceiverType.eq(PaymentReceiverType.REFUND));
+            }
+        }
+        final BooleanExpression predicate = booleanExpressionBuilder.build();
+        query.where(predicate);
 
         long count = query.distinct().fetchCount();
         List<Payment> payments = query.limit(input.getPageSize()).offset(offset).fetch();

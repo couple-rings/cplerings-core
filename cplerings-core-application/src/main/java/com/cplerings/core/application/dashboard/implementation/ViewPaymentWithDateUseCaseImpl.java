@@ -33,24 +33,6 @@ public class ViewPaymentWithDateUseCaseImpl extends AbstractUseCase<ViewPaymentW
         var user = securityService.getCurrentUser();
         Account manager = dataSource.getAccountById(user.id());
         var result = dataSource.getPayments(input, manager.getBranch().getId());
-        List<PaymentOrder> paymentOrders = new ArrayList<>();
-        for (var payemnt : result.getPayments()) {
-            PaymentOrder paymentOrder = PaymentOrder.builder()
-                    .paymentId(payemnt.getId())
-                    .orderNo(payemnt.getCraftingStage().getCustomOrder().getOrderNo())
-                    .orderType(OrderTypeStatistic.CUSTOM)
-                    .amount(payemnt.getAmount())
-                    .paymentMethod(APaymentMethod.TRANSFER)
-                    .createdAt(payemnt.getCreatedAt())
-                    .build();
-            paymentOrders.add(paymentOrder);
-        }
-        PaymentOrders payments = PaymentOrders.builder()
-                .payments(paymentOrders)
-                .count(result.getCount())
-                .pageSize(result.getPageSize())
-                .page(result.getPage())
-                .build();
-        return mapper.toOutput(payments);
+        return mapper.toOutput(result);
     }
 }
