@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1392,10 +1393,11 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
         BlazeJPAQuery<Payment> query = createQuery();
         BlazeJPAQuery<Payment> queryForGetTotalOrder = createQuery();
         BigDecimal total = BigDecimal.ZERO;
+        List<Long> totalOrders = new ArrayList<>();
         Long totalOrder = 0L;
         if (input.orderType() == OrderType.CUSTOM) {
             paymentReceiverType = PaymentReceiverType.CRAFT_STAGE;
-            total =  Optional.ofNullable(query
+            total = Optional.ofNullable(query
                     .select(Q_PAYMENT.amount.amount.sum())
                     .from(Q_PAYMENT)
                     .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
@@ -1414,7 +1416,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                             .and(Q_PAYMENT.paymentReceiverType.eq(paymentReceiverType)))
                     .fetchOne()).orElse(BigDecimal.ZERO);
 
-            totalOrder = queryForGetTotalOrder
+            totalOrders = queryForGetTotalOrder
                     .select(Q_PAYMENT.count())
                     .from(Q_PAYMENT)
                     .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
@@ -1431,13 +1433,16 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                             .and(Q_FIRST_RING.branch.isNotNull())
                             .and(Q_FIRST_RING.branch.id.eq(branchId))
                             .and(Q_PAYMENT.paymentReceiverType.eq(paymentReceiverType)))
-                    .groupBy(Q_CUSTOM_ORDER.id)
-                    .fetchOne();
+                    .groupBy(Q_PAYMENT.craftingStage.customOrder.id)
+                    .fetch();
+            for (var totalInEach : totalOrders) {
+                totalOrder =  totalOrder + totalInEach;
+            }
         }
 
         if (input.orderType() == OrderType.RESELL) {
             paymentReceiverType = PaymentReceiverType.RESELL;
-            total =  Optional.ofNullable(query
+            total = Optional.ofNullable(query
                     .select(Q_PAYMENT.amount.amount.sum())
                     .from(Q_PAYMENT)
                     .leftJoin(Q_PAYMENT.resellOrder, Q_RESELL_ORDER)
@@ -1477,7 +1482,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
 
         if (input.orderType() == OrderType.REFUND) {
             paymentReceiverType = PaymentReceiverType.REFUND;
-            total =  Optional.ofNullable(query
+            total = Optional.ofNullable(query
                     .select(Q_PAYMENT.amount.amount.sum())
                     .from(Q_PAYMENT)
                     .leftJoin(Q_PAYMENT.refund, Q_REFUND)
