@@ -43,6 +43,7 @@ import com.cplerings.core.application.dashboard.input.ViewTotalPaymentPerOrderIn
 import com.cplerings.core.application.dashboard.input.ViewTotalTypeOfPaymentInput;
 import com.cplerings.core.application.dashboard.output.ViewTotalExpenditureForAllOutput;
 import com.cplerings.core.application.dashboard.output.ViewTotalExpenditureOutput;
+import com.cplerings.core.application.dashboard.output.ViewTotalPaymentPerOrderOutput;
 import com.cplerings.core.application.dashboard.output.ViewTotalTypeOfPaymentOutput;
 import com.cplerings.core.application.order.datasource.result.CustomOrders;
 import com.cplerings.core.application.order.datasource.result.Refunds;
@@ -1383,13 +1384,15 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
     }
 
     @Override
-    public Money getTotalAmountPaymentWithOrderType(ViewTotalPaymentPerOrderInput input, Long branchId) {
+    public ViewTotalPaymentPerOrderOutput getTotalAmountPaymentWithOrderType(ViewTotalPaymentPerOrderInput input, Long branchId) {
         var numOfDays = ChronoUnit.DAYS.between(input.startDate(), input.endDate()) + 1L;
         LocalDate startDateLocalDate = input.startDate().atZone(ZoneId.systemDefault()).toLocalDate();
 
         PaymentReceiverType paymentReceiverType = null;
         BlazeJPAQuery<Payment> query = createQuery();
+        BlazeJPAQuery<Payment> queryForGetTotalOrder = createQuery();
         BigDecimal total = BigDecimal.ZERO;
+        Long totalOrder = 0L;
         if (input.orderType() == OrderType.CUSTOM) {
             paymentReceiverType = PaymentReceiverType.CRAFT_STAGE;
             total =  Optional.ofNullable(query
@@ -1410,6 +1413,26 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                             .and(Q_FIRST_RING.branch.id.eq(branchId))
                             .and(Q_PAYMENT.paymentReceiverType.eq(paymentReceiverType)))
                     .fetchOne()).orElse(BigDecimal.ZERO);
+
+            totalOrder = queryForGetTotalOrder
+                    .select(Q_PAYMENT.count())
+                    .from(Q_PAYMENT)
+                    .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
+                    .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
+                    .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
+                    .where(Expressions.predicate(
+                                    Ops.BETWEEN,
+                                    Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
+                                    Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                    Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
+                            .and(Q_PAYMENT.craftingStage.isNotNull())
+                            .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
+                            .and(Q_FIRST_RING.branch.isNotNull())
+                            .and(Q_FIRST_RING.branch.id.eq(branchId))
+                            .and(Q_PAYMENT.paymentReceiverType.eq(paymentReceiverType)))
+                    .groupBy(Q_CUSTOM_ORDER.id)
+                    .fetchOne();
         }
 
         if (input.orderType() == OrderType.RESELL) {
@@ -1431,6 +1454,25 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                             .and(Q_FIRST_RING.branch.id.eq(branchId))
                             .and(Q_PAYMENT.paymentReceiverType.eq(paymentReceiverType)))
                     .fetchOne()).orElse(BigDecimal.ZERO);
+
+            paymentReceiverType = PaymentReceiverType.RESELL;
+            totalOrder = queryForGetTotalOrder
+                    .select(Q_PAYMENT.count())
+                    .from(Q_PAYMENT)
+                    .leftJoin(Q_PAYMENT.resellOrder, Q_RESELL_ORDER)
+                    .leftJoin(Q_RESELL_ORDER.customOrder, Q_CUSTOM_ORDER)
+                    .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
+                    .where(Expressions.predicate(
+                                    Ops.BETWEEN,
+                                    Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
+                                    Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                    Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
+                            .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
+                            .and(Q_FIRST_RING.branch.isNotNull())
+                            .and(Q_FIRST_RING.branch.id.eq(branchId))
+                            .and(Q_PAYMENT.paymentReceiverType.eq(paymentReceiverType)))
+                    .fetchOne();
         }
 
         if (input.orderType() == OrderType.REFUND) {
@@ -1452,7 +1494,29 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                             .and(Q_FIRST_RING.branch.id.eq(branchId))
                             .and(Q_PAYMENT.paymentReceiverType.eq(paymentReceiverType)))
                     .fetchOne()).orElse(BigDecimal.ZERO);
+
+            totalOrder = queryForGetTotalOrder
+                    .select(Q_PAYMENT.count())
+                    .from(Q_PAYMENT)
+                    .leftJoin(Q_PAYMENT.refund, Q_REFUND)
+                    .leftJoin(Q_REFUND.customOrder, Q_CUSTOM_ORDER)
+                    .leftJoin(Q_CUSTOM_ORDER.firstRing, Q_FIRST_RING)
+                    .leftJoin(Q_FIRST_RING.branch, Q_BRANCH)
+                    .where(Expressions.predicate(
+                                    Ops.BETWEEN,
+                                    Expressions.stringTemplate("FUNCTION('DATE_TRUNC', 'day', {0})", Q_PAYMENT.createdAt),
+                                    Expressions.constant(startDateLocalDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                    Expressions.constant(startDateLocalDate.plusDays(numOfDays - 1).atStartOfDay().atZone(targetZone).toInstant()))
+                            .and(Q_PAYMENT.status.eq(PaymentStatus.SUCCESSFUL))
+                            .and(Q_FIRST_RING.branch.isNotNull())
+                            .and(Q_FIRST_RING.branch.id.eq(branchId))
+                            .and(Q_PAYMENT.paymentReceiverType.eq(paymentReceiverType)))
+                    .fetchOne();
         }
-        return Money.create(total);
+        Money totalPayment = Money.create(total);
+        return ViewTotalPaymentPerOrderOutput.builder()
+                .total(totalPayment)
+                .totalOrder(totalOrder)
+                .build();
     }
 }
