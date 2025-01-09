@@ -1,5 +1,7 @@
 package com.cplerings.core.application.shared.entity.payment;
 
+import java.time.Instant;
+
 import com.cplerings.core.application.shared.entity.crafting.ACraftingStage;
 import com.cplerings.core.application.shared.entity.design.request.ACustomRequest;
 import com.cplerings.core.application.shared.entity.order.ARefund;
@@ -36,4 +38,5 @@ public class APayment {
     private AStandardOrder standardOrder;
     private AResellOrder resellOrder;
     private ARefund refund;
+    private Instant createdAt;
 }

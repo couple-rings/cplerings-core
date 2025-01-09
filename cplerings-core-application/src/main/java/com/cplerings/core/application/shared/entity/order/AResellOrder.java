@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -32,4 +33,5 @@ public class AResellOrder implements Serializable {
     private ACustomOrder customOrder;
     private String orderNo;
     private APaymentInfo payment;
+    private Instant createdAt;
 }
