@@ -5,5 +5,5 @@ import com.cplerings.core.domain.shared.valueobject.Money;
 import lombok.Builder;
 
 @Builder
-public record ViewTotalPaymentPerOrderOutput(Money total) {
+public record ViewTotalPaymentPerOrderOutput(Money total, Long totalOrder) {
 }

@@ -24,6 +24,6 @@ public class ViewTotalPaymentPerOrderUseCaseImpl extends AbstractUseCase<ViewTot
         var user = securityService.getCurrentUser();
         Account manager = dataSource.getAccountById(user.id());
         var result = dataSource.getTotalAmountPaymentWithOrderType(input, manager.getBranch().getId());
-        return new ViewTotalPaymentPerOrderOutput(result);
+        return result;
     }
 }
