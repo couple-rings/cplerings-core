@@ -1417,7 +1417,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                     .fetchOne()).orElse(BigDecimal.ZERO);
 
             totalOrders = queryForGetTotalOrder
-                    .select(Q_CUSTOM_ORDER.id.count())
+                    .select(Q_CUSTOM_ORDER.id.countDistinct())
                     .from(Q_PAYMENT)
                     .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
                     .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
