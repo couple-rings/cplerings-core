@@ -1417,7 +1417,7 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                     .fetchOne()).orElse(BigDecimal.ZERO);
 
             totalOrders = queryForGetTotalOrder
-                    .select(Q_PAYMENT.craftingStage.customOrder.count())
+                    .select(Q_CUSTOM_ORDER.id.count())
                     .from(Q_PAYMENT)
                     .leftJoin(Q_PAYMENT.craftingStage, Q_CRAFTING_STAGE)
                     .leftJoin(Q_CRAFTING_STAGE.customOrder, Q_CUSTOM_ORDER)
@@ -1433,10 +1433,10 @@ public class DashBoardDataSource extends AbstractDataSource implements ViewBranc
                             .and(Q_FIRST_RING.branch.isNotNull())
                             .and(Q_FIRST_RING.branch.id.eq(branchId))
                             .and(Q_PAYMENT.paymentReceiverType.eq(paymentReceiverType)))
-                    .groupBy(Q_PAYMENT.craftingStage.customOrder.id)
+                    .groupBy(Q_CUSTOM_ORDER.id)
                     .fetch();
             for (var totalInEach : totalOrders) {
-                totalOrder =  totalOrder + totalInEach;
+                totalOrder = totalOrder + totalInEach;
             }
         }
 

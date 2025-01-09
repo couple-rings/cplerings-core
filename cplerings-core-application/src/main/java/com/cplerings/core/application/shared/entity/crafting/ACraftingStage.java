@@ -1,6 +1,7 @@
 package com.cplerings.core.application.shared.entity.crafting;
 
 import com.cplerings.core.application.shared.entity.file.AImage;
+import com.cplerings.core.application.shared.entity.order.ACustomOrder;
 import com.cplerings.core.application.shared.entity.payment.APaymentInfo;
 import com.cplerings.core.domain.shared.valueobject.Money;
 
@@ -31,4 +32,5 @@ public class ACraftingStage {
     private APaymentInfo payment;
     private Collection<ACraftingStageHistory> craftingStageHistories;
     private Instant createdAt;
+    private ACustomOrder customOrder;
 }
