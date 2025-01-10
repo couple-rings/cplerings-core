@@ -16,6 +16,7 @@ import com.cplerings.core.application.order.datasource.ResellCustomOrderDataSour
 import com.cplerings.core.application.order.datasource.ViewCustomOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrderPaymentsDataSource;
 import com.cplerings.core.application.order.datasource.ViewCustomOrdersDataSource;
+import com.cplerings.core.application.order.datasource.ViewRefundDataSource;
 import com.cplerings.core.application.order.datasource.ViewRefundOrdersDataSource;
 import com.cplerings.core.application.order.datasource.ViewResellOrderDataSource;
 import com.cplerings.core.application.order.datasource.ViewResellOrdersDataSource;
@@ -110,7 +111,7 @@ public class SharedOrderDataSource extends AbstractDataSource
         ProcessPayStandardOrderDataSource, ViewStandardOrderDataSource, CancelStandardOrderDataSource, CompleteOrderDataSource,
         GetCustomOrderByOrderNoDataSource, RefundStandardOrderDataSource, GetStandardOrderByOrderNoDataSource,
         RefundCustomOrderDataSource, ViewRefundOrdersDataSource, ViewResellOrdersDataSource, ResellJewelryDataSource, ResellCustomOrderDataSource,
-        ViewResellOrderDataSource, CancelCustomOrderDataSource, ViewCustomOrderPaymentsDataSource {
+        ViewResellOrderDataSource, CancelCustomOrderDataSource, ViewCustomOrderPaymentsDataSource, ViewRefundDataSource {
 
     private static final QCustomOrder Q_CUSTOM_ORDER = QCustomOrder.customOrder;
     private static final QAccount Q_ACCOUNT = QAccount.account;
@@ -684,5 +685,13 @@ public class SharedOrderDataSource extends AbstractDataSource
                 .where(Q_PAYMENT.craftingStage.customOrder.id.eq(customOrderId))
                 .orderBy(Q_PAYMENT.createdAt.asc())
                 .fetch();
+    }
+
+    @Override
+    public Refund getRefundById(Long id) {
+        return createQuery().select(Q_REFUND)
+                .from(Q_REFUND)
+                .where(Q_REFUND.id.eq(id))
+                .fetchFirst();
     }
 }
