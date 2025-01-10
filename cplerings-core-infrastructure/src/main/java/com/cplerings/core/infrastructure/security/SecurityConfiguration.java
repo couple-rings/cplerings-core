@@ -379,7 +379,9 @@ public class SecurityConfiguration {
 
     private void handleRefundAPI(HttpSecurity localHttp) throws Exception {
         localHttp.authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.REFUNDS_PATH))
-                .hasAnyAuthority(RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER));
+                        .hasAnyAuthority(RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER))
+                .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.REFUND_PATH))
+                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER));
     }
 
     private void handleResellOrderAPI(HttpSecurity localHttp) throws Exception {
@@ -390,7 +392,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.PUT, resolvePath(APIConstant.JEWELRY_PATH))
                         .hasAnyAuthority(RoleConstant.ROLE_MANAGER))
                 .authorizeHttpRequests(config -> config.requestMatchers(HttpMethod.GET, resolvePath(APIConstant.RESELL_ORDER_PATH))
-                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF));
+                        .hasAnyAuthority(RoleConstant.ROLE_CUSTOMER, RoleConstant.ROLE_STAFF, RoleConstant.ROLE_MANAGER));
     }
 
     private void handleRevenueAPI(HttpSecurity localHttp) throws Exception {

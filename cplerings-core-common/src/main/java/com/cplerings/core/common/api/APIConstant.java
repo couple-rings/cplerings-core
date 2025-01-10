@@ -218,6 +218,7 @@ public final class APIConstant {
      refunds' paths
     */
     public static final String REFUNDS_PATH = "/refunds";
+    public static final String REFUND_PATH = REFUNDS_PATH + "/{refundOrderId}";
 
     /*
         Resell Orders' paths
